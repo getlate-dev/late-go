@@ -41,6 +41,12 @@ jobs:
       - name: Tidy modules
         run: go mod tidy
 
+      - name: Generate README SDK Reference
+        run: |
+          pip install pyyaml --quiet
+          python3 scripts/generate_readme_reference.py
+          echo "README SDK Reference generation complete."
+
       - name: Check for changes
         id: changes
         run: |
