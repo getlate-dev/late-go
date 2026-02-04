@@ -342,7 +342,9 @@ const (
 	ListInboxCommentsParamsPlatformInstagram ListInboxCommentsParamsPlatform = "instagram"
 	ListInboxCommentsParamsPlatformLinkedin  ListInboxCommentsParamsPlatform = "linkedin"
 	ListInboxCommentsParamsPlatformReddit    ListInboxCommentsParamsPlatform = "reddit"
+	ListInboxCommentsParamsPlatformThreads   ListInboxCommentsParamsPlatform = "threads"
 	ListInboxCommentsParamsPlatformTiktok    ListInboxCommentsParamsPlatform = "tiktok"
+	ListInboxCommentsParamsPlatformTwitter   ListInboxCommentsParamsPlatform = "twitter"
 	ListInboxCommentsParamsPlatformYoutube   ListInboxCommentsParamsPlatform = "youtube"
 )
 
@@ -365,6 +367,7 @@ const (
 	ListInboxConversationsParamsPlatformInstagram ListInboxConversationsParamsPlatform = "instagram"
 	ListInboxConversationsParamsPlatformReddit    ListInboxConversationsParamsPlatform = "reddit"
 	ListInboxConversationsParamsPlatformTelegram  ListInboxConversationsParamsPlatform = "telegram"
+	ListInboxConversationsParamsPlatformTwitter   ListInboxConversationsParamsPlatform = "twitter"
 )
 
 // Defines values for ListInboxConversationsParamsStatus.
