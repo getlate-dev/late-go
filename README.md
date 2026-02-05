@@ -204,11 +204,37 @@ func main() {
 | `client.UnhideInboxCommentWithResponse()` | Unhide a comment |
 | `client.UnlikeInboxCommentWithResponse()` | Unlike a comment |
 
+### GMB Attributes
+| Method | Description |
+|--------|-------------|
+| `client.GetGoogleBusinessAttributesWithResponse()` | Get Google Business Profile location attributes |
+| `client.UpdateGoogleBusinessAttributesWithResponse()` | Update Google Business Profile location attributes |
+
 ### GMB Food Menus
 | Method | Description |
 |--------|-------------|
 | `client.GetGoogleBusinessFoodMenusWithResponse()` | Get Google Business Profile food menus |
 | `client.UpdateGoogleBusinessFoodMenusWithResponse()` | Update Google Business Profile food menus |
+
+### GMB Location Details
+| Method | Description |
+|--------|-------------|
+| `client.GetGoogleBusinessLocationDetailsWithResponse()` | Get Google Business Profile location details |
+| `client.UpdateGoogleBusinessLocationDetailsWithResponse()` | Update Google Business Profile location details |
+
+### GMB Media
+| Method | Description |
+|--------|-------------|
+| `client.ListGoogleBusinessMediaWithResponse()` | List Google Business Profile media (photos) |
+| `client.CreateGoogleBusinessMediaWithResponse()` | Upload a photo to Google Business Profile |
+| `client.DeleteGoogleBusinessMediaWithResponse()` | Delete a photo from Google Business Profile |
+
+### GMB Place Actions
+| Method | Description |
+|--------|-------------|
+| `client.ListGoogleBusinessPlaceActionsWithResponse()` | List place action links (booking, ordering, reservations) |
+| `client.CreateGoogleBusinessPlaceActionWithResponse()` | Create a place action link (booking, ordering, reservation) |
+| `client.DeleteGoogleBusinessPlaceActionWithResponse()` | Delete a place action link |
 
 ### Messages (Inbox)
 | Method | Description |
