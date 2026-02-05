@@ -744,6 +744,69 @@ type FacebookPlatformData struct {
 // FacebookPlatformDataContentType Set to 'story' to publish as a Facebook Page Story (24-hour ephemeral content). Requires media.
 type FacebookPlatformDataContentType string
 
+// FoodMenu defines model for FoodMenu.
+type FoodMenu struct {
+	// Cuisines Cuisine types (e.g. AMERICAN, ITALIAN, JAPANESE)
+	Cuisines *[]string          `json:"cuisines,omitempty"`
+	Labels   []FoodMenuLabel    `json:"labels"`
+	Sections *[]FoodMenuSection `json:"sections,omitempty"`
+
+	// SourceUrl URL of the original menu source
+	SourceUrl *string `json:"sourceUrl,omitempty"`
+}
+
+// FoodMenuItem defines model for FoodMenuItem.
+type FoodMenuItem struct {
+	Attributes *FoodMenuItemAttributes `json:"attributes,omitempty"`
+	Labels     []FoodMenuLabel         `json:"labels"`
+
+	// Options Item variants/options (e.g. sizes, preparations)
+	Options *[]struct {
+		Attributes *FoodMenuItemAttributes `json:"attributes,omitempty"`
+		Labels     *[]FoodMenuLabel        `json:"labels,omitempty"`
+	} `json:"options,omitempty"`
+}
+
+// FoodMenuItemAttributes defines model for FoodMenuItemAttributes.
+type FoodMenuItemAttributes struct {
+	// Allergen Allergens (e.g. DAIRY, GLUTEN, SHELLFISH)
+	Allergen *[]string `json:"allergen,omitempty"`
+
+	// DietaryRestriction Dietary labels (e.g. VEGETARIAN, VEGAN, GLUTEN_FREE)
+	DietaryRestriction *[]string `json:"dietaryRestriction,omitempty"`
+
+	// MediaKeys Media references for item photos
+	MediaKeys *[]string `json:"mediaKeys,omitempty"`
+
+	// PreparationMethods Preparation methods (e.g. GRILLED, FRIED)
+	PreparationMethods *[]string `json:"preparationMethods,omitempty"`
+	Price              *Money    `json:"price,omitempty"`
+
+	// ServesNumPeople Number of people the item serves
+	ServesNumPeople *int `json:"servesNumPeople,omitempty"`
+
+	// Spiciness Spiciness level (e.g. MILD, MEDIUM, HOT)
+	Spiciness *string `json:"spiciness,omitempty"`
+}
+
+// FoodMenuLabel defines model for FoodMenuLabel.
+type FoodMenuLabel struct {
+	// Description Optional description
+	Description *string `json:"description,omitempty"`
+
+	// DisplayName Display name of the item/section/menu
+	DisplayName string `json:"displayName"`
+
+	// LanguageCode BCP-47 language code (e.g. en, es)
+	LanguageCode *string `json:"languageCode,omitempty"`
+}
+
+// FoodMenuSection defines model for FoodMenuSection.
+type FoodMenuSection struct {
+	Items  *[]FoodMenuItem `json:"items,omitempty"`
+	Labels []FoodMenuLabel `json:"labels"`
+}
+
 // GoogleBusinessPlatformData Google Business Profile post settings:
 // - Posts support text content and a single image (no videos)
 // - Images must be publicly accessible URLs
@@ -1013,6 +1076,18 @@ type MediaItem struct {
 // MediaItemType defines model for MediaItem.Type.
 type MediaItemType string
 
+// Money defines model for Money.
+type Money struct {
+	// CurrencyCode ISO 4217 currency code (e.g. USD, EUR)
+	CurrencyCode string `json:"currencyCode"`
+
+	// Nanos Nano units (10^-9) of the amount
+	Nanos *int `json:"nanos,omitempty"`
+
+	// Units Whole units of the amount
+	Units string `json:"units"`
+}
+
 // Pagination defines model for Pagination.
 type Pagination struct {
 	Limit *int `json:"limit,omitempty"`
@@ -1200,8 +1275,11 @@ type PostAnalytics struct {
 	LastUpdated    *time.Time `json:"lastUpdated,omitempty"`
 	Likes          *int       `json:"likes,omitempty"`
 	Reach          *int       `json:"reach,omitempty"`
-	Shares         *int       `json:"shares,omitempty"`
-	Views          *int       `json:"views,omitempty"`
+
+	// Saves Number of saves/bookmarks (Instagram, Pinterest)
+	Saves  *int `json:"saves,omitempty"`
+	Shares *int `json:"shares,omitempty"`
+	Views  *int `json:"views,omitempty"`
 }
 
 // PostCreateResponse defines model for PostCreateResponse.
@@ -1970,6 +2048,15 @@ type UpdateAccountJSONBody struct {
 // UpdateFacebookPageJSONBody defines parameters for UpdateFacebookPage.
 type UpdateFacebookPageJSONBody struct {
 	SelectedPageId string `json:"selectedPageId"`
+}
+
+// UpdateGoogleBusinessFoodMenusJSONBody defines parameters for UpdateGoogleBusinessFoodMenus.
+type UpdateGoogleBusinessFoodMenusJSONBody struct {
+	// Menus Array of food menus to set
+	Menus []FoodMenu `json:"menus"`
+
+	// UpdateMask Field mask for partial updates (e.g. "menus")
+	UpdateMask *string `json:"updateMask,omitempty"`
 }
 
 // UpdateGmbLocationJSONBody defines parameters for UpdateGmbLocation.
@@ -3124,6 +3211,9 @@ type UpdateAccountJSONRequestBody UpdateAccountJSONBody
 // UpdateFacebookPageJSONRequestBody defines body for UpdateFacebookPage for application/json ContentType.
 type UpdateFacebookPageJSONRequestBody UpdateFacebookPageJSONBody
 
+// UpdateGoogleBusinessFoodMenusJSONRequestBody defines body for UpdateGoogleBusinessFoodMenus for application/json ContentType.
+type UpdateGoogleBusinessFoodMenusJSONRequestBody UpdateGoogleBusinessFoodMenusJSONBody
+
 // UpdateGmbLocationJSONRequestBody defines body for UpdateGmbLocation for application/json ContentType.
 type UpdateGmbLocationJSONRequestBody UpdateGmbLocationJSONBody
 
@@ -4006,6 +4096,14 @@ type ClientInterface interface {
 
 	UpdateFacebookPage(ctx context.Context, accountId string, body UpdateFacebookPageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetGoogleBusinessFoodMenus request
+	GetGoogleBusinessFoodMenus(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateGoogleBusinessFoodMenusWithBody request with any body
+	UpdateGoogleBusinessFoodMenusWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateGoogleBusinessFoodMenus(ctx context.Context, accountId string, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetGmbLocations request
 	GetGmbLocations(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -4528,6 +4626,42 @@ func (c *Client) UpdateFacebookPageWithBody(ctx context.Context, accountId strin
 
 func (c *Client) UpdateFacebookPage(ctx context.Context, accountId string, body UpdateFacebookPageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateFacebookPageRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetGoogleBusinessFoodMenus(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGoogleBusinessFoodMenusRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateGoogleBusinessFoodMenusWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGoogleBusinessFoodMenusRequestWithBody(c.Server, accountId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateGoogleBusinessFoodMenus(ctx context.Context, accountId string, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGoogleBusinessFoodMenusRequest(c.Server, accountId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -6624,6 +6758,87 @@ func NewUpdateFacebookPageRequestWithBody(server string, accountId string, conte
 	}
 
 	operationPath := fmt.Sprintf("/v1/accounts/%s/facebook-page", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetGoogleBusinessFoodMenusRequest generates requests for GetGoogleBusinessFoodMenus
+func NewGetGoogleBusinessFoodMenusRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/gmb-food-menus", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateGoogleBusinessFoodMenusRequest calls the generic UpdateGoogleBusinessFoodMenus builder with application/json body
+func NewUpdateGoogleBusinessFoodMenusRequest(server string, accountId string, body UpdateGoogleBusinessFoodMenusJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateGoogleBusinessFoodMenusRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewUpdateGoogleBusinessFoodMenusRequestWithBody generates requests for UpdateGoogleBusinessFoodMenus with any type of body
+func NewUpdateGoogleBusinessFoodMenusRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/gmb-food-menus", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -12389,6 +12604,14 @@ type ClientWithResponsesInterface interface {
 
 	UpdateFacebookPageWithResponse(ctx context.Context, accountId string, body UpdateFacebookPageJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateFacebookPageResponse, error)
 
+	// GetGoogleBusinessFoodMenusWithResponse request
+	GetGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGoogleBusinessFoodMenusResponse, error)
+
+	// UpdateGoogleBusinessFoodMenusWithBodyWithResponse request with any body
+	UpdateGoogleBusinessFoodMenusWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error)
+
+	UpdateGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error)
+
 	// GetGmbLocationsWithResponse request
 	GetGmbLocationsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGmbLocationsResponse, error)
 
@@ -13085,6 +13308,74 @@ func (r UpdateFacebookPageResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateFacebookPageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetGoogleBusinessFoodMenusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AccountId  *string     `json:"accountId,omitempty"`
+		LocationId *string     `json:"locationId,omitempty"`
+		Menus      *[]FoodMenu `json:"menus,omitempty"`
+
+		// Name Resource name of the food menus
+		Name    *string `json:"name,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *ErrorResponse
+	JSON403 *ErrorResponse
+	JSON404 *NotFound
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGoogleBusinessFoodMenusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGoogleBusinessFoodMenusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateGoogleBusinessFoodMenusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AccountId  *string     `json:"accountId,omitempty"`
+		LocationId *string     `json:"locationId,omitempty"`
+		Menus      *[]FoodMenu `json:"menus,omitempty"`
+		Name       *string     `json:"name,omitempty"`
+		Success    *bool       `json:"success,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *ErrorResponse
+	JSON403 *ErrorResponse
+	JSON404 *NotFound
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateGoogleBusinessFoodMenusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateGoogleBusinessFoodMenusResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -16548,6 +16839,32 @@ func (c *ClientWithResponses) UpdateFacebookPageWithResponse(ctx context.Context
 	return ParseUpdateFacebookPageResponse(rsp)
 }
 
+// GetGoogleBusinessFoodMenusWithResponse request returning *GetGoogleBusinessFoodMenusResponse
+func (c *ClientWithResponses) GetGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGoogleBusinessFoodMenusResponse, error) {
+	rsp, err := c.GetGoogleBusinessFoodMenus(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGoogleBusinessFoodMenusResponse(rsp)
+}
+
+// UpdateGoogleBusinessFoodMenusWithBodyWithResponse request with arbitrary body returning *UpdateGoogleBusinessFoodMenusResponse
+func (c *ClientWithResponses) UpdateGoogleBusinessFoodMenusWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error) {
+	rsp, err := c.UpdateGoogleBusinessFoodMenusWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateGoogleBusinessFoodMenusResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error) {
+	rsp, err := c.UpdateGoogleBusinessFoodMenus(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateGoogleBusinessFoodMenusResponse(rsp)
+}
+
 // GetGmbLocationsWithResponse request returning *GetGmbLocationsResponse
 func (c *ClientWithResponses) GetGmbLocationsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGmbLocationsResponse, error) {
 	rsp, err := c.GetGmbLocations(ctx, accountId, reqEditors...)
@@ -18150,6 +18467,142 @@ func ParseUpdateFacebookPageResponse(rsp *http.Response) (*UpdateFacebookPageRes
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGoogleBusinessFoodMenusResponse parses an HTTP response from a GetGoogleBusinessFoodMenusWithResponse call
+func ParseGetGoogleBusinessFoodMenusResponse(rsp *http.Response) (*GetGoogleBusinessFoodMenusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGoogleBusinessFoodMenusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AccountId  *string     `json:"accountId,omitempty"`
+			LocationId *string     `json:"locationId,omitempty"`
+			Menus      *[]FoodMenu `json:"menus,omitempty"`
+
+			// Name Resource name of the food menus
+			Name    *string `json:"name,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateGoogleBusinessFoodMenusResponse parses an HTTP response from a UpdateGoogleBusinessFoodMenusWithResponse call
+func ParseUpdateGoogleBusinessFoodMenusResponse(rsp *http.Response) (*UpdateGoogleBusinessFoodMenusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateGoogleBusinessFoodMenusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AccountId  *string     `json:"accountId,omitempty"`
+			LocationId *string     `json:"locationId,omitempty"`
+			Menus      *[]FoodMenu `json:"menus,omitempty"`
+			Name       *string     `json:"name,omitempty"`
+			Success    *bool       `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 
