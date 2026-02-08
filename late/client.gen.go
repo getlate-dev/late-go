@@ -1164,9 +1164,11 @@ type PlatformAnalytics struct {
 
 // PlatformTarget defines model for PlatformTarget.
 type PlatformTarget struct {
-	AccountId     *PlatformTarget_AccountId `json:"accountId,omitempty"`
-	CustomContent *string                   `json:"customContent,omitempty"`
-	CustomMedia   *[]MediaItem              `json:"customMedia,omitempty"`
+	AccountId *PlatformTarget_AccountId `json:"accountId,omitempty"`
+
+	// CustomContent Platform-specific text override. When set, this content is used instead of the top-level post content for this platform. Useful for tailoring captions per platform (e.g. keeping tweets under 280 characters).
+	CustomContent *string      `json:"customContent,omitempty"`
+	CustomMedia   *[]MediaItem `json:"customMedia,omitempty"`
 
 	// ErrorCategory Error category for programmatic handling:
 	// - auth_expired: Token expired or revoked, account needs reconnection
@@ -2964,7 +2966,9 @@ type CreatePostJSONBody struct {
 	Mentions  *[]string               `json:"mentions,omitempty"`
 	Metadata  *map[string]interface{} `json:"metadata,omitempty"`
 	Platforms *[]struct {
-		AccountId     *string `json:"accountId,omitempty"`
+		AccountId *string `json:"accountId,omitempty"`
+
+		// CustomContent Platform-specific text override. When set, this content is used instead of the top-level post content for this platform. Useful for tailoring captions per platform (e.g. keeping tweets under 280 characters).
 		CustomContent *string `json:"customContent,omitempty"`
 		CustomMedia   *[]struct {
 			Type *CreatePostJSONBodyPlatformsCustomMediaType `json:"type,omitempty"`
