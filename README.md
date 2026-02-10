@@ -150,7 +150,9 @@ func main() {
 ### Logs
 | Method | Description |
 |--------|-------------|
-| `client.ListLogsWithResponse()` | Get publishing logs |
+| `client.ListConnectionLogsWithResponse()` | Get connection logs |
+| `client.ListLogsWithResponse()` | Get publishing logs (deprecated) |
+| `client.ListPostsLogsWithResponse()` | Get publishing logs |
 | `client.GetLogWithResponse()` | Get a single log entry |
 | `client.GetPostLogsWithResponse()` | Get logs for a specific post |
 

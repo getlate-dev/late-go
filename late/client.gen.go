@@ -31,6 +31,39 @@ const (
 	AnalyticsListResponsePostsMediaTypeVideo    AnalyticsListResponsePostsMediaType = "video"
 )
 
+// Defines values for ConnectionLogConnectionMethod.
+const (
+	Credentials ConnectionLogConnectionMethod = "credentials"
+	Invitation  ConnectionLogConnectionMethod = "invitation"
+	Oauth       ConnectionLogConnectionMethod = "oauth"
+)
+
+// Defines values for ConnectionLogEventType.
+const (
+	ConnectionLogEventTypeConnectFailed    ConnectionLogEventType = "connect_failed"
+	ConnectionLogEventTypeConnectSuccess   ConnectionLogEventType = "connect_success"
+	ConnectionLogEventTypeDisconnect       ConnectionLogEventType = "disconnect"
+	ConnectionLogEventTypeReconnectFailed  ConnectionLogEventType = "reconnect_failed"
+	ConnectionLogEventTypeReconnectSuccess ConnectionLogEventType = "reconnect_success"
+)
+
+// Defines values for ConnectionLogPlatform.
+const (
+	ConnectionLogPlatformBluesky        ConnectionLogPlatform = "bluesky"
+	ConnectionLogPlatformFacebook       ConnectionLogPlatform = "facebook"
+	ConnectionLogPlatformGooglebusiness ConnectionLogPlatform = "googlebusiness"
+	ConnectionLogPlatformInstagram      ConnectionLogPlatform = "instagram"
+	ConnectionLogPlatformLinkedin       ConnectionLogPlatform = "linkedin"
+	ConnectionLogPlatformPinterest      ConnectionLogPlatform = "pinterest"
+	ConnectionLogPlatformReddit         ConnectionLogPlatform = "reddit"
+	ConnectionLogPlatformSnapchat       ConnectionLogPlatform = "snapchat"
+	ConnectionLogPlatformTelegram       ConnectionLogPlatform = "telegram"
+	ConnectionLogPlatformThreads        ConnectionLogPlatform = "threads"
+	ConnectionLogPlatformTiktok         ConnectionLogPlatform = "tiktok"
+	ConnectionLogPlatformTwitter        ConnectionLogPlatform = "twitter"
+	ConnectionLogPlatformYoutube        ConnectionLogPlatform = "youtube"
+)
+
 // Defines values for FacebookPlatformDataContentType.
 const (
 	FacebookPlatformDataContentTypeStory FacebookPlatformDataContentType = "story"
@@ -366,6 +399,41 @@ const (
 	GetConnectUrlParamsPlatformYoutube        GetConnectUrlParamsPlatform = "youtube"
 )
 
+// Defines values for ListConnectionLogsParamsPlatform.
+const (
+	ListConnectionLogsParamsPlatformAll            ListConnectionLogsParamsPlatform = "all"
+	ListConnectionLogsParamsPlatformBluesky        ListConnectionLogsParamsPlatform = "bluesky"
+	ListConnectionLogsParamsPlatformFacebook       ListConnectionLogsParamsPlatform = "facebook"
+	ListConnectionLogsParamsPlatformGooglebusiness ListConnectionLogsParamsPlatform = "googlebusiness"
+	ListConnectionLogsParamsPlatformInstagram      ListConnectionLogsParamsPlatform = "instagram"
+	ListConnectionLogsParamsPlatformLinkedin       ListConnectionLogsParamsPlatform = "linkedin"
+	ListConnectionLogsParamsPlatformPinterest      ListConnectionLogsParamsPlatform = "pinterest"
+	ListConnectionLogsParamsPlatformReddit         ListConnectionLogsParamsPlatform = "reddit"
+	ListConnectionLogsParamsPlatformSnapchat       ListConnectionLogsParamsPlatform = "snapchat"
+	ListConnectionLogsParamsPlatformTelegram       ListConnectionLogsParamsPlatform = "telegram"
+	ListConnectionLogsParamsPlatformThreads        ListConnectionLogsParamsPlatform = "threads"
+	ListConnectionLogsParamsPlatformTiktok         ListConnectionLogsParamsPlatform = "tiktok"
+	ListConnectionLogsParamsPlatformTwitter        ListConnectionLogsParamsPlatform = "twitter"
+	ListConnectionLogsParamsPlatformYoutube        ListConnectionLogsParamsPlatform = "youtube"
+)
+
+// Defines values for ListConnectionLogsParamsEventType.
+const (
+	ListConnectionLogsParamsEventTypeAll              ListConnectionLogsParamsEventType = "all"
+	ListConnectionLogsParamsEventTypeConnectFailed    ListConnectionLogsParamsEventType = "connect_failed"
+	ListConnectionLogsParamsEventTypeConnectSuccess   ListConnectionLogsParamsEventType = "connect_success"
+	ListConnectionLogsParamsEventTypeDisconnect       ListConnectionLogsParamsEventType = "disconnect"
+	ListConnectionLogsParamsEventTypeReconnectFailed  ListConnectionLogsParamsEventType = "reconnect_failed"
+	ListConnectionLogsParamsEventTypeReconnectSuccess ListConnectionLogsParamsEventType = "reconnect_success"
+)
+
+// Defines values for ListConnectionLogsParamsStatus.
+const (
+	ListConnectionLogsParamsStatusAll     ListConnectionLogsParamsStatus = "all"
+	ListConnectionLogsParamsStatusFailed  ListConnectionLogsParamsStatus = "failed"
+	ListConnectionLogsParamsStatusSuccess ListConnectionLogsParamsStatus = "success"
+)
+
 // Defines values for ListInboxCommentsParamsPlatform.
 const (
 	ListInboxCommentsParamsPlatformBluesky   ListInboxCommentsParamsPlatform = "bluesky"
@@ -520,6 +588,44 @@ const (
 	CreatePostJSONBodyPlatformsCustomMediaTypeGif      CreatePostJSONBodyPlatformsCustomMediaType = "gif"
 	CreatePostJSONBodyPlatformsCustomMediaTypeImage    CreatePostJSONBodyPlatformsCustomMediaType = "image"
 	CreatePostJSONBodyPlatformsCustomMediaTypeVideo    CreatePostJSONBodyPlatformsCustomMediaType = "video"
+)
+
+// Defines values for ListPostsLogsParamsStatus.
+const (
+	ListPostsLogsParamsStatusAll     ListPostsLogsParamsStatus = "all"
+	ListPostsLogsParamsStatusFailed  ListPostsLogsParamsStatus = "failed"
+	ListPostsLogsParamsStatusPending ListPostsLogsParamsStatus = "pending"
+	ListPostsLogsParamsStatusSkipped ListPostsLogsParamsStatus = "skipped"
+	ListPostsLogsParamsStatusSuccess ListPostsLogsParamsStatus = "success"
+)
+
+// Defines values for ListPostsLogsParamsPlatform.
+const (
+	ListPostsLogsParamsPlatformAll            ListPostsLogsParamsPlatform = "all"
+	ListPostsLogsParamsPlatformBluesky        ListPostsLogsParamsPlatform = "bluesky"
+	ListPostsLogsParamsPlatformFacebook       ListPostsLogsParamsPlatform = "facebook"
+	ListPostsLogsParamsPlatformGooglebusiness ListPostsLogsParamsPlatform = "googlebusiness"
+	ListPostsLogsParamsPlatformInstagram      ListPostsLogsParamsPlatform = "instagram"
+	ListPostsLogsParamsPlatformLinkedin       ListPostsLogsParamsPlatform = "linkedin"
+	ListPostsLogsParamsPlatformPinterest      ListPostsLogsParamsPlatform = "pinterest"
+	ListPostsLogsParamsPlatformReddit         ListPostsLogsParamsPlatform = "reddit"
+	ListPostsLogsParamsPlatformSnapchat       ListPostsLogsParamsPlatform = "snapchat"
+	ListPostsLogsParamsPlatformTelegram       ListPostsLogsParamsPlatform = "telegram"
+	ListPostsLogsParamsPlatformThreads        ListPostsLogsParamsPlatform = "threads"
+	ListPostsLogsParamsPlatformTiktok         ListPostsLogsParamsPlatform = "tiktok"
+	ListPostsLogsParamsPlatformTwitter        ListPostsLogsParamsPlatform = "twitter"
+	ListPostsLogsParamsPlatformYoutube        ListPostsLogsParamsPlatform = "youtube"
+)
+
+// Defines values for ListPostsLogsParamsAction.
+const (
+	ListPostsLogsParamsActionAll            ListPostsLogsParamsAction = "all"
+	ListPostsLogsParamsActionCancelled      ListPostsLogsParamsAction = "cancelled"
+	ListPostsLogsParamsActionMediaUpload    ListPostsLogsParamsAction = "media_upload"
+	ListPostsLogsParamsActionPublish        ListPostsLogsParamsAction = "publish"
+	ListPostsLogsParamsActionRateLimitPause ListPostsLogsParamsAction = "rate_limit_pause"
+	ListPostsLogsParamsActionRetry          ListPostsLogsParamsAction = "retry"
+	ListPostsLogsParamsActionTokenRefresh   ListPostsLogsParamsAction = "token_refresh"
 )
 
 // Defines values for ListQueueSlotsParamsAll.
@@ -745,6 +851,102 @@ type ApiKey struct {
 	KeyPreview *string `json:"keyPreview,omitempty"`
 	Name       *string `json:"name,omitempty"`
 }
+
+// BlueskyPlatformData Bluesky post settings:
+// - Supports text posts with up to 4 images per post
+// - Videos supported (single video per post)
+// - threadItems creates a reply chain (Bluesky thread)
+// - Images exceeding Bluesky's 1MB limit are automatically compressed
+// - Alt text for images is supported via mediaItem properties
+type BlueskyPlatformData struct {
+	// ThreadItems Sequence of posts in a Bluesky thread (root then replies in order).
+	ThreadItems *[]struct {
+		Content    *string      `json:"content,omitempty"`
+		MediaItems *[]MediaItem `json:"mediaItems,omitempty"`
+	} `json:"threadItems,omitempty"`
+}
+
+// ConnectionLog Connection event log showing account connection/disconnection history
+type ConnectionLog struct {
+	UnderscoreId *string `json:"_id,omitempty"`
+
+	// AccountId The social account ID (present on successful connections and disconnects)
+	AccountId *string `json:"accountId,omitempty"`
+
+	// ConnectionMethod How the connection was initiated
+	ConnectionMethod *ConnectionLogConnectionMethod `json:"connectionMethod,omitempty"`
+
+	// Context Additional context about the connection attempt
+	Context *struct {
+		ConnectToken         *string `json:"connectToken,omitempty"`
+		HasCustomRedirectUrl *bool   `json:"hasCustomRedirectUrl,omitempty"`
+		InvitationToken      *string `json:"invitationToken,omitempty"`
+
+		// IsBYOK Using bring-your-own-keys
+		IsBYOK         *bool `json:"isBYOK,omitempty"`
+		IsHeadlessMode *bool `json:"isHeadlessMode,omitempty"`
+		IsReconnection *bool `json:"isReconnection,omitempty"`
+	} `json:"context,omitempty"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+
+	// DurationMs How long the operation took in milliseconds
+	DurationMs *int `json:"durationMs,omitempty"`
+
+	// Error Error details (present on failed events)
+	Error *struct {
+		// Code Error code (e.g., oauth_denied, token_exchange_failed)
+		Code *string `json:"code,omitempty"`
+
+		// Message Human-readable error message
+		Message *string `json:"message,omitempty"`
+
+		// RawResponse Raw error response (truncated to 2000 chars)
+		RawResponse *string `json:"rawResponse,omitempty"`
+	} `json:"error,omitempty"`
+
+	// EventType Type of connection event:
+	// - `connect_success` - New account connected successfully
+	// - `connect_failed` - Connection attempt failed
+	// - `disconnect` - Account was disconnected
+	// - `reconnect_success` - Existing account reconnected successfully
+	// - `reconnect_failed` - Reconnection attempt failed
+	EventType *ConnectionLogEventType `json:"eventType,omitempty"`
+
+	// Metadata Additional metadata
+	Metadata  *map[string]interface{} `json:"metadata,omitempty"`
+	Platform  *ConnectionLogPlatform  `json:"platform,omitempty"`
+	ProfileId *string                 `json:"profileId,omitempty"`
+
+	// Success Success details (present on successful events)
+	Success *struct {
+		// AccountType Account type (personal, business, organization)
+		AccountType *string `json:"accountType,omitempty"`
+		DisplayName *string `json:"displayName,omitempty"`
+
+		// Permissions OAuth scopes/permissions granted
+		Permissions    *[]string  `json:"permissions,omitempty"`
+		ProfilePicture *string    `json:"profilePicture,omitempty"`
+		TokenExpiresAt *time.Time `json:"tokenExpiresAt,omitempty"`
+		Username       *string    `json:"username,omitempty"`
+	} `json:"success,omitempty"`
+
+	// UserId User who owns the connection (may be null for early OAuth failures)
+	UserId *string `json:"userId,omitempty"`
+}
+
+// ConnectionLogConnectionMethod How the connection was initiated
+type ConnectionLogConnectionMethod string
+
+// ConnectionLogEventType Type of connection event:
+// - `connect_success` - New account connected successfully
+// - `connect_failed` - Connection attempt failed
+// - `disconnect` - Account was disconnected
+// - `reconnect_success` - Existing account reconnected successfully
+// - `reconnect_failed` - Reconnection attempt failed
+type ConnectionLogEventType string
+
+// ConnectionLogPlatform defines model for ConnectionLog.Platform.
+type ConnectionLogPlatform string
 
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
@@ -1597,6 +1799,29 @@ type QueueSlot struct {
 
 	// Time Time in HH:mm format (24-hour)
 	Time *string `json:"time,omitempty"`
+}
+
+// RedditPlatformData Reddit post settings:
+// - Posts are either "link" (with URL/media) or "self" (text-only)
+// - If media is provided, the first media item's URL is used as the link
+// - Use forceSelf to override and create a text post with the URL in the body
+// - Subreddit defaults to the account's configured subreddit if omitted
+// - Use the same accountId multiple times with different subreddit values in platformSpecificData to post to multiple subreddits
+// - Images are automatically compressed if they exceed Reddit's 20MB limit
+type RedditPlatformData struct {
+	// ForceSelf When true, creates a text/self post even when a URL or media is provided.
+	ForceSelf *bool `json:"forceSelf,omitempty"`
+
+	// Subreddit Target subreddit name (without "r/" prefix).
+	// Overrides the default subreddit configured on the account connection.
+	// Use GET /api/v1/accounts/{id}/reddit-subreddits to list available subreddits.
+	Subreddit *string `json:"subreddit,omitempty"`
+
+	// Title Post title. Defaults to the first line of content, truncated to 300 characters.
+	Title *string `json:"title,omitempty"`
+
+	// Url URL for link posts. If provided (and forceSelf is not true), creates a link post instead of a text post.
+	Url *string `json:"url,omitempty"`
 }
 
 // SnapchatPlatformData Snapchat Public Profile API constraints:
@@ -2644,6 +2869,36 @@ type HandleOAuthCallbackJSONBody struct {
 	State     string `json:"state"`
 }
 
+// ListConnectionLogsParams defines parameters for ListConnectionLogs.
+type ListConnectionLogsParams struct {
+	// Platform Filter by platform
+	Platform *ListConnectionLogsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// EventType Filter by event type
+	EventType *ListConnectionLogsParamsEventType `form:"eventType,omitempty" json:"eventType,omitempty"`
+
+	// Status Filter by status (shorthand for event types)
+	Status *ListConnectionLogsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// Days Number of days to look back (max 7)
+	Days *int `form:"days,omitempty" json:"days,omitempty"`
+
+	// Limit Maximum number of logs to return (max 100)
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Skip Number of logs to skip (for pagination)
+	Skip *int `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListConnectionLogsParamsPlatform defines parameters for ListConnectionLogs.
+type ListConnectionLogsParamsPlatform string
+
+// ListConnectionLogsParamsEventType defines parameters for ListConnectionLogs.
+type ListConnectionLogsParamsEventType string
+
+// ListConnectionLogsParamsStatus defines parameters for ListConnectionLogs.
+type ListConnectionLogsParamsStatus string
+
 // ListInboxCommentsParams defines parameters for ListInboxComments.
 type ListInboxCommentsParams struct {
 	// ProfileId Filter by profile ID
@@ -3041,6 +3296,36 @@ type BulkUploadPostsMultipartBody struct {
 type BulkUploadPostsParams struct {
 	DryRun *bool `form:"dryRun,omitempty" json:"dryRun,omitempty"`
 }
+
+// ListPostsLogsParams defines parameters for ListPostsLogs.
+type ListPostsLogsParams struct {
+	// Status Filter by log status
+	Status *ListPostsLogsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// Platform Filter by platform
+	Platform *ListPostsLogsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// Action Filter by action type
+	Action *ListPostsLogsParamsAction `form:"action,omitempty" json:"action,omitempty"`
+
+	// Days Number of days to look back (max 7)
+	Days *int `form:"days,omitempty" json:"days,omitempty"`
+
+	// Limit Maximum number of logs to return (max 100)
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Skip Number of logs to skip (for pagination)
+	Skip *int `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListPostsLogsParamsStatus defines parameters for ListPostsLogs.
+type ListPostsLogsParamsStatus string
+
+// ListPostsLogsParamsPlatform defines parameters for ListPostsLogs.
+type ListPostsLogsParamsPlatform string
+
+// ListPostsLogsParamsAction defines parameters for ListPostsLogs.
+type ListPostsLogsParamsAction string
 
 // UpdatePostJSONBody defines parameters for UpdatePost.
 type UpdatePostJSONBody map[string]interface{}
@@ -3913,6 +4198,58 @@ func (t *PlatformTarget_PlatformSpecificData) MergeSnapchatPlatformData(v Snapch
 	return err
 }
 
+// AsRedditPlatformData returns the union data inside the PlatformTarget_PlatformSpecificData as a RedditPlatformData
+func (t PlatformTarget_PlatformSpecificData) AsRedditPlatformData() (RedditPlatformData, error) {
+	var body RedditPlatformData
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRedditPlatformData overwrites any union data inside the PlatformTarget_PlatformSpecificData as the provided RedditPlatformData
+func (t *PlatformTarget_PlatformSpecificData) FromRedditPlatformData(v RedditPlatformData) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRedditPlatformData performs a merge with any union data inside the PlatformTarget_PlatformSpecificData, using the provided RedditPlatformData
+func (t *PlatformTarget_PlatformSpecificData) MergeRedditPlatformData(v RedditPlatformData) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsBlueskyPlatformData returns the union data inside the PlatformTarget_PlatformSpecificData as a BlueskyPlatformData
+func (t PlatformTarget_PlatformSpecificData) AsBlueskyPlatformData() (BlueskyPlatformData, error) {
+	var body BlueskyPlatformData
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromBlueskyPlatformData overwrites any union data inside the PlatformTarget_PlatformSpecificData as the provided BlueskyPlatformData
+func (t *PlatformTarget_PlatformSpecificData) FromBlueskyPlatformData(v BlueskyPlatformData) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeBlueskyPlatformData performs a merge with any union data inside the PlatformTarget_PlatformSpecificData, using the provided BlueskyPlatformData
+func (t *PlatformTarget_PlatformSpecificData) MergeBlueskyPlatformData(v BlueskyPlatformData) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsPostUserId0 returns the union data inside the Post_UserId as a PostUserId0
 func (t Post_UserId) AsPostUserId0() (PostUserId0, error) {
 	var body PostUserId0
@@ -4440,6 +4777,9 @@ type ClientInterface interface {
 
 	HandleOAuthCallback(ctx context.Context, platform string, body HandleOAuthCallbackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListConnectionLogs request
+	ListConnectionLogs(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListInboxComments request
 	ListInboxComments(ctx context.Context, params *ListInboxCommentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -4533,6 +4873,9 @@ type ClientInterface interface {
 
 	// BulkUploadPostsWithBody request with any body
 	BulkUploadPostsWithBody(ctx context.Context, params *BulkUploadPostsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListPostsLogs request
+	ListPostsLogs(ctx context.Context, params *ListPostsLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeletePost request
 	DeletePost(ctx context.Context, postId string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -5621,6 +5964,18 @@ func (c *Client) HandleOAuthCallback(ctx context.Context, platform string, body 
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListConnectionLogs(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListConnectionLogsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListInboxComments(ctx context.Context, params *ListInboxCommentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListInboxCommentsRequest(c.Server, params)
 	if err != nil {
@@ -6031,6 +6386,18 @@ func (c *Client) CreatePost(ctx context.Context, body CreatePostJSONRequestBody,
 
 func (c *Client) BulkUploadPostsWithBody(ctx context.Context, params *BulkUploadPostsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBulkUploadPostsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListPostsLogs(ctx context.Context, params *ListPostsLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPostsLogsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -9650,6 +10017,135 @@ func NewHandleOAuthCallbackRequestWithBody(server string, platform string, conte
 	return req, nil
 }
 
+// NewListConnectionLogsRequest generates requests for ListConnectionLogs
+func NewListConnectionLogsRequest(server string, params *ListConnectionLogsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/connections/logs")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "platform", runtime.ParamLocationQuery, *params.Platform); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.EventType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "eventType", runtime.ParamLocationQuery, *params.EventType); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "status", runtime.ParamLocationQuery, *params.Status); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Days != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "days", runtime.ParamLocationQuery, *params.Days); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "skip", runtime.ParamLocationQuery, *params.Skip); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListInboxCommentsRequest generates requests for ListInboxComments
 func NewListInboxCommentsRequest(server string, params *ListInboxCommentsParams) (*http.Request, error) {
 	var err error
@@ -11487,6 +11983,135 @@ func NewBulkUploadPostsRequestWithBody(server string, params *BulkUploadPostsPar
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListPostsLogsRequest generates requests for ListPostsLogs
+func NewListPostsLogsRequest(server string, params *ListPostsLogsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/posts/logs")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "status", runtime.ParamLocationQuery, *params.Status); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "platform", runtime.ParamLocationQuery, *params.Platform); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Action != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "action", runtime.ParamLocationQuery, *params.Action); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Days != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "days", runtime.ParamLocationQuery, *params.Days); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "skip", runtime.ParamLocationQuery, *params.Skip); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -13680,6 +14305,9 @@ type ClientWithResponsesInterface interface {
 
 	HandleOAuthCallbackWithResponse(ctx context.Context, platform string, body HandleOAuthCallbackJSONRequestBody, reqEditors ...RequestEditorFn) (*HandleOAuthCallbackResponse, error)
 
+	// ListConnectionLogsWithResponse request
+	ListConnectionLogsWithResponse(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*ListConnectionLogsResponse, error)
+
 	// ListInboxCommentsWithResponse request
 	ListInboxCommentsWithResponse(ctx context.Context, params *ListInboxCommentsParams, reqEditors ...RequestEditorFn) (*ListInboxCommentsResponse, error)
 
@@ -13773,6 +14401,9 @@ type ClientWithResponsesInterface interface {
 
 	// BulkUploadPostsWithBodyWithResponse request with any body
 	BulkUploadPostsWithBodyWithResponse(ctx context.Context, params *BulkUploadPostsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkUploadPostsResponse, error)
+
+	// ListPostsLogsWithResponse request
+	ListPostsLogsWithResponse(ctx context.Context, params *ListPostsLogsParams, reqEditors ...RequestEditorFn) (*ListPostsLogsResponse, error)
 
 	// DeletePostWithResponse request
 	DeletePostWithResponse(ctx context.Context, postId string, reqEditors ...RequestEditorFn) (*DeletePostResponse, error)
@@ -16046,6 +16677,42 @@ func (r HandleOAuthCallbackResponse) StatusCode() int {
 	return 0
 }
 
+type ListConnectionLogsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Logs       *[]ConnectionLog `json:"logs,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+
+			// Pages Total number of pages
+			Pages *int `json:"pages,omitempty"`
+			Skip  *int `json:"skip,omitempty"`
+
+			// Total Total number of logs matching the query
+			Total *int `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListConnectionLogsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListConnectionLogsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListInboxCommentsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -16998,6 +17665,42 @@ func (r BulkUploadPostsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r BulkUploadPostsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListPostsLogsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Logs       *[]PostLog `json:"logs,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+
+			// Pages Total number of pages
+			Pages *int `json:"pages,omitempty"`
+			Skip  *int `json:"skip,omitempty"`
+
+			// Total Total number of logs matching the query
+			Total *int `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListPostsLogsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListPostsLogsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -18712,6 +19415,15 @@ func (c *ClientWithResponses) HandleOAuthCallbackWithResponse(ctx context.Contex
 	return ParseHandleOAuthCallbackResponse(rsp)
 }
 
+// ListConnectionLogsWithResponse request returning *ListConnectionLogsResponse
+func (c *ClientWithResponses) ListConnectionLogsWithResponse(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*ListConnectionLogsResponse, error) {
+	rsp, err := c.ListConnectionLogs(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListConnectionLogsResponse(rsp)
+}
+
 // ListInboxCommentsWithResponse request returning *ListInboxCommentsResponse
 func (c *ClientWithResponses) ListInboxCommentsWithResponse(ctx context.Context, params *ListInboxCommentsParams, reqEditors ...RequestEditorFn) (*ListInboxCommentsResponse, error) {
 	rsp, err := c.ListInboxComments(ctx, params, reqEditors...)
@@ -19014,6 +19726,15 @@ func (c *ClientWithResponses) BulkUploadPostsWithBodyWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseBulkUploadPostsResponse(rsp)
+}
+
+// ListPostsLogsWithResponse request returning *ListPostsLogsResponse
+func (c *ClientWithResponses) ListPostsLogsWithResponse(ctx context.Context, params *ListPostsLogsParams, reqEditors ...RequestEditorFn) (*ListPostsLogsResponse, error) {
+	rsp, err := c.ListPostsLogs(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListPostsLogsResponse(rsp)
 }
 
 // DeletePostWithResponse request returning *DeletePostResponse
@@ -22387,6 +23108,52 @@ func ParseHandleOAuthCallbackResponse(rsp *http.Response) (*HandleOAuthCallbackR
 	return response, nil
 }
 
+// ParseListConnectionLogsResponse parses an HTTP response from a ListConnectionLogsWithResponse call
+func ParseListConnectionLogsResponse(rsp *http.Response) (*ListConnectionLogsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListConnectionLogsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Logs       *[]ConnectionLog `json:"logs,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+
+				// Pages Total number of pages
+				Pages *int `json:"pages,omitempty"`
+				Skip  *int `json:"skip,omitempty"`
+
+				// Total Total number of logs matching the query
+				Total *int `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListInboxCommentsResponse parses an HTTP response from a ListInboxCommentsWithResponse call
 func ParseListInboxCommentsResponse(rsp *http.Response) (*ListInboxCommentsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -23625,6 +24392,52 @@ func ParseBulkUploadPostsResponse(rsp *http.Response) (*BulkUploadPostsResponse,
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListPostsLogsResponse parses an HTTP response from a ListPostsLogsWithResponse call
+func ParseListPostsLogsResponse(rsp *http.Response) (*ListPostsLogsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListPostsLogsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Logs       *[]PostLog `json:"logs,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+
+				// Pages Total number of pages
+				Pages *int `json:"pages,omitempty"`
+				Skip  *int `json:"skip,omitempty"`
+
+				// Total Total number of logs matching the query
+				Total *int `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
