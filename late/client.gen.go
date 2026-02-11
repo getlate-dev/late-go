@@ -18276,9 +18276,27 @@ type ListInboxConversationsResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Data *[]struct {
-			AccountId          *string                              `json:"accountId,omitempty"`
-			AccountUsername    *string                              `json:"accountUsername,omitempty"`
-			Id                 *string                              `json:"id,omitempty"`
+			AccountId       *string `json:"accountId,omitempty"`
+			AccountUsername *string `json:"accountUsername,omitempty"`
+			Id              *string `json:"id,omitempty"`
+
+			// InstagramProfile Instagram profile data for the participant. Only present for Instagram conversations.
+			InstagramProfile *struct {
+				// FetchedAt When this profile data was last fetched from Instagram
+				FetchedAt *time.Time `json:"fetchedAt"`
+
+				// FollowerCount The participant's follower count on Instagram
+				FollowerCount *int `json:"followerCount"`
+
+				// IsFollower Whether the participant follows your Instagram business account
+				IsFollower *bool `json:"isFollower"`
+
+				// IsFollowing Whether your Instagram business account follows the participant
+				IsFollowing *bool `json:"isFollowing"`
+
+				// IsVerified Whether the participant is a verified Instagram user
+				IsVerified *bool `json:"isVerified"`
+			} `json:"instagramProfile"`
 			LastMessage        *string                              `json:"lastMessage,omitempty"`
 			ParticipantId      *string                              `json:"participantId,omitempty"`
 			ParticipantName    *string                              `json:"participantName,omitempty"`
@@ -18340,9 +18358,27 @@ type GetInboxConversationResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Data *struct {
-			AccountId       *string    `json:"accountId,omitempty"`
-			AccountUsername *string    `json:"accountUsername,omitempty"`
-			Id              *string    `json:"id,omitempty"`
+			AccountId       *string `json:"accountId,omitempty"`
+			AccountUsername *string `json:"accountUsername,omitempty"`
+			Id              *string `json:"id,omitempty"`
+
+			// InstagramProfile Instagram profile data for the participant. Only present for Instagram conversations.
+			InstagramProfile *struct {
+				// FetchedAt When this profile data was last fetched from Instagram
+				FetchedAt *time.Time `json:"fetchedAt"`
+
+				// FollowerCount The participant's follower count on Instagram
+				FollowerCount *int `json:"followerCount"`
+
+				// IsFollower Whether the participant follows your Instagram business account
+				IsFollower *bool `json:"isFollower"`
+
+				// IsFollowing Whether your Instagram business account follows the participant
+				IsFollowing *bool `json:"isFollowing"`
+
+				// IsVerified Whether the participant is a verified Instagram user
+				IsVerified *bool `json:"isVerified"`
+			} `json:"instagramProfile"`
 			LastMessage     *string    `json:"lastMessage,omitempty"`
 			LastMessageAt   *time.Time `json:"lastMessageAt,omitempty"`
 			ParticipantId   *string    `json:"participantId,omitempty"`
@@ -25238,9 +25274,27 @@ func ParseListInboxConversationsResponse(rsp *http.Response) (*ListInboxConversa
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Data *[]struct {
-				AccountId          *string                              `json:"accountId,omitempty"`
-				AccountUsername    *string                              `json:"accountUsername,omitempty"`
-				Id                 *string                              `json:"id,omitempty"`
+				AccountId       *string `json:"accountId,omitempty"`
+				AccountUsername *string `json:"accountUsername,omitempty"`
+				Id              *string `json:"id,omitempty"`
+
+				// InstagramProfile Instagram profile data for the participant. Only present for Instagram conversations.
+				InstagramProfile *struct {
+					// FetchedAt When this profile data was last fetched from Instagram
+					FetchedAt *time.Time `json:"fetchedAt"`
+
+					// FollowerCount The participant's follower count on Instagram
+					FollowerCount *int `json:"followerCount"`
+
+					// IsFollower Whether the participant follows your Instagram business account
+					IsFollower *bool `json:"isFollower"`
+
+					// IsFollowing Whether your Instagram business account follows the participant
+					IsFollowing *bool `json:"isFollowing"`
+
+					// IsVerified Whether the participant is a verified Instagram user
+					IsVerified *bool `json:"isVerified"`
+				} `json:"instagramProfile"`
 				LastMessage        *string                              `json:"lastMessage,omitempty"`
 				ParticipantId      *string                              `json:"participantId,omitempty"`
 				ParticipantName    *string                              `json:"participantName,omitempty"`
@@ -25311,9 +25365,27 @@ func ParseGetInboxConversationResponse(rsp *http.Response) (*GetInboxConversatio
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Data *struct {
-				AccountId       *string    `json:"accountId,omitempty"`
-				AccountUsername *string    `json:"accountUsername,omitempty"`
-				Id              *string    `json:"id,omitempty"`
+				AccountId       *string `json:"accountId,omitempty"`
+				AccountUsername *string `json:"accountUsername,omitempty"`
+				Id              *string `json:"id,omitempty"`
+
+				// InstagramProfile Instagram profile data for the participant. Only present for Instagram conversations.
+				InstagramProfile *struct {
+					// FetchedAt When this profile data was last fetched from Instagram
+					FetchedAt *time.Time `json:"fetchedAt"`
+
+					// FollowerCount The participant's follower count on Instagram
+					FollowerCount *int `json:"followerCount"`
+
+					// IsFollower Whether the participant follows your Instagram business account
+					IsFollower *bool `json:"isFollower"`
+
+					// IsFollowing Whether your Instagram business account follows the participant
+					IsFollowing *bool `json:"isFollowing"`
+
+					// IsVerified Whether the participant is a verified Instagram user
+					IsVerified *bool `json:"isVerified"`
+				} `json:"instagramProfile"`
 				LastMessage     *string    `json:"lastMessage,omitempty"`
 				LastMessageAt   *time.Time `json:"lastMessageAt,omitempty"`
 				ParticipantId   *string    `json:"participantId,omitempty"`
