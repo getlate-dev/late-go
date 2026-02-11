@@ -487,6 +487,50 @@ const (
 	UpdateInboxConversationJSONBodyStatusArchived UpdateInboxConversationJSONBodyStatus = "archived"
 )
 
+// Defines values for SendInboxMessageJSONBodyButtonsType.
+const (
+	SendInboxMessageJSONBodyButtonsTypePhone    SendInboxMessageJSONBodyButtonsType = "phone"
+	SendInboxMessageJSONBodyButtonsTypePostback SendInboxMessageJSONBodyButtonsType = "postback"
+	SendInboxMessageJSONBodyButtonsTypeUrl      SendInboxMessageJSONBodyButtonsType = "url"
+)
+
+// Defines values for SendInboxMessageJSONBodyMessageTag.
+const (
+	ACCOUNTUPDATE        SendInboxMessageJSONBodyMessageTag = "ACCOUNT_UPDATE"
+	CONFIRMEDEVENTUPDATE SendInboxMessageJSONBodyMessageTag = "CONFIRMED_EVENT_UPDATE"
+	HUMANAGENT           SendInboxMessageJSONBodyMessageTag = "HUMAN_AGENT"
+	POSTPURCHASEUPDATE   SendInboxMessageJSONBodyMessageTag = "POST_PURCHASE_UPDATE"
+)
+
+// Defines values for SendInboxMessageJSONBodyMessagingType.
+const (
+	MESSAGETAG SendInboxMessageJSONBodyMessagingType = "MESSAGE_TAG"
+	RESPONSE   SendInboxMessageJSONBodyMessagingType = "RESPONSE"
+	UPDATE     SendInboxMessageJSONBodyMessagingType = "UPDATE"
+)
+
+// Defines values for SendInboxMessageJSONBodyReplyMarkupType.
+const (
+	SendInboxMessageJSONBodyReplyMarkupTypeInlineKeyboard SendInboxMessageJSONBodyReplyMarkupType = "inline_keyboard"
+	SendInboxMessageJSONBodyReplyMarkupTypeReplyKeyboard  SendInboxMessageJSONBodyReplyMarkupType = "reply_keyboard"
+)
+
+// Defines values for SendInboxMessageJSONBodyTemplateElementsButtonsType.
+const (
+	SendInboxMessageJSONBodyTemplateElementsButtonsTypePostback SendInboxMessageJSONBodyTemplateElementsButtonsType = "postback"
+	SendInboxMessageJSONBodyTemplateElementsButtonsTypeUrl      SendInboxMessageJSONBodyTemplateElementsButtonsType = "url"
+)
+
+// Defines values for SendInboxMessageJSONBodyTemplateType.
+const (
+	Generic SendInboxMessageJSONBodyTemplateType = "generic"
+)
+
+// Defines values for EditInboxMessageJSONBodyReplyMarkupType.
+const (
+	EditInboxMessageJSONBodyReplyMarkupTypeInlineKeyboard EditInboxMessageJSONBodyReplyMarkupType = "inline_keyboard"
+)
+
 // Defines values for ListInboxReviewsParamsPlatform.
 const (
 	ListInboxReviewsParamsPlatformFacebook       ListInboxReviewsParamsPlatform = "facebook"
@@ -2451,6 +2495,14 @@ type GetGoogleBusinessReviewsParams struct {
 	PageToken *string `form:"pageToken,omitempty" json:"pageToken,omitempty"`
 }
 
+// SetInstagramIceBreakersJSONBody defines parameters for SetInstagramIceBreakers.
+type SetInstagramIceBreakersJSONBody struct {
+	IceBreakers []struct {
+		Payload  string `json:"payload"`
+		Question string `json:"question"`
+	} `json:"ice_breakers"`
+}
+
 // GetLinkedInAggregateAnalyticsParams defines parameters for GetLinkedInAggregateAnalytics.
 type GetLinkedInAggregateAnalyticsParams struct {
 	// Aggregation Type of aggregation for the analytics data.
@@ -2505,6 +2557,12 @@ type GetLinkedInPostAnalyticsParams struct {
 	Urn string `form:"urn" json:"urn"`
 }
 
+// SetMessengerMenuJSONBody defines parameters for SetMessengerMenu.
+type SetMessengerMenuJSONBody struct {
+	// PersistentMenu Persistent menu configuration array (Meta format)
+	PersistentMenu []map[string]interface{} `json:"persistent_menu"`
+}
+
 // UpdatePinterestBoardsJSONBody defines parameters for UpdatePinterestBoards.
 type UpdatePinterestBoardsJSONBody struct {
 	DefaultBoardId   string  `json:"defaultBoardId"`
@@ -2514,6 +2572,17 @@ type UpdatePinterestBoardsJSONBody struct {
 // UpdateRedditSubredditsJSONBody defines parameters for UpdateRedditSubreddits.
 type UpdateRedditSubredditsJSONBody struct {
 	DefaultSubreddit string `json:"defaultSubreddit"`
+}
+
+// SetTelegramCommandsJSONBody defines parameters for SetTelegramCommands.
+type SetTelegramCommandsJSONBody struct {
+	Commands []struct {
+		// Command Bot command without leading slash
+		Command string `json:"command"`
+
+		// Description Command description
+		Description string `json:"description"`
+	} `json:"commands"`
 }
 
 // GetAnalyticsParams defines parameters for GetAnalytics.
@@ -3075,8 +3144,92 @@ type SendInboxMessageJSONBody struct {
 	// AccountId Social account ID
 	AccountId string `json:"accountId"`
 
+	// Buttons Action buttons. Mutually exclusive with quickReplies. Max 3 items.
+	Buttons *[]struct {
+		// Payload Payload for postback-type buttons
+		Payload *string `json:"payload,omitempty"`
+
+		// Phone Phone number for phone-type buttons (Facebook only)
+		Phone *string `json:"phone,omitempty"`
+
+		// Title Button label (max 20 chars)
+		Title string `json:"title"`
+
+		// Type Button type. phone is Facebook only.
+		Type SendInboxMessageJSONBodyButtonsType `json:"type"`
+
+		// Url URL for url-type buttons
+		Url *string `json:"url,omitempty"`
+	} `json:"buttons,omitempty"`
+
 	// Message Message text
-	Message string `json:"message"`
+	Message *string `json:"message,omitempty"`
+
+	// MessageTag Facebook message tag for messaging outside 24h window. Requires messagingType MESSAGE_TAG. Instagram only supports HUMAN_AGENT.
+	MessageTag *SendInboxMessageJSONBodyMessageTag `json:"messageTag,omitempty"`
+
+	// MessagingType Facebook messaging type. Required when using messageTag.
+	MessagingType *SendInboxMessageJSONBodyMessagingType `json:"messagingType,omitempty"`
+
+	// QuickReplies Quick reply buttons. Mutually exclusive with buttons. Max 13 items.
+	QuickReplies *[]struct {
+		// ImageUrl Optional icon URL (Meta only)
+		ImageUrl *string `json:"imageUrl,omitempty"`
+
+		// Payload Payload sent back on tap
+		Payload string `json:"payload"`
+
+		// Title Button label (max 20 chars)
+		Title string `json:"title"`
+	} `json:"quickReplies,omitempty"`
+
+	// ReplyMarkup Telegram-native keyboard markup. Ignored on other platforms.
+	ReplyMarkup *struct {
+		// Keyboard Array of rows, each row is an array of buttons
+		Keyboard *[][]struct {
+			// CallbackData Callback data (inline_keyboard only
+			CallbackData *string `json:"callbackData,omitempty"`
+
+			// Text Button text
+			Text *string `json:"text,omitempty"`
+
+			// Url URL to open (inline_keyboard only)
+			Url *string `json:"url,omitempty"`
+		} `json:"keyboard,omitempty"`
+
+		// OneTime Hide keyboard after use (reply_keyboard only)
+		OneTime *bool `json:"oneTime,omitempty"`
+
+		// Type Keyboard type
+		Type *SendInboxMessageJSONBodyReplyMarkupType `json:"type,omitempty"`
+	} `json:"replyMarkup,omitempty"`
+
+	// ReplyTo Platform message ID to reply to (Telegram only).
+	ReplyTo *string `json:"replyTo,omitempty"`
+
+	// Template Generic template for carousels (Instagram/Facebook only, ignored on Telegram).
+	Template *struct {
+		Elements *[]struct {
+			Buttons *[]struct {
+				Payload *string                                              `json:"payload,omitempty"`
+				Title   *string                                              `json:"title,omitempty"`
+				Type    *SendInboxMessageJSONBodyTemplateElementsButtonsType `json:"type,omitempty"`
+				Url     *string                                              `json:"url,omitempty"`
+			} `json:"buttons,omitempty"`
+
+			// ImageUrl Element image URL
+			ImageUrl *string `json:"imageUrl,omitempty"`
+
+			// Subtitle Element subtitle
+			Subtitle *string `json:"subtitle,omitempty"`
+
+			// Title Element title (max 80 chars)
+			Title string `json:"title"`
+		} `json:"elements,omitempty"`
+
+		// Type Template type
+		Type *SendInboxMessageJSONBodyTemplateType `json:"type,omitempty"`
+	} `json:"template,omitempty"`
 }
 
 // SendInboxMessageMultipartBody defines parameters for SendInboxMessage.
@@ -3085,12 +3238,74 @@ type SendInboxMessageMultipartBody struct {
 	AccountId string `json:"accountId"`
 
 	// Attachment File attachment (images, videos, documents). See description for platform support.
-	// Supported formats: JPEG, PNG, GIF, MP4. Max size: 25MB.
+	// Supported formats: JPEG, PNG, GIF, MP4, AAC, WAV. Max size: 25MB.
+	// Instagram attachments are automatically uploaded to temp storage and sent as URLs.
 	Attachment *openapi_types.File `json:"attachment,omitempty"`
+
+	// Buttons JSON string of buttons array (same schema as application/json body)
+	Buttons *string `json:"buttons,omitempty"`
 
 	// Message Message text (optional when sending attachment)
 	Message *string `json:"message,omitempty"`
+
+	// MessageTag Message tag (requires messagingType MESSAGE_TAG)
+	MessageTag *string `json:"messageTag,omitempty"`
+
+	// MessagingType Messaging type (Facebook only). RESPONSE, UPDATE, or MESSAGE_TAG.
+	MessagingType *string `json:"messagingType,omitempty"`
+
+	// QuickReplies JSON string of quick replies array (same schema as application/json body)
+	QuickReplies *string `json:"quickReplies,omitempty"`
+
+	// ReplyMarkup JSON string of replyMarkup object (same schema as application/json body)
+	ReplyMarkup *string `json:"replyMarkup,omitempty"`
+
+	// ReplyTo Platform message ID to reply to (Telegram only)
+	ReplyTo *string `json:"replyTo,omitempty"`
+
+	// Template JSON string of template object (same schema as application/json body)
+	Template *string `json:"template,omitempty"`
 }
+
+// SendInboxMessageJSONBodyButtonsType defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyButtonsType string
+
+// SendInboxMessageJSONBodyMessageTag defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyMessageTag string
+
+// SendInboxMessageJSONBodyMessagingType defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyMessagingType string
+
+// SendInboxMessageJSONBodyReplyMarkupType defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyReplyMarkupType string
+
+// SendInboxMessageJSONBodyTemplateElementsButtonsType defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyTemplateElementsButtonsType string
+
+// SendInboxMessageJSONBodyTemplateType defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyTemplateType string
+
+// EditInboxMessageJSONBody defines parameters for EditInboxMessage.
+type EditInboxMessageJSONBody struct {
+	// AccountId Social account ID
+	AccountId string `json:"accountId"`
+
+	// ReplyMarkup New inline keyboard markup
+	ReplyMarkup *struct {
+		Keyboard *[][]struct {
+			CallbackData *string `json:"callbackData,omitempty"`
+			Text         *string `json:"text,omitempty"`
+			Url          *string `json:"url,omitempty"`
+		} `json:"keyboard,omitempty"`
+		Type *EditInboxMessageJSONBodyReplyMarkupType `json:"type,omitempty"`
+	} `json:"replyMarkup,omitempty"`
+
+	// Text New message text
+	Text *string `json:"text,omitempty"`
+}
+
+// EditInboxMessageJSONBodyReplyMarkupType defines parameters for EditInboxMessage.
+type EditInboxMessageJSONBodyReplyMarkupType string
 
 // ListInboxReviewsParams defines parameters for ListInboxReviews.
 type ListInboxReviewsParams struct {
@@ -3688,14 +3903,23 @@ type CreateGoogleBusinessMediaJSONRequestBody CreateGoogleBusinessMediaJSONBody
 // CreateGoogleBusinessPlaceActionJSONRequestBody defines body for CreateGoogleBusinessPlaceAction for application/json ContentType.
 type CreateGoogleBusinessPlaceActionJSONRequestBody CreateGoogleBusinessPlaceActionJSONBody
 
+// SetInstagramIceBreakersJSONRequestBody defines body for SetInstagramIceBreakers for application/json ContentType.
+type SetInstagramIceBreakersJSONRequestBody SetInstagramIceBreakersJSONBody
+
 // UpdateLinkedInOrganizationJSONRequestBody defines body for UpdateLinkedInOrganization for application/json ContentType.
 type UpdateLinkedInOrganizationJSONRequestBody UpdateLinkedInOrganizationJSONBody
+
+// SetMessengerMenuJSONRequestBody defines body for SetMessengerMenu for application/json ContentType.
+type SetMessengerMenuJSONRequestBody SetMessengerMenuJSONBody
 
 // UpdatePinterestBoardsJSONRequestBody defines body for UpdatePinterestBoards for application/json ContentType.
 type UpdatePinterestBoardsJSONRequestBody UpdatePinterestBoardsJSONBody
 
 // UpdateRedditSubredditsJSONRequestBody defines body for UpdateRedditSubreddits for application/json ContentType.
 type UpdateRedditSubredditsJSONRequestBody UpdateRedditSubredditsJSONBody
+
+// SetTelegramCommandsJSONRequestBody defines body for SetTelegramCommands for application/json ContentType.
+type SetTelegramCommandsJSONRequestBody SetTelegramCommandsJSONBody
 
 // CreateApiKeyJSONRequestBody defines body for CreateApiKey for application/json ContentType.
 type CreateApiKeyJSONRequestBody CreateApiKeyJSONBody
@@ -3744,6 +3968,9 @@ type SendInboxMessageJSONRequestBody SendInboxMessageJSONBody
 
 // SendInboxMessageMultipartRequestBody defines body for SendInboxMessage for multipart/form-data ContentType.
 type SendInboxMessageMultipartRequestBody SendInboxMessageMultipartBody
+
+// EditInboxMessageJSONRequestBody defines body for EditInboxMessage for application/json ContentType.
+type EditInboxMessageJSONRequestBody EditInboxMessageJSONBody
 
 // DeleteInboxReviewReplyJSONRequestBody defines body for DeleteInboxReviewReply for application/json ContentType.
 type DeleteInboxReviewReplyJSONRequestBody DeleteInboxReviewReplyJSONBody
@@ -4777,6 +5004,17 @@ type ClientInterface interface {
 	// GetAccountHealth request
 	GetAccountHealth(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteInstagramIceBreakers request
+	DeleteInstagramIceBreakers(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInstagramIceBreakers request
+	GetInstagramIceBreakers(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetInstagramIceBreakersWithBody request with any body
+	SetInstagramIceBreakersWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SetInstagramIceBreakers(ctx context.Context, accountId string, body SetInstagramIceBreakersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetLinkedInAggregateAnalytics request
 	GetLinkedInAggregateAnalytics(ctx context.Context, accountId string, params *GetLinkedInAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -4794,6 +5032,17 @@ type ClientInterface interface {
 	// GetLinkedInPostAnalytics request
 	GetLinkedInPostAnalytics(ctx context.Context, accountId string, params *GetLinkedInPostAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteMessengerMenu request
+	DeleteMessengerMenu(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMessengerMenu request
+	GetMessengerMenu(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetMessengerMenuWithBody request with any body
+	SetMessengerMenuWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SetMessengerMenu(ctx context.Context, accountId string, body SetMessengerMenuJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetPinterestBoards request
 	GetPinterestBoards(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -4809,6 +5058,17 @@ type ClientInterface interface {
 	UpdateRedditSubredditsWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateRedditSubreddits(ctx context.Context, accountId string, body UpdateRedditSubredditsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteTelegramCommands request
+	DeleteTelegramCommands(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTelegramCommands request
+	GetTelegramCommands(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetTelegramCommandsWithBody request with any body
+	SetTelegramCommandsWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SetTelegramCommands(ctx context.Context, accountId string, body SetTelegramCommandsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAnalytics request
 	GetAnalytics(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -4950,6 +5210,11 @@ type ClientInterface interface {
 	SendInboxMessageWithBody(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	SendInboxMessage(ctx context.Context, conversationId string, body SendInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EditInboxMessageWithBody request with any body
+	EditInboxMessageWithBody(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	EditInboxMessage(ctx context.Context, conversationId string, messageId string, body EditInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListInboxReviews request
 	ListInboxReviews(ctx context.Context, params *ListInboxReviewsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -5565,6 +5830,54 @@ func (c *Client) GetAccountHealth(ctx context.Context, accountId string, reqEdit
 	return c.Client.Do(req)
 }
 
+func (c *Client) DeleteInstagramIceBreakers(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteInstagramIceBreakersRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInstagramIceBreakers(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInstagramIceBreakersRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetInstagramIceBreakersWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetInstagramIceBreakersRequestWithBody(c.Server, accountId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetInstagramIceBreakers(ctx context.Context, accountId string, body SetInstagramIceBreakersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetInstagramIceBreakersRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetLinkedInAggregateAnalytics(ctx context.Context, accountId string, params *GetLinkedInAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetLinkedInAggregateAnalyticsRequest(c.Server, accountId, params)
 	if err != nil {
@@ -5637,6 +5950,54 @@ func (c *Client) GetLinkedInPostAnalytics(ctx context.Context, accountId string,
 	return c.Client.Do(req)
 }
 
+func (c *Client) DeleteMessengerMenu(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteMessengerMenuRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetMessengerMenu(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMessengerMenuRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetMessengerMenuWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetMessengerMenuRequestWithBody(c.Server, accountId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetMessengerMenu(ctx context.Context, accountId string, body SetMessengerMenuJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetMessengerMenuRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetPinterestBoards(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetPinterestBoardsRequest(c.Server, accountId)
 	if err != nil {
@@ -5699,6 +6060,54 @@ func (c *Client) UpdateRedditSubredditsWithBody(ctx context.Context, accountId s
 
 func (c *Client) UpdateRedditSubreddits(ctx context.Context, accountId string, body UpdateRedditSubredditsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateRedditSubredditsRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteTelegramCommands(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteTelegramCommandsRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTelegramCommands(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTelegramCommandsRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetTelegramCommandsWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetTelegramCommandsRequestWithBody(c.Server, accountId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetTelegramCommands(ctx context.Context, accountId string, body SetTelegramCommandsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetTelegramCommandsRequest(c.Server, accountId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -6323,6 +6732,30 @@ func (c *Client) SendInboxMessageWithBody(ctx context.Context, conversationId st
 
 func (c *Client) SendInboxMessage(ctx context.Context, conversationId string, body SendInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSendInboxMessageRequest(c.Server, conversationId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EditInboxMessageWithBody(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEditInboxMessageRequestWithBody(c.Server, conversationId, messageId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EditInboxMessage(ctx context.Context, conversationId string, messageId string, body EditInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEditInboxMessageRequest(c.Server, conversationId, messageId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -8428,6 +8861,121 @@ func NewGetAccountHealthRequest(server string, accountId string) (*http.Request,
 	return req, nil
 }
 
+// NewDeleteInstagramIceBreakersRequest generates requests for DeleteInstagramIceBreakers
+func NewDeleteInstagramIceBreakersRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/instagram-ice-breakers", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInstagramIceBreakersRequest generates requests for GetInstagramIceBreakers
+func NewGetInstagramIceBreakersRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/instagram-ice-breakers", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetInstagramIceBreakersRequest calls the generic SetInstagramIceBreakers builder with application/json body
+func NewSetInstagramIceBreakersRequest(server string, accountId string, body SetInstagramIceBreakersJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetInstagramIceBreakersRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewSetInstagramIceBreakersRequestWithBody generates requests for SetInstagramIceBreakers with any type of body
+func NewSetInstagramIceBreakersRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/instagram-ice-breakers", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetLinkedInAggregateAnalyticsRequest generates requests for GetLinkedInAggregateAnalytics
 func NewGetLinkedInAggregateAnalyticsRequest(server string, accountId string, params *GetLinkedInAggregateAnalyticsParams) (*http.Request, error) {
 	var err error
@@ -8733,6 +9281,121 @@ func NewGetLinkedInPostAnalyticsRequest(server string, accountId string, params 
 	return req, nil
 }
 
+// NewDeleteMessengerMenuRequest generates requests for DeleteMessengerMenu
+func NewDeleteMessengerMenuRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/messenger-menu", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMessengerMenuRequest generates requests for GetMessengerMenu
+func NewGetMessengerMenuRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/messenger-menu", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetMessengerMenuRequest calls the generic SetMessengerMenu builder with application/json body
+func NewSetMessengerMenuRequest(server string, accountId string, body SetMessengerMenuJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetMessengerMenuRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewSetMessengerMenuRequestWithBody generates requests for SetMessengerMenu with any type of body
+func NewSetMessengerMenuRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/messenger-menu", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetPinterestBoardsRequest generates requests for GetPinterestBoards
 func NewGetPinterestBoardsRequest(server string, accountId string) (*http.Request, error) {
 	var err error
@@ -8876,6 +9539,121 @@ func NewUpdateRedditSubredditsRequestWithBody(server string, accountId string, c
 	}
 
 	operationPath := fmt.Sprintf("/v1/accounts/%s/reddit-subreddits", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteTelegramCommandsRequest generates requests for DeleteTelegramCommands
+func NewDeleteTelegramCommandsRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/telegram-commands", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetTelegramCommandsRequest generates requests for GetTelegramCommands
+func NewGetTelegramCommandsRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/telegram-commands", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetTelegramCommandsRequest calls the generic SetTelegramCommands builder with application/json body
+func NewSetTelegramCommandsRequest(server string, accountId string, body SetTelegramCommandsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetTelegramCommandsRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewSetTelegramCommandsRequestWithBody generates requests for SetTelegramCommands with any type of body
+func NewSetTelegramCommandsRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/telegram-commands", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -11297,6 +12075,60 @@ func NewSendInboxMessageRequestWithBody(server string, conversationId string, co
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewEditInboxMessageRequest calls the generic EditInboxMessage builder with application/json body
+func NewEditInboxMessageRequest(server string, conversationId string, messageId string, body EditInboxMessageJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEditInboxMessageRequestWithBody(server, conversationId, messageId, "application/json", bodyReader)
+}
+
+// NewEditInboxMessageRequestWithBody generates requests for EditInboxMessage with any type of body
+func NewEditInboxMessageRequestWithBody(server string, conversationId string, messageId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "conversationId", runtime.ParamLocationPath, conversationId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "messageId", runtime.ParamLocationPath, messageId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inbox/conversations/%s/messages/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -14305,6 +15137,17 @@ type ClientWithResponsesInterface interface {
 	// GetAccountHealthWithResponse request
 	GetAccountHealthWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetAccountHealthResponse, error)
 
+	// DeleteInstagramIceBreakersWithResponse request
+	DeleteInstagramIceBreakersWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*DeleteInstagramIceBreakersResponse, error)
+
+	// GetInstagramIceBreakersWithResponse request
+	GetInstagramIceBreakersWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetInstagramIceBreakersResponse, error)
+
+	// SetInstagramIceBreakersWithBodyWithResponse request with any body
+	SetInstagramIceBreakersWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetInstagramIceBreakersResponse, error)
+
+	SetInstagramIceBreakersWithResponse(ctx context.Context, accountId string, body SetInstagramIceBreakersJSONRequestBody, reqEditors ...RequestEditorFn) (*SetInstagramIceBreakersResponse, error)
+
 	// GetLinkedInAggregateAnalyticsWithResponse request
 	GetLinkedInAggregateAnalyticsWithResponse(ctx context.Context, accountId string, params *GetLinkedInAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*GetLinkedInAggregateAnalyticsResponse, error)
 
@@ -14322,6 +15165,17 @@ type ClientWithResponsesInterface interface {
 	// GetLinkedInPostAnalyticsWithResponse request
 	GetLinkedInPostAnalyticsWithResponse(ctx context.Context, accountId string, params *GetLinkedInPostAnalyticsParams, reqEditors ...RequestEditorFn) (*GetLinkedInPostAnalyticsResponse, error)
 
+	// DeleteMessengerMenuWithResponse request
+	DeleteMessengerMenuWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*DeleteMessengerMenuResponse, error)
+
+	// GetMessengerMenuWithResponse request
+	GetMessengerMenuWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetMessengerMenuResponse, error)
+
+	// SetMessengerMenuWithBodyWithResponse request with any body
+	SetMessengerMenuWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetMessengerMenuResponse, error)
+
+	SetMessengerMenuWithResponse(ctx context.Context, accountId string, body SetMessengerMenuJSONRequestBody, reqEditors ...RequestEditorFn) (*SetMessengerMenuResponse, error)
+
 	// GetPinterestBoardsWithResponse request
 	GetPinterestBoardsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetPinterestBoardsResponse, error)
 
@@ -14337,6 +15191,17 @@ type ClientWithResponsesInterface interface {
 	UpdateRedditSubredditsWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRedditSubredditsResponse, error)
 
 	UpdateRedditSubredditsWithResponse(ctx context.Context, accountId string, body UpdateRedditSubredditsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRedditSubredditsResponse, error)
+
+	// DeleteTelegramCommandsWithResponse request
+	DeleteTelegramCommandsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*DeleteTelegramCommandsResponse, error)
+
+	// GetTelegramCommandsWithResponse request
+	GetTelegramCommandsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetTelegramCommandsResponse, error)
+
+	// SetTelegramCommandsWithBodyWithResponse request with any body
+	SetTelegramCommandsWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetTelegramCommandsResponse, error)
+
+	SetTelegramCommandsWithResponse(ctx context.Context, accountId string, body SetTelegramCommandsJSONRequestBody, reqEditors ...RequestEditorFn) (*SetTelegramCommandsResponse, error)
 
 	// GetAnalyticsWithResponse request
 	GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error)
@@ -14478,6 +15343,11 @@ type ClientWithResponsesInterface interface {
 	SendInboxMessageWithBodyWithResponse(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendInboxMessageResponse, error)
 
 	SendInboxMessageWithResponse(ctx context.Context, conversationId string, body SendInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*SendInboxMessageResponse, error)
+
+	// EditInboxMessageWithBodyWithResponse request with any body
+	EditInboxMessageWithBodyWithResponse(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EditInboxMessageResponse, error)
+
+	EditInboxMessageWithResponse(ctx context.Context, conversationId string, messageId string, body EditInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*EditInboxMessageResponse, error)
 
 	// ListInboxReviewsWithResponse request
 	ListInboxReviewsWithResponse(ctx context.Context, params *ListInboxReviewsParams, reqEditors ...RequestEditorFn) (*ListInboxReviewsResponse, error)
@@ -15640,6 +16510,75 @@ func (r GetAccountHealthResponse) StatusCode() int {
 	return 0
 }
 
+type DeleteInstagramIceBreakersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteInstagramIceBreakersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteInstagramIceBreakersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetInstagramIceBreakersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data *[]map[string]interface{} `json:"data,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInstagramIceBreakersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInstagramIceBreakersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SetInstagramIceBreakersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SetInstagramIceBreakersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetInstagramIceBreakersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetLinkedInAggregateAnalyticsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -15855,6 +16794,75 @@ func (r GetLinkedInPostAnalyticsResponse) StatusCode() int {
 	return 0
 }
 
+type DeleteMessengerMenuResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteMessengerMenuResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteMessengerMenuResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetMessengerMenuResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data *[]map[string]interface{} `json:"data,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMessengerMenuResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMessengerMenuResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SetMessengerMenuResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SetMessengerMenuResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetMessengerMenuResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetPinterestBoardsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -15972,6 +16980,78 @@ func (r UpdateRedditSubredditsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateRedditSubredditsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteTelegramCommandsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteTelegramCommandsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteTelegramCommandsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetTelegramCommandsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data *[]struct {
+			Command     *string `json:"command,omitempty"`
+			Description *string `json:"description,omitempty"`
+		} `json:"data,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTelegramCommandsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTelegramCommandsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SetTelegramCommandsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SetTelegramCommandsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetTelegramCommandsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -17421,6 +18501,34 @@ func (r SendInboxMessageResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r SendInboxMessageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type EditInboxMessageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data *struct {
+			MessageId *int `json:"messageId,omitempty"`
+		} `json:"data,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r EditInboxMessageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EditInboxMessageResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -19157,6 +20265,41 @@ func (c *ClientWithResponses) GetAccountHealthWithResponse(ctx context.Context, 
 	return ParseGetAccountHealthResponse(rsp)
 }
 
+// DeleteInstagramIceBreakersWithResponse request returning *DeleteInstagramIceBreakersResponse
+func (c *ClientWithResponses) DeleteInstagramIceBreakersWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*DeleteInstagramIceBreakersResponse, error) {
+	rsp, err := c.DeleteInstagramIceBreakers(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteInstagramIceBreakersResponse(rsp)
+}
+
+// GetInstagramIceBreakersWithResponse request returning *GetInstagramIceBreakersResponse
+func (c *ClientWithResponses) GetInstagramIceBreakersWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetInstagramIceBreakersResponse, error) {
+	rsp, err := c.GetInstagramIceBreakers(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInstagramIceBreakersResponse(rsp)
+}
+
+// SetInstagramIceBreakersWithBodyWithResponse request with arbitrary body returning *SetInstagramIceBreakersResponse
+func (c *ClientWithResponses) SetInstagramIceBreakersWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetInstagramIceBreakersResponse, error) {
+	rsp, err := c.SetInstagramIceBreakersWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetInstagramIceBreakersResponse(rsp)
+}
+
+func (c *ClientWithResponses) SetInstagramIceBreakersWithResponse(ctx context.Context, accountId string, body SetInstagramIceBreakersJSONRequestBody, reqEditors ...RequestEditorFn) (*SetInstagramIceBreakersResponse, error) {
+	rsp, err := c.SetInstagramIceBreakers(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetInstagramIceBreakersResponse(rsp)
+}
+
 // GetLinkedInAggregateAnalyticsWithResponse request returning *GetLinkedInAggregateAnalyticsResponse
 func (c *ClientWithResponses) GetLinkedInAggregateAnalyticsWithResponse(ctx context.Context, accountId string, params *GetLinkedInAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*GetLinkedInAggregateAnalyticsResponse, error) {
 	rsp, err := c.GetLinkedInAggregateAnalytics(ctx, accountId, params, reqEditors...)
@@ -19210,6 +20353,41 @@ func (c *ClientWithResponses) GetLinkedInPostAnalyticsWithResponse(ctx context.C
 	return ParseGetLinkedInPostAnalyticsResponse(rsp)
 }
 
+// DeleteMessengerMenuWithResponse request returning *DeleteMessengerMenuResponse
+func (c *ClientWithResponses) DeleteMessengerMenuWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*DeleteMessengerMenuResponse, error) {
+	rsp, err := c.DeleteMessengerMenu(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteMessengerMenuResponse(rsp)
+}
+
+// GetMessengerMenuWithResponse request returning *GetMessengerMenuResponse
+func (c *ClientWithResponses) GetMessengerMenuWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetMessengerMenuResponse, error) {
+	rsp, err := c.GetMessengerMenu(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMessengerMenuResponse(rsp)
+}
+
+// SetMessengerMenuWithBodyWithResponse request with arbitrary body returning *SetMessengerMenuResponse
+func (c *ClientWithResponses) SetMessengerMenuWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetMessengerMenuResponse, error) {
+	rsp, err := c.SetMessengerMenuWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetMessengerMenuResponse(rsp)
+}
+
+func (c *ClientWithResponses) SetMessengerMenuWithResponse(ctx context.Context, accountId string, body SetMessengerMenuJSONRequestBody, reqEditors ...RequestEditorFn) (*SetMessengerMenuResponse, error) {
+	rsp, err := c.SetMessengerMenu(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetMessengerMenuResponse(rsp)
+}
+
 // GetPinterestBoardsWithResponse request returning *GetPinterestBoardsResponse
 func (c *ClientWithResponses) GetPinterestBoardsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetPinterestBoardsResponse, error) {
 	rsp, err := c.GetPinterestBoards(ctx, accountId, reqEditors...)
@@ -19260,6 +20438,41 @@ func (c *ClientWithResponses) UpdateRedditSubredditsWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseUpdateRedditSubredditsResponse(rsp)
+}
+
+// DeleteTelegramCommandsWithResponse request returning *DeleteTelegramCommandsResponse
+func (c *ClientWithResponses) DeleteTelegramCommandsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*DeleteTelegramCommandsResponse, error) {
+	rsp, err := c.DeleteTelegramCommands(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteTelegramCommandsResponse(rsp)
+}
+
+// GetTelegramCommandsWithResponse request returning *GetTelegramCommandsResponse
+func (c *ClientWithResponses) GetTelegramCommandsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetTelegramCommandsResponse, error) {
+	rsp, err := c.GetTelegramCommands(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTelegramCommandsResponse(rsp)
+}
+
+// SetTelegramCommandsWithBodyWithResponse request with arbitrary body returning *SetTelegramCommandsResponse
+func (c *ClientWithResponses) SetTelegramCommandsWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetTelegramCommandsResponse, error) {
+	rsp, err := c.SetTelegramCommandsWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetTelegramCommandsResponse(rsp)
+}
+
+func (c *ClientWithResponses) SetTelegramCommandsWithResponse(ctx context.Context, accountId string, body SetTelegramCommandsJSONRequestBody, reqEditors ...RequestEditorFn) (*SetTelegramCommandsResponse, error) {
+	rsp, err := c.SetTelegramCommands(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetTelegramCommandsResponse(rsp)
 }
 
 // GetAnalyticsWithResponse request returning *GetAnalyticsResponse
@@ -19713,6 +20926,23 @@ func (c *ClientWithResponses) SendInboxMessageWithResponse(ctx context.Context, 
 		return nil, err
 	}
 	return ParseSendInboxMessageResponse(rsp)
+}
+
+// EditInboxMessageWithBodyWithResponse request with arbitrary body returning *EditInboxMessageResponse
+func (c *ClientWithResponses) EditInboxMessageWithBodyWithResponse(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EditInboxMessageResponse, error) {
+	rsp, err := c.EditInboxMessageWithBody(ctx, conversationId, messageId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEditInboxMessageResponse(rsp)
+}
+
+func (c *ClientWithResponses) EditInboxMessageWithResponse(ctx context.Context, conversationId string, messageId string, body EditInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*EditInboxMessageResponse, error) {
+	rsp, err := c.EditInboxMessage(ctx, conversationId, messageId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEditInboxMessageResponse(rsp)
 }
 
 // ListInboxReviewsWithResponse request returning *ListInboxReviewsResponse
@@ -21686,6 +22916,93 @@ func ParseGetAccountHealthResponse(rsp *http.Response) (*GetAccountHealthRespons
 	return response, nil
 }
 
+// ParseDeleteInstagramIceBreakersResponse parses an HTTP response from a DeleteInstagramIceBreakersWithResponse call
+func ParseDeleteInstagramIceBreakersResponse(rsp *http.Response) (*DeleteInstagramIceBreakersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteInstagramIceBreakersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInstagramIceBreakersResponse parses an HTTP response from a GetInstagramIceBreakersWithResponse call
+func ParseGetInstagramIceBreakersResponse(rsp *http.Response) (*GetInstagramIceBreakersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInstagramIceBreakersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data *[]map[string]interface{} `json:"data,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetInstagramIceBreakersResponse parses an HTTP response from a SetInstagramIceBreakersWithResponse call
+func ParseSetInstagramIceBreakersResponse(rsp *http.Response) (*SetInstagramIceBreakersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetInstagramIceBreakersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetLinkedInAggregateAnalyticsResponse parses an HTTP response from a GetLinkedInAggregateAnalyticsWithResponse call
 func ParseGetLinkedInAggregateAnalyticsResponse(rsp *http.Response) (*GetLinkedInAggregateAnalyticsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -21996,6 +23313,93 @@ func ParseGetLinkedInPostAnalyticsResponse(rsp *http.Response) (*GetLinkedInPost
 	return response, nil
 }
 
+// ParseDeleteMessengerMenuResponse parses an HTTP response from a DeleteMessengerMenuWithResponse call
+func ParseDeleteMessengerMenuResponse(rsp *http.Response) (*DeleteMessengerMenuResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteMessengerMenuResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMessengerMenuResponse parses an HTTP response from a GetMessengerMenuWithResponse call
+func ParseGetMessengerMenuResponse(rsp *http.Response) (*GetMessengerMenuResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMessengerMenuResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data *[]map[string]interface{} `json:"data,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetMessengerMenuResponse parses an HTTP response from a SetMessengerMenuWithResponse call
+func ParseSetMessengerMenuResponse(rsp *http.Response) (*SetMessengerMenuResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetMessengerMenuResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetPinterestBoardsResponse parses an HTTP response from a GetPinterestBoardsWithResponse call
 func ParseGetPinterestBoardsResponse(rsp *http.Response) (*GetPinterestBoardsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -22147,6 +23551,96 @@ func ParseUpdateRedditSubredditsResponse(rsp *http.Response) (*UpdateRedditSubre
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteTelegramCommandsResponse parses an HTTP response from a DeleteTelegramCommandsWithResponse call
+func ParseDeleteTelegramCommandsResponse(rsp *http.Response) (*DeleteTelegramCommandsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteTelegramCommandsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTelegramCommandsResponse parses an HTTP response from a GetTelegramCommandsWithResponse call
+func ParseGetTelegramCommandsResponse(rsp *http.Response) (*GetTelegramCommandsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTelegramCommandsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data *[]struct {
+				Command     *string `json:"command,omitempty"`
+				Description *string `json:"description,omitempty"`
+			} `json:"data,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetTelegramCommandsResponse parses an HTTP response from a SetTelegramCommandsWithResponse call
+func ParseSetTelegramCommandsResponse(rsp *http.Response) (*SetTelegramCommandsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetTelegramCommandsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -24000,6 +25494,44 @@ func ParseSendInboxMessageResponse(rsp *http.Response) (*SendInboxMessageRespons
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEditInboxMessageResponse parses an HTTP response from a EditInboxMessageWithResponse call
+func ParseEditInboxMessageResponse(rsp *http.Response) (*EditInboxMessageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EditInboxMessageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data *struct {
+				MessageId *int `json:"messageId,omitempty"`
+			} `json:"data,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
