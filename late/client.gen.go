@@ -3328,7 +3328,26 @@ type ListPostsLogsParamsPlatform string
 type ListPostsLogsParamsAction string
 
 // UpdatePostJSONBody defines parameters for UpdatePost.
-type UpdatePostJSONBody map[string]interface{}
+type UpdatePostJSONBody struct {
+	Content      *string    `json:"content,omitempty"`
+	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
+
+	// TiktokSettings TikTok platform-specific settings for video/photo posting.
+	//
+	// **Constraints:**
+	// - Photo carousels support up to 35 images.
+	// - **Title length limits**:
+	//   - Videos: up to 2200 chars (full content used as title)
+	//   - Photos: content is automatically truncated to 90 chars for title (hashtags/URLs stripped). Use 'description' field for longer text (up to 4000 chars).
+	// - privacyLevel must be chosen from creator_info.privacy_level_options (no defaulting).
+	// - allowDuet and allowStitch required for videos; allowComment for all.
+	// - contentPreviewConfirmed and expressConsentGiven must be true before posting.
+	//
+	// **Note:** Both camelCase and snake_case field names are accepted for backwards compatibility.
+	// The nested `tiktokSettings` object format is also still supported but deprecated.
+	TiktokSettings       *TikTokPlatformData    `json:"tiktokSettings,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
 
 // GetPostLogsParams defines parameters for GetPostLogs.
 type GetPostLogsParams struct {
@@ -3770,6 +3789,104 @@ type UpdateWebhookSettingsJSONRequestBody UpdateWebhookSettingsJSONBody
 
 // TestWebhookJSONRequestBody defines body for TestWebhook for application/json ContentType.
 type TestWebhookJSONRequestBody TestWebhookJSONBody
+
+// Getter for additional properties for UpdatePostJSONBody. Returns the specified
+// element and whether it was found
+func (a UpdatePostJSONBody) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for UpdatePostJSONBody
+func (a *UpdatePostJSONBody) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for UpdatePostJSONBody to handle AdditionalProperties
+func (a *UpdatePostJSONBody) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["content"]; found {
+		err = json.Unmarshal(raw, &a.Content)
+		if err != nil {
+			return fmt.Errorf("error reading 'content': %w", err)
+		}
+		delete(object, "content")
+	}
+
+	if raw, found := object["scheduledFor"]; found {
+		err = json.Unmarshal(raw, &a.ScheduledFor)
+		if err != nil {
+			return fmt.Errorf("error reading 'scheduledFor': %w", err)
+		}
+		delete(object, "scheduledFor")
+	}
+
+	if raw, found := object["tiktokSettings"]; found {
+		err = json.Unmarshal(raw, &a.TiktokSettings)
+		if err != nil {
+			return fmt.Errorf("error reading 'tiktokSettings': %w", err)
+		}
+		delete(object, "tiktokSettings")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for UpdatePostJSONBody to handle AdditionalProperties
+func (a UpdatePostJSONBody) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	if a.Content != nil {
+		object["content"], err = json.Marshal(a.Content)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'content': %w", err)
+		}
+	}
+
+	if a.ScheduledFor != nil {
+		object["scheduledFor"], err = json.Marshal(a.ScheduledFor)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'scheduledFor': %w", err)
+		}
+	}
+
+	if a.TiktokSettings != nil {
+		object["tiktokSettings"], err = json.Marshal(a.TiktokSettings)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'tiktokSettings': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
 
 // Getter for additional properties for PlatformTarget_PlatformSpecificData. Returns the specified
 // element and whether it was found
