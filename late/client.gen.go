@@ -1852,7 +1852,12 @@ type QueueSlot struct {
 // - Subreddit defaults to the account's configured subreddit if omitted
 // - Use the same accountId multiple times with different subreddit values in platformSpecificData to post to multiple subreddits
 // - Images are automatically compressed if they exceed Reddit's 20MB limit
+// - Some subreddits require a flair; if not provided, the API will attempt to use the first available flair as fallback
 type RedditPlatformData struct {
+	// FlairId Flair ID for the post. Required by some subreddits.
+	// Use GET /api/v1/accounts/{id}/reddit-flairs?subreddit=name to list available flairs.
+	FlairId *string `json:"flairId,omitempty"`
+
 	// ForceSelf When true, creates a text/self post even when a URL or media is provided.
 	ForceSelf *bool `json:"forceSelf,omitempty"`
 
@@ -2567,6 +2572,12 @@ type SetMessengerMenuJSONBody struct {
 type UpdatePinterestBoardsJSONBody struct {
 	DefaultBoardId   string  `json:"defaultBoardId"`
 	DefaultBoardName *string `json:"defaultBoardName,omitempty"`
+}
+
+// GetRedditFlairsParams defines parameters for GetRedditFlairs.
+type GetRedditFlairsParams struct {
+	// Subreddit Subreddit name (without "r/" prefix) to fetch flairs for
+	Subreddit string `form:"subreddit" json:"subreddit"`
 }
 
 // UpdateRedditSubredditsJSONBody defines parameters for UpdateRedditSubreddits.
@@ -5051,6 +5062,9 @@ type ClientInterface interface {
 
 	UpdatePinterestBoards(ctx context.Context, accountId string, body UpdatePinterestBoardsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetRedditFlairs request
+	GetRedditFlairs(ctx context.Context, accountId string, params *GetRedditFlairsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetRedditSubreddits request
 	GetRedditSubreddits(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -6024,6 +6038,18 @@ func (c *Client) UpdatePinterestBoardsWithBody(ctx context.Context, accountId st
 
 func (c *Client) UpdatePinterestBoards(ctx context.Context, accountId string, body UpdatePinterestBoardsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdatePinterestBoardsRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetRedditFlairs(ctx context.Context, accountId string, params *GetRedditFlairsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetRedditFlairsRequest(c.Server, accountId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -9473,6 +9499,58 @@ func NewUpdatePinterestBoardsRequestWithBody(server string, accountId string, co
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetRedditFlairsRequest generates requests for GetRedditFlairs
+func NewGetRedditFlairsRequest(server string, accountId string, params *GetRedditFlairsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/reddit-flairs", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "subreddit", runtime.ParamLocationQuery, params.Subreddit); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -15184,6 +15262,9 @@ type ClientWithResponsesInterface interface {
 
 	UpdatePinterestBoardsWithResponse(ctx context.Context, accountId string, body UpdatePinterestBoardsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePinterestBoardsResponse, error)
 
+	// GetRedditFlairsWithResponse request
+	GetRedditFlairsWithResponse(ctx context.Context, accountId string, params *GetRedditFlairsParams, reqEditors ...RequestEditorFn) (*GetRedditFlairsResponse, error)
+
 	// GetRedditSubredditsWithResponse request
 	GetRedditSubredditsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetRedditSubredditsResponse, error)
 
@@ -16913,6 +16994,43 @@ func (r UpdatePinterestBoardsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdatePinterestBoardsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetRedditFlairsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Flairs *[]struct {
+			// BackgroundColor Background hex color (e.g. '#ff4500')
+			BackgroundColor *string `json:"backgroundColor,omitempty"`
+
+			// Id Flair ID to pass as flairId in platformSpecificData
+			Id *string `json:"id,omitempty"`
+
+			// Text Flair display text
+			Text *string `json:"text,omitempty"`
+
+			// TextColor Text color: 'dark' or 'light'
+			TextColor *string `json:"textColor,omitempty"`
+		} `json:"flairs,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetRedditFlairsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetRedditFlairsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -20450,6 +20568,15 @@ func (c *ClientWithResponses) UpdatePinterestBoardsWithResponse(ctx context.Cont
 	return ParseUpdatePinterestBoardsResponse(rsp)
 }
 
+// GetRedditFlairsWithResponse request returning *GetRedditFlairsResponse
+func (c *ClientWithResponses) GetRedditFlairsWithResponse(ctx context.Context, accountId string, params *GetRedditFlairsParams, reqEditors ...RequestEditorFn) (*GetRedditFlairsResponse, error) {
+	rsp, err := c.GetRedditFlairs(ctx, accountId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetRedditFlairsResponse(rsp)
+}
+
 // GetRedditSubredditsWithResponse request returning *GetRedditSubredditsResponse
 func (c *ClientWithResponses) GetRedditSubredditsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetRedditSubredditsResponse, error) {
 	rsp, err := c.GetRedditSubreddits(ctx, accountId, reqEditors...)
@@ -23494,6 +23621,53 @@ func ParseUpdatePinterestBoardsResponse(rsp *http.Response) (*UpdatePinterestBoa
 		var dest struct {
 			Account *SocialAccount `json:"account,omitempty"`
 			Message *string        `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetRedditFlairsResponse parses an HTTP response from a GetRedditFlairsWithResponse call
+func ParseGetRedditFlairsResponse(rsp *http.Response) (*GetRedditFlairsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetRedditFlairsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Flairs *[]struct {
+				// BackgroundColor Background hex color (e.g. '#ff4500')
+				BackgroundColor *string `json:"backgroundColor,omitempty"`
+
+				// Id Flair ID to pass as flairId in platformSpecificData
+				Id *string `json:"id,omitempty"`
+
+				// Text Flair display text
+				Text *string `json:"text,omitempty"`
+
+				// TextColor Text color: 'dark' or 'light'
+				TextColor *string `json:"textColor,omitempty"`
+			} `json:"flairs,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
