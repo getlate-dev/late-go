@@ -742,6 +742,8 @@ func main() {
 | `client.WhatsAppCallingAPI.EnableWhatsAppCalling(ctx)` | Enable calling on a number |
 | `client.WhatsAppCallingAPI.EnableWhatsAppCallingLegacy(ctx)` | Enable calling on a number |
 | `client.WhatsAppCallingAPI.InitiateWhatsAppCall(ctx)` | Initiate outbound call |
+| `client.WhatsAppCallingAPI.StartWhatsAppCallerIdVerification(ctx)` | Start caller-ID verification for a customer-brought number |
+| `client.WhatsAppCallingAPI.VerifyWhatsAppCallerId(ctx)` | Confirm the caller-ID verification code |
 
 ### WhatsApp Flows
 | Method | Description |

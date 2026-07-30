@@ -1650,6 +1650,145 @@ func (a *WhatsAppCallingAPIService) ListWhatsAppCallsExecute(r WhatsAppCallingAP
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type WhatsAppCallingAPIStartWhatsAppCallerIdVerificationRequest struct {
+	ctx                                      context.Context
+	ApiService                               *WhatsAppCallingAPIService
+	id                                       string
+	startWhatsAppCallerIdVerificationRequest *StartWhatsAppCallerIdVerificationRequest
+}
+
+func (r WhatsAppCallingAPIStartWhatsAppCallerIdVerificationRequest) StartWhatsAppCallerIdVerificationRequest(startWhatsAppCallerIdVerificationRequest StartWhatsAppCallerIdVerificationRequest) WhatsAppCallingAPIStartWhatsAppCallerIdVerificationRequest {
+	r.startWhatsAppCallerIdVerificationRequest = &startWhatsAppCallerIdVerificationRequest
+	return r
+}
+
+func (r WhatsAppCallingAPIStartWhatsAppCallerIdVerificationRequest) Execute() (*StartWhatsAppCallerIdVerification200Response, *http.Response, error) {
+	return r.ApiService.StartWhatsAppCallerIdVerificationExecute(r)
+}
+
+/*
+StartWhatsAppCallerIdVerification Start caller-ID verification for a customer-brought number
+
+Customer-brought (BYO) WhatsApp numbers cannot present themselves as
+caller ID on `tel:` call forwards until verified (carrier
+anti-spoofing); until then forwarded calls show a Zernio number
+(`callerIdMode: platform` on the calling config). This sends a
+one-time code to the number by SMS or voice call. Re-POST to resend.
+Zernio-purchased numbers never need this and get a 400.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id Phone number record ID (from GET /v1/phone-numbers).
+	@return WhatsAppCallingAPIStartWhatsAppCallerIdVerificationRequest
+*/
+func (a *WhatsAppCallingAPIService) StartWhatsAppCallerIdVerification(ctx context.Context, id string) WhatsAppCallingAPIStartWhatsAppCallerIdVerificationRequest {
+	return WhatsAppCallingAPIStartWhatsAppCallerIdVerificationRequest{
+		ApiService: a,
+		ctx:        ctx,
+		id:         id,
+	}
+}
+
+// Execute executes the request
+//
+//	@return StartWhatsAppCallerIdVerification200Response
+func (a *WhatsAppCallingAPIService) StartWhatsAppCallerIdVerificationExecute(r WhatsAppCallingAPIStartWhatsAppCallerIdVerificationRequest) (*StartWhatsAppCallerIdVerification200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *StartWhatsAppCallerIdVerification200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppCallingAPIService.StartWhatsAppCallerIdVerification")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/phone-numbers/{id}/whatsapp/caller-id-verification"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.startWhatsAppCallerIdVerificationRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type WhatsAppCallingAPIUpdateWhatsAppCallingRequest struct {
 	ctx                                context.Context
 	ApiService                         *WhatsAppCallingAPIService
@@ -1890,4 +2029,132 @@ func (a *WhatsAppCallingAPIService) UpdateWhatsAppCallingLegacyExecute(r WhatsAp
 	}
 
 	return localVarHTTPResponse, nil
+}
+
+type WhatsAppCallingAPIVerifyWhatsAppCallerIdRequest struct {
+	ctx                           context.Context
+	ApiService                    *WhatsAppCallingAPIService
+	id                            string
+	verifyWhatsAppCallerIdRequest *VerifyWhatsAppCallerIdRequest
+}
+
+func (r WhatsAppCallingAPIVerifyWhatsAppCallerIdRequest) VerifyWhatsAppCallerIdRequest(verifyWhatsAppCallerIdRequest VerifyWhatsAppCallerIdRequest) WhatsAppCallingAPIVerifyWhatsAppCallerIdRequest {
+	r.verifyWhatsAppCallerIdRequest = &verifyWhatsAppCallerIdRequest
+	return r
+}
+
+func (r WhatsAppCallingAPIVerifyWhatsAppCallerIdRequest) Execute() (*VerifySmsRegistrationOtp200Response, *http.Response, error) {
+	return r.ApiService.VerifyWhatsAppCallerIdExecute(r)
+}
+
+/*
+VerifyWhatsAppCallerId Confirm the caller-ID verification code
+
+Submits the one-time code the number received. On success, `tel:`
+call forwards present the business number itself as caller ID
+(`callerIdMode: business`).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id Phone number record ID (from GET /v1/phone-numbers).
+	@return WhatsAppCallingAPIVerifyWhatsAppCallerIdRequest
+*/
+func (a *WhatsAppCallingAPIService) VerifyWhatsAppCallerId(ctx context.Context, id string) WhatsAppCallingAPIVerifyWhatsAppCallerIdRequest {
+	return WhatsAppCallingAPIVerifyWhatsAppCallerIdRequest{
+		ApiService: a,
+		ctx:        ctx,
+		id:         id,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VerifySmsRegistrationOtp200Response
+func (a *WhatsAppCallingAPIService) VerifyWhatsAppCallerIdExecute(r WhatsAppCallingAPIVerifyWhatsAppCallerIdRequest) (*VerifySmsRegistrationOtp200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VerifySmsRegistrationOtp200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppCallingAPIService.VerifyWhatsAppCallerId")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/phone-numbers/{id}/whatsapp/caller-id-verification/verify"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.verifyWhatsAppCallerIdRequest == nil {
+		return localVarReturnValue, nil, reportError("verifyWhatsAppCallerIdRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.verifyWhatsAppCallerIdRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
