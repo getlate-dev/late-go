@@ -12,6 +12,10 @@ go get github.com/zernio-dev/zernio-go
 > a breaking change. The import path is unchanged, but client construction and
 > method calls differ — see [MIGRATION.md](./MIGRATION.md).
 
+> **Using enum constants?** They are now prefixed with their type
+> (`zernio.ADSTATUS_REJECTED`, not `zernio.REJECTED`), see
+> [MIGRATION.md](./MIGRATION.md#prefixed-enum-constants).
+
 ## Quick Start
 
 ```go
