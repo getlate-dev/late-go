@@ -23,6 +23,8 @@ type PurchasePhoneNumber200ResponseOneOf2 struct {
 	Status      *string `json:"status,omitempty"`
 	NumberId    *string `json:"numberId,omitempty"`
 	PhoneNumber *string `json:"phoneNumber,omitempty"`
+	// The profile the number was actually assigned to.
+	ProfileId *string `json:"profileId,omitempty"`
 }
 
 // NewPurchasePhoneNumber200ResponseOneOf2 instantiates a new PurchasePhoneNumber200ResponseOneOf2 object
@@ -138,6 +140,38 @@ func (o *PurchasePhoneNumber200ResponseOneOf2) SetPhoneNumber(v string) {
 	o.PhoneNumber = &v
 }
 
+// GetProfileId returns the ProfileId field value if set, zero value otherwise.
+func (o *PurchasePhoneNumber200ResponseOneOf2) GetProfileId() string {
+	if o == nil || IsNil(o.ProfileId) {
+		var ret string
+		return ret
+	}
+	return *o.ProfileId
+}
+
+// GetProfileIdOk returns a tuple with the ProfileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PurchasePhoneNumber200ResponseOneOf2) GetProfileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ProfileId) {
+		return nil, false
+	}
+	return o.ProfileId, true
+}
+
+// HasProfileId returns a boolean if a field has been set.
+func (o *PurchasePhoneNumber200ResponseOneOf2) HasProfileId() bool {
+	if o != nil && !IsNil(o.ProfileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileId gets a reference to the given string and assigns it to the ProfileId field.
+func (o *PurchasePhoneNumber200ResponseOneOf2) SetProfileId(v string) {
+	o.ProfileId = &v
+}
+
 func (o PurchasePhoneNumber200ResponseOneOf2) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -156,6 +190,9 @@ func (o PurchasePhoneNumber200ResponseOneOf2) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.PhoneNumber) {
 		toSerialize["phoneNumber"] = o.PhoneNumber
+	}
+	if !IsNil(o.ProfileId) {
+		toSerialize["profileId"] = o.ProfileId
 	}
 	return toSerialize, nil
 }

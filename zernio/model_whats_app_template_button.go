@@ -23,7 +23,7 @@ var _ MappedNullable = &WhatsAppTemplateButton{}
 // WhatsAppTemplateButton struct for WhatsAppTemplateButton
 type WhatsAppTemplateButton struct {
 	Type string `json:"type"`
-	// Visible button label. Required for all types except copy_code (whose label is fixed by WhatsApp).
+	// Visible button label. Required for all types except copy_code (whose label is fixed by WhatsApp) and otp (omit it and WhatsApp supplies its own label, localized to the template language; an English label on a non-English template is rejected).
 	Text *string `json:"text,omitempty"`
 	// Required when type is URL
 	Url     *string     `json:"url,omitempty"`

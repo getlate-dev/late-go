@@ -148,6 +148,256 @@ func (a *AdInsightsAPIService) CreateAdInsightsReportExecute(r AdInsightsAPICrea
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdInsightsAPIGenerateKeywordHistoricalMetricsRequest struct {
+	ctx                                     context.Context
+	ApiService                              *AdInsightsAPIService
+	generateKeywordHistoricalMetricsRequest *GenerateKeywordHistoricalMetricsRequest
+}
+
+func (r AdInsightsAPIGenerateKeywordHistoricalMetricsRequest) GenerateKeywordHistoricalMetricsRequest(generateKeywordHistoricalMetricsRequest GenerateKeywordHistoricalMetricsRequest) AdInsightsAPIGenerateKeywordHistoricalMetricsRequest {
+	r.generateKeywordHistoricalMetricsRequest = &generateKeywordHistoricalMetricsRequest
+	return r
+}
+
+func (r AdInsightsAPIGenerateKeywordHistoricalMetricsRequest) Execute() (*GenerateKeywordHistoricalMetrics200Response, *http.Response, error) {
+	return r.ApiService.GenerateKeywordHistoricalMetricsExecute(r)
+}
+
+/*
+GenerateKeywordHistoricalMetrics Historical keyword metrics (Google Keyword Planner)
+
+Google Ads only. Runs Keyword Planner's generateKeywordHistoricalMetrics for up to 1,000
+exact keywords: historical search volume, competition and top-of-page bid ranges, plus
+averageCpcMicros when includeAverageCpc is set. Rows come back verbatim; counters are int64s
+encoded as strings, bid/CPC values are micros of the account currency.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdInsightsAPIGenerateKeywordHistoricalMetricsRequest
+*/
+func (a *AdInsightsAPIService) GenerateKeywordHistoricalMetrics(ctx context.Context) AdInsightsAPIGenerateKeywordHistoricalMetricsRequest {
+	return AdInsightsAPIGenerateKeywordHistoricalMetricsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GenerateKeywordHistoricalMetrics200Response
+func (a *AdInsightsAPIService) GenerateKeywordHistoricalMetricsExecute(r AdInsightsAPIGenerateKeywordHistoricalMetricsRequest) (*GenerateKeywordHistoricalMetrics200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GenerateKeywordHistoricalMetrics200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdInsightsAPIService.GenerateKeywordHistoricalMetrics")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/keywords/historical-metrics"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.generateKeywordHistoricalMetricsRequest == nil {
+		return localVarReturnValue, nil, reportError("generateKeywordHistoricalMetricsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.generateKeywordHistoricalMetricsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdInsightsAPIGenerateKeywordIdeasRequest struct {
+	ctx                         context.Context
+	ApiService                  *AdInsightsAPIService
+	generateKeywordIdeasRequest *GenerateKeywordIdeasRequest
+}
+
+func (r AdInsightsAPIGenerateKeywordIdeasRequest) GenerateKeywordIdeasRequest(generateKeywordIdeasRequest GenerateKeywordIdeasRequest) AdInsightsAPIGenerateKeywordIdeasRequest {
+	r.generateKeywordIdeasRequest = &generateKeywordIdeasRequest
+	return r
+}
+
+func (r AdInsightsAPIGenerateKeywordIdeasRequest) Execute() (*GenerateKeywordIdeas200Response, *http.Response, error) {
+	return r.ApiService.GenerateKeywordIdeasExecute(r)
+}
+
+/*
+GenerateKeywordIdeas Generate keyword ideas (Google Keyword Planner)
+
+Google Ads only. Runs Keyword Planner's generateKeywordIdeas from seed keywords, a seed URL,
+or both, returning idea rows verbatim (avgMonthlySearches, competition, competitionIndex,
+top-of-page bid micros, monthlySearchVolumes). Counters are int64s encoded as strings; bid
+values are micros of the account currency. Omitting `countries` targets worldwide.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdInsightsAPIGenerateKeywordIdeasRequest
+*/
+func (a *AdInsightsAPIService) GenerateKeywordIdeas(ctx context.Context) AdInsightsAPIGenerateKeywordIdeasRequest {
+	return AdInsightsAPIGenerateKeywordIdeasRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GenerateKeywordIdeas200Response
+func (a *AdInsightsAPIService) GenerateKeywordIdeasExecute(r AdInsightsAPIGenerateKeywordIdeasRequest) (*GenerateKeywordIdeas200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GenerateKeywordIdeas200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdInsightsAPIService.GenerateKeywordIdeas")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/keywords/ideas"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.generateKeywordIdeasRequest == nil {
+		return localVarReturnValue, nil, reportError("generateKeywordIdeasRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.generateKeywordIdeasRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdInsightsAPIGetAdAnalyticsRequest struct {
 	ctx        context.Context
 	ApiService *AdInsightsAPIService
@@ -653,6 +903,9 @@ type AdInsightsAPIQueryAdInsightsRequest struct {
 	ApiService                   *AdInsightsAPIService
 	accountId                    *string
 	objectId                     *string
+	query                        *string
+	customerId                   *string
+	pageToken                    *string
 	level                        *string
 	fields                       *string
 	breakdowns                   *string
@@ -669,15 +922,33 @@ type AdInsightsAPIQueryAdInsightsRequest struct {
 	after                        *string
 }
 
-// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+// Zernio SocialAccount id (posting or ads variant); its platform selects the Meta or Google contract.
 func (r AdInsightsAPIQueryAdInsightsRequest) AccountId(accountId string) AdInsightsAPIQueryAdInsightsRequest {
 	r.accountId = &accountId
 	return r
 }
 
-// Meta insights node: act_&lt;n&gt;, campaign id, ad set id or ad id.
+// Meta only (required there): insights node — act_&lt;n&gt;, campaign id, ad set id or ad id.
 func (r AdInsightsAPIQueryAdInsightsRequest) ObjectId(objectId string) AdInsightsAPIQueryAdInsightsRequest {
 	r.objectId = &objectId
+	return r
+}
+
+// Google only (required there): the GAQL SELECT statement to run.
+func (r AdInsightsAPIQueryAdInsightsRequest) Query(query string) AdInsightsAPIQueryAdInsightsRequest {
+	r.query = &query
+	return r
+}
+
+// Google only: numeric customer id (no dashes) when the connection has several Google Ads accounts.
+func (r AdInsightsAPIQueryAdInsightsRequest) CustomerId(customerId string) AdInsightsAPIQueryAdInsightsRequest {
+	r.customerId = &customerId
+	return r
+}
+
+// Google only: cursor from paging.nextPageToken of the previous page.
+func (r AdInsightsAPIQueryAdInsightsRequest) PageToken(pageToken string) AdInsightsAPIQueryAdInsightsRequest {
+	r.pageToken = &pageToken
 	return r
 }
 
@@ -772,16 +1043,21 @@ func (r AdInsightsAPIQueryAdInsightsRequest) Execute() (*QueryAdInsights200Respo
 /*
 QueryAdInsights Flexible live insights query
 
-Live, flexible insights query against Meta's Graph API. Unlike GET /v1/ads/{adId}/analytics
-(fixed metric set, cached), this forwards caller-chosen `fields`, `breakdowns` and `filtering`
-to any Meta insights node and returns Meta's rows verbatim.
+Live, flexible insights query. The account's platform picks the contract:
 
-`objectId` selects the node: an ad account, campaign, ad set or ad platform id.
-`level` sets row granularity independently of the node.
+**Meta (facebook/instagram)**: forwards caller-chosen `fields`, `breakdowns` and `filtering`
+to any Meta insights node and returns Meta's rows verbatim. `objectId` (required) selects the
+node; `level` sets row granularity. Semantic validation is Meta's: an unknown field or invalid
+breakdown combination returns a 400 carrying Meta's message. For long ranges or agency-scale
+accounts prefer the async variant (POST /v1/ads/insights/reports).
 
-Semantic validation is Meta's: an unknown field or invalid breakdown combination returns a 400
-carrying Meta's message. For long ranges or agency-scale accounts prefer the async variant
-(POST /v1/ads/insights/reports).
+**Google Ads (googleads)**: raw GAQL passthrough. Send any read-only GAQL SELECT via `query`
+(campaign/keyword/search-term/geo/demographic/asset/shopping resources, `change_event`, any
+`segments.*`) and rows come back verbatim (camelCase, counters as strings). Results are paged
+at a fixed 10,000 rows; follow `paging.nextPageToken` with `pageToken`. `customerId` is only
+needed when the connection has several Google Ads accounts. Semantic validation is Google's:
+an invalid query returns a 400 carrying Google's message (note: selecting `segments.date`
+requires a finite date filter).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdInsightsAPIQueryAdInsightsRequest
@@ -817,12 +1093,20 @@ func (a *AdInsightsAPIService) QueryAdInsightsExecute(r AdInsightsAPIQueryAdInsi
 	if r.accountId == nil {
 		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
 	}
-	if r.objectId == nil {
-		return localVarReturnValue, nil, reportError("objectId is required and must be specified")
-	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "objectId", r.objectId, "form", "")
+	if r.objectId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "objectId", r.objectId, "form", "")
+	}
+	if r.query != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "query", r.query, "form", "")
+	}
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	if r.pageToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageToken", r.pageToken, "form", "")
+	}
 	if r.level != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "level", r.level, "form", "")
 	}

@@ -148,6 +148,7 @@ type PhoneNumbersAPICheckPhoneNumberAvailabilityRequest struct {
 	ApiService *PhoneNumbersAPIService
 	country    *string
 	numberType *string
+	sms        *bool
 }
 
 // ISO-2 country code.
@@ -159,6 +160,12 @@ func (r PhoneNumbersAPICheckPhoneNumberAvailabilityRequest) Country(country stri
 // Check a specific offered type (stock and address constraints are per type). Omitted &#x3D; the country&#39;s default type.
 func (r PhoneNumbersAPICheckPhoneNumberAvailabilityRequest) NumberType(numberType string) PhoneNumbersAPICheckPhoneNumberAvailabilityRequest {
 	r.numberType = &numberType
+	return r
+}
+
+// Pass true when the buyer wants SMS: availability, areas, and areaOptions then describe the SMS-capable pool (an SMS purchase orders from it), not the wider voice-only pool.
+func (r PhoneNumbersAPICheckPhoneNumberAvailabilityRequest) Sms(sms bool) PhoneNumbersAPICheckPhoneNumberAvailabilityRequest {
+	r.sms = &sms
 	return r
 }
 
@@ -219,6 +226,9 @@ func (a *PhoneNumbersAPIService) CheckPhoneNumberAvailabilityExecute(r PhoneNumb
 	if r.numberType != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "numberType", r.numberType, "form", "")
 	}
+	if r.sms != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sms", r.sms, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -267,6 +277,7 @@ func (a *PhoneNumbersAPIService) CheckPhoneNumberAvailabilityExecute(r PhoneNumb
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

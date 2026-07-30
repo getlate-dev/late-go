@@ -419,7 +419,7 @@ func (r AdCampaignsAPICreateStandaloneAdRequest) Execute() (*CreateStandaloneAd2
 /*
 CreateStandaloneAd Create standalone ad
 
-Creates a paid ad with custom creative across Meta, Google Ads, Pinterest, TikTok, X/Twitter, LinkedIn, and OpenAI Ads (ChatGPT Ads). Supports three mutually-exclusive request shapes selected by the body, a legacy single-creative shape (all platforms, default), a Meta-only multi-creative shape via the creatives array (one ad set with N ads sharing budget and targeting), and a Meta-only attach shape via adSetId (adds one new ad to an existing ad set). Per-platform required fields, budget minimums, and video-ad rules are documented on each property below. LinkedIn creates a Single Image or Single Video Ad backed by a Direct Sponsored Content "dark post" authored by a Company Page (see `organizationId`); supported goals are engagement, traffic, awareness, and video_views (video ads use the `video` field; video_views requires a video), and traffic ads require `linkUrl`.
+Creates a paid ad with custom creative across Meta, Google Ads, Pinterest, TikTok, X/Twitter, LinkedIn, and OpenAI Ads (ChatGPT Ads). Supports three mutually-exclusive request shapes selected by the body, a legacy single-creative shape (all platforms, default), a Meta-only multi-creative shape via the creatives array (one ad set with N ads sharing budget and targeting), and an attach shape via adSetId that adds one new ad to an existing ad set, inheriting its budget, targeting, and schedule (Meta, TikTok, and LinkedIn; on LinkedIn adSetId is the existing Campaign id, and the budget, schedule, targeting and bidding fields must be omitted). Per-platform required fields, budget minimums, and video-ad rules are documented on each property below. LinkedIn creates a Single Image or Single Video Ad backed by a Direct Sponsored Content "dark post" authored by a Company Page (see `organizationId`); supported goals are engagement, traffic, awareness, and video_views (video ads use the `video` field; video_views requires a video), and traffic ads require `linkUrl`.
 
 **Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). Keys are scoped to your credential and expire after 24h.
 
@@ -1476,6 +1476,7 @@ type AdCampaignsAPIGetAdTreeRequest struct {
 	platform      *string
 	status        *AdStatus
 	adAccountId   *string
+	pageId        *string
 	accountId     *string
 	profileId     *string
 	campaignId    *string
@@ -1518,6 +1519,12 @@ func (r AdCampaignsAPIGetAdTreeRequest) Status(status AdStatus) AdCampaignsAPIGe
 // Platform ad account ID
 func (r AdCampaignsAPIGetAdTreeRequest) AdAccountId(adAccountId string) AdCampaignsAPIGetAdTreeRequest {
 	r.adAccountId = &adAccountId
+	return r
+}
+
+// Meta only: Facebook Page ID. Prunes the tree to ads whose creative is backed by this Page — campaigns and ad sets with no ad on the Page drop out, and rolled-up metrics cover only the Page&#39;s ads. Mirrors the same filter on /v1/ads and /v1/ads/campaigns.
+func (r AdCampaignsAPIGetAdTreeRequest) PageId(pageId string) AdCampaignsAPIGetAdTreeRequest {
+	r.pageId = &pageId
 	return r
 }
 
@@ -1649,6 +1656,9 @@ func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeReques
 	}
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.pageId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageId", r.pageId, "form", "")
 	}
 	if r.accountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
@@ -1941,6 +1951,7 @@ type AdCampaignsAPIListAdCampaignsRequest struct {
 	platform    *string
 	status      *AdStatus
 	adAccountId *string
+	pageId      *string
 	accountId   *string
 	profileId   *string
 	fromDate    *string
@@ -1978,6 +1989,12 @@ func (r AdCampaignsAPIListAdCampaignsRequest) Status(status AdStatus) AdCampaign
 // Platform ad account ID (e.g. act_123 for Meta)
 func (r AdCampaignsAPIListAdCampaignsRequest) AdAccountId(adAccountId string) AdCampaignsAPIListAdCampaignsRequest {
 	r.adAccountId = &adAccountId
+	return r
+}
+
+// Meta only: Facebook Page ID. Campaigns have no Page of their own, so this keeps campaigns having at least one ad backed by this Page, with adCount and metrics computed over those ads only. Mirrors the same filter on /v1/ads and /v1/ads/tree.
+func (r AdCampaignsAPIListAdCampaignsRequest) PageId(pageId string) AdCampaignsAPIListAdCampaignsRequest {
+	r.pageId = &pageId
 	return r
 }
 
@@ -2078,6 +2095,9 @@ func (a *AdCampaignsAPIService) ListAdCampaignsExecute(r AdCampaignsAPIListAdCam
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
 	}
+	if r.pageId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageId", r.pageId, "form", "")
+	}
 	if r.accountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	}
@@ -2166,6 +2186,253 @@ func (a *AdCampaignsAPIService) ListAdCampaignsExecute(r AdCampaignsAPIListAdCam
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIListAdKeywordsRequest struct {
+	ctx         context.Context
+	ApiService  *AdCampaignsAPIService
+	page        *int32
+	limit       *int32
+	accountId   *string
+	adAccountId *string
+	profileId   *string
+	campaignId  *string
+	adSetId     *string
+	status      *string
+	matchType   *string
+	negative    *bool
+	search      *string
+}
+
+// Page number (1-based)
+func (r AdCampaignsAPIListAdKeywordsRequest) Page(page int32) AdCampaignsAPIListAdKeywordsRequest {
+	r.page = &page
+	return r
+}
+
+func (r AdCampaignsAPIListAdKeywordsRequest) Limit(limit int32) AdCampaignsAPIListAdKeywordsRequest {
+	r.limit = &limit
+	return r
+}
+
+// Social account ID
+func (r AdCampaignsAPIListAdKeywordsRequest) AccountId(accountId string) AdCampaignsAPIListAdKeywordsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Platform ad account ID (Google customer ID). Mirrors the same filter on /v1/ads.
+func (r AdCampaignsAPIListAdKeywordsRequest) AdAccountId(adAccountId string) AdCampaignsAPIListAdKeywordsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Profile ID
+func (r AdCampaignsAPIListAdKeywordsRequest) ProfileId(profileId string) AdCampaignsAPIListAdKeywordsRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Platform campaign ID
+func (r AdCampaignsAPIListAdKeywordsRequest) CampaignId(campaignId string) AdCampaignsAPIListAdKeywordsRequest {
+	r.campaignId = &campaignId
+	return r
+}
+
+// Platform ad group ID (Google ad group)
+func (r AdCampaignsAPIListAdKeywordsRequest) AdSetId(adSetId string) AdCampaignsAPIListAdKeywordsRequest {
+	r.adSetId = &adSetId
+	return r
+}
+
+// Keyword criterion status
+func (r AdCampaignsAPIListAdKeywordsRequest) Status(status string) AdCampaignsAPIListAdKeywordsRequest {
+	r.status = &status
+	return r
+}
+
+func (r AdCampaignsAPIListAdKeywordsRequest) MatchType(matchType string) AdCampaignsAPIListAdKeywordsRequest {
+	r.matchType = &matchType
+	return r
+}
+
+// true &#x3D; negative keywords only, false &#x3D; positive only. Omit for both.
+func (r AdCampaignsAPIListAdKeywordsRequest) Negative(negative bool) AdCampaignsAPIListAdKeywordsRequest {
+	r.negative = &negative
+	return r
+}
+
+// Case-insensitive substring match on the keyword text
+func (r AdCampaignsAPIListAdKeywordsRequest) Search(search string) AdCampaignsAPIListAdKeywordsRequest {
+	r.search = &search
+	return r
+}
+
+func (r AdCampaignsAPIListAdKeywordsRequest) Execute() (*ListAdKeywords200Response, *http.Response, error) {
+	return r.ApiService.ListAdKeywordsExecute(r)
+}
+
+/*
+ListAdKeywords List Search keywords
+
+Returns the Google Search keyword criteria (positive and negative) synced from
+connected Google Ads accounts, one row per ad-group keyword. Refreshed about
+once a week per Google Ads customer (the keyword sweep rides the ads discovery
+pass on a slower slot, to stay inside Google's shared daily API quota), so
+keywords added on Google can take several days to appear. A customer synced
+for the first time is populated on the next discovery pass rather than
+waiting for its weekly slot, and connecting an account or triggering a
+manual sync refreshes it immediately.
+Campaign-level negative keywords are not included; only ad-group-level
+criteria are.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdCampaignsAPIListAdKeywordsRequest
+*/
+func (a *AdCampaignsAPIService) ListAdKeywords(ctx context.Context) AdCampaignsAPIListAdKeywordsRequest {
+	return AdCampaignsAPIListAdKeywordsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdKeywords200Response
+func (a *AdCampaignsAPIService) ListAdKeywordsExecute(r AdCampaignsAPIListAdKeywordsRequest) (*ListAdKeywords200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdKeywords200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ListAdKeywords")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/keywords"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.page != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	} else {
+		var defaultValue int32 = 1
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", defaultValue, "form", "")
+		r.page = &defaultValue
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 50
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	if r.campaignId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
+	}
+	if r.adSetId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adSetId", r.adSetId, "form", "")
+	}
+	if r.status != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
+	}
+	if r.matchType != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "matchType", r.matchType, "form", "")
+	}
+	if r.negative != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "negative", r.negative, "form", "")
+	}
+	if r.search != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "search", r.search, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIListAdsRequest struct {
 	ctx                       context.Context
 	ApiService                *AdCampaignsAPIService
@@ -2176,6 +2443,7 @@ type AdCampaignsAPIListAdsRequest struct {
 	platform                  *string
 	accountId                 *string
 	adAccountId               *string
+	pageId                    *string
 	profileId                 *string
 	campaignId                *string
 	platformAdId              *string
@@ -2221,6 +2489,12 @@ func (r AdCampaignsAPIListAdsRequest) AccountId(accountId string) AdCampaignsAPI
 // Platform ad account ID (e.g. act_123 for Meta). Mirrors the same filter on /v1/ads/campaigns and /v1/ads/tree.
 func (r AdCampaignsAPIListAdsRequest) AdAccountId(adAccountId string) AdCampaignsAPIListAdsRequest {
 	r.adAccountId = &adAccountId
+	return r
+}
+
+// Meta only: Facebook Page ID. Returns only ads whose creative is backed by this Page (a Meta ad account serves ads for every Page in the Business Manager). Matches each ad&#39;s &#x60;creative.pageId&#x60;; ads with no page signal (rare IG-only creatives) never match. Mirrors the same filter on /v1/ads/campaigns and /v1/ads/tree.
+func (r AdCampaignsAPIListAdsRequest) PageId(pageId string) AdCampaignsAPIListAdsRequest {
+	r.pageId = &pageId
 	return r
 }
 
@@ -2347,6 +2621,9 @@ func (a *AdCampaignsAPIService) ListAdsExecute(r AdCampaignsAPIListAdsRequest) (
 	}
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.pageId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageId", r.pageId, "form", "")
 	}
 	if r.profileId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")

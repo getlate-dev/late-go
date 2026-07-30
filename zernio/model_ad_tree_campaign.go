@@ -26,7 +26,7 @@ type AdTreeCampaign struct {
 	// Delivery status derived from child ad statuses. Distinct from `reviewStatus`, which reflects the platform-side review state.
 	Status *AdStatus `json:"status,omitempty"`
 	// Platform-side review state of the campaign. Independent of the children-derived delivery `status`: a campaign can have ads already active (status=active) while the campaign itself is still being reviewed by the platform (reviewStatus=in_review). For Meta, derived from `effective_status` + `issues_info` on the Campaign, plus ad-level PENDING_REVIEW rollup.
-	ReviewStatus NullableString `json:"reviewStatus,omitempty"`
+	ReviewStatus NullableAdReviewStatus `json:"reviewStatus,omitempty"`
 	// Raw platform-level campaign status (Meta `effective_status`: ACTIVE, PAUSED, DELETED, ARCHIVED, IN_PROCESS, WITH_ISSUES). Distinct from per-ad `platformStatus`.
 	PlatformCampaignStatus NullableString `json:"platformCampaignStatus,omitempty"`
 	// Platform-reported campaign issues (Meta `issues_info[]`). Populated only when the platform has delivery issues to report; contains the specific error codes and messages.
@@ -216,9 +216,9 @@ func (o *AdTreeCampaign) SetStatus(v AdStatus) {
 }
 
 // GetReviewStatus returns the ReviewStatus field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *AdTreeCampaign) GetReviewStatus() string {
+func (o *AdTreeCampaign) GetReviewStatus() AdReviewStatus {
 	if o == nil || IsNil(o.ReviewStatus.Get()) {
-		var ret string
+		var ret AdReviewStatus
 		return ret
 	}
 	return *o.ReviewStatus.Get()
@@ -227,7 +227,7 @@ func (o *AdTreeCampaign) GetReviewStatus() string {
 // GetReviewStatusOk returns a tuple with the ReviewStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *AdTreeCampaign) GetReviewStatusOk() (*string, bool) {
+func (o *AdTreeCampaign) GetReviewStatusOk() (*AdReviewStatus, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -243,8 +243,8 @@ func (o *AdTreeCampaign) HasReviewStatus() bool {
 	return false
 }
 
-// SetReviewStatus gets a reference to the given NullableString and assigns it to the ReviewStatus field.
-func (o *AdTreeCampaign) SetReviewStatus(v string) {
+// SetReviewStatus gets a reference to the given NullableAdReviewStatus and assigns it to the ReviewStatus field.
+func (o *AdTreeCampaign) SetReviewStatus(v AdReviewStatus) {
 	o.ReviewStatus.Set(&v)
 }
 

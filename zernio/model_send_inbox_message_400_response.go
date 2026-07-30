@@ -21,7 +21,9 @@ var _ MappedNullable = &SendInboxMessage400Response{}
 // SendInboxMessage400Response struct for SendInboxMessage400Response
 type SendInboxMessage400Response struct {
 	Error *string `json:"error,omitempty"`
-	Code  *string `json:"code,omitempty"`
+	// Stable machine-readable reason. PLATFORM_LIMITATION covers a capability the platform does not offer (e.g. Bluesky and Reddit DMs reject media); MISSING_PARTICIPANT means the stored conversation has no recipient to send to.
+	Code          *string                                   `json:"code,omitempty"`
+	PlatformError *SendInboxMessage400ResponsePlatformError `json:"platformError,omitempty"`
 }
 
 // NewSendInboxMessage400Response instantiates a new SendInboxMessage400Response object
@@ -105,6 +107,38 @@ func (o *SendInboxMessage400Response) SetCode(v string) {
 	o.Code = &v
 }
 
+// GetPlatformError returns the PlatformError field value if set, zero value otherwise.
+func (o *SendInboxMessage400Response) GetPlatformError() SendInboxMessage400ResponsePlatformError {
+	if o == nil || IsNil(o.PlatformError) {
+		var ret SendInboxMessage400ResponsePlatformError
+		return ret
+	}
+	return *o.PlatformError
+}
+
+// GetPlatformErrorOk returns a tuple with the PlatformError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessage400Response) GetPlatformErrorOk() (*SendInboxMessage400ResponsePlatformError, bool) {
+	if o == nil || IsNil(o.PlatformError) {
+		return nil, false
+	}
+	return o.PlatformError, true
+}
+
+// HasPlatformError returns a boolean if a field has been set.
+func (o *SendInboxMessage400Response) HasPlatformError() bool {
+	if o != nil && !IsNil(o.PlatformError) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformError gets a reference to the given SendInboxMessage400ResponsePlatformError and assigns it to the PlatformError field.
+func (o *SendInboxMessage400Response) SetPlatformError(v SendInboxMessage400ResponsePlatformError) {
+	o.PlatformError = &v
+}
+
 func (o SendInboxMessage400Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +154,9 @@ func (o SendInboxMessage400Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Code) {
 		toSerialize["code"] = o.Code
+	}
+	if !IsNil(o.PlatformError) {
+		toSerialize["platformError"] = o.PlatformError
 	}
 	return toSerialize, nil
 }

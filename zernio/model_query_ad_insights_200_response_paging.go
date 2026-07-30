@@ -20,8 +20,10 @@ var _ MappedNullable = &QueryAdInsights200ResponsePaging{}
 
 // QueryAdInsights200ResponsePaging struct for QueryAdInsights200ResponsePaging
 type QueryAdInsights200ResponsePaging struct {
-	// Cursor for the next page; null when exhausted.
+	// Meta cursor for the next page; null when exhausted.
 	After NullableString `json:"after,omitempty"`
+	// Google cursor for the next page; null when exhausted.
+	NextPageToken NullableString `json:"nextPageToken,omitempty"`
 }
 
 // NewQueryAdInsights200ResponsePaging instantiates a new QueryAdInsights200ResponsePaging object
@@ -84,6 +86,49 @@ func (o *QueryAdInsights200ResponsePaging) UnsetAfter() {
 	o.After.Unset()
 }
 
+// GetNextPageToken returns the NextPageToken field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *QueryAdInsights200ResponsePaging) GetNextPageToken() string {
+	if o == nil || IsNil(o.NextPageToken.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.NextPageToken.Get()
+}
+
+// GetNextPageTokenOk returns a tuple with the NextPageToken field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *QueryAdInsights200ResponsePaging) GetNextPageTokenOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NextPageToken.Get(), o.NextPageToken.IsSet()
+}
+
+// HasNextPageToken returns a boolean if a field has been set.
+func (o *QueryAdInsights200ResponsePaging) HasNextPageToken() bool {
+	if o != nil && o.NextPageToken.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetNextPageToken gets a reference to the given NullableString and assigns it to the NextPageToken field.
+func (o *QueryAdInsights200ResponsePaging) SetNextPageToken(v string) {
+	o.NextPageToken.Set(&v)
+}
+
+// SetNextPageTokenNil sets the value for NextPageToken to be an explicit nil
+func (o *QueryAdInsights200ResponsePaging) SetNextPageTokenNil() {
+	o.NextPageToken.Set(nil)
+}
+
+// UnsetNextPageToken ensures that no value is present for NextPageToken, not even an explicit nil
+func (o *QueryAdInsights200ResponsePaging) UnsetNextPageToken() {
+	o.NextPageToken.Unset()
+}
+
 func (o QueryAdInsights200ResponsePaging) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -96,6 +141,9 @@ func (o QueryAdInsights200ResponsePaging) ToMap() (map[string]interface{}, error
 	toSerialize := map[string]interface{}{}
 	if o.After.IsSet() {
 		toSerialize["after"] = o.After.Get()
+	}
+	if o.NextPageToken.IsSet() {
+		toSerialize["nextPageToken"] = o.NextPageToken.Get()
 	}
 	return toSerialize, nil
 }

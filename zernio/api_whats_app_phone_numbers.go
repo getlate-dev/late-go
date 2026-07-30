@@ -29,6 +29,7 @@ type WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest struct {
 	ApiService *WhatsAppPhoneNumbersAPIService
 	country    *string
 	numberType *string
+	sms        *bool
 }
 
 // ISO-2 country code.
@@ -40,6 +41,12 @@ func (r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) Country(c
 // Check a specific offered type (stock and address constraints are per type). Omitted &#x3D; the country&#39;s default type.
 func (r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) NumberType(numberType string) WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest {
 	r.numberType = &numberType
+	return r
+}
+
+// Pass true when the buyer wants SMS: availability, areas, and areaOptions then describe the SMS-capable pool (an SMS purchase orders from it), not the wider voice-only pool.
+func (r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) Sms(sms bool) WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest {
+	r.sms = &sms
 	return r
 }
 
@@ -107,6 +114,9 @@ func (a *WhatsAppPhoneNumbersAPIService) CheckWhatsAppNumberAvailabilityExecute(
 	if r.numberType != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "numberType", r.numberType, "form", "")
 	}
+	if r.sms != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sms", r.sms, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -155,6 +165,7 @@ func (a *WhatsAppPhoneNumbersAPIService) CheckWhatsAppNumberAvailabilityExecute(
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1122,7 +1133,7 @@ func (r WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest) PurchaseWhats
 	return r
 }
 
-func (r WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest) Execute() (*PurchasePhoneNumber200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest) Execute() (*PurchaseWhatsAppPhoneNumber200Response, *http.Response, error) {
 	return r.ApiService.PurchaseWhatsAppPhoneNumberExecute(r)
 }
 
@@ -1155,15 +1166,15 @@ func (a *WhatsAppPhoneNumbersAPIService) PurchaseWhatsAppPhoneNumber(ctx context
 
 // Execute executes the request
 //
-//	@return PurchasePhoneNumber200Response
+//	@return PurchaseWhatsAppPhoneNumber200Response
 //
 // Deprecated
-func (a *WhatsAppPhoneNumbersAPIService) PurchaseWhatsAppPhoneNumberExecute(r WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest) (*PurchasePhoneNumber200Response, *http.Response, error) {
+func (a *WhatsAppPhoneNumbersAPIService) PurchaseWhatsAppPhoneNumberExecute(r WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest) (*PurchaseWhatsAppPhoneNumber200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *PurchasePhoneNumber200Response
+		localVarReturnValue *PurchaseWhatsAppPhoneNumber200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.PurchaseWhatsAppPhoneNumber")

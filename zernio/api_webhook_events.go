@@ -2460,6 +2460,112 @@ func (a *WebhookEventsAPIService) OnPostPartialExecute(r WebhookEventsAPIOnPostP
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnPostPlatformDeletedRequest struct {
+	ctx                        context.Context
+	ApiService                 *WebhookEventsAPIService
+	webhookPayloadPostPlatform *WebhookPayloadPostPlatform
+}
+
+func (r WebhookEventsAPIOnPostPlatformDeletedRequest) WebhookPayloadPostPlatform(webhookPayloadPostPlatform WebhookPayloadPostPlatform) WebhookEventsAPIOnPostPlatformDeletedRequest {
+	r.webhookPayloadPostPlatform = &webhookPayloadPostPlatform
+	return r
+}
+
+func (r WebhookEventsAPIOnPostPlatformDeletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnPostPlatformDeletedExecute(r)
+}
+
+/*
+OnPostPlatformDeleted Post platform deleted event
+
+Fired when Zernio's background sync detects that a platform target
+published through Zernio was later deleted on the platform (e.g.
+the user deleted the Instagram post natively). Detection is
+poll-driven (~hourly), not real-time, and fires once per platform
+target. `platform.deletedAt` carries the detection time. Detection
+is listing-based: a false positive self-heals in Zernio's data when
+the post reappears, but the event is not retracted. Coverage is
+bounded to the posts the platform listing returns.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnPostPlatformDeletedRequest
+*/
+func (a *WebhookEventsAPIService) OnPostPlatformDeleted(ctx context.Context) WebhookEventsAPIOnPostPlatformDeletedRequest {
+	return WebhookEventsAPIOnPostPlatformDeletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnPostPlatformDeletedExecute(r WebhookEventsAPIOnPostPlatformDeletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnPostPlatformDeleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/post.platform.deleted"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadPostPlatform == nil {
+		return nil, reportError("webhookPayloadPostPlatform is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadPostPlatform
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnPostPlatformFailedRequest struct {
 	ctx                        context.Context
 	ApiService                 *WebhookEventsAPIService

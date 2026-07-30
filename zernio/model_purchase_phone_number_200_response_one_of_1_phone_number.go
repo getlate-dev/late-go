@@ -28,6 +28,8 @@ type PurchasePhoneNumber200ResponseOneOf1PhoneNumber struct {
 	ProvisionedAt          *time.Time `json:"provisionedAt,omitempty"`
 	MetaPreverifiedId      *string    `json:"metaPreverifiedId,omitempty"`
 	MetaVerificationStatus *string    `json:"metaVerificationStatus,omitempty"`
+	// The profile the number was actually assigned to.
+	ProfileId *string `json:"profileId,omitempty"`
 }
 
 // NewPurchasePhoneNumber200ResponseOneOf1PhoneNumber instantiates a new PurchasePhoneNumber200ResponseOneOf1PhoneNumber object
@@ -271,6 +273,38 @@ func (o *PurchasePhoneNumber200ResponseOneOf1PhoneNumber) SetMetaVerificationSta
 	o.MetaVerificationStatus = &v
 }
 
+// GetProfileId returns the ProfileId field value if set, zero value otherwise.
+func (o *PurchasePhoneNumber200ResponseOneOf1PhoneNumber) GetProfileId() string {
+	if o == nil || IsNil(o.ProfileId) {
+		var ret string
+		return ret
+	}
+	return *o.ProfileId
+}
+
+// GetProfileIdOk returns a tuple with the ProfileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PurchasePhoneNumber200ResponseOneOf1PhoneNumber) GetProfileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ProfileId) {
+		return nil, false
+	}
+	return o.ProfileId, true
+}
+
+// HasProfileId returns a boolean if a field has been set.
+func (o *PurchasePhoneNumber200ResponseOneOf1PhoneNumber) HasProfileId() bool {
+	if o != nil && !IsNil(o.ProfileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileId gets a reference to the given string and assigns it to the ProfileId field.
+func (o *PurchasePhoneNumber200ResponseOneOf1PhoneNumber) SetProfileId(v string) {
+	o.ProfileId = &v
+}
+
 func (o PurchasePhoneNumber200ResponseOneOf1PhoneNumber) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -301,6 +335,9 @@ func (o PurchasePhoneNumber200ResponseOneOf1PhoneNumber) ToMap() (map[string]int
 	}
 	if !IsNil(o.MetaVerificationStatus) {
 		toSerialize["metaVerificationStatus"] = o.MetaVerificationStatus
+	}
+	if !IsNil(o.ProfileId) {
+		toSerialize["profileId"] = o.ProfileId
 	}
 	return toSerialize, nil
 }

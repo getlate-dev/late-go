@@ -15,6 +15,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 // checks if the WebhookPayloadPostPlatformPlatform type satisfies the MappedNullable interface at compile time
@@ -26,12 +27,14 @@ type WebhookPayloadPostPlatformPlatform struct {
 	Name string `json:"name"`
 	// Terminal status this event fires on. Matches the event suffix.
 	Status string `json:"status"`
-	// Platform-native post id. Present on `published`, absent on `failed`.
+	// Platform-native post id. Present on `published` and `deleted`, absent on `failed`.
 	PlatformPostId *string `json:"platformPostId,omitempty"`
-	// Public URL to the platform-side post. Present on `published` (when the platform exposes one and it is not a draft).
+	// Public URL to the platform-side post. Present on `published` (when the platform exposes one and it is not a draft) and on `deleted` (when one was recorded at publish time).
 	PublishedUrl *string `json:"publishedUrl,omitempty"`
-	// Error message from the platform. Present on `failed`, absent on `published`.
+	// Error message from the platform. Present on `failed` only.
 	Error *string `json:"error,omitempty"`
+	// When the platform-side deletion was detected by Zernio sync (ISO 8601). Present only on `post.platform.deleted`.
+	DeletedAt *time.Time `json:"deletedAt,omitempty"`
 }
 
 type _WebhookPayloadPostPlatformPlatform WebhookPayloadPostPlatformPlatform
@@ -199,6 +202,38 @@ func (o *WebhookPayloadPostPlatformPlatform) SetError(v string) {
 	o.Error = &v
 }
 
+// GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
+func (o *WebhookPayloadPostPlatformPlatform) GetDeletedAt() time.Time {
+	if o == nil || IsNil(o.DeletedAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.DeletedAt
+}
+
+// GetDeletedAtOk returns a tuple with the DeletedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadPostPlatformPlatform) GetDeletedAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.DeletedAt) {
+		return nil, false
+	}
+	return o.DeletedAt, true
+}
+
+// HasDeletedAt returns a boolean if a field has been set.
+func (o *WebhookPayloadPostPlatformPlatform) HasDeletedAt() bool {
+	if o != nil && !IsNil(o.DeletedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeletedAt gets a reference to the given time.Time and assigns it to the DeletedAt field.
+func (o *WebhookPayloadPostPlatformPlatform) SetDeletedAt(v time.Time) {
+	o.DeletedAt = &v
+}
+
 func (o WebhookPayloadPostPlatformPlatform) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -219,6 +254,9 @@ func (o WebhookPayloadPostPlatformPlatform) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.DeletedAt) {
+		toSerialize["deletedAt"] = o.DeletedAt
 	}
 	return toSerialize, nil
 }

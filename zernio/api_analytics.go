@@ -875,7 +875,7 @@ func (r AnalyticsAPIGetFacebookPageInsightsRequest) AccountId(accountId string) 
 	return r
 }
 
-// Comma-separated list of metrics. Defaults to \&quot;page_media_view,page_post_engagements,page_follows,followers_gained,followers_lost\&quot;.  Live Meta metrics (current names, post-Nov-2025):   - page_media_view       (replaces deprecated page_impressions)   - page_views_total   - page_post_engagements   - page_video_views   - page_video_view_time   - page_follows          (replaces deprecated page_fans)  Zernio-synthesized from daily follower snapshots (filling the Nov-2025 gap left by the page_fan_adds / page_fan_removes deprecation):   - followers_gained   - followers_lost
+// Comma-separated list of metrics. Defaults to \&quot;page_media_view,page_post_engagements,page_follows,followers_gained,followers_lost\&quot;.  Live Meta metrics (current names, post-Nov-2025):   - page_media_view       (replaces deprecated page_impressions)   - page_views_total   - page_post_engagements   - page_video_views   - page_video_view_time   - page_follows          (replaces deprecated page_fans)  Zernio-synthesized from daily follower snapshots (filling the Nov-2025 gap left by the page_fan_adds / page_fan_removes deprecation):   - followers_gained   - followers_lost  Monetization (opt-in, not in the defaults):   - content_monetization_earnings   - monetization_approximate_earnings  Each monetization metric is fetched with its own separate Graph call, so requesting both adds two calls. Values are approximate and Meta restates them after the fact.  content_monetization_earnings returns an object per day and always carries unit \&quot;micro_amount\&quot; plus an ISO 4217 \&quot;currency\&quot;. monetization_approximate_earnings returns a bare number per day, so its unit is always \&quot;unspecified\&quot; and its \&quot;currency\&quot; is always null. The two are on different scales and are not comparable to each other. Both keep their daily \&quot;values\&quot; on every metricType and are never rescaled by Zernio.  Earnings here are Page-level daily buckets and \&quot;total\&quot; is their sum. Meta does not document whether a bucket carries that day&#39;s earnings or a running total, and every Page measured so far earned exactly 0, so reconcile \&quot;total\&quot; against the Page&#39;s own Meta export before relying on it; the daily \&quot;values\&quot; are always returned for that purpose. Per-post lifetime earnings are served by GET /v1/analytics/facebook/post-earnings.  A Page that is not enrolled in monetization, or that earned nothing, returns normal daily buckets of 0 in \&quot;metrics\&quot;: Meta does not distinguish the two, so a 0 total here does NOT mean the Page is enrolled. \&quot;unavailableMetrics\&quot; covers the narrower case where Meta returned no bucket for the metric at all (\&quot;no_data\&quot;) or rejected the request outright, and the metric is then omitted from \&quot;metrics\&quot; rather than reported as 0.
 func (r AnalyticsAPIGetFacebookPageInsightsRequest) Metrics(metrics string) AnalyticsAPIGetFacebookPageInsightsRequest {
 	r.metrics = &metrics
 	return r
@@ -969,6 +969,164 @@ func (a *AnalyticsAPIService) GetFacebookPageInsightsExecute(r AnalyticsAPIGetFa
 		var defaultValue string = "total_value"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "metricType", defaultValue, "form", "")
 		r.metricType = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AnalyticsAPIGetFacebookPostEarningsRequest struct {
+	ctx        context.Context
+	ApiService *AnalyticsAPIService
+	accountId  *string
+	postId     *string
+	metrics    *string
+}
+
+// The Zernio SocialAccount ID for the connected Facebook Page.
+func (r AnalyticsAPIGetFacebookPostEarningsRequest) AccountId(accountId string) AnalyticsAPIGetFacebookPostEarningsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// The platform post ID, exactly as returned in platformAnalytics[].platformPostId by /v1/analytics: \&quot;{pageId}_{postId}\&quot;, or the bare video ID for Reels.
+func (r AnalyticsAPIGetFacebookPostEarningsRequest) PostId(postId string) AnalyticsAPIGetFacebookPostEarningsRequest {
+	r.postId = &postId
+	return r
+}
+
+// Comma-separated list of monetization metrics. Defaults to both:   - content_monetization_earnings   - monetization_approximate_earnings  content_monetization_earnings always carries unit \&quot;micro_amount\&quot; plus an ISO 4217 \&quot;currency\&quot;. monetization_approximate_earnings is always a bare number, so its unit is \&quot;unspecified\&quot; and its \&quot;currency\&quot; is null. The two are on different scales and are not comparable to each other. Any other metric name is rejected with 400.
+func (r AnalyticsAPIGetFacebookPostEarningsRequest) Metrics(metrics string) AnalyticsAPIGetFacebookPostEarningsRequest {
+	r.metrics = &metrics
+	return r
+}
+
+func (r AnalyticsAPIGetFacebookPostEarningsRequest) Execute() (*FacebookPostEarningsResponse, *http.Response, error) {
+	return r.ApiService.GetFacebookPostEarningsExecute(r)
+}
+
+/*
+GetFacebookPostEarnings Get Facebook post monetization earnings
+
+Returns lifetime monetization earnings for ONE Facebook post, read live from Meta on every
+request. Requires the Analytics add-on.
+
+Earnings are CUMULATIVE since the post was published, not earnings within a date range, so
+this endpoint takes no since/until and the totals must not be summed across dates or across
+posts. Page-level daily earnings live on /v1/analytics/facebook/page-insights.
+
+A post on a Page that is not enrolled in monetization, or that earned nothing, returns
+"total": 0 rather than an error: Meta does not distinguish the two. A metric Meta returned no
+bucket for at all is reported in "unavailableMetrics" and omitted from "metrics", never as a 0.
+
+Amounts are the platform's raw numbers in the stated "unit" and are never rescaled by Zernio.
+Breakdown dimensions are not exposed and a "breakdown" param is rejected with 400. So are
+"since", "until", "period", and "metricType": scoping this endpoint to a window is not
+possible, and silently returning the lifetime total for one would let a caller sum a year of
+weekly requests into a figure ~52x the post's real earnings.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AnalyticsAPIGetFacebookPostEarningsRequest
+*/
+func (a *AnalyticsAPIService) GetFacebookPostEarnings(ctx context.Context) AnalyticsAPIGetFacebookPostEarningsRequest {
+	return AnalyticsAPIGetFacebookPostEarningsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return FacebookPostEarningsResponse
+func (a *AnalyticsAPIService) GetFacebookPostEarningsExecute(r AnalyticsAPIGetFacebookPostEarningsRequest) (*FacebookPostEarningsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FacebookPostEarningsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AnalyticsAPIService.GetFacebookPostEarnings")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/analytics/facebook/post-earnings"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.postId == nil {
+		return localVarReturnValue, nil, reportError("postId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "postId", r.postId, "form", "")
+	if r.metrics != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4426,7 +4584,9 @@ Behavior:
 - Otherwise we fetch the account's latest posts live from the platform, then match and return the submitted post.
 - Requests are debounced per account (~15s): if the account was just synced, the live fetch is skipped.
 
-`accountId` is required — a post URL or id alone cannot be resolved to an account, and the account must be connected to Zernio (we use its token to read the platform). Supported for every platform with a listing API (Instagram, Facebook, TikTok, YouTube, X, Threads, Pinterest, Reddit, Bluesky, Google Business, and LinkedIn organization accounts; LinkedIn personal accounts are not supported).
+`accountId` is required — a post URL or id alone cannot be resolved to an account, and the account must be connected to Zernio (we use its token to read the platform). Supported for every platform with a listing API (Instagram, Facebook, TikTok, YouTube, X, Threads, Pinterest, Reddit, Bluesky, Google Business, and LinkedIn organization accounts).
+
+LinkedIn personal profiles: LinkedIn has no listing API for personal profiles, so a `url` is REQUIRED and imports that single post. Pass any LinkedIn post URL (`linkedin.com/posts/…`, `linkedin.com/feed/update/urn:li:activity:…`) or a `urn:li:share:…` / `urn:li:ugcPost:…` URN. Works for posts published outside Zernio and before the account was connected, any age; the post must be authored by the connected member. Imported posts return full analytics (impressions, reach, reactions, comments, reshares, saves) and keep refreshing on the background analytics cycle, but carry no content/media (LinkedIn does not expose them for personal profiles).
 
 `url` accepts any format the platform uses (e.g. `instagram.com/p/…`, `instagram.com/reel/…`, `youtu.be/…`, `youtube.com/shorts/…`, `tiktok.com/@user/video/…`, and `vm.tiktok.com` short links). Pass `postId` (the platform media/video id) as an alternative locator.
 

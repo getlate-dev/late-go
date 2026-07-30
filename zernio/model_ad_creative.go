@@ -34,6 +34,8 @@ type AdCreative struct {
 	ObjectStoryId NullableString `json:"objectStoryId,omitempty"`
 	// Meta `effective_object_story_id` — `{pageId}_{postId}` of the Facebook post the ad's engagement (comments) lives on. Pass to GET /v1/ads?effectiveObjectStoryId= to map a Business-Manager-visible post back to this ad; GET /v1/ads/{adId}/comments resolves comments against it.
 	EffectiveObjectStoryId NullableString `json:"effectiveObjectStoryId,omitempty"`
+	// Facebook Page backing the creative (Meta only). What the `pageId` filter on /v1/ads, /v1/ads/campaigns and /v1/ads/tree matches against. Absent for non-Meta ads and rare Meta creatives with no page signal.
+	PageId NullableString `json:"pageId,omitempty"`
 	// Meta `effective_instagram_media_id` — the Instagram media ID of the boosted post the ad's engagement lives on. Pass to GET /v1/ads?effectiveInstagramMediaId= to map a Business-Manager-visible IG post back to this ad.
 	EffectiveInstagramMediaId NullableString `json:"effectiveInstagramMediaId,omitempty"`
 	// Meta `instagram_user_id` — the Instagram-scoped business ID that owns the boosted media.
@@ -338,6 +340,49 @@ func (o *AdCreative) SetEffectiveObjectStoryIdNil() {
 // UnsetEffectiveObjectStoryId ensures that no value is present for EffectiveObjectStoryId, not even an explicit nil
 func (o *AdCreative) UnsetEffectiveObjectStoryId() {
 	o.EffectiveObjectStoryId.Unset()
+}
+
+// GetPageId returns the PageId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdCreative) GetPageId() string {
+	if o == nil || IsNil(o.PageId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PageId.Get()
+}
+
+// GetPageIdOk returns a tuple with the PageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdCreative) GetPageIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PageId.Get(), o.PageId.IsSet()
+}
+
+// HasPageId returns a boolean if a field has been set.
+func (o *AdCreative) HasPageId() bool {
+	if o != nil && o.PageId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPageId gets a reference to the given NullableString and assigns it to the PageId field.
+func (o *AdCreative) SetPageId(v string) {
+	o.PageId.Set(&v)
+}
+
+// SetPageIdNil sets the value for PageId to be an explicit nil
+func (o *AdCreative) SetPageIdNil() {
+	o.PageId.Set(nil)
+}
+
+// UnsetPageId ensures that no value is present for PageId, not even an explicit nil
+func (o *AdCreative) UnsetPageId() {
+	o.PageId.Unset()
 }
 
 // GetEffectiveInstagramMediaId returns the EffectiveInstagramMediaId field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -755,6 +800,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if o.EffectiveObjectStoryId.IsSet() {
 		toSerialize["effectiveObjectStoryId"] = o.EffectiveObjectStoryId.Get()
+	}
+	if o.PageId.IsSet() {
+		toSerialize["pageId"] = o.PageId.Get()
 	}
 	if o.EffectiveInstagramMediaId.IsSet() {
 		toSerialize["effectiveInstagramMediaId"] = o.EffectiveInstagramMediaId.Get()

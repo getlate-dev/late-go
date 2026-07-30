@@ -823,6 +823,10 @@ from GET /v1/ads/{adId}/comments?placement={placement}. Ad comment counts are re
 the Marketing API token (Facebook side) or the connected Instagram account's token
 (Instagram side); a row whose count can't be read is omitted.
 
+Pagination walks each account's platform listing. Following `nextCursor` reaches past
+the first page on Facebook and Instagram only, since they are the platforms that
+support a server-side date window; on the others the listing stops at its first page.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommentsAPIListInboxCommentsRequest
 */
@@ -1195,7 +1199,7 @@ func (a *CommentsAPIService) SendPrivateReplyToCommentExecute(r CommentsAPISendP
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v SendInboxMessage400Response
+			var v SendPrivateReplyToComment400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

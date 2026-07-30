@@ -22,10 +22,14 @@ var _ MappedNullable = &InstagramAccountInsightsResponseMetricsValue{}
 type InstagramAccountInsightsResponseMetricsValue struct {
 	// Sum or aggregate value for the metric
 	Total *float32 `json:"total,omitempty"`
-	// Daily values (only for time_series)
+	// Daily values (for time_series, and always on monetary metrics)
 	Values []InstagramAccountInsightsResponseMetricsValueValuesInner `json:"values,omitempty"`
 	// Breakdown values (only for total_value with breakdown)
 	Breakdowns []InstagramAccountInsightsResponseMetricsValueBreakdownsInner `json:"breakdowns,omitempty"`
+	// Present on monetary metrics only. The scale of \"total\" and of every \"values[].value\", exactly as the platform returned them.  \"micro_amount\": the platform returned an object shape carrying a micro amount, and the values are that integer, summed, unconverted. Zernio does not publish a divisor because Meta does not document one; divide by the scale you have verified against the Page's own Meta Business Suite export. On Facebook Page insights this is always content_monetization_earnings.  \"unspecified\": the platform returned a bare number with no unit metadata. It is passed through as-is; the platform does not state whether it is major or minor currency units. On Facebook Page insights this is always monetization_approximate_earnings.
+	Unit *string `json:"unit,omitempty"`
+	// ISO 4217 currency of a monetary metric, or null when the platform omitted it. Always null on monetization_approximate_earnings, which Meta returns as a bare number with no currency; always present on content_monetization_earnings.
+	Currency NullableString `json:"currency,omitempty"`
 }
 
 // NewInstagramAccountInsightsResponseMetricsValue instantiates a new InstagramAccountInsightsResponseMetricsValue object
@@ -141,6 +145,81 @@ func (o *InstagramAccountInsightsResponseMetricsValue) SetBreakdowns(v []Instagr
 	o.Breakdowns = v
 }
 
+// GetUnit returns the Unit field value if set, zero value otherwise.
+func (o *InstagramAccountInsightsResponseMetricsValue) GetUnit() string {
+	if o == nil || IsNil(o.Unit) {
+		var ret string
+		return ret
+	}
+	return *o.Unit
+}
+
+// GetUnitOk returns a tuple with the Unit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstagramAccountInsightsResponseMetricsValue) GetUnitOk() (*string, bool) {
+	if o == nil || IsNil(o.Unit) {
+		return nil, false
+	}
+	return o.Unit, true
+}
+
+// HasUnit returns a boolean if a field has been set.
+func (o *InstagramAccountInsightsResponseMetricsValue) HasUnit() bool {
+	if o != nil && !IsNil(o.Unit) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnit gets a reference to the given string and assigns it to the Unit field.
+func (o *InstagramAccountInsightsResponseMetricsValue) SetUnit(v string) {
+	o.Unit = &v
+}
+
+// GetCurrency returns the Currency field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *InstagramAccountInsightsResponseMetricsValue) GetCurrency() string {
+	if o == nil || IsNil(o.Currency.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Currency.Get()
+}
+
+// GetCurrencyOk returns a tuple with the Currency field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *InstagramAccountInsightsResponseMetricsValue) GetCurrencyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Currency.Get(), o.Currency.IsSet()
+}
+
+// HasCurrency returns a boolean if a field has been set.
+func (o *InstagramAccountInsightsResponseMetricsValue) HasCurrency() bool {
+	if o != nil && o.Currency.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCurrency gets a reference to the given NullableString and assigns it to the Currency field.
+func (o *InstagramAccountInsightsResponseMetricsValue) SetCurrency(v string) {
+	o.Currency.Set(&v)
+}
+
+// SetCurrencyNil sets the value for Currency to be an explicit nil
+func (o *InstagramAccountInsightsResponseMetricsValue) SetCurrencyNil() {
+	o.Currency.Set(nil)
+}
+
+// UnsetCurrency ensures that no value is present for Currency, not even an explicit nil
+func (o *InstagramAccountInsightsResponseMetricsValue) UnsetCurrency() {
+	o.Currency.Unset()
+}
+
 func (o InstagramAccountInsightsResponseMetricsValue) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -159,6 +238,12 @@ func (o InstagramAccountInsightsResponseMetricsValue) ToMap() (map[string]interf
 	}
 	if !IsNil(o.Breakdowns) {
 		toSerialize["breakdowns"] = o.Breakdowns
+	}
+	if !IsNil(o.Unit) {
+		toSerialize["unit"] = o.Unit
+	}
+	if o.Currency.IsSet() {
+		toSerialize["currency"] = o.Currency.Get()
 	}
 	return toSerialize, nil
 }

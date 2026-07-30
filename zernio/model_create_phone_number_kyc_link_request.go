@@ -24,7 +24,9 @@ var _ MappedNullable = &CreatePhoneNumberKycLinkRequest{}
 type CreatePhoneNumberKycLinkRequest struct {
 	ProfileId string `json:"profileId"`
 	// ISO 3166-1 alpha-2 country code (must be a regulated/KYC country).
-	Country  string                                   `json:"country"`
+	Country string `json:"country"`
+	// Area code (NDC) the eventual number must be in. Hard constraint carried by the link; the end customer filling the form makes no area choice. Options come from GET /v1/phone-numbers/availability (areaOptions).
+	AreaCode *string                                  `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
 	Branding *CreatePhoneNumberKycLinkRequestBranding `json:"branding,omitempty"`
 	// Where to send the end customer's browser after a successful submit. On completion Zernio appends `kyc=submitted` and `country=<ISO-2>` as query params. When omitted, the hosted page shows a built-in confirmation screen instead.
 	RedirectUrl *string `json:"redirect_url,omitempty"`
@@ -97,6 +99,38 @@ func (o *CreatePhoneNumberKycLinkRequest) GetCountryOk() (*string, bool) {
 // SetCountry sets field value
 func (o *CreatePhoneNumberKycLinkRequest) SetCountry(v string) {
 	o.Country = v
+}
+
+// GetAreaCode returns the AreaCode field value if set, zero value otherwise.
+func (o *CreatePhoneNumberKycLinkRequest) GetAreaCode() string {
+	if o == nil || IsNil(o.AreaCode) {
+		var ret string
+		return ret
+	}
+	return *o.AreaCode
+}
+
+// GetAreaCodeOk returns a tuple with the AreaCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePhoneNumberKycLinkRequest) GetAreaCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.AreaCode) {
+		return nil, false
+	}
+	return o.AreaCode, true
+}
+
+// HasAreaCode returns a boolean if a field has been set.
+func (o *CreatePhoneNumberKycLinkRequest) HasAreaCode() bool {
+	if o != nil && !IsNil(o.AreaCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetAreaCode gets a reference to the given string and assigns it to the AreaCode field.
+func (o *CreatePhoneNumberKycLinkRequest) SetAreaCode(v string) {
+	o.AreaCode = &v
 }
 
 // GetBranding returns the Branding field value if set, zero value otherwise.
@@ -175,6 +209,9 @@ func (o CreatePhoneNumberKycLinkRequest) ToMap() (map[string]interface{}, error)
 	toSerialize := map[string]interface{}{}
 	toSerialize["profileId"] = o.ProfileId
 	toSerialize["country"] = o.Country
+	if !IsNil(o.AreaCode) {
+		toSerialize["areaCode"] = o.AreaCode
+	}
 	if !IsNil(o.Branding) {
 		toSerialize["branding"] = o.Branding
 	}

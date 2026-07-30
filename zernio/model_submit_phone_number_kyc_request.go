@@ -26,7 +26,7 @@ type SubmitPhoneNumberKycRequest struct {
 	Country   string `json:"country"`
 	// Idempotency token for this submission attempt. A retry/double-submit with the same token returns the same number; omit and each call creates a new number.
 	SubmissionId *string `json:"submissionId,omitempty"`
-	// Provision several same-country numbers from one submission (1-5). The single verification covers all of them; each number is billed only when it activates. Numbers that fail to order are skipped (best-effort).
+	// Provision several same-country numbers from one submission (1-5). The single verification covers all of them; each number is billed only when it activates. Numbers that fail to order are skipped (best-effort). With `areaCode`, a quantity above that area's live stock is rejected with a 400.
 	Quantity *int32 `json:"quantity,omitempty"`
 	// Reuse a prior approved verification for this country (skips document/field collection; places the order immediately).
 	Reuse *bool `json:"reuse,omitempty"`
@@ -34,6 +34,8 @@ type SubmitPhoneNumberKycRequest struct {
 	ReuseOptionId *string `json:"reuseOptionId,omitempty"`
 	// Legacy fallback for `reuseOptionId`: the source phone number (GET reusable.options[].fromPhoneNumber). Ambiguous when a number labels two verifications — prefer `reuseOptionId`. Omitted = the approved default. No match = 409.
 	ReuseFrom *string `json:"reuseFrom,omitempty"`
+	// Area code (NDC) the number must be in. Hard constraint: an empty area pool fails with 409 code AREA_CODE_UNAVAILABLE instead of ordering from another area. Omit for any area. Options come from GET /v1/phone-numbers/availability (areaOptions); the purchase 202 kycUrl echoes the areaCode picked at purchase time so it can be passed here.
+	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
 	// End user's legal first name. Required when the country has an action/ID-verification (Onfido) requirement.
 	EndUserFirstName *string `json:"endUserFirstName,omitempty"`
 	// End user's legal last name. Same condition as endUserFirstName.
@@ -278,6 +280,38 @@ func (o *SubmitPhoneNumberKycRequest) SetReuseFrom(v string) {
 	o.ReuseFrom = &v
 }
 
+// GetAreaCode returns the AreaCode field value if set, zero value otherwise.
+func (o *SubmitPhoneNumberKycRequest) GetAreaCode() string {
+	if o == nil || IsNil(o.AreaCode) {
+		var ret string
+		return ret
+	}
+	return *o.AreaCode
+}
+
+// GetAreaCodeOk returns a tuple with the AreaCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitPhoneNumberKycRequest) GetAreaCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.AreaCode) {
+		return nil, false
+	}
+	return o.AreaCode, true
+}
+
+// HasAreaCode returns a boolean if a field has been set.
+func (o *SubmitPhoneNumberKycRequest) HasAreaCode() bool {
+	if o != nil && !IsNil(o.AreaCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetAreaCode gets a reference to the given string and assigns it to the AreaCode field.
+func (o *SubmitPhoneNumberKycRequest) SetAreaCode(v string) {
+	o.AreaCode = &v
+}
+
 // GetEndUserFirstName returns the EndUserFirstName field value if set, zero value otherwise.
 func (o *SubmitPhoneNumberKycRequest) GetEndUserFirstName() string {
 	if o == nil || IsNil(o.EndUserFirstName) {
@@ -464,6 +498,9 @@ func (o SubmitPhoneNumberKycRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ReuseFrom) {
 		toSerialize["reuseFrom"] = o.ReuseFrom
+	}
+	if !IsNil(o.AreaCode) {
+		toSerialize["areaCode"] = o.AreaCode
 	}
 	if !IsNil(o.EndUserFirstName) {
 		toSerialize["endUserFirstName"] = o.EndUserFirstName

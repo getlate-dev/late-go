@@ -20,8 +20,9 @@ var _ MappedNullable = &GetInboxPostComments200ResponsePagination{}
 
 // GetInboxPostComments200ResponsePagination struct for GetInboxPostComments200ResponsePagination
 type GetInboxPostComments200ResponsePagination struct {
-	HasMore *bool          `json:"hasMore,omitempty"`
-	Cursor  NullableString `json:"cursor,omitempty"`
+	HasMore *bool `json:"hasMore,omitempty"`
+	// Only present when hasMore is true. Absent on the last page, so treat its absence as the end of the thread.
+	Cursor NullableString `json:"cursor,omitempty"`
 }
 
 // NewGetInboxPostComments200ResponsePagination instantiates a new GetInboxPostComments200ResponsePagination object

@@ -851,6 +851,9 @@ can read (paginated server-side), then chunks the lookup against TikTok's
 without a BC fall back to the OAuth-time `advertiser_ids` list. Cached for 1h on the
 SocialAccount; lazy-refreshed on first call after expiry.
 
+For Google Ads: responds `429` when Google's API quota is temporarily exhausted
+(instead of an empty list). Retry after a delay.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIListAdAccountsRequest
 */
@@ -942,6 +945,16 @@ func (a *AdAccountsAPIService) ListAdAccountsExecute(r AdAccountsAPIListAdAccoun
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1385,6 +1398,17 @@ func (a *AdAccountsAPIService) ListAdsBusinessCentersExecute(r AdAccountsAPIList
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -1451,7 +1475,7 @@ func (r AdAccountsAPIListHighDemandPeriodsRequest) After(after string) AdAccount
 	return r
 }
 
-func (r AdAccountsAPIListHighDemandPeriodsRequest) Execute() (*QueryAdInsights200Response, *http.Response, error) {
+func (r AdAccountsAPIListHighDemandPeriodsRequest) Execute() (*ListHighDemandPeriods200Response, *http.Response, error) {
 	return r.ApiService.ListHighDemandPeriodsExecute(r)
 }
 
@@ -1475,13 +1499,13 @@ func (a *AdAccountsAPIService) ListHighDemandPeriods(ctx context.Context) AdAcco
 
 // Execute executes the request
 //
-//	@return QueryAdInsights200Response
-func (a *AdAccountsAPIService) ListHighDemandPeriodsExecute(r AdAccountsAPIListHighDemandPeriodsRequest) (*QueryAdInsights200Response, *http.Response, error) {
+//	@return ListHighDemandPeriods200Response
+func (a *AdAccountsAPIService) ListHighDemandPeriodsExecute(r AdAccountsAPIListHighDemandPeriodsRequest) (*ListHighDemandPeriods200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *QueryAdInsights200Response
+		localVarReturnValue *ListHighDemandPeriods200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.ListHighDemandPeriods")

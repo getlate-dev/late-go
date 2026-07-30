@@ -17,6 +17,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 // TwitterEngagementAPIService TwitterEngagementAPI service
@@ -477,6 +478,229 @@ func (a *TwitterEngagementAPIService) RetweetPostExecute(r TwitterEngagementAPIR
 	}
 	// body params
 	localVarPostBody = r.retweetPostRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type TwitterEngagementAPISearchTweetsRequest struct {
+	ctx        context.Context
+	ApiService *TwitterEngagementAPIService
+	accountId  *string
+	query      *string
+	limit      *int32
+	sinceId    *string
+	untilId    *string
+	startTime  *time.Time
+	endTime    *time.Time
+	cursor     *string
+	sortOrder  *string
+}
+
+// The social account ID
+func (r TwitterEngagementAPISearchTweetsRequest) AccountId(accountId string) TwitterEngagementAPISearchTweetsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// X search query, max 512 characters. Operators are passed through unchanged; X rejects malformed queries with a 400.
+func (r TwitterEngagementAPISearchTweetsRequest) Query(query string) TwitterEngagementAPISearchTweetsRequest {
+	r.query = &query
+	return r
+}
+
+// Results per page. X requires a minimum of 10; values below 10 are rejected.
+func (r TwitterEngagementAPISearchTweetsRequest) Limit(limit int32) TwitterEngagementAPISearchTweetsRequest {
+	r.limit = &limit
+	return r
+}
+
+// Only return tweets with an ID greater than (more recent than) this numeric tweet ID. Non-numeric values are rejected with 400.
+func (r TwitterEngagementAPISearchTweetsRequest) SinceId(sinceId string) TwitterEngagementAPISearchTweetsRequest {
+	r.sinceId = &sinceId
+	return r
+}
+
+// Only return tweets with an ID less than (older than) this numeric tweet ID. Non-numeric values are rejected with 400.
+func (r TwitterEngagementAPISearchTweetsRequest) UntilId(untilId string) TwitterEngagementAPISearchTweetsRequest {
+	r.untilId = &untilId
+	return r
+}
+
+// Oldest UTC timestamp (ISO 8601, inclusive), within the last 7 days
+func (r TwitterEngagementAPISearchTweetsRequest) StartTime(startTime time.Time) TwitterEngagementAPISearchTweetsRequest {
+	r.startTime = &startTime
+	return r
+}
+
+// Newest UTC timestamp (ISO 8601, exclusive), within the last 7 days
+func (r TwitterEngagementAPISearchTweetsRequest) EndTime(endTime time.Time) TwitterEngagementAPISearchTweetsRequest {
+	r.endTime = &endTime
+	return r
+}
+
+// Pagination cursor from a previous response
+func (r TwitterEngagementAPISearchTweetsRequest) Cursor(cursor string) TwitterEngagementAPISearchTweetsRequest {
+	r.cursor = &cursor
+	return r
+}
+
+func (r TwitterEngagementAPISearchTweetsRequest) SortOrder(sortOrder string) TwitterEngagementAPISearchTweetsRequest {
+	r.sortOrder = &sortOrder
+	return r
+}
+
+func (r TwitterEngagementAPISearchTweetsRequest) Execute() (*SearchTweets200Response, *http.Response, error) {
+	return r.ApiService.SearchTweetsExecute(r)
+}
+
+/*
+SearchTweets Search recent tweets
+
+Search public tweets from the last 7 days matching an X search query, e.g. to discover tweets to reply to.
+The query string is passed through to X unchanged and supports X's search operators
+(`from:user`, `-is:retweet`, `is:reply`, `lang:en`, `"exact phrase"`, `conversation_id:123`, boolean `OR`, ...).
+Note that standalone operators like `is:` / `has:` / `lang:` must be combined with a keyword or `from:` clause.
+
+To reply to a found tweet, pass its `id` as the twitter platform entry's `platformSpecificData.replyToTweetId` when creating a post.
+
+Rate limit: 300 requests per 15-min window per connected account.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return TwitterEngagementAPISearchTweetsRequest
+*/
+func (a *TwitterEngagementAPIService) SearchTweets(ctx context.Context) TwitterEngagementAPISearchTweetsRequest {
+	return TwitterEngagementAPISearchTweetsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SearchTweets200Response
+func (a *TwitterEngagementAPIService) SearchTweetsExecute(r TwitterEngagementAPISearchTweetsRequest) (*SearchTweets200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SearchTweets200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TwitterEngagementAPIService.SearchTweets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/twitter/search"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.query == nil {
+		return localVarReturnValue, nil, reportError("query is required and must be specified")
+	}
+	if strlen(*r.query) < 1 {
+		return localVarReturnValue, nil, reportError("query must have at least 1 elements")
+	}
+	if strlen(*r.query) > 512 {
+		return localVarReturnValue, nil, reportError("query must have less than 512 elements")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "query", r.query, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 10
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.sinceId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sinceId", r.sinceId, "form", "")
+	}
+	if r.untilId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "untilId", r.untilId, "form", "")
+	}
+	if r.startTime != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "startTime", r.startTime, "form", "")
+	}
+	if r.endTime != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "endTime", r.endTime, "form", "")
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	if r.sortOrder != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sortOrder", r.sortOrder, "form", "")
+	} else {
+		var defaultValue string = "recency"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sortOrder", defaultValue, "form", "")
+		r.sortOrder = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

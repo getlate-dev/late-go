@@ -27,8 +27,8 @@ type GetAdInsightsReport200Response struct {
 	DateStart         *string `json:"dateStart,omitempty"`
 	DateStop          *string `json:"dateStop,omitempty"`
 	// Present only when status is Job Completed.
-	Data   []map[string]interface{}          `json:"data,omitempty"`
-	Paging *QueryAdInsights200ResponsePaging `json:"paging,omitempty"`
+	Data   []map[string]interface{}              `json:"data,omitempty"`
+	Paging *GetAdInsightsReport200ResponsePaging `json:"paging,omitempty"`
 }
 
 // NewGetAdInsightsReport200Response instantiates a new GetAdInsightsReport200Response object
@@ -241,9 +241,9 @@ func (o *GetAdInsightsReport200Response) SetData(v []map[string]interface{}) {
 }
 
 // GetPaging returns the Paging field value if set, zero value otherwise.
-func (o *GetAdInsightsReport200Response) GetPaging() QueryAdInsights200ResponsePaging {
+func (o *GetAdInsightsReport200Response) GetPaging() GetAdInsightsReport200ResponsePaging {
 	if o == nil || IsNil(o.Paging) {
-		var ret QueryAdInsights200ResponsePaging
+		var ret GetAdInsightsReport200ResponsePaging
 		return ret
 	}
 	return *o.Paging
@@ -251,7 +251,7 @@ func (o *GetAdInsightsReport200Response) GetPaging() QueryAdInsights200ResponseP
 
 // GetPagingOk returns a tuple with the Paging field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetAdInsightsReport200Response) GetPagingOk() (*QueryAdInsights200ResponsePaging, bool) {
+func (o *GetAdInsightsReport200Response) GetPagingOk() (*GetAdInsightsReport200ResponsePaging, bool) {
 	if o == nil || IsNil(o.Paging) {
 		return nil, false
 	}
@@ -267,8 +267,8 @@ func (o *GetAdInsightsReport200Response) HasPaging() bool {
 	return false
 }
 
-// SetPaging gets a reference to the given QueryAdInsights200ResponsePaging and assigns it to the Paging field.
-func (o *GetAdInsightsReport200Response) SetPaging(v QueryAdInsights200ResponsePaging) {
+// SetPaging gets a reference to the given GetAdInsightsReport200ResponsePaging and assigns it to the Paging field.
+func (o *GetAdInsightsReport200Response) SetPaging(v GetAdInsightsReport200ResponsePaging) {
 	o.Paging = &v
 }
 

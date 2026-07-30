@@ -20,9 +20,14 @@ var _ MappedNullable = &QueryAdInsights200Response{}
 
 // QueryAdInsights200Response struct for QueryAdInsights200Response
 type QueryAdInsights200Response struct {
-	ObjectId *string                           `json:"objectId,omitempty"`
-	Data     []map[string]interface{}          `json:"data,omitempty"`
-	Paging   *QueryAdInsights200ResponsePaging `json:"paging,omitempty"`
+	// Meta responses only.
+	ObjectId *string `json:"objectId,omitempty"`
+	// Google responses only: the customer the query ran against.
+	CustomerId *string `json:"customerId,omitempty"`
+	// Google responses only: the selected fields echoed by Google.
+	FieldMask NullableString                    `json:"fieldMask,omitempty"`
+	Data      []map[string]interface{}          `json:"data,omitempty"`
+	Paging    *QueryAdInsights200ResponsePaging `json:"paging,omitempty"`
 }
 
 // NewQueryAdInsights200Response instantiates a new QueryAdInsights200Response object
@@ -72,6 +77,81 @@ func (o *QueryAdInsights200Response) HasObjectId() bool {
 // SetObjectId gets a reference to the given string and assigns it to the ObjectId field.
 func (o *QueryAdInsights200Response) SetObjectId(v string) {
 	o.ObjectId = &v
+}
+
+// GetCustomerId returns the CustomerId field value if set, zero value otherwise.
+func (o *QueryAdInsights200Response) GetCustomerId() string {
+	if o == nil || IsNil(o.CustomerId) {
+		var ret string
+		return ret
+	}
+	return *o.CustomerId
+}
+
+// GetCustomerIdOk returns a tuple with the CustomerId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryAdInsights200Response) GetCustomerIdOk() (*string, bool) {
+	if o == nil || IsNil(o.CustomerId) {
+		return nil, false
+	}
+	return o.CustomerId, true
+}
+
+// HasCustomerId returns a boolean if a field has been set.
+func (o *QueryAdInsights200Response) HasCustomerId() bool {
+	if o != nil && !IsNil(o.CustomerId) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomerId gets a reference to the given string and assigns it to the CustomerId field.
+func (o *QueryAdInsights200Response) SetCustomerId(v string) {
+	o.CustomerId = &v
+}
+
+// GetFieldMask returns the FieldMask field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *QueryAdInsights200Response) GetFieldMask() string {
+	if o == nil || IsNil(o.FieldMask.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.FieldMask.Get()
+}
+
+// GetFieldMaskOk returns a tuple with the FieldMask field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *QueryAdInsights200Response) GetFieldMaskOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FieldMask.Get(), o.FieldMask.IsSet()
+}
+
+// HasFieldMask returns a boolean if a field has been set.
+func (o *QueryAdInsights200Response) HasFieldMask() bool {
+	if o != nil && o.FieldMask.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFieldMask gets a reference to the given NullableString and assigns it to the FieldMask field.
+func (o *QueryAdInsights200Response) SetFieldMask(v string) {
+	o.FieldMask.Set(&v)
+}
+
+// SetFieldMaskNil sets the value for FieldMask to be an explicit nil
+func (o *QueryAdInsights200Response) SetFieldMaskNil() {
+	o.FieldMask.Set(nil)
+}
+
+// UnsetFieldMask ensures that no value is present for FieldMask, not even an explicit nil
+func (o *QueryAdInsights200Response) UnsetFieldMask() {
+	o.FieldMask.Unset()
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
@@ -150,6 +230,12 @@ func (o QueryAdInsights200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.ObjectId) {
 		toSerialize["objectId"] = o.ObjectId
+	}
+	if !IsNil(o.CustomerId) {
+		toSerialize["customerId"] = o.CustomerId
+	}
+	if o.FieldMask.IsSet() {
+		toSerialize["fieldMask"] = o.FieldMask.Get()
 	}
 	if !IsNil(o.Data) {
 		toSerialize["data"] = o.Data

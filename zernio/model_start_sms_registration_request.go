@@ -23,10 +23,12 @@ var _ MappedNullable = &StartSmsRegistrationRequest{}
 // StartSmsRegistrationRequest struct for StartSmsRegistrationRequest
 type StartSmsRegistrationRequest struct {
 	RegistrationType string `json:"registrationType"`
-	// Your numbers this registration covers.
-	PhoneNumbers []string                             `json:"phoneNumbers"`
+	// Your numbers this registration covers. When omitted or empty on a 10DLC registration, defaults to your active SMS-enabled US local numbers not already covered by another registration.
+	PhoneNumbers []string                             `json:"phoneNumbers,omitempty"`
 	Brand        *StartSmsRegistrationRequestBrand    `json:"brand,omitempty"`
 	Campaign     *StartSmsRegistrationRequestCampaign `json:"campaign,omitempty"`
+	// DBA / trade name used to brand message content (samples and auto-replies) when it differs from the legal name, e.g. a sole proprietor texting under a business name. The legal `brand.displayName` is still what the carrier vets.
+	MessagingBrandName *string `json:"messagingBrandName,omitempty"`
 	// Raw dashboard-wizard answers, stored only to prefill edit-and-resubmit. API integrators can omit.
 	WizardValues map[string]string `json:"wizardValues,omitempty"`
 	// Resubmit a registration that was returned for changes — updates it in place instead of creating a new one.
@@ -40,10 +42,9 @@ type _StartSmsRegistrationRequest StartSmsRegistrationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewStartSmsRegistrationRequest(registrationType string, phoneNumbers []string) *StartSmsRegistrationRequest {
+func NewStartSmsRegistrationRequest(registrationType string) *StartSmsRegistrationRequest {
 	this := StartSmsRegistrationRequest{}
 	this.RegistrationType = registrationType
-	this.PhoneNumbers = phoneNumbers
 	return &this
 }
 
@@ -79,26 +80,34 @@ func (o *StartSmsRegistrationRequest) SetRegistrationType(v string) {
 	o.RegistrationType = v
 }
 
-// GetPhoneNumbers returns the PhoneNumbers field value
+// GetPhoneNumbers returns the PhoneNumbers field value if set, zero value otherwise.
 func (o *StartSmsRegistrationRequest) GetPhoneNumbers() []string {
-	if o == nil {
+	if o == nil || IsNil(o.PhoneNumbers) {
 		var ret []string
 		return ret
 	}
-
 	return o.PhoneNumbers
 }
 
-// GetPhoneNumbersOk returns a tuple with the PhoneNumbers field value
+// GetPhoneNumbersOk returns a tuple with the PhoneNumbers field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StartSmsRegistrationRequest) GetPhoneNumbersOk() ([]string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.PhoneNumbers) {
 		return nil, false
 	}
 	return o.PhoneNumbers, true
 }
 
-// SetPhoneNumbers sets field value
+// HasPhoneNumbers returns a boolean if a field has been set.
+func (o *StartSmsRegistrationRequest) HasPhoneNumbers() bool {
+	if o != nil && !IsNil(o.PhoneNumbers) {
+		return true
+	}
+
+	return false
+}
+
+// SetPhoneNumbers gets a reference to the given []string and assigns it to the PhoneNumbers field.
 func (o *StartSmsRegistrationRequest) SetPhoneNumbers(v []string) {
 	o.PhoneNumbers = v
 }
@@ -165,6 +174,38 @@ func (o *StartSmsRegistrationRequest) HasCampaign() bool {
 // SetCampaign gets a reference to the given StartSmsRegistrationRequestCampaign and assigns it to the Campaign field.
 func (o *StartSmsRegistrationRequest) SetCampaign(v StartSmsRegistrationRequestCampaign) {
 	o.Campaign = &v
+}
+
+// GetMessagingBrandName returns the MessagingBrandName field value if set, zero value otherwise.
+func (o *StartSmsRegistrationRequest) GetMessagingBrandName() string {
+	if o == nil || IsNil(o.MessagingBrandName) {
+		var ret string
+		return ret
+	}
+	return *o.MessagingBrandName
+}
+
+// GetMessagingBrandNameOk returns a tuple with the MessagingBrandName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StartSmsRegistrationRequest) GetMessagingBrandNameOk() (*string, bool) {
+	if o == nil || IsNil(o.MessagingBrandName) {
+		return nil, false
+	}
+	return o.MessagingBrandName, true
+}
+
+// HasMessagingBrandName returns a boolean if a field has been set.
+func (o *StartSmsRegistrationRequest) HasMessagingBrandName() bool {
+	if o != nil && !IsNil(o.MessagingBrandName) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessagingBrandName gets a reference to the given string and assigns it to the MessagingBrandName field.
+func (o *StartSmsRegistrationRequest) SetMessagingBrandName(v string) {
+	o.MessagingBrandName = &v
 }
 
 // GetWizardValues returns the WizardValues field value if set, zero value otherwise.
@@ -274,12 +315,17 @@ func (o StartSmsRegistrationRequest) MarshalJSON() ([]byte, error) {
 func (o StartSmsRegistrationRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["registrationType"] = o.RegistrationType
-	toSerialize["phoneNumbers"] = o.PhoneNumbers
+	if !IsNil(o.PhoneNumbers) {
+		toSerialize["phoneNumbers"] = o.PhoneNumbers
+	}
 	if !IsNil(o.Brand) {
 		toSerialize["brand"] = o.Brand
 	}
 	if !IsNil(o.Campaign) {
 		toSerialize["campaign"] = o.Campaign
+	}
+	if !IsNil(o.MessagingBrandName) {
+		toSerialize["messagingBrandName"] = o.MessagingBrandName
 	}
 	if !IsNil(o.WizardValues) {
 		toSerialize["wizardValues"] = o.WizardValues
@@ -299,7 +345,6 @@ func (o *StartSmsRegistrationRequest) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"registrationType",
-		"phoneNumbers",
 	}
 
 	allProperties := make(map[string]interface{})

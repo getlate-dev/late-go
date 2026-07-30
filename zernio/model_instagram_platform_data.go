@@ -29,7 +29,7 @@ type InstagramPlatformData struct {
 	// Optional first comment to add after the post is created (not applied to Stories)
 	FirstComment *string                           `json:"firstComment,omitempty"`
 	TrialParams  *InstagramPlatformDataTrialParams `json:"trialParams,omitempty"`
-	// Tag Instagram users in photos by username and position. Not supported for stories or videos. For carousels, use mediaIndex to target specific slides (defaults to 0). Tags on video items are silently skipped.
+	// Tag Instagram users by username. The tag shape depends on the media: photos require x/y coordinates, Reels and videos take username only (coordinates are ignored), stories accept optional coordinates. For carousels, use mediaIndex to target specific slides (defaults to 0); video slides take username-only tags. Photo tags without valid coordinates are skipped.
 	UserTags []InstagramPlatformDataUserTagsInner `json:"userTags,omitempty"`
 	// Custom name for original audio in Reels. Replaces the default \"Original Audio\" label. Can only be set once.
 	AudioName *string `json:"audioName,omitempty"`

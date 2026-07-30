@@ -37,7 +37,7 @@ type ConversionEvent struct {
 	Items []ConversionEventItemsInner `json:"items,omitempty"`
 	// URL where the conversion originated (used by Meta).
 	SourceUrl *string `json:"sourceUrl,omitempty"`
-	// Where the conversion happened. Used by Meta; Google ignores.
+	// Where the conversion happened. Used by Meta. Google also requires an event source internally; omitting this field sends OTHER to Google. Send an explicit value for accurate origin reporting.
 	ActionSource *string `json:"actionSource,omitempty"`
 	// Escape hatch for platform-specific fields we haven't normalized. Forwarded as-is.
 	PlatformData map[string]interface{} `json:"platformData,omitempty"`

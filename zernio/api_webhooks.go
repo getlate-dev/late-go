@@ -40,7 +40,7 @@ func (r WebhooksAPICreateWebhookSettingsRequest) Execute() (*UpdateWebhookSettin
 /*
 CreateWebhookSettings Create webhook
 
-Create a new webhook configuration. Maximum 10 webhooks per user.
+Create a new webhook configuration. Maximum 50 webhooks per user.
 
 `name`, `url` and `events` are required. `url` must be a valid URL and `events` must contain at least one event. Whitespace is trimmed from `url` before validation.
 
@@ -460,7 +460,7 @@ func (r WebhooksAPIGetWebhookSettingsRequest) Execute() (*GetWebhookSettings200R
 /*
 GetWebhookSettings List webhooks
 
-Retrieve all configured webhooks for the authenticated user. Supports up to 10 webhooks per user.
+Retrieve all configured webhooks for the authenticated user. Supports up to 50 webhooks per user.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPIGetWebhookSettingsRequest

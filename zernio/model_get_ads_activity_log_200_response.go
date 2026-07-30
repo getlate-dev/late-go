@@ -20,9 +20,9 @@ var _ MappedNullable = &GetAdsActivityLog200Response{}
 
 // GetAdsActivityLog200Response struct for GetAdsActivityLog200Response
 type GetAdsActivityLog200Response struct {
-	AdAccountId *string                           `json:"adAccountId,omitempty"`
-	Data        []map[string]interface{}          `json:"data,omitempty"`
-	Paging      *QueryAdInsights200ResponsePaging `json:"paging,omitempty"`
+	AdAccountId *string                               `json:"adAccountId,omitempty"`
+	Data        []map[string]interface{}              `json:"data,omitempty"`
+	Paging      *GetAdInsightsReport200ResponsePaging `json:"paging,omitempty"`
 }
 
 // NewGetAdsActivityLog200Response instantiates a new GetAdsActivityLog200Response object
@@ -107,9 +107,9 @@ func (o *GetAdsActivityLog200Response) SetData(v []map[string]interface{}) {
 }
 
 // GetPaging returns the Paging field value if set, zero value otherwise.
-func (o *GetAdsActivityLog200Response) GetPaging() QueryAdInsights200ResponsePaging {
+func (o *GetAdsActivityLog200Response) GetPaging() GetAdInsightsReport200ResponsePaging {
 	if o == nil || IsNil(o.Paging) {
-		var ret QueryAdInsights200ResponsePaging
+		var ret GetAdInsightsReport200ResponsePaging
 		return ret
 	}
 	return *o.Paging
@@ -117,7 +117,7 @@ func (o *GetAdsActivityLog200Response) GetPaging() QueryAdInsights200ResponsePag
 
 // GetPagingOk returns a tuple with the Paging field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetAdsActivityLog200Response) GetPagingOk() (*QueryAdInsights200ResponsePaging, bool) {
+func (o *GetAdsActivityLog200Response) GetPagingOk() (*GetAdInsightsReport200ResponsePaging, bool) {
 	if o == nil || IsNil(o.Paging) {
 		return nil, false
 	}
@@ -133,8 +133,8 @@ func (o *GetAdsActivityLog200Response) HasPaging() bool {
 	return false
 }
 
-// SetPaging gets a reference to the given QueryAdInsights200ResponsePaging and assigns it to the Paging field.
-func (o *GetAdsActivityLog200Response) SetPaging(v QueryAdInsights200ResponsePaging) {
+// SetPaging gets a reference to the given GetAdInsightsReport200ResponsePaging and assigns it to the Paging field.
+func (o *GetAdsActivityLog200Response) SetPaging(v GetAdInsightsReport200ResponsePaging) {
 	o.Paging = &v
 }
 

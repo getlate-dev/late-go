@@ -19,9 +19,16 @@ import (
 
 // PurchaseWhatsAppPhoneNumber200Response - struct for PurchaseWhatsAppPhoneNumber200Response
 type PurchaseWhatsAppPhoneNumber200Response struct {
+	PurchasePhoneNumber200ResponseOneOf          *PurchasePhoneNumber200ResponseOneOf
 	PurchaseWhatsAppPhoneNumber200ResponseOneOf  *PurchaseWhatsAppPhoneNumber200ResponseOneOf
 	PurchaseWhatsAppPhoneNumber200ResponseOneOf1 *PurchaseWhatsAppPhoneNumber200ResponseOneOf1
-	PurchaseWhatsAppPhoneNumber200ResponseOneOf2 *PurchaseWhatsAppPhoneNumber200ResponseOneOf2
+}
+
+// PurchasePhoneNumber200ResponseOneOfAsPurchaseWhatsAppPhoneNumber200Response is a convenience function that returns PurchasePhoneNumber200ResponseOneOf wrapped in PurchaseWhatsAppPhoneNumber200Response
+func PurchasePhoneNumber200ResponseOneOfAsPurchaseWhatsAppPhoneNumber200Response(v *PurchasePhoneNumber200ResponseOneOf) PurchaseWhatsAppPhoneNumber200Response {
+	return PurchaseWhatsAppPhoneNumber200Response{
+		PurchasePhoneNumber200ResponseOneOf: v,
+	}
 }
 
 // PurchaseWhatsAppPhoneNumber200ResponseOneOfAsPurchaseWhatsAppPhoneNumber200Response is a convenience function that returns PurchaseWhatsAppPhoneNumber200ResponseOneOf wrapped in PurchaseWhatsAppPhoneNumber200Response
@@ -38,17 +45,27 @@ func PurchaseWhatsAppPhoneNumber200ResponseOneOf1AsPurchaseWhatsAppPhoneNumber20
 	}
 }
 
-// PurchaseWhatsAppPhoneNumber200ResponseOneOf2AsPurchaseWhatsAppPhoneNumber200Response is a convenience function that returns PurchaseWhatsAppPhoneNumber200ResponseOneOf2 wrapped in PurchaseWhatsAppPhoneNumber200Response
-func PurchaseWhatsAppPhoneNumber200ResponseOneOf2AsPurchaseWhatsAppPhoneNumber200Response(v *PurchaseWhatsAppPhoneNumber200ResponseOneOf2) PurchaseWhatsAppPhoneNumber200Response {
-	return PurchaseWhatsAppPhoneNumber200Response{
-		PurchaseWhatsAppPhoneNumber200ResponseOneOf2: v,
-	}
-}
-
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *PurchaseWhatsAppPhoneNumber200Response) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
+	// try to unmarshal data into PurchasePhoneNumber200ResponseOneOf
+	err = newStrictDecoder(data).Decode(&dst.PurchasePhoneNumber200ResponseOneOf)
+	if err == nil {
+		jsonPurchasePhoneNumber200ResponseOneOf, _ := json.Marshal(dst.PurchasePhoneNumber200ResponseOneOf)
+		if string(jsonPurchasePhoneNumber200ResponseOneOf) == "{}" { // empty struct
+			dst.PurchasePhoneNumber200ResponseOneOf = nil
+		} else {
+			if err = validator.Validate(dst.PurchasePhoneNumber200ResponseOneOf); err != nil {
+				dst.PurchasePhoneNumber200ResponseOneOf = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.PurchasePhoneNumber200ResponseOneOf = nil
+	}
+
 	// try to unmarshal data into PurchaseWhatsAppPhoneNumber200ResponseOneOf
 	err = newStrictDecoder(data).Decode(&dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf)
 	if err == nil {
@@ -83,28 +100,11 @@ func (dst *PurchaseWhatsAppPhoneNumber200Response) UnmarshalJSON(data []byte) er
 		dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf1 = nil
 	}
 
-	// try to unmarshal data into PurchaseWhatsAppPhoneNumber200ResponseOneOf2
-	err = newStrictDecoder(data).Decode(&dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf2)
-	if err == nil {
-		jsonPurchaseWhatsAppPhoneNumber200ResponseOneOf2, _ := json.Marshal(dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf2)
-		if string(jsonPurchaseWhatsAppPhoneNumber200ResponseOneOf2) == "{}" { // empty struct
-			dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf2 = nil
-		} else {
-			if err = validator.Validate(dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf2); err != nil {
-				dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf2 = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf2 = nil
-	}
-
 	if match > 1 { // more than 1 match
 		// reset to nil
+		dst.PurchasePhoneNumber200ResponseOneOf = nil
 		dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf = nil
 		dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf1 = nil
-		dst.PurchaseWhatsAppPhoneNumber200ResponseOneOf2 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(PurchaseWhatsAppPhoneNumber200Response)")
 	} else if match == 1 {
@@ -116,16 +116,16 @@ func (dst *PurchaseWhatsAppPhoneNumber200Response) UnmarshalJSON(data []byte) er
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src PurchaseWhatsAppPhoneNumber200Response) MarshalJSON() ([]byte, error) {
+	if src.PurchasePhoneNumber200ResponseOneOf != nil {
+		return json.Marshal(&src.PurchasePhoneNumber200ResponseOneOf)
+	}
+
 	if src.PurchaseWhatsAppPhoneNumber200ResponseOneOf != nil {
 		return json.Marshal(&src.PurchaseWhatsAppPhoneNumber200ResponseOneOf)
 	}
 
 	if src.PurchaseWhatsAppPhoneNumber200ResponseOneOf1 != nil {
 		return json.Marshal(&src.PurchaseWhatsAppPhoneNumber200ResponseOneOf1)
-	}
-
-	if src.PurchaseWhatsAppPhoneNumber200ResponseOneOf2 != nil {
-		return json.Marshal(&src.PurchaseWhatsAppPhoneNumber200ResponseOneOf2)
 	}
 
 	return nil, nil // no data in oneOf schemas
@@ -136,6 +136,10 @@ func (obj *PurchaseWhatsAppPhoneNumber200Response) GetActualInstance() interface
 	if obj == nil {
 		return nil
 	}
+	if obj.PurchasePhoneNumber200ResponseOneOf != nil {
+		return obj.PurchasePhoneNumber200ResponseOneOf
+	}
+
 	if obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf != nil {
 		return obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf
 	}
@@ -144,26 +148,22 @@ func (obj *PurchaseWhatsAppPhoneNumber200Response) GetActualInstance() interface
 		return obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf1
 	}
 
-	if obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf2 != nil {
-		return obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf2
-	}
-
 	// all schemas are nil
 	return nil
 }
 
 // Get the actual instance value
 func (obj PurchaseWhatsAppPhoneNumber200Response) GetActualInstanceValue() interface{} {
+	if obj.PurchasePhoneNumber200ResponseOneOf != nil {
+		return *obj.PurchasePhoneNumber200ResponseOneOf
+	}
+
 	if obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf != nil {
 		return *obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf
 	}
 
 	if obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf1 != nil {
 		return *obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf1
-	}
-
-	if obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf2 != nil {
-		return *obj.PurchaseWhatsAppPhoneNumber200ResponseOneOf2
 	}
 
 	// all schemas are nil

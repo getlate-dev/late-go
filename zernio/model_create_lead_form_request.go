@@ -22,19 +22,40 @@ var _ MappedNullable = &CreateLeadFormRequest{}
 
 // CreateLeadFormRequest struct for CreateLeadFormRequest
 type CreateLeadFormRequest struct {
-	AccountId             string                                `json:"accountId"`
-	Name                  string                                `json:"name"`
-	Questions             []CreateLeadFormRequestQuestionsInner `json:"questions"`
-	PrivacyPolicyUrl      string                                `json:"privacyPolicyUrl"`
-	PrivacyPolicyLinkText *string                               `json:"privacyPolicyLinkText,omitempty"`
-	FollowUpActionUrl     *string                               `json:"followUpActionUrl,omitempty"`
-	Locale                *string                               `json:"locale,omitempty"`
-	ThankYouTitle         *string                               `json:"thankYouTitle,omitempty"`
-	ThankYouBody          *string                               `json:"thankYouBody,omitempty"`
-	ThankYouButtonText    *string                               `json:"thankYouButtonText,omitempty"`
-	ThankYouButtonType    *string                               `json:"thankYouButtonType,omitempty"`
-	ThankYouWebsiteUrl    *string                               `json:"thankYouWebsiteUrl,omitempty"`
-	IsOptimizedForQuality *bool                                 `json:"isOptimizedForQuality,omitempty"`
+	AccountId string `json:"accountId"`
+	Name      string `json:"name"`
+	// Deprecated (Meta legacy shape): use platformSpecificData.questions.
+	// Deprecated
+	Questions        []CreateLeadFormRequestQuestionsInner `json:"questions,omitempty"`
+	PrivacyPolicyUrl string                                `json:"privacyPolicyUrl"`
+	// Deprecated: use platformSpecificData.privacyPolicyLinkText.
+	// Deprecated
+	PrivacyPolicyLinkText *string `json:"privacyPolicyLinkText,omitempty"`
+	// Deprecated: use platformSpecificData.followUpActionUrl.
+	// Deprecated
+	FollowUpActionUrl *string `json:"followUpActionUrl,omitempty"`
+	// Deprecated: use platformSpecificData.locale.
+	// Deprecated
+	Locale *string `json:"locale,omitempty"`
+	// Deprecated: use platformSpecificData.thankYouTitle.
+	// Deprecated
+	ThankYouTitle *string `json:"thankYouTitle,omitempty"`
+	// Deprecated: use platformSpecificData.thankYouBody.
+	// Deprecated
+	ThankYouBody *string `json:"thankYouBody,omitempty"`
+	// Deprecated: use platformSpecificData.thankYouButtonText.
+	// Deprecated
+	ThankYouButtonText *string `json:"thankYouButtonText,omitempty"`
+	// Deprecated: use platformSpecificData.thankYouButtonType.
+	// Deprecated
+	ThankYouButtonType *string `json:"thankYouButtonType,omitempty"`
+	// Deprecated: use platformSpecificData.thankYouWebsiteUrl.
+	// Deprecated
+	ThankYouWebsiteUrl *string `json:"thankYouWebsiteUrl,omitempty"`
+	// Deprecated: use platformSpecificData.isOptimizedForQuality.
+	// Deprecated
+	IsOptimizedForQuality *bool                                      `json:"isOptimizedForQuality,omitempty"`
+	PlatformSpecificData  *CreateLeadFormRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
 }
 
 type _CreateLeadFormRequest CreateLeadFormRequest
@@ -43,11 +64,10 @@ type _CreateLeadFormRequest CreateLeadFormRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateLeadFormRequest(accountId string, name string, questions []CreateLeadFormRequestQuestionsInner, privacyPolicyUrl string) *CreateLeadFormRequest {
+func NewCreateLeadFormRequest(accountId string, name string, privacyPolicyUrl string) *CreateLeadFormRequest {
 	this := CreateLeadFormRequest{}
 	this.AccountId = accountId
 	this.Name = name
-	this.Questions = questions
 	this.PrivacyPolicyUrl = privacyPolicyUrl
 	return &this
 }
@@ -108,26 +128,37 @@ func (o *CreateLeadFormRequest) SetName(v string) {
 	o.Name = v
 }
 
-// GetQuestions returns the Questions field value
+// GetQuestions returns the Questions field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateLeadFormRequest) GetQuestions() []CreateLeadFormRequestQuestionsInner {
-	if o == nil {
+	if o == nil || IsNil(o.Questions) {
 		var ret []CreateLeadFormRequestQuestionsInner
 		return ret
 	}
-
 	return o.Questions
 }
 
-// GetQuestionsOk returns a tuple with the Questions field value
+// GetQuestionsOk returns a tuple with the Questions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateLeadFormRequest) GetQuestionsOk() ([]CreateLeadFormRequestQuestionsInner, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Questions) {
 		return nil, false
 	}
 	return o.Questions, true
 }
 
-// SetQuestions sets field value
+// HasQuestions returns a boolean if a field has been set.
+func (o *CreateLeadFormRequest) HasQuestions() bool {
+	if o != nil && !IsNil(o.Questions) {
+		return true
+	}
+
+	return false
+}
+
+// SetQuestions gets a reference to the given []CreateLeadFormRequestQuestionsInner and assigns it to the Questions field.
+// Deprecated
 func (o *CreateLeadFormRequest) SetQuestions(v []CreateLeadFormRequestQuestionsInner) {
 	o.Questions = v
 }
@@ -157,6 +188,7 @@ func (o *CreateLeadFormRequest) SetPrivacyPolicyUrl(v string) {
 }
 
 // GetPrivacyPolicyLinkText returns the PrivacyPolicyLinkText field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateLeadFormRequest) GetPrivacyPolicyLinkText() string {
 	if o == nil || IsNil(o.PrivacyPolicyLinkText) {
 		var ret string
@@ -167,6 +199,7 @@ func (o *CreateLeadFormRequest) GetPrivacyPolicyLinkText() string {
 
 // GetPrivacyPolicyLinkTextOk returns a tuple with the PrivacyPolicyLinkText field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateLeadFormRequest) GetPrivacyPolicyLinkTextOk() (*string, bool) {
 	if o == nil || IsNil(o.PrivacyPolicyLinkText) {
 		return nil, false
@@ -184,11 +217,13 @@ func (o *CreateLeadFormRequest) HasPrivacyPolicyLinkText() bool {
 }
 
 // SetPrivacyPolicyLinkText gets a reference to the given string and assigns it to the PrivacyPolicyLinkText field.
+// Deprecated
 func (o *CreateLeadFormRequest) SetPrivacyPolicyLinkText(v string) {
 	o.PrivacyPolicyLinkText = &v
 }
 
 // GetFollowUpActionUrl returns the FollowUpActionUrl field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateLeadFormRequest) GetFollowUpActionUrl() string {
 	if o == nil || IsNil(o.FollowUpActionUrl) {
 		var ret string
@@ -199,6 +234,7 @@ func (o *CreateLeadFormRequest) GetFollowUpActionUrl() string {
 
 // GetFollowUpActionUrlOk returns a tuple with the FollowUpActionUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateLeadFormRequest) GetFollowUpActionUrlOk() (*string, bool) {
 	if o == nil || IsNil(o.FollowUpActionUrl) {
 		return nil, false
@@ -216,11 +252,13 @@ func (o *CreateLeadFormRequest) HasFollowUpActionUrl() bool {
 }
 
 // SetFollowUpActionUrl gets a reference to the given string and assigns it to the FollowUpActionUrl field.
+// Deprecated
 func (o *CreateLeadFormRequest) SetFollowUpActionUrl(v string) {
 	o.FollowUpActionUrl = &v
 }
 
 // GetLocale returns the Locale field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateLeadFormRequest) GetLocale() string {
 	if o == nil || IsNil(o.Locale) {
 		var ret string
@@ -231,6 +269,7 @@ func (o *CreateLeadFormRequest) GetLocale() string {
 
 // GetLocaleOk returns a tuple with the Locale field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateLeadFormRequest) GetLocaleOk() (*string, bool) {
 	if o == nil || IsNil(o.Locale) {
 		return nil, false
@@ -248,11 +287,13 @@ func (o *CreateLeadFormRequest) HasLocale() bool {
 }
 
 // SetLocale gets a reference to the given string and assigns it to the Locale field.
+// Deprecated
 func (o *CreateLeadFormRequest) SetLocale(v string) {
 	o.Locale = &v
 }
 
 // GetThankYouTitle returns the ThankYouTitle field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateLeadFormRequest) GetThankYouTitle() string {
 	if o == nil || IsNil(o.ThankYouTitle) {
 		var ret string
@@ -263,6 +304,7 @@ func (o *CreateLeadFormRequest) GetThankYouTitle() string {
 
 // GetThankYouTitleOk returns a tuple with the ThankYouTitle field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateLeadFormRequest) GetThankYouTitleOk() (*string, bool) {
 	if o == nil || IsNil(o.ThankYouTitle) {
 		return nil, false
@@ -280,11 +322,13 @@ func (o *CreateLeadFormRequest) HasThankYouTitle() bool {
 }
 
 // SetThankYouTitle gets a reference to the given string and assigns it to the ThankYouTitle field.
+// Deprecated
 func (o *CreateLeadFormRequest) SetThankYouTitle(v string) {
 	o.ThankYouTitle = &v
 }
 
 // GetThankYouBody returns the ThankYouBody field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateLeadFormRequest) GetThankYouBody() string {
 	if o == nil || IsNil(o.ThankYouBody) {
 		var ret string
@@ -295,6 +339,7 @@ func (o *CreateLeadFormRequest) GetThankYouBody() string {
 
 // GetThankYouBodyOk returns a tuple with the ThankYouBody field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateLeadFormRequest) GetThankYouBodyOk() (*string, bool) {
 	if o == nil || IsNil(o.ThankYouBody) {
 		return nil, false
@@ -312,11 +357,13 @@ func (o *CreateLeadFormRequest) HasThankYouBody() bool {
 }
 
 // SetThankYouBody gets a reference to the given string and assigns it to the ThankYouBody field.
+// Deprecated
 func (o *CreateLeadFormRequest) SetThankYouBody(v string) {
 	o.ThankYouBody = &v
 }
 
 // GetThankYouButtonText returns the ThankYouButtonText field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateLeadFormRequest) GetThankYouButtonText() string {
 	if o == nil || IsNil(o.ThankYouButtonText) {
 		var ret string
@@ -327,6 +374,7 @@ func (o *CreateLeadFormRequest) GetThankYouButtonText() string {
 
 // GetThankYouButtonTextOk returns a tuple with the ThankYouButtonText field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateLeadFormRequest) GetThankYouButtonTextOk() (*string, bool) {
 	if o == nil || IsNil(o.ThankYouButtonText) {
 		return nil, false
@@ -344,11 +392,13 @@ func (o *CreateLeadFormRequest) HasThankYouButtonText() bool {
 }
 
 // SetThankYouButtonText gets a reference to the given string and assigns it to the ThankYouButtonText field.
+// Deprecated
 func (o *CreateLeadFormRequest) SetThankYouButtonText(v string) {
 	o.ThankYouButtonText = &v
 }
 
 // GetThankYouButtonType returns the ThankYouButtonType field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateLeadFormRequest) GetThankYouButtonType() string {
 	if o == nil || IsNil(o.ThankYouButtonType) {
 		var ret string
@@ -359,6 +409,7 @@ func (o *CreateLeadFormRequest) GetThankYouButtonType() string {
 
 // GetThankYouButtonTypeOk returns a tuple with the ThankYouButtonType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateLeadFormRequest) GetThankYouButtonTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.ThankYouButtonType) {
 		return nil, false
@@ -376,11 +427,13 @@ func (o *CreateLeadFormRequest) HasThankYouButtonType() bool {
 }
 
 // SetThankYouButtonType gets a reference to the given string and assigns it to the ThankYouButtonType field.
+// Deprecated
 func (o *CreateLeadFormRequest) SetThankYouButtonType(v string) {
 	o.ThankYouButtonType = &v
 }
 
 // GetThankYouWebsiteUrl returns the ThankYouWebsiteUrl field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateLeadFormRequest) GetThankYouWebsiteUrl() string {
 	if o == nil || IsNil(o.ThankYouWebsiteUrl) {
 		var ret string
@@ -391,6 +444,7 @@ func (o *CreateLeadFormRequest) GetThankYouWebsiteUrl() string {
 
 // GetThankYouWebsiteUrlOk returns a tuple with the ThankYouWebsiteUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateLeadFormRequest) GetThankYouWebsiteUrlOk() (*string, bool) {
 	if o == nil || IsNil(o.ThankYouWebsiteUrl) {
 		return nil, false
@@ -408,11 +462,13 @@ func (o *CreateLeadFormRequest) HasThankYouWebsiteUrl() bool {
 }
 
 // SetThankYouWebsiteUrl gets a reference to the given string and assigns it to the ThankYouWebsiteUrl field.
+// Deprecated
 func (o *CreateLeadFormRequest) SetThankYouWebsiteUrl(v string) {
 	o.ThankYouWebsiteUrl = &v
 }
 
 // GetIsOptimizedForQuality returns the IsOptimizedForQuality field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateLeadFormRequest) GetIsOptimizedForQuality() bool {
 	if o == nil || IsNil(o.IsOptimizedForQuality) {
 		var ret bool
@@ -423,6 +479,7 @@ func (o *CreateLeadFormRequest) GetIsOptimizedForQuality() bool {
 
 // GetIsOptimizedForQualityOk returns a tuple with the IsOptimizedForQuality field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateLeadFormRequest) GetIsOptimizedForQualityOk() (*bool, bool) {
 	if o == nil || IsNil(o.IsOptimizedForQuality) {
 		return nil, false
@@ -440,8 +497,41 @@ func (o *CreateLeadFormRequest) HasIsOptimizedForQuality() bool {
 }
 
 // SetIsOptimizedForQuality gets a reference to the given bool and assigns it to the IsOptimizedForQuality field.
+// Deprecated
 func (o *CreateLeadFormRequest) SetIsOptimizedForQuality(v bool) {
 	o.IsOptimizedForQuality = &v
+}
+
+// GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
+func (o *CreateLeadFormRequest) GetPlatformSpecificData() CreateLeadFormRequestPlatformSpecificData {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		var ret CreateLeadFormRequestPlatformSpecificData
+		return ret
+	}
+	return *o.PlatformSpecificData
+}
+
+// GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateLeadFormRequest) GetPlatformSpecificDataOk() (*CreateLeadFormRequestPlatformSpecificData, bool) {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		return nil, false
+	}
+	return o.PlatformSpecificData, true
+}
+
+// HasPlatformSpecificData returns a boolean if a field has been set.
+func (o *CreateLeadFormRequest) HasPlatformSpecificData() bool {
+	if o != nil && !IsNil(o.PlatformSpecificData) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformSpecificData gets a reference to the given CreateLeadFormRequestPlatformSpecificData and assigns it to the PlatformSpecificData field.
+func (o *CreateLeadFormRequest) SetPlatformSpecificData(v CreateLeadFormRequestPlatformSpecificData) {
+	o.PlatformSpecificData = &v
 }
 
 func (o CreateLeadFormRequest) MarshalJSON() ([]byte, error) {
@@ -456,7 +546,9 @@ func (o CreateLeadFormRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["name"] = o.Name
-	toSerialize["questions"] = o.Questions
+	if !IsNil(o.Questions) {
+		toSerialize["questions"] = o.Questions
+	}
 	toSerialize["privacyPolicyUrl"] = o.PrivacyPolicyUrl
 	if !IsNil(o.PrivacyPolicyLinkText) {
 		toSerialize["privacyPolicyLinkText"] = o.PrivacyPolicyLinkText
@@ -485,6 +577,9 @@ func (o CreateLeadFormRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.IsOptimizedForQuality) {
 		toSerialize["isOptimizedForQuality"] = o.IsOptimizedForQuality
 	}
+	if !IsNil(o.PlatformSpecificData) {
+		toSerialize["platformSpecificData"] = o.PlatformSpecificData
+	}
 	return toSerialize, nil
 }
 
@@ -495,7 +590,6 @@ func (o *CreateLeadFormRequest) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"accountId",
 		"name",
-		"questions",
 		"privacyPolicyUrl",
 	}
 

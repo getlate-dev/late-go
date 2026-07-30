@@ -171,8 +171,9 @@ Provide a date range plus exactly one of `budgetAmount` (Meta predicts reach) or
 POST /v1/ads/rf-predictions/{predictionId}/reserve and pass the RESERVED id to
 POST /v1/ads/create with `buyingType: "RESERVED"`.
 
-Reservation campaigns reject automatic placements, so omitted `placements` default to
-Facebook feed (+ Instagram stream when a linked IG professional account resolves);
+Reservation campaigns reject automatic placements. Top-level `placements` wins; when it is
+omitted, `targeting.placements` is used; when neither is set, placements default to
+Facebook feed (+ Instagram stream when a linked IG professional account resolves).
 Instagram placements require that IG account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

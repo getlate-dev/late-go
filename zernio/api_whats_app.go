@@ -1260,6 +1260,7 @@ func (a *WhatsAppAPIService) DeleteWhatsAppTemplateExecute(r WhatsAppAPIDeleteWh
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2463,6 +2464,7 @@ func (a *WhatsAppAPIService) GetWhatsAppTemplateExecute(r WhatsAppAPIGetWhatsApp
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4522,6 +4524,7 @@ func (a *WhatsAppAPIService) UpdateWhatsAppTemplateExecute(r WhatsAppAPIUpdateWh
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

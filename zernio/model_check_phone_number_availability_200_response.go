@@ -27,6 +27,8 @@ type CheckPhoneNumberAvailability200Response struct {
 	AddressConstraint *string `json:"addressConstraint,omitempty"`
 	// For `geo` only — the area(s) the registered address must be in.
 	Areas []string `json:"areas,omitempty"`
+	// Live inventory grouped by area code. For US and CA this is the full country inventory (every area code with stock, recognizable metros listed first, then alphabetical); other countries are ordered largest stock first; they list the areas in the latest inventory page (up to 500 numbers, which for most countries is the entire pool). Empty when out of stock (or the area lookup failed). Pass a chosen `ndc` as `areaCode` on POST /v1/phone-numbers/purchase (or on the KYC submit for regulated countries) to require that area.
+	AreaOptions []CheckPhoneNumberAvailability200ResponseAreaOptionsInner `json:"areaOptions,omitempty"`
 }
 
 // NewCheckPhoneNumberAvailability200Response instantiates a new CheckPhoneNumberAvailability200Response object
@@ -206,6 +208,38 @@ func (o *CheckPhoneNumberAvailability200Response) SetAreas(v []string) {
 	o.Areas = v
 }
 
+// GetAreaOptions returns the AreaOptions field value if set, zero value otherwise.
+func (o *CheckPhoneNumberAvailability200Response) GetAreaOptions() []CheckPhoneNumberAvailability200ResponseAreaOptionsInner {
+	if o == nil || IsNil(o.AreaOptions) {
+		var ret []CheckPhoneNumberAvailability200ResponseAreaOptionsInner
+		return ret
+	}
+	return o.AreaOptions
+}
+
+// GetAreaOptionsOk returns a tuple with the AreaOptions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckPhoneNumberAvailability200Response) GetAreaOptionsOk() ([]CheckPhoneNumberAvailability200ResponseAreaOptionsInner, bool) {
+	if o == nil || IsNil(o.AreaOptions) {
+		return nil, false
+	}
+	return o.AreaOptions, true
+}
+
+// HasAreaOptions returns a boolean if a field has been set.
+func (o *CheckPhoneNumberAvailability200Response) HasAreaOptions() bool {
+	if o != nil && !IsNil(o.AreaOptions) {
+		return true
+	}
+
+	return false
+}
+
+// SetAreaOptions gets a reference to the given []CheckPhoneNumberAvailability200ResponseAreaOptionsInner and assigns it to the AreaOptions field.
+func (o *CheckPhoneNumberAvailability200Response) SetAreaOptions(v []CheckPhoneNumberAvailability200ResponseAreaOptionsInner) {
+	o.AreaOptions = v
+}
+
 func (o CheckPhoneNumberAvailability200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -230,6 +264,9 @@ func (o CheckPhoneNumberAvailability200Response) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.Areas) {
 		toSerialize["areas"] = o.Areas
+	}
+	if !IsNil(o.AreaOptions) {
+		toSerialize["areaOptions"] = o.AreaOptions
 	}
 	return toSerialize, nil
 }

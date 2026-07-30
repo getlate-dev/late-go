@@ -21,11 +21,16 @@ var _ MappedNullable = &Ad{}
 
 // Ad struct for Ad
 type Ad struct {
-	Id       *string   `json:"_id,omitempty"`
-	Name     *string   `json:"name,omitempty"`
-	Platform *string   `json:"platform,omitempty"`
-	Status   *AdStatus `json:"status,omitempty"`
-	AdType   *string   `json:"adType,omitempty"`
+	Id       *string `json:"_id,omitempty"`
+	Name     *string `json:"name,omitempty"`
+	Platform *string `json:"platform,omitempty"`
+	// Delivery status. Derived from the platform `effective_status`, so it inherits ancestor pauses (an ACTIVE ad under a PAUSED campaign reads `paused`). For the ad's own on/off toggle use `configuredStatus`; for the review state use `reviewStatus`.
+	Status *AdStatus `json:"status,omitempty"`
+	// The ad's own on/off toggle as configured on the platform (Meta `configured_status`: ACTIVE / PAUSED), unaffected by ancestor (ad set / campaign) pauses. Distinct from `status`, which is the ancestor-cascaded delivery status. Only present for Meta ads synced after this field was added.
+	ConfiguredStatus NullableString `json:"configuredStatus,omitempty"`
+	// Platform review state of this ad, independent of delivery `status` / `configuredStatus`. Absent when the platform reports no review signal.
+	ReviewStatus *AdReviewStatus `json:"reviewStatus,omitempty"`
+	AdType       *string         `json:"adType,omitempty"`
 	// Available goals vary by platform. Meta (Facebook/Instagram) supports all 9 (incl. `lead_conversion` = website pixel lead optimization and `catalog_sales` = Advantage+ catalog ads). TikTok supports the 7 non-`lead_conversion` goals. LinkedIn supports all except app_promotion / lead_conversion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 	Goal *string `json:"goal,omitempty"`
 	// True for ads synced from platform ad managers
@@ -205,6 +210,81 @@ func (o *Ad) HasStatus() bool {
 // SetStatus gets a reference to the given AdStatus and assigns it to the Status field.
 func (o *Ad) SetStatus(v AdStatus) {
 	o.Status = &v
+}
+
+// GetConfiguredStatus returns the ConfiguredStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Ad) GetConfiguredStatus() string {
+	if o == nil || IsNil(o.ConfiguredStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ConfiguredStatus.Get()
+}
+
+// GetConfiguredStatusOk returns a tuple with the ConfiguredStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Ad) GetConfiguredStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ConfiguredStatus.Get(), o.ConfiguredStatus.IsSet()
+}
+
+// HasConfiguredStatus returns a boolean if a field has been set.
+func (o *Ad) HasConfiguredStatus() bool {
+	if o != nil && o.ConfiguredStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetConfiguredStatus gets a reference to the given NullableString and assigns it to the ConfiguredStatus field.
+func (o *Ad) SetConfiguredStatus(v string) {
+	o.ConfiguredStatus.Set(&v)
+}
+
+// SetConfiguredStatusNil sets the value for ConfiguredStatus to be an explicit nil
+func (o *Ad) SetConfiguredStatusNil() {
+	o.ConfiguredStatus.Set(nil)
+}
+
+// UnsetConfiguredStatus ensures that no value is present for ConfiguredStatus, not even an explicit nil
+func (o *Ad) UnsetConfiguredStatus() {
+	o.ConfiguredStatus.Unset()
+}
+
+// GetReviewStatus returns the ReviewStatus field value if set, zero value otherwise.
+func (o *Ad) GetReviewStatus() AdReviewStatus {
+	if o == nil || IsNil(o.ReviewStatus) {
+		var ret AdReviewStatus
+		return ret
+	}
+	return *o.ReviewStatus
+}
+
+// GetReviewStatusOk returns a tuple with the ReviewStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Ad) GetReviewStatusOk() (*AdReviewStatus, bool) {
+	if o == nil || IsNil(o.ReviewStatus) {
+		return nil, false
+	}
+	return o.ReviewStatus, true
+}
+
+// HasReviewStatus returns a boolean if a field has been set.
+func (o *Ad) HasReviewStatus() bool {
+	if o != nil && !IsNil(o.ReviewStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetReviewStatus gets a reference to the given AdReviewStatus and assigns it to the ReviewStatus field.
+func (o *Ad) SetReviewStatus(v AdReviewStatus) {
+	o.ReviewStatus = &v
 }
 
 // GetAdType returns the AdType field value if set, zero value otherwise.
@@ -1116,6 +1196,12 @@ func (o Ad) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if o.ConfiguredStatus.IsSet() {
+		toSerialize["configuredStatus"] = o.ConfiguredStatus.Get()
+	}
+	if !IsNil(o.ReviewStatus) {
+		toSerialize["reviewStatus"] = o.ReviewStatus
 	}
 	if !IsNil(o.AdType) {
 		toSerialize["adType"] = o.AdType

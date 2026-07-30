@@ -24,11 +24,11 @@ var _ MappedNullable = &InstagramPlatformDataUserTagsInner{}
 type InstagramPlatformDataUserTagsInner struct {
 	// Instagram username (@ symbol is optional and will be removed automatically)
 	Username string `json:"username"`
-	// X coordinate position from left edge (0.0 = left, 0.5 = center, 1.0 = right)
-	X float32 `json:"x"`
-	// Y coordinate position from top edge (0.0 = top, 0.5 = center, 1.0 = bottom)
-	Y float32 `json:"y"`
-	// Zero-based index of the carousel item to tag. Defaults to 0. Tags on video items or out-of-range indices are ignored.
+	// X coordinate position from left edge (0.0 = left, 0.5 = center, 1.0 = right). Required for photos, ignored for Reels/videos, optional for stories.
+	X *float32 `json:"x,omitempty"`
+	// Y coordinate position from top edge (0.0 = top, 0.5 = center, 1.0 = bottom). Required for photos, ignored for Reels/videos, optional for stories.
+	Y *float32 `json:"y,omitempty"`
+	// Zero-based index of the carousel item to tag. Defaults to 0. Tags on out-of-range indices are ignored.
 	MediaIndex *int32 `json:"mediaIndex,omitempty"`
 }
 
@@ -38,11 +38,9 @@ type _InstagramPlatformDataUserTagsInner InstagramPlatformDataUserTagsInner
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInstagramPlatformDataUserTagsInner(username string, x float32, y float32) *InstagramPlatformDataUserTagsInner {
+func NewInstagramPlatformDataUserTagsInner(username string) *InstagramPlatformDataUserTagsInner {
 	this := InstagramPlatformDataUserTagsInner{}
 	this.Username = username
-	this.X = x
-	this.Y = y
 	return &this
 }
 
@@ -78,52 +76,68 @@ func (o *InstagramPlatformDataUserTagsInner) SetUsername(v string) {
 	o.Username = v
 }
 
-// GetX returns the X field value
+// GetX returns the X field value if set, zero value otherwise.
 func (o *InstagramPlatformDataUserTagsInner) GetX() float32 {
-	if o == nil {
+	if o == nil || IsNil(o.X) {
 		var ret float32
 		return ret
 	}
-
-	return o.X
+	return *o.X
 }
 
-// GetXOk returns a tuple with the X field value
+// GetXOk returns a tuple with the X field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *InstagramPlatformDataUserTagsInner) GetXOk() (*float32, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.X) {
 		return nil, false
 	}
-	return &o.X, true
+	return o.X, true
 }
 
-// SetX sets field value
+// HasX returns a boolean if a field has been set.
+func (o *InstagramPlatformDataUserTagsInner) HasX() bool {
+	if o != nil && !IsNil(o.X) {
+		return true
+	}
+
+	return false
+}
+
+// SetX gets a reference to the given float32 and assigns it to the X field.
 func (o *InstagramPlatformDataUserTagsInner) SetX(v float32) {
-	o.X = v
+	o.X = &v
 }
 
-// GetY returns the Y field value
+// GetY returns the Y field value if set, zero value otherwise.
 func (o *InstagramPlatformDataUserTagsInner) GetY() float32 {
-	if o == nil {
+	if o == nil || IsNil(o.Y) {
 		var ret float32
 		return ret
 	}
-
-	return o.Y
+	return *o.Y
 }
 
-// GetYOk returns a tuple with the Y field value
+// GetYOk returns a tuple with the Y field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *InstagramPlatformDataUserTagsInner) GetYOk() (*float32, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Y) {
 		return nil, false
 	}
-	return &o.Y, true
+	return o.Y, true
 }
 
-// SetY sets field value
+// HasY returns a boolean if a field has been set.
+func (o *InstagramPlatformDataUserTagsInner) HasY() bool {
+	if o != nil && !IsNil(o.Y) {
+		return true
+	}
+
+	return false
+}
+
+// SetY gets a reference to the given float32 and assigns it to the Y field.
 func (o *InstagramPlatformDataUserTagsInner) SetY(v float32) {
-	o.Y = v
+	o.Y = &v
 }
 
 // GetMediaIndex returns the MediaIndex field value if set, zero value otherwise.
@@ -169,8 +183,12 @@ func (o InstagramPlatformDataUserTagsInner) MarshalJSON() ([]byte, error) {
 func (o InstagramPlatformDataUserTagsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["username"] = o.Username
-	toSerialize["x"] = o.X
-	toSerialize["y"] = o.Y
+	if !IsNil(o.X) {
+		toSerialize["x"] = o.X
+	}
+	if !IsNil(o.Y) {
+		toSerialize["y"] = o.Y
+	}
 	if !IsNil(o.MediaIndex) {
 		toSerialize["mediaIndex"] = o.MediaIndex
 	}
@@ -183,8 +201,6 @@ func (o *InstagramPlatformDataUserTagsInner) UnmarshalJSON(data []byte) (err err
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"username",
-		"x",
-		"y",
 	}
 
 	allProperties := make(map[string]interface{})

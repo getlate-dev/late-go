@@ -70,8 +70,10 @@ func main() {
 | `client.AccountsAPI.GetFollowerStats(ctx)` | Get follower stats |
 | `client.GMBReviewsAPI.GetGoogleBusinessReviews(ctx)` | Get reviews |
 | `client.LinkedInMentionsAPI.GetLinkedInMentions(ctx)` | Resolve LinkedIn mention |
+| `client.AccountsAPI.GetSlackSettings(ctx)` | Get Slack account settings |
 | `client.AccountsAPI.GetTikTokCreatorInfo(ctx)` | Get TikTok creator info |
 | `client.AccountsAPI.UpdateAccount(ctx)` | Update account |
+| `client.AccountsAPI.UpdateSlackSettings(ctx)` | Update Slack account settings |
 | `client.AccountsAPI.DeleteAccount(ctx)` | Disconnect account |
 | `client.GMBReviewsAPI.DeleteGoogleBusinessReviewReply(ctx)` | Delete a review reply |
 | `client.GMBReviewsAPI.BatchGetGoogleBusinessReviews(ctx)` | Batch get reviews |
@@ -95,6 +97,7 @@ func main() {
 | `client.AnalyticsAPI.GetContentDecay(ctx)` | Get content performance decay |
 | `client.AnalyticsAPI.GetDailyMetrics(ctx)` | Get daily aggregated metrics |
 | `client.AnalyticsAPI.GetFacebookPageInsights(ctx)` | Get Facebook Page insights |
+| `client.AnalyticsAPI.GetFacebookPostEarnings(ctx)` | Get Facebook post monetization earnings |
 | `client.AnalyticsAPI.GetFacebookPostReactions(ctx)` | Get Facebook post reactions |
 | `client.AnalyticsAPI.GetGoogleBusinessPerformance(ctx)` | Get GBP performance metrics |
 | `client.AnalyticsAPI.GetGoogleBusinessSearchKeywords(ctx)` | Get GBP search keywords |
@@ -269,6 +272,7 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.AdCampaignsAPI.ListAdCampaigns(ctx)` | List campaigns |
+| `client.AdCampaignsAPI.ListAdKeywords(ctx)` | List Search keywords |
 | `client.AdCampaignsAPI.ListAds(ctx)` | List ads |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
 | `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign |
@@ -312,6 +316,8 @@ func main() {
 | `client.AdInsightsAPI.GetAdAnalytics(ctx)` | Get ad analytics |
 | `client.AdInsightsAPI.GetAdInsightsReport(ctx)` | Poll an async insights report run |
 | `client.AdInsightsAPI.GetCampaignAnalytics(ctx)` | Get campaign analytics |
+| `client.AdInsightsAPI.GenerateKeywordHistoricalMetrics(ctx)` | Historical keyword metrics (Google Keyword Planner) |
+| `client.AdInsightsAPI.GenerateKeywordIdeas(ctx)` | Generate keyword ideas (Google Keyword Planner) |
 | `client.AdInsightsAPI.QueryAdInsights(ctx)` | Flexible live insights query |
 
 ### Ad Targeting
@@ -600,8 +606,10 @@ func main() {
 | `client.SMSAPI.DisableSmsOnNumber(ctx)` | Disable SMS on a number |
 | `client.SMSAPI.EnableSmsOnNumber(ctx)` | Enable SMS on a number |
 | `client.SMSAPI.LookupSmsNumber(ctx)` | Look up carrier + line type |
+| `client.SMSAPI.PreflightSmsRegistration(ctx)` | Pre-check a carrier registration |
 | `client.SMSAPI.RequestSmsSenderIdLimitIncrease(ctx)` | Request a higher sender ID daily limit |
 | `client.SMSAPI.ResendSmsRegistrationOtp(ctx)` | Re-send the sole-prop OTP |
+| `client.SMSAPI.RespondToSmsRegistrationReview(ctx)` | Reply to a change request |
 | `client.SMSAPI.ReuseSmsRegistrationForNumber(ctx)` | Add number to SMS registration |
 | `client.SMSAPI.SendSms(ctx)` | Send an SMS/MMS |
 | `client.SMSAPI.ShareSmsRegistration(ctx)` | Create a registration share link |
@@ -645,6 +653,7 @@ func main() {
 | `client.TwitterEngagementAPI.FollowUser(ctx)` | Follow a user |
 | `client.TwitterEngagementAPI.RemoveBookmark(ctx)` | Remove bookmark |
 | `client.TwitterEngagementAPI.RetweetPost(ctx)` | Retweet a post |
+| `client.TwitterEngagementAPI.SearchTweets(ctx)` | Search recent tweets |
 | `client.TwitterEngagementAPI.UndoRetweet(ctx)` | Undo retweet |
 | `client.TwitterEngagementAPI.UnfollowUser(ctx)` | Unfollow a user |
 

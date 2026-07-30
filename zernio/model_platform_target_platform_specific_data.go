@@ -27,6 +27,7 @@ type PlatformTargetPlatformSpecificData struct {
 	LinkedInPlatformData       *LinkedInPlatformData
 	PinterestPlatformData      *PinterestPlatformData
 	RedditPlatformData         *RedditPlatformData
+	SlackPlatformData          *SlackPlatformData
 	SnapchatPlatformData       *SnapchatPlatformData
 	TelegramPlatformData       *TelegramPlatformData
 	ThreadsPlatformData        *ThreadsPlatformData
@@ -88,6 +89,13 @@ func PinterestPlatformDataAsPlatformTargetPlatformSpecificData(v *PinterestPlatf
 func RedditPlatformDataAsPlatformTargetPlatformSpecificData(v *RedditPlatformData) PlatformTargetPlatformSpecificData {
 	return PlatformTargetPlatformSpecificData{
 		RedditPlatformData: v,
+	}
+}
+
+// SlackPlatformDataAsPlatformTargetPlatformSpecificData is a convenience function that returns SlackPlatformData wrapped in PlatformTargetPlatformSpecificData
+func SlackPlatformDataAsPlatformTargetPlatformSpecificData(v *SlackPlatformData) PlatformTargetPlatformSpecificData {
+	return PlatformTargetPlatformSpecificData{
+		SlackPlatformData: v,
 	}
 }
 
@@ -273,6 +281,23 @@ func (dst *PlatformTargetPlatformSpecificData) UnmarshalJSON(data []byte) error 
 		dst.RedditPlatformData = nil
 	}
 
+	// try to unmarshal data into SlackPlatformData
+	err = newStrictDecoder(data).Decode(&dst.SlackPlatformData)
+	if err == nil {
+		jsonSlackPlatformData, _ := json.Marshal(dst.SlackPlatformData)
+		if string(jsonSlackPlatformData) == "{}" { // empty struct
+			dst.SlackPlatformData = nil
+		} else {
+			if err = validator.Validate(dst.SlackPlatformData); err != nil {
+				dst.SlackPlatformData = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.SlackPlatformData = nil
+	}
+
 	// try to unmarshal data into SnapchatPlatformData
 	err = newStrictDecoder(data).Decode(&dst.SnapchatPlatformData)
 	if err == nil {
@@ -385,6 +410,7 @@ func (dst *PlatformTargetPlatformSpecificData) UnmarshalJSON(data []byte) error 
 		dst.LinkedInPlatformData = nil
 		dst.PinterestPlatformData = nil
 		dst.RedditPlatformData = nil
+		dst.SlackPlatformData = nil
 		dst.SnapchatPlatformData = nil
 		dst.TelegramPlatformData = nil
 		dst.ThreadsPlatformData = nil
@@ -432,6 +458,10 @@ func (src PlatformTargetPlatformSpecificData) MarshalJSON() ([]byte, error) {
 
 	if src.RedditPlatformData != nil {
 		return json.Marshal(&src.RedditPlatformData)
+	}
+
+	if src.SlackPlatformData != nil {
+		return json.Marshal(&src.SlackPlatformData)
 	}
 
 	if src.SnapchatPlatformData != nil {
@@ -498,6 +528,10 @@ func (obj *PlatformTargetPlatformSpecificData) GetActualInstance() interface{} {
 		return obj.RedditPlatformData
 	}
 
+	if obj.SlackPlatformData != nil {
+		return obj.SlackPlatformData
+	}
+
 	if obj.SnapchatPlatformData != nil {
 		return obj.SnapchatPlatformData
 	}
@@ -558,6 +592,10 @@ func (obj PlatformTargetPlatformSpecificData) GetActualInstanceValue() interface
 
 	if obj.RedditPlatformData != nil {
 		return *obj.RedditPlatformData
+	}
+
+	if obj.SlackPlatformData != nil {
+		return *obj.SlackPlatformData
 	}
 
 	if obj.SnapchatPlatformData != nil {

@@ -22,19 +22,21 @@ var _ MappedNullable = &PurchasePhoneNumberRequest{}
 
 // PurchasePhoneNumberRequest struct for PurchasePhoneNumberRequest
 type PurchasePhoneNumberRequest struct {
-	// Profile to associate the number with
+	// Preferred profile for the number. One number = one profile, so when the requested profile already holds a number the API assigns the next free profile instead (or creates one) and returns the actual assignment in `profileId` on the response.
 	ProfileId string `json:"profileId"`
 	// ISO 3166-1 alpha-2 country for the number (default US). International numbers require usage-based billing. Tier 3/4 countries return 202 { status: \"kyc_required\", kycUrl } — the customer must complete KYC at that URL before the number is ordered. See GET /v1/phone-numbers/countries.
 	Country *string `json:"country,omitempty"`
 	// Which of the country's offered number types to order (see `types[]` on GET /v1/phone-numbers/countries). Omitted = the country's default type, which is always the WhatsApp-safe choice. Capabilities, price, and KYC requirements are per (country, type): toll_free can never connect WhatsApp (400 when combined with connectWhatsapp:true), and wantsSms:true requires an SMS-capable type.
 	NumberType *string `json:"numberType,omitempty"`
+	// Area code (national destination code, e.g. 11 for Sao Paulo) the number must be in. Hard constraint: when the area has no deliverable inventory the purchase fails with 409 code AREA_CODE_UNAVAILABLE instead of assigning a number from another area, and later replacements stay in this area too. Omit for any area. Get live options from GET /v1/phone-numbers/availability (areaOptions).
+	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
 	// A phone number is the unit; WhatsApp is one optional feature. Pass false to buy a STANDALONE number (Calls/SMS only): provisioning skips the Meta pre-verify/OTP steps and the number activates immediately. Omitted defaults to the WhatsApp provisioning path. WhatsApp can be connected to a standalone number later from the connect flow.
 	ConnectWhatsapp *bool `json:"connectWhatsapp,omitempty"`
 	// SMS capability is per-number, not per-country. Pass true to provision from the SMS-capable inventory pool so the number can actually text (see also GET /v1/phone-numbers/available with sms=true, and smsAvailable on GET /v1/phone-numbers/countries).
 	WantsSms *bool `json:"wantsSms,omitempty"`
 	// Declare WhatsApp intent on a STANDALONE purchase (connectWhatsapp:false). The number still activates and bills immediately, but if WhatsApp's buy-time check rejects the assigned number, it is automatically swapped for a WhatsApp-eligible one during the purchase instead of being delivered with WhatsApp unavailable. Ignored on the WhatsApp provisioning path (connectWhatsapp omitted or true), which always delivers a WhatsApp-verified number.
 	WantsWhatsapp *bool `json:"wantsWhatsapp,omitempty"`
-	// Optional idempotency key. Send the same value when retrying a purchase: if a number was already bought under this key, the API returns { status: \"already_purchased\", numberId, phoneNumber } instead of provisioning a second number. Generate a fresh key for each genuinely new purchase.
+	// Optional idempotency key. Send the same value when retrying a purchase: if a number was already bought under this key, the API returns { status: \"already_purchased\", numberId, phoneNumber, profileId } instead of provisioning a second number. Generate a fresh key for each genuinely new purchase.
 	PurchaseIntentId *string `json:"purchaseIntentId,omitempty"`
 	// Any second purchase within 10 minutes of a previous one is rejected with 409 code PURCHASE_VELOCITY as duplicate protection. Pass true to confirm the additional purchase is intentional (e.g. bulk provisioning).
 	AllowMultiple *bool `json:"allowMultiple,omitempty"`
@@ -166,6 +168,38 @@ func (o *PurchasePhoneNumberRequest) HasNumberType() bool {
 // SetNumberType gets a reference to the given string and assigns it to the NumberType field.
 func (o *PurchasePhoneNumberRequest) SetNumberType(v string) {
 	o.NumberType = &v
+}
+
+// GetAreaCode returns the AreaCode field value if set, zero value otherwise.
+func (o *PurchasePhoneNumberRequest) GetAreaCode() string {
+	if o == nil || IsNil(o.AreaCode) {
+		var ret string
+		return ret
+	}
+	return *o.AreaCode
+}
+
+// GetAreaCodeOk returns a tuple with the AreaCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PurchasePhoneNumberRequest) GetAreaCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.AreaCode) {
+		return nil, false
+	}
+	return o.AreaCode, true
+}
+
+// HasAreaCode returns a boolean if a field has been set.
+func (o *PurchasePhoneNumberRequest) HasAreaCode() bool {
+	if o != nil && !IsNil(o.AreaCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetAreaCode gets a reference to the given string and assigns it to the AreaCode field.
+func (o *PurchasePhoneNumberRequest) SetAreaCode(v string) {
+	o.AreaCode = &v
 }
 
 // GetConnectWhatsapp returns the ConnectWhatsapp field value if set, zero value otherwise.
@@ -344,6 +378,9 @@ func (o PurchasePhoneNumberRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.NumberType) {
 		toSerialize["numberType"] = o.NumberType
+	}
+	if !IsNil(o.AreaCode) {
+		toSerialize["areaCode"] = o.AreaCode
 	}
 	if !IsNil(o.ConnectWhatsapp) {
 		toSerialize["connectWhatsapp"] = o.ConnectWhatsapp

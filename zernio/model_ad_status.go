@@ -21,13 +21,13 @@ type AdStatus string
 
 // List of AdStatus
 const (
-	ACTIVE         AdStatus = "active"
-	PAUSED         AdStatus = "paused"
-	PENDING_REVIEW AdStatus = "pending_review"
-	REJECTED       AdStatus = "rejected"
-	COMPLETED      AdStatus = "completed"
-	CANCELLED      AdStatus = "cancelled"
-	ERROR          AdStatus = "error"
+	ADSTATUS_ACTIVE         AdStatus = "active"
+	ADSTATUS_PAUSED         AdStatus = "paused"
+	ADSTATUS_PENDING_REVIEW AdStatus = "pending_review"
+	ADSTATUS_REJECTED       AdStatus = "rejected"
+	ADSTATUS_COMPLETED      AdStatus = "completed"
+	ADSTATUS_CANCELLED      AdStatus = "cancelled"
+	ADSTATUS_ERROR          AdStatus = "error"
 )
 
 // All allowed values of AdStatus enum

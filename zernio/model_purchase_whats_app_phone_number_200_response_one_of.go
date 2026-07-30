@@ -18,10 +18,10 @@ import (
 // checks if the PurchaseWhatsAppPhoneNumber200ResponseOneOf type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &PurchaseWhatsAppPhoneNumber200ResponseOneOf{}
 
-// PurchaseWhatsAppPhoneNumber200ResponseOneOf Checkout session created (first number)
+// PurchaseWhatsAppPhoneNumber200ResponseOneOf Phone number provisioned inline (subsequent numbers)
 type PurchaseWhatsAppPhoneNumber200ResponseOneOf struct {
-	Message     *string `json:"message,omitempty"`
-	CheckoutUrl *string `json:"checkoutUrl,omitempty"`
+	Message     *string                                                 `json:"message,omitempty"`
+	PhoneNumber *PurchaseWhatsAppPhoneNumber200ResponseOneOfPhoneNumber `json:"phoneNumber,omitempty"`
 }
 
 // NewPurchaseWhatsAppPhoneNumber200ResponseOneOf instantiates a new PurchaseWhatsAppPhoneNumber200ResponseOneOf object
@@ -73,36 +73,36 @@ func (o *PurchaseWhatsAppPhoneNumber200ResponseOneOf) SetMessage(v string) {
 	o.Message = &v
 }
 
-// GetCheckoutUrl returns the CheckoutUrl field value if set, zero value otherwise.
-func (o *PurchaseWhatsAppPhoneNumber200ResponseOneOf) GetCheckoutUrl() string {
-	if o == nil || IsNil(o.CheckoutUrl) {
-		var ret string
+// GetPhoneNumber returns the PhoneNumber field value if set, zero value otherwise.
+func (o *PurchaseWhatsAppPhoneNumber200ResponseOneOf) GetPhoneNumber() PurchaseWhatsAppPhoneNumber200ResponseOneOfPhoneNumber {
+	if o == nil || IsNil(o.PhoneNumber) {
+		var ret PurchaseWhatsAppPhoneNumber200ResponseOneOfPhoneNumber
 		return ret
 	}
-	return *o.CheckoutUrl
+	return *o.PhoneNumber
 }
 
-// GetCheckoutUrlOk returns a tuple with the CheckoutUrl field value if set, nil otherwise
+// GetPhoneNumberOk returns a tuple with the PhoneNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PurchaseWhatsAppPhoneNumber200ResponseOneOf) GetCheckoutUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.CheckoutUrl) {
+func (o *PurchaseWhatsAppPhoneNumber200ResponseOneOf) GetPhoneNumberOk() (*PurchaseWhatsAppPhoneNumber200ResponseOneOfPhoneNumber, bool) {
+	if o == nil || IsNil(o.PhoneNumber) {
 		return nil, false
 	}
-	return o.CheckoutUrl, true
+	return o.PhoneNumber, true
 }
 
-// HasCheckoutUrl returns a boolean if a field has been set.
-func (o *PurchaseWhatsAppPhoneNumber200ResponseOneOf) HasCheckoutUrl() bool {
-	if o != nil && !IsNil(o.CheckoutUrl) {
+// HasPhoneNumber returns a boolean if a field has been set.
+func (o *PurchaseWhatsAppPhoneNumber200ResponseOneOf) HasPhoneNumber() bool {
+	if o != nil && !IsNil(o.PhoneNumber) {
 		return true
 	}
 
 	return false
 }
 
-// SetCheckoutUrl gets a reference to the given string and assigns it to the CheckoutUrl field.
-func (o *PurchaseWhatsAppPhoneNumber200ResponseOneOf) SetCheckoutUrl(v string) {
-	o.CheckoutUrl = &v
+// SetPhoneNumber gets a reference to the given PurchaseWhatsAppPhoneNumber200ResponseOneOfPhoneNumber and assigns it to the PhoneNumber field.
+func (o *PurchaseWhatsAppPhoneNumber200ResponseOneOf) SetPhoneNumber(v PurchaseWhatsAppPhoneNumber200ResponseOneOfPhoneNumber) {
+	o.PhoneNumber = &v
 }
 
 func (o PurchaseWhatsAppPhoneNumber200ResponseOneOf) MarshalJSON() ([]byte, error) {
@@ -118,8 +118,8 @@ func (o PurchaseWhatsAppPhoneNumber200ResponseOneOf) ToMap() (map[string]interfa
 	if !IsNil(o.Message) {
 		toSerialize["message"] = o.Message
 	}
-	if !IsNil(o.CheckoutUrl) {
-		toSerialize["checkoutUrl"] = o.CheckoutUrl
+	if !IsNil(o.PhoneNumber) {
+		toSerialize["phoneNumber"] = o.PhoneNumber
 	}
 	return toSerialize, nil
 }
