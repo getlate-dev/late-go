@@ -20,8 +20,10 @@ var _ MappedNullable = &ConnectWhatsAppCredentials200Response{}
 
 // ConnectWhatsAppCredentials200Response struct for ConnectWhatsAppCredentials200Response
 type ConnectWhatsAppCredentials200Response struct {
-	Message *string                                       `json:"message,omitempty"`
-	Account *ConnectWhatsAppCredentials200ResponseAccount `json:"account,omitempty"`
+	Message *string `json:"message,omitempty"`
+	// Present when the account was created but Meta rejected the Cloud API registration. The number cannot send messages until this is resolved.
+	RegistrationWarning *string                                       `json:"registrationWarning,omitempty"`
+	Account             *ConnectWhatsAppCredentials200ResponseAccount `json:"account,omitempty"`
 }
 
 // NewConnectWhatsAppCredentials200Response instantiates a new ConnectWhatsAppCredentials200Response object
@@ -73,6 +75,38 @@ func (o *ConnectWhatsAppCredentials200Response) SetMessage(v string) {
 	o.Message = &v
 }
 
+// GetRegistrationWarning returns the RegistrationWarning field value if set, zero value otherwise.
+func (o *ConnectWhatsAppCredentials200Response) GetRegistrationWarning() string {
+	if o == nil || IsNil(o.RegistrationWarning) {
+		var ret string
+		return ret
+	}
+	return *o.RegistrationWarning
+}
+
+// GetRegistrationWarningOk returns a tuple with the RegistrationWarning field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectWhatsAppCredentials200Response) GetRegistrationWarningOk() (*string, bool) {
+	if o == nil || IsNil(o.RegistrationWarning) {
+		return nil, false
+	}
+	return o.RegistrationWarning, true
+}
+
+// HasRegistrationWarning returns a boolean if a field has been set.
+func (o *ConnectWhatsAppCredentials200Response) HasRegistrationWarning() bool {
+	if o != nil && !IsNil(o.RegistrationWarning) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegistrationWarning gets a reference to the given string and assigns it to the RegistrationWarning field.
+func (o *ConnectWhatsAppCredentials200Response) SetRegistrationWarning(v string) {
+	o.RegistrationWarning = &v
+}
+
 // GetAccount returns the Account field value if set, zero value otherwise.
 func (o *ConnectWhatsAppCredentials200Response) GetAccount() ConnectWhatsAppCredentials200ResponseAccount {
 	if o == nil || IsNil(o.Account) {
@@ -117,6 +151,9 @@ func (o ConnectWhatsAppCredentials200Response) ToMap() (map[string]interface{}, 
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Message) {
 		toSerialize["message"] = o.Message
+	}
+	if !IsNil(o.RegistrationWarning) {
+		toSerialize["registrationWarning"] = o.RegistrationWarning
 	}
 	if !IsNil(o.Account) {
 		toSerialize["account"] = o.Account

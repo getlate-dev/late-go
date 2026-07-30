@@ -1022,6 +1022,8 @@ model_recycling_config.go
 model_recycling_state.go
 model_reddit_platform_data.go
 model_reddit_post.go
+model_register_whats_app_number_200_response.go
+model_register_whats_app_number_request.go
 model_release_phone_number_200_response.go
 model_release_phone_number_200_response_phone_number.go
 model_remediate_phone_number_200_response.go

@@ -718,6 +718,7 @@ func main() {
 | `client.WhatsAppAPI.AddWhatsAppGroupParticipants(ctx)` | Add participants |
 | `client.WhatsAppAPI.ApproveWhatsAppGroupJoinRequests(ctx)` | Approve join requests |
 | `client.WhatsAppAPI.BlockWhatsAppUsers(ctx)` | Block users |
+| `client.WhatsAppAPI.RegisterWhatsAppNumber(ctx)` | Register a connected WhatsApp number on the Cloud API |
 | `client.WhatsAppAPI.RejectWhatsAppGroupJoinRequests(ctx)` | Reject join requests |
 | `client.WhatsAppAPI.RemoveWhatsAppGroupParticipants(ctx)` | Remove participants |
 | `client.WhatsAppAPI.SendWhatsAppConversion(ctx)` | Send WhatsApp conversion event |

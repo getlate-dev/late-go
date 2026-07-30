@@ -3293,6 +3293,133 @@ func (a *WhatsAppAPIService) ListWhatsAppGroupJoinRequestsExecute(r WhatsAppAPIL
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type WhatsAppAPIRegisterWhatsAppNumberRequest struct {
+	ctx                           context.Context
+	ApiService                    *WhatsAppAPIService
+	accountId                     string
+	registerWhatsAppNumberRequest *RegisterWhatsAppNumberRequest
+}
+
+func (r WhatsAppAPIRegisterWhatsAppNumberRequest) RegisterWhatsAppNumberRequest(registerWhatsAppNumberRequest RegisterWhatsAppNumberRequest) WhatsAppAPIRegisterWhatsAppNumberRequest {
+	r.registerWhatsAppNumberRequest = &registerWhatsAppNumberRequest
+	return r
+}
+
+func (r WhatsAppAPIRegisterWhatsAppNumberRequest) Execute() (*RegisterWhatsAppNumber200Response, *http.Response, error) {
+	return r.ApiService.RegisterWhatsAppNumberExecute(r)
+}
+
+/*
+RegisterWhatsAppNumber Register a connected WhatsApp number on the Cloud API
+
+Re-runs Meta's Cloud API registration for a WhatsApp account that is already connected.
+Use it when the number has its own two-step verification PIN: the connect flows register
+with a default PIN, Meta rejects that with error 133005, and the number then fails every
+send with the misleading '(#200) You do not have the necessary permission to send messages'
+while the account still shows as connected. The PIN is used for this call only and is not stored.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The WhatsApp account ID
+	@return WhatsAppAPIRegisterWhatsAppNumberRequest
+*/
+func (a *WhatsAppAPIService) RegisterWhatsAppNumber(ctx context.Context, accountId string) WhatsAppAPIRegisterWhatsAppNumberRequest {
+	return WhatsAppAPIRegisterWhatsAppNumberRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return RegisterWhatsAppNumber200Response
+func (a *WhatsAppAPIService) RegisterWhatsAppNumberExecute(r WhatsAppAPIRegisterWhatsAppNumberRequest) (*RegisterWhatsAppNumber200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RegisterWhatsAppNumber200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppAPIService.RegisterWhatsAppNumber")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/whatsapp/register"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.registerWhatsAppNumberRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type WhatsAppAPIRejectWhatsAppGroupJoinRequestsRequest struct {
 	ctx                                    context.Context
 	ApiService                             *WhatsAppAPIService

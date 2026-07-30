@@ -30,6 +30,8 @@ type ConnectWhatsAppCredentialsRequest struct {
 	WabaId string `json:"wabaId"`
 	// Phone Number ID from Meta WhatsApp Manager
 	PhoneNumberId string `json:"phoneNumberId"`
+	// The 6-digit two-step verification PIN set on the number. Required if you enabled two-step verification for it, otherwise Meta rejects the Cloud API registration with error 133005 and the number cannot send messages.
+	Pin *string `json:"pin,omitempty" validate:"regexp=^\\\\d{6}$"`
 }
 
 type _ConnectWhatsAppCredentialsRequest ConnectWhatsAppCredentialsRequest
@@ -151,6 +153,38 @@ func (o *ConnectWhatsAppCredentialsRequest) SetPhoneNumberId(v string) {
 	o.PhoneNumberId = v
 }
 
+// GetPin returns the Pin field value if set, zero value otherwise.
+func (o *ConnectWhatsAppCredentialsRequest) GetPin() string {
+	if o == nil || IsNil(o.Pin) {
+		var ret string
+		return ret
+	}
+	return *o.Pin
+}
+
+// GetPinOk returns a tuple with the Pin field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectWhatsAppCredentialsRequest) GetPinOk() (*string, bool) {
+	if o == nil || IsNil(o.Pin) {
+		return nil, false
+	}
+	return o.Pin, true
+}
+
+// HasPin returns a boolean if a field has been set.
+func (o *ConnectWhatsAppCredentialsRequest) HasPin() bool {
+	if o != nil && !IsNil(o.Pin) {
+		return true
+	}
+
+	return false
+}
+
+// SetPin gets a reference to the given string and assigns it to the Pin field.
+func (o *ConnectWhatsAppCredentialsRequest) SetPin(v string) {
+	o.Pin = &v
+}
+
 func (o ConnectWhatsAppCredentialsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -165,6 +199,9 @@ func (o ConnectWhatsAppCredentialsRequest) ToMap() (map[string]interface{}, erro
 	toSerialize["accessToken"] = o.AccessToken
 	toSerialize["wabaId"] = o.WabaId
 	toSerialize["phoneNumberId"] = o.PhoneNumberId
+	if !IsNil(o.Pin) {
+		toSerialize["pin"] = o.Pin
+	}
 	return toSerialize, nil
 }
 
