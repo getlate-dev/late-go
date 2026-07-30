@@ -20,11 +20,12 @@ var _ MappedNullable = &BulkCreateContacts200Response{}
 
 // BulkCreateContacts200Response struct for BulkCreateContacts200Response
 type BulkCreateContacts200Response struct {
-	Success *bool                    `json:"success,omitempty"`
-	Created *int32                   `json:"created,omitempty"`
-	Skipped *int32                   `json:"skipped,omitempty"`
-	Errors  []map[string]interface{} `json:"errors,omitempty"`
-	Total   *int32                   `json:"total,omitempty"`
+	Success *bool  `json:"success,omitempty"`
+	Created *int32 `json:"created,omitempty"`
+	Skipped *int32 `json:"skipped,omitempty"`
+	// Per-contact failures, e.g. an identifier that is not a valid phone number
+	Errors []string `json:"errors,omitempty"`
+	Total  *int32   `json:"total,omitempty"`
 }
 
 // NewBulkCreateContacts200Response instantiates a new BulkCreateContacts200Response object
@@ -141,9 +142,9 @@ func (o *BulkCreateContacts200Response) SetSkipped(v int32) {
 }
 
 // GetErrors returns the Errors field value if set, zero value otherwise.
-func (o *BulkCreateContacts200Response) GetErrors() []map[string]interface{} {
+func (o *BulkCreateContacts200Response) GetErrors() []string {
 	if o == nil || IsNil(o.Errors) {
-		var ret []map[string]interface{}
+		var ret []string
 		return ret
 	}
 	return o.Errors
@@ -151,7 +152,7 @@ func (o *BulkCreateContacts200Response) GetErrors() []map[string]interface{} {
 
 // GetErrorsOk returns a tuple with the Errors field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkCreateContacts200Response) GetErrorsOk() ([]map[string]interface{}, bool) {
+func (o *BulkCreateContacts200Response) GetErrorsOk() ([]string, bool) {
 	if o == nil || IsNil(o.Errors) {
 		return nil, false
 	}
@@ -167,8 +168,8 @@ func (o *BulkCreateContacts200Response) HasErrors() bool {
 	return false
 }
 
-// SetErrors gets a reference to the given []map[string]interface{} and assigns it to the Errors field.
-func (o *BulkCreateContacts200Response) SetErrors(v []map[string]interface{}) {
+// SetErrors gets a reference to the given []string and assigns it to the Errors field.
+func (o *BulkCreateContacts200Response) SetErrors(v []string) {
 	o.Errors = v
 }
 
