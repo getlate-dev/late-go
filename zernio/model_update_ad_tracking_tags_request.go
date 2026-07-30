@@ -20,7 +20,7 @@ var _ MappedNullable = &UpdateAdTrackingTagsRequest{}
 
 // UpdateAdTrackingTagsRequest struct for UpdateAdTrackingTagsRequest
 type UpdateAdTrackingTagsRequest struct {
-	// Meta only. Click-URL params appended to a freshly-rebuilt creative.
+	// Meta only. Click-URL params appended to a freshly-rebuilt creative. Meta dynamic macros ({{ad.id}}, {{campaign.id}}, {{placement}}, ...) are sent through unescaped so Meta expands them; every other character is percent-encoded.
 	UrlTags  []UpdateAdTrackingTagsRequestUrlTagsInner `json:"urlTags,omitempty"`
 	Creative *UpdateAdTrackingTagsRequestCreative      `json:"creative,omitempty"`
 	// Google only. Full tracking template (must contain {lpurl}).

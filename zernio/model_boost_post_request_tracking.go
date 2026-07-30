@@ -21,7 +21,7 @@ var _ MappedNullable = &BoostPostRequestTracking{}
 // BoostPostRequestTracking Meta only. Tracking specs (pixel, URL tags).
 type BoostPostRequestTracking struct {
 	PixelId *string `json:"pixelId,omitempty"`
-	// URL parameters appended to the ad link, rendered as `key=value` pairs joined with `&`.
+	// URL parameters appended to the ad link, rendered as `key=value` pairs joined with `&`. Meta dynamic macros ({{ad.id}}, {{campaign.id}}, {{placement}}, ...) are sent through unescaped so Meta expands them; every other character is percent-encoded.
 	UrlTags []BoostPostRequestTrackingUrlTagsInner `json:"urlTags,omitempty"`
 }
 

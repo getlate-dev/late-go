@@ -22,7 +22,7 @@ var _ MappedNullable = &CreateStandaloneAdRequestTracking{}
 type CreateStandaloneAdRequestTracking struct {
 	// Meta Pixel ID to attach for offsite-conversion measurement.
 	PixelId *string `json:"pixelId,omitempty"`
-	// Click-URL params appended to the ad's destination as `url_tags` (e.g. utm_source).
+	// Click-URL params appended to the ad's destination as `url_tags` (e.g. utm_source). Meta dynamic macros ({{ad.id}}, {{campaign.id}}, {{placement}}, ...) are sent through unescaped so Meta expands them; every other character is percent-encoded.
 	UrlTags []UpdateAdTrackingTagsRequestUrlTagsInner `json:"urlTags,omitempty"`
 }
 
