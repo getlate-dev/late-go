@@ -37,6 +37,9 @@ type GetWhatsAppCalling200Response struct {
 	CallerIdMode *string `json:"callerIdMode,omitempty"`
 	// True once the number completed caller-ID verification, making tel: forwards display the business number itself.
 	CallerIdVerified *bool `json:"callerIdVerified,omitempty"`
+	// Hard cap (seconds) on forwarded calls; null = no cap.
+	MaxCallDurationSeconds NullableInt32 `json:"maxCallDurationSeconds,omitempty"`
+	ForwardCallerId        *string       `json:"forwardCallerId,omitempty"`
 }
 
 // NewGetWhatsAppCalling200Response instantiates a new GetWhatsAppCalling200Response object
@@ -442,6 +445,81 @@ func (o *GetWhatsAppCalling200Response) SetCallerIdVerified(v bool) {
 	o.CallerIdVerified = &v
 }
 
+// GetMaxCallDurationSeconds returns the MaxCallDurationSeconds field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetWhatsAppCalling200Response) GetMaxCallDurationSeconds() int32 {
+	if o == nil || IsNil(o.MaxCallDurationSeconds.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxCallDurationSeconds.Get()
+}
+
+// GetMaxCallDurationSecondsOk returns a tuple with the MaxCallDurationSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetWhatsAppCalling200Response) GetMaxCallDurationSecondsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaxCallDurationSeconds.Get(), o.MaxCallDurationSeconds.IsSet()
+}
+
+// HasMaxCallDurationSeconds returns a boolean if a field has been set.
+func (o *GetWhatsAppCalling200Response) HasMaxCallDurationSeconds() bool {
+	if o != nil && o.MaxCallDurationSeconds.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxCallDurationSeconds gets a reference to the given NullableInt32 and assigns it to the MaxCallDurationSeconds field.
+func (o *GetWhatsAppCalling200Response) SetMaxCallDurationSeconds(v int32) {
+	o.MaxCallDurationSeconds.Set(&v)
+}
+
+// SetMaxCallDurationSecondsNil sets the value for MaxCallDurationSeconds to be an explicit nil
+func (o *GetWhatsAppCalling200Response) SetMaxCallDurationSecondsNil() {
+	o.MaxCallDurationSeconds.Set(nil)
+}
+
+// UnsetMaxCallDurationSeconds ensures that no value is present for MaxCallDurationSeconds, not even an explicit nil
+func (o *GetWhatsAppCalling200Response) UnsetMaxCallDurationSeconds() {
+	o.MaxCallDurationSeconds.Unset()
+}
+
+// GetForwardCallerId returns the ForwardCallerId field value if set, zero value otherwise.
+func (o *GetWhatsAppCalling200Response) GetForwardCallerId() string {
+	if o == nil || IsNil(o.ForwardCallerId) {
+		var ret string
+		return ret
+	}
+	return *o.ForwardCallerId
+}
+
+// GetForwardCallerIdOk returns a tuple with the ForwardCallerId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetWhatsAppCalling200Response) GetForwardCallerIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ForwardCallerId) {
+		return nil, false
+	}
+	return o.ForwardCallerId, true
+}
+
+// HasForwardCallerId returns a boolean if a field has been set.
+func (o *GetWhatsAppCalling200Response) HasForwardCallerId() bool {
+	if o != nil && !IsNil(o.ForwardCallerId) {
+		return true
+	}
+
+	return false
+}
+
+// SetForwardCallerId gets a reference to the given string and assigns it to the ForwardCallerId field.
+func (o *GetWhatsAppCalling200Response) SetForwardCallerId(v string) {
+	o.ForwardCallerId = &v
+}
+
 func (o GetWhatsAppCalling200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -484,6 +562,12 @@ func (o GetWhatsAppCalling200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CallerIdVerified) {
 		toSerialize["callerIdVerified"] = o.CallerIdVerified
+	}
+	if o.MaxCallDurationSeconds.IsSet() {
+		toSerialize["maxCallDurationSeconds"] = o.MaxCallDurationSeconds.Get()
+	}
+	if !IsNil(o.ForwardCallerId) {
+		toSerialize["forwardCallerId"] = o.ForwardCallerId
 	}
 	return toSerialize, nil
 }

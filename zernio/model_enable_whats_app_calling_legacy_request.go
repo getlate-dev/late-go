@@ -30,6 +30,10 @@ type EnableWhatsAppCallingLegacyRequest struct {
 	SipAuthPassword   *string  `json:"sipAuthPassword,omitempty"`
 	RecordingEnabled  *bool    `json:"recordingEnabled,omitempty"`
 	CallIconCountries []string `json:"callIconCountries,omitempty"`
+	// Hard cap (seconds) on a forwarded call; the carrier hangs up both legs when it fires. Safety valve against dead-air billing when a destination hangs up but the signal is lost.
+	MaxCallDurationSeconds *int32 `json:"maxCallDurationSeconds,omitempty"`
+	// Caller ID presented to the forward destination. caller = the WhatsApp user's number (sip: destinations only; ignored on tel: forwards). Fixes AI-agent trunks that reject seeing the business number call itself.
+	ForwardCallerId *string `json:"forwardCallerId,omitempty"`
 }
 
 type _EnableWhatsAppCallingLegacyRequest EnableWhatsAppCallingLegacyRequest
@@ -44,6 +48,8 @@ func NewEnableWhatsAppCallingLegacyRequest(accountId string, forwardTo string) *
 	this.ForwardTo = forwardTo
 	var recordingEnabled bool = false
 	this.RecordingEnabled = &recordingEnabled
+	var forwardCallerId string = "business"
+	this.ForwardCallerId = &forwardCallerId
 	return &this
 }
 
@@ -54,6 +60,8 @@ func NewEnableWhatsAppCallingLegacyRequestWithDefaults() *EnableWhatsAppCallingL
 	this := EnableWhatsAppCallingLegacyRequest{}
 	var recordingEnabled bool = false
 	this.RecordingEnabled = &recordingEnabled
+	var forwardCallerId string = "business"
+	this.ForwardCallerId = &forwardCallerId
 	return &this
 }
 
@@ -233,6 +241,70 @@ func (o *EnableWhatsAppCallingLegacyRequest) SetCallIconCountries(v []string) {
 	o.CallIconCountries = v
 }
 
+// GetMaxCallDurationSeconds returns the MaxCallDurationSeconds field value if set, zero value otherwise.
+func (o *EnableWhatsAppCallingLegacyRequest) GetMaxCallDurationSeconds() int32 {
+	if o == nil || IsNil(o.MaxCallDurationSeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxCallDurationSeconds
+}
+
+// GetMaxCallDurationSecondsOk returns a tuple with the MaxCallDurationSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EnableWhatsAppCallingLegacyRequest) GetMaxCallDurationSecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxCallDurationSeconds) {
+		return nil, false
+	}
+	return o.MaxCallDurationSeconds, true
+}
+
+// HasMaxCallDurationSeconds returns a boolean if a field has been set.
+func (o *EnableWhatsAppCallingLegacyRequest) HasMaxCallDurationSeconds() bool {
+	if o != nil && !IsNil(o.MaxCallDurationSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxCallDurationSeconds gets a reference to the given int32 and assigns it to the MaxCallDurationSeconds field.
+func (o *EnableWhatsAppCallingLegacyRequest) SetMaxCallDurationSeconds(v int32) {
+	o.MaxCallDurationSeconds = &v
+}
+
+// GetForwardCallerId returns the ForwardCallerId field value if set, zero value otherwise.
+func (o *EnableWhatsAppCallingLegacyRequest) GetForwardCallerId() string {
+	if o == nil || IsNil(o.ForwardCallerId) {
+		var ret string
+		return ret
+	}
+	return *o.ForwardCallerId
+}
+
+// GetForwardCallerIdOk returns a tuple with the ForwardCallerId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EnableWhatsAppCallingLegacyRequest) GetForwardCallerIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ForwardCallerId) {
+		return nil, false
+	}
+	return o.ForwardCallerId, true
+}
+
+// HasForwardCallerId returns a boolean if a field has been set.
+func (o *EnableWhatsAppCallingLegacyRequest) HasForwardCallerId() bool {
+	if o != nil && !IsNil(o.ForwardCallerId) {
+		return true
+	}
+
+	return false
+}
+
+// SetForwardCallerId gets a reference to the given string and assigns it to the ForwardCallerId field.
+func (o *EnableWhatsAppCallingLegacyRequest) SetForwardCallerId(v string) {
+	o.ForwardCallerId = &v
+}
+
 func (o EnableWhatsAppCallingLegacyRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -256,6 +328,12 @@ func (o EnableWhatsAppCallingLegacyRequest) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.CallIconCountries) {
 		toSerialize["callIconCountries"] = o.CallIconCountries
+	}
+	if !IsNil(o.MaxCallDurationSeconds) {
+		toSerialize["maxCallDurationSeconds"] = o.MaxCallDurationSeconds
+	}
+	if !IsNil(o.ForwardCallerId) {
+		toSerialize["forwardCallerId"] = o.ForwardCallerId
 	}
 	return toSerialize, nil
 }
