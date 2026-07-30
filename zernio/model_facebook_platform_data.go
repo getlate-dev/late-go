@@ -35,6 +35,8 @@ type FacebookPlatformData struct {
 	CarouselCards []FacebookPlatformDataCarouselCardsInner `json:"carouselCards,omitempty"`
 	// Optional top-level \"See more\" destination shown on the carousel end card. Defaults to the first card's link when omitted. Only used together with carouselCards.
 	CarouselLink *string `json:"carouselLink,omitempty"`
+	// Facebook-defined preset ID that renders the post as large text on a colored background (Graph `text_format_preset_id`). Supply the raw numeric ID from Meta; we do not publish a catalog of presets and Facebook may change the available set. Pages only (ignored on personal profiles and groups) and text-only feed posts only: the request is rejected with 400 when mediaItems or carouselCards are present, when contentType is story or reel, when content is empty, or when content exceeds 130 characters. Those are Facebook limits, and above them Facebook silently drops the background and publishes a plain text post instead of returning an error, so we reject up front rather than let the background disappear. A URL detected in the content is NOT attached as a link preview while a preset is set, because a link attachment also makes Facebook drop the background.
+	TextFormatPresetId *string `json:"textFormatPresetId,omitempty" validate:"regexp=^\\\\d+$"`
 }
 
 // NewFacebookPlatformData instantiates a new FacebookPlatformData object
@@ -314,6 +316,38 @@ func (o *FacebookPlatformData) SetCarouselLink(v string) {
 	o.CarouselLink = &v
 }
 
+// GetTextFormatPresetId returns the TextFormatPresetId field value if set, zero value otherwise.
+func (o *FacebookPlatformData) GetTextFormatPresetId() string {
+	if o == nil || IsNil(o.TextFormatPresetId) {
+		var ret string
+		return ret
+	}
+	return *o.TextFormatPresetId
+}
+
+// GetTextFormatPresetIdOk returns a tuple with the TextFormatPresetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FacebookPlatformData) GetTextFormatPresetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.TextFormatPresetId) {
+		return nil, false
+	}
+	return o.TextFormatPresetId, true
+}
+
+// HasTextFormatPresetId returns a boolean if a field has been set.
+func (o *FacebookPlatformData) HasTextFormatPresetId() bool {
+	if o != nil && !IsNil(o.TextFormatPresetId) {
+		return true
+	}
+
+	return false
+}
+
+// SetTextFormatPresetId gets a reference to the given string and assigns it to the TextFormatPresetId field.
+func (o *FacebookPlatformData) SetTextFormatPresetId(v string) {
+	o.TextFormatPresetId = &v
+}
+
 func (o FacebookPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -347,6 +381,9 @@ func (o FacebookPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CarouselLink) {
 		toSerialize["carouselLink"] = o.CarouselLink
+	}
+	if !IsNil(o.TextFormatPresetId) {
+		toSerialize["textFormatPresetId"] = o.TextFormatPresetId
 	}
 	return toSerialize, nil
 }
