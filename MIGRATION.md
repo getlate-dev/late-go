@@ -103,4 +103,38 @@ Go field name changed (it previously collided with a generated helper method).
 ### Versioning going forward
 
 `v0.1.0` is a one-time manual, breaking release. Subsequent regenerations from
-the spec are additive and ship as automatic patch bumps (`v0.1.1`, `v0.1.2`, …).
+the spec are additive and ship as automatic patch bumps (`v0.1.1`, `v0.1.2`, …),
+with one exception so far: the enum constant rename below.
+
+---
+
+## Prefixed enum constants
+
+Applies from the first release regenerated after `v0.1.160`. This is a
+**breaking rename** for code that referenced the constants directly.
+
+Package-level enum constants are now prefixed with the uppercased Go type name.
+The generator emits them at package scope, so two enums that share a value could
+not coexist (`AdStatus` and `AdReviewStatus` both have `rejected`, which made the
+SDK fail to compile once `AdReviewStatus` was added to the API).
+
+The types, their values, the JSON wire format, `Allowed<Type>EnumValues`,
+`New<Type>FromValue()` and `IsValid()` are all unchanged. Only references to the
+constants need updating:
+
+| Before | After |
+|--------|-------|
+| `zernio.ACTIVE` | `zernio.ADSTATUS_ACTIVE` |
+| `zernio.PAUSED` | `zernio.ADSTATUS_PAUSED` |
+| `zernio.PENDING_REVIEW` | `zernio.ADSTATUS_PENDING_REVIEW` |
+| `zernio.REJECTED` | `zernio.ADSTATUS_REJECTED` |
+| `zernio.COMPLETED` | `zernio.ADSTATUS_COMPLETED` |
+| `zernio.CANCELLED` | `zernio.ADSTATUS_CANCELLED` |
+| `zernio.ERROR` | `zernio.ADSTATUS_ERROR` |
+| `zernio.LOWEST_COST_WITHOUT_CAP` | `zernio.BIDSTRATEGY_LOWEST_COST_WITHOUT_CAP` |
+| `zernio.LOWEST_COST_WITH_BID_CAP` | `zernio.BIDSTRATEGY_LOWEST_COST_WITH_BID_CAP` |
+| `zernio.COST_CAP` | `zernio.BIDSTRATEGY_COST_CAP` |
+| `zernio.LOWEST_COST_WITH_MIN_ROAS` | `zernio.BIDSTRATEGY_LOWEST_COST_WITH_MIN_ROAS` |
+
+Code that passes the raw string (`"rejected"`) or goes through
+`zernio.NewAdStatusFromValue("rejected")` needs no change.

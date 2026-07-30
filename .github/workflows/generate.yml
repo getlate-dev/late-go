@@ -46,6 +46,10 @@ jobs:
           # - name-mappings renames hasX properties whose sibling field "x"
           #   generates a colliding HasX() presence helper (hasReply vs reply,
           #   hasPhotos vs photos on GBP reviews). JSON tags stay camelCase.
+          # - enumClassPrefix=true is required because the go generator emits enum
+          #   values as bare package-level constants, so any two enum schemas
+          #   sharing a value (AdStatus and AdReviewStatus both have "rejected")
+          #   redeclare the same identifier and the build fails.
           # Output into zernio/ so the import path stays
           # github.com/zernio-dev/zernio-go/zernio.
           openapi-generator-cli generate \
@@ -54,7 +58,7 @@ jobs:
             -o zernio \
             --skip-validate-spec \
             --name-mappings hasReply=Replied,hasPhotos=PhotosPresent \
-            --additional-properties=packageName=zernio,structPrefix=true \
+            --additional-properties=packageName=zernio,structPrefix=true,enumClassPrefix=true \
             --git-user-id=zernio-dev \
             --git-repo-id=zernio-go
           # Generated test stubs are skip-only and the OAS 3.1 webhooks section
@@ -101,8 +105,10 @@ jobs:
           NEW_VERSION=$(echo $LATEST_TAG | awk -F. '{printf "v%d.%d.%d", $1, $2, $3+1}' | sed 's/vv/v/')
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
+      # A workflow_dispatch on a branch is a generation smoke test, so everything
+      # below main is skipped: no commit, no tag, no release.
       - name: Commit and push
-        if: steps.changes.outputs.has_changes == 'true'
+        if: steps.changes.outputs.has_changes == 'true' && github.ref == 'refs/heads/main'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -120,7 +126,7 @@ jobs:
           done
 
       - name: Create GitHub Release
-        if: steps.changes.outputs.has_changes == 'true'
+        if: steps.changes.outputs.has_changes == 'true' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.new_version }}
