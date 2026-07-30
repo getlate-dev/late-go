@@ -24,6 +24,8 @@ type EnableWhatsAppCallingLegacy200Response struct {
 	CallingEnabled *bool   `json:"callingEnabled,omitempty"`
 	SipHostname    *string `json:"sipHostname,omitempty"`
 	ForwardTo      *string `json:"forwardTo,omitempty"`
+	// Caller ID the forward-leg callee sees on tel: forwards. business = this WhatsApp number; platform = a Zernio number (customer-brought number without verified caller ID).
+	CallerIdMode *string `json:"callerIdMode,omitempty"`
 }
 
 // NewEnableWhatsAppCallingLegacy200Response instantiates a new EnableWhatsAppCallingLegacy200Response object
@@ -171,6 +173,38 @@ func (o *EnableWhatsAppCallingLegacy200Response) SetForwardTo(v string) {
 	o.ForwardTo = &v
 }
 
+// GetCallerIdMode returns the CallerIdMode field value if set, zero value otherwise.
+func (o *EnableWhatsAppCallingLegacy200Response) GetCallerIdMode() string {
+	if o == nil || IsNil(o.CallerIdMode) {
+		var ret string
+		return ret
+	}
+	return *o.CallerIdMode
+}
+
+// GetCallerIdModeOk returns a tuple with the CallerIdMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EnableWhatsAppCallingLegacy200Response) GetCallerIdModeOk() (*string, bool) {
+	if o == nil || IsNil(o.CallerIdMode) {
+		return nil, false
+	}
+	return o.CallerIdMode, true
+}
+
+// HasCallerIdMode returns a boolean if a field has been set.
+func (o *EnableWhatsAppCallingLegacy200Response) HasCallerIdMode() bool {
+	if o != nil && !IsNil(o.CallerIdMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallerIdMode gets a reference to the given string and assigns it to the CallerIdMode field.
+func (o *EnableWhatsAppCallingLegacy200Response) SetCallerIdMode(v string) {
+	o.CallerIdMode = &v
+}
+
 func (o EnableWhatsAppCallingLegacy200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -192,6 +226,9 @@ func (o EnableWhatsAppCallingLegacy200Response) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.ForwardTo) {
 		toSerialize["forwardTo"] = o.ForwardTo
+	}
+	if !IsNil(o.CallerIdMode) {
+		toSerialize["callerIdMode"] = o.CallerIdMode
 	}
 	return toSerialize, nil
 }

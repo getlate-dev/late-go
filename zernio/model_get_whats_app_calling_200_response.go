@@ -33,6 +33,10 @@ type GetWhatsAppCalling200Response struct {
 	CallIconCountries         []string `json:"callIconCountries,omitempty"`
 	// True when the number's country blocks business-initiated (outbound) WhatsApp calling; inbound still works.
 	OutboundDisabled *bool `json:"outboundDisabled,omitempty"`
+	// Caller ID the forward-leg callee sees on tel: forwards. business = this WhatsApp number; platform = a Zernio number (used when the number was brought by the customer and its caller ID is not verified for PSTN origination).
+	CallerIdMode *string `json:"callerIdMode,omitempty"`
+	// True once the number completed caller-ID verification, making tel: forwards display the business number itself.
+	CallerIdVerified *bool `json:"callerIdVerified,omitempty"`
 }
 
 // NewGetWhatsAppCalling200Response instantiates a new GetWhatsAppCalling200Response object
@@ -374,6 +378,70 @@ func (o *GetWhatsAppCalling200Response) SetOutboundDisabled(v bool) {
 	o.OutboundDisabled = &v
 }
 
+// GetCallerIdMode returns the CallerIdMode field value if set, zero value otherwise.
+func (o *GetWhatsAppCalling200Response) GetCallerIdMode() string {
+	if o == nil || IsNil(o.CallerIdMode) {
+		var ret string
+		return ret
+	}
+	return *o.CallerIdMode
+}
+
+// GetCallerIdModeOk returns a tuple with the CallerIdMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetWhatsAppCalling200Response) GetCallerIdModeOk() (*string, bool) {
+	if o == nil || IsNil(o.CallerIdMode) {
+		return nil, false
+	}
+	return o.CallerIdMode, true
+}
+
+// HasCallerIdMode returns a boolean if a field has been set.
+func (o *GetWhatsAppCalling200Response) HasCallerIdMode() bool {
+	if o != nil && !IsNil(o.CallerIdMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallerIdMode gets a reference to the given string and assigns it to the CallerIdMode field.
+func (o *GetWhatsAppCalling200Response) SetCallerIdMode(v string) {
+	o.CallerIdMode = &v
+}
+
+// GetCallerIdVerified returns the CallerIdVerified field value if set, zero value otherwise.
+func (o *GetWhatsAppCalling200Response) GetCallerIdVerified() bool {
+	if o == nil || IsNil(o.CallerIdVerified) {
+		var ret bool
+		return ret
+	}
+	return *o.CallerIdVerified
+}
+
+// GetCallerIdVerifiedOk returns a tuple with the CallerIdVerified field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetWhatsAppCalling200Response) GetCallerIdVerifiedOk() (*bool, bool) {
+	if o == nil || IsNil(o.CallerIdVerified) {
+		return nil, false
+	}
+	return o.CallerIdVerified, true
+}
+
+// HasCallerIdVerified returns a boolean if a field has been set.
+func (o *GetWhatsAppCalling200Response) HasCallerIdVerified() bool {
+	if o != nil && !IsNil(o.CallerIdVerified) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallerIdVerified gets a reference to the given bool and assigns it to the CallerIdVerified field.
+func (o *GetWhatsAppCalling200Response) SetCallerIdVerified(v bool) {
+	o.CallerIdVerified = &v
+}
+
 func (o GetWhatsAppCalling200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -410,6 +478,12 @@ func (o GetWhatsAppCalling200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.OutboundDisabled) {
 		toSerialize["outboundDisabled"] = o.OutboundDisabled
+	}
+	if !IsNil(o.CallerIdMode) {
+		toSerialize["callerIdMode"] = o.CallerIdMode
+	}
+	if !IsNil(o.CallerIdVerified) {
+		toSerialize["callerIdVerified"] = o.CallerIdVerified
 	}
 	return toSerialize, nil
 }
