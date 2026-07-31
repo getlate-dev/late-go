@@ -24,12 +24,12 @@ var _ MappedNullable = &CreateStandaloneAdRequestTranslationsInner{}
 type CreateStandaloneAdRequestTranslationsInner struct {
 	// Language code, resolved to Meta's numeric locale id. Bare codes target the '(All)' umbrella (`es` = every Spanish variant); region-qualified codes target the variant (`pt_BR`, `en_GB`).
 	Locale string `json:"locale"`
-	// Headline for this language. Inherits the top-level `headline` when omitted.
-	Headline *string `json:"headline,omitempty"`
-	// Primary text for this language. Inherits the top-level `body` when omitted.
-	Body *string `json:"body,omitempty"`
-	// Link description for this language. Inherits the top-level `description` when omitted.
-	Description *string `json:"description,omitempty"`
+	// Headline for this language. REQUIRED, and must differ from every other locale and from the ad's top-level headline.
+	Headline string `json:"headline"`
+	// Primary text for this language. REQUIRED, and must differ from every other locale and from the ad's top-level body.
+	Body string `json:"body"`
+	// Link description for this language. REQUIRED, and must differ from every other locale and from the ad's top-level description.
+	Description string `json:"description"`
 	// Image for this language. Inherits the ad's `imageUrl` when omitted. The feed is all-image OR all-video.
 	ImageUrl *string `json:"imageUrl,omitempty"`
 	// Video for this language. Inherits the ad's `video.url` when omitted. The feed is all-image OR all-video.
@@ -44,9 +44,12 @@ type _CreateStandaloneAdRequestTranslationsInner CreateStandaloneAdRequestTransl
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateStandaloneAdRequestTranslationsInner(locale string) *CreateStandaloneAdRequestTranslationsInner {
+func NewCreateStandaloneAdRequestTranslationsInner(locale string, headline string, body string, description string) *CreateStandaloneAdRequestTranslationsInner {
 	this := CreateStandaloneAdRequestTranslationsInner{}
 	this.Locale = locale
+	this.Headline = headline
+	this.Body = body
+	this.Description = description
 	return &this
 }
 
@@ -82,100 +85,76 @@ func (o *CreateStandaloneAdRequestTranslationsInner) SetLocale(v string) {
 	o.Locale = v
 }
 
-// GetHeadline returns the Headline field value if set, zero value otherwise.
+// GetHeadline returns the Headline field value
 func (o *CreateStandaloneAdRequestTranslationsInner) GetHeadline() string {
-	if o == nil || IsNil(o.Headline) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Headline
+
+	return o.Headline
 }
 
-// GetHeadlineOk returns a tuple with the Headline field value if set, nil otherwise
+// GetHeadlineOk returns a tuple with the Headline field value
 // and a boolean to check if the value has been set.
 func (o *CreateStandaloneAdRequestTranslationsInner) GetHeadlineOk() (*string, bool) {
-	if o == nil || IsNil(o.Headline) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Headline, true
+	return &o.Headline, true
 }
 
-// HasHeadline returns a boolean if a field has been set.
-func (o *CreateStandaloneAdRequestTranslationsInner) HasHeadline() bool {
-	if o != nil && !IsNil(o.Headline) {
-		return true
-	}
-
-	return false
-}
-
-// SetHeadline gets a reference to the given string and assigns it to the Headline field.
+// SetHeadline sets field value
 func (o *CreateStandaloneAdRequestTranslationsInner) SetHeadline(v string) {
-	o.Headline = &v
+	o.Headline = v
 }
 
-// GetBody returns the Body field value if set, zero value otherwise.
+// GetBody returns the Body field value
 func (o *CreateStandaloneAdRequestTranslationsInner) GetBody() string {
-	if o == nil || IsNil(o.Body) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Body
+
+	return o.Body
 }
 
-// GetBodyOk returns a tuple with the Body field value if set, nil otherwise
+// GetBodyOk returns a tuple with the Body field value
 // and a boolean to check if the value has been set.
 func (o *CreateStandaloneAdRequestTranslationsInner) GetBodyOk() (*string, bool) {
-	if o == nil || IsNil(o.Body) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Body, true
+	return &o.Body, true
 }
 
-// HasBody returns a boolean if a field has been set.
-func (o *CreateStandaloneAdRequestTranslationsInner) HasBody() bool {
-	if o != nil && !IsNil(o.Body) {
-		return true
-	}
-
-	return false
-}
-
-// SetBody gets a reference to the given string and assigns it to the Body field.
+// SetBody sets field value
 func (o *CreateStandaloneAdRequestTranslationsInner) SetBody(v string) {
-	o.Body = &v
+	o.Body = v
 }
 
-// GetDescription returns the Description field value if set, zero value otherwise.
+// GetDescription returns the Description field value
 func (o *CreateStandaloneAdRequestTranslationsInner) GetDescription() string {
-	if o == nil || IsNil(o.Description) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Description
+
+	return o.Description
 }
 
-// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// GetDescriptionOk returns a tuple with the Description field value
 // and a boolean to check if the value has been set.
 func (o *CreateStandaloneAdRequestTranslationsInner) GetDescriptionOk() (*string, bool) {
-	if o == nil || IsNil(o.Description) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Description, true
+	return &o.Description, true
 }
 
-// HasDescription returns a boolean if a field has been set.
-func (o *CreateStandaloneAdRequestTranslationsInner) HasDescription() bool {
-	if o != nil && !IsNil(o.Description) {
-		return true
-	}
-
-	return false
-}
-
-// SetDescription gets a reference to the given string and assigns it to the Description field.
+// SetDescription sets field value
 func (o *CreateStandaloneAdRequestTranslationsInner) SetDescription(v string) {
-	o.Description = &v
+	o.Description = v
 }
 
 // GetImageUrl returns the ImageUrl field value if set, zero value otherwise.
@@ -285,15 +264,9 @@ func (o CreateStandaloneAdRequestTranslationsInner) MarshalJSON() ([]byte, error
 func (o CreateStandaloneAdRequestTranslationsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["locale"] = o.Locale
-	if !IsNil(o.Headline) {
-		toSerialize["headline"] = o.Headline
-	}
-	if !IsNil(o.Body) {
-		toSerialize["body"] = o.Body
-	}
-	if !IsNil(o.Description) {
-		toSerialize["description"] = o.Description
-	}
+	toSerialize["headline"] = o.Headline
+	toSerialize["body"] = o.Body
+	toSerialize["description"] = o.Description
 	if !IsNil(o.ImageUrl) {
 		toSerialize["imageUrl"] = o.ImageUrl
 	}
@@ -312,6 +285,9 @@ func (o *CreateStandaloneAdRequestTranslationsInner) UnmarshalJSON(data []byte) 
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"locale",
+		"headline",
+		"body",
+		"description",
 	}
 
 	allProperties := make(map[string]interface{})

@@ -30,11 +30,11 @@ type CreateAdCampaignRequest struct {
 	// Mapped to the ODAX objective (same mapping as POST /v1/ads/create).
 	Goal                string   `json:"goal"`
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
-	// Campaign-level (CBO) budget in whole currency units. Requires budgetType.
+	// Campaign-level (CBO) budget in WHOLE currency units (USD: 50 = $50.00), NOT cents — Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Requires budgetType.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	BudgetType   *string  `json:"budgetType,omitempty"`
 	Status       *string  `json:"status,omitempty"`
-	// Campaign bid strategy. Meta puts `bid_strategy` where the budget lives, so this applies only alongside a campaign budget (CBO). Previously settable only via `PUT /v1/ads/campaigns/{campaignId}`.
+	// Campaign bid strategy. Meta stores `bid_strategy` alongside the budget, so this REQUIRES `budgetAmount` + `budgetType` on the same request; sending it without a campaign budget is a 400. A campaign carrying a strategy without its `bid_amount` makes every ad set created under it fail with an error that names the ad set (code 100, subcode 1815857), so the bad state is rejected up front rather than accepted. To bid at ad-set level, set the strategy there instead.
 	BidStrategy *string `json:"bidStrategy,omitempty"`
 	// Whole currency units (USD: 5 = $5.00). Required for LOWEST_COST_WITH_BID_CAP and COST_CAP; ignored otherwise.
 	BidAmount *float32 `json:"bidAmount,omitempty"`

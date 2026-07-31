@@ -23,6 +23,8 @@ var _ MappedNullable = &DeleteAdCampaignRequest{}
 // DeleteAdCampaignRequest struct for DeleteAdCampaignRequest
 type DeleteAdCampaignRequest struct {
 	Platform string `json:"platform"`
+	// Zernio SocialAccount id owning the ad account. Required only to delete an EMPTY campaign (zero ads), which has no local Ad documents to resolve a token from.
+	AccountId *string `json:"accountId,omitempty"`
 }
 
 type _DeleteAdCampaignRequest DeleteAdCampaignRequest
@@ -69,6 +71,38 @@ func (o *DeleteAdCampaignRequest) SetPlatform(v string) {
 	o.Platform = v
 }
 
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *DeleteAdCampaignRequest) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeleteAdCampaignRequest) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *DeleteAdCampaignRequest) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *DeleteAdCampaignRequest) SetAccountId(v string) {
+	o.AccountId = &v
+}
+
 func (o DeleteAdCampaignRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -80,6 +114,9 @@ func (o DeleteAdCampaignRequest) MarshalJSON() ([]byte, error) {
 func (o DeleteAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["platform"] = o.Platform
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
+	}
 	return toSerialize, nil
 }
 
