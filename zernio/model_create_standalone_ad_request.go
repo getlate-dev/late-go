@@ -145,7 +145,7 @@ type CreateStandaloneAdRequest struct {
 	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
 	// Meta only. Conversion attribution window for the ad set — maps 1:1 to Meta's ad-set `attribution_spec`. Only honored for conversion goals (`conversions`, `lead_generation`, `app_promotion`); ignored for awareness/traffic/engagement. Omit to use Meta's default (`7-day click` + `1-day view`). Meta enforces the valid combinations: `VIEW_THROUGH` only allows `windowDays: 1` (7d/28d view windows were removed Jan 2026); `ENGAGED_VIDEO_VIEW` only `1` and only alongside `VIEW_THROUGH: 1`; `CLICK_THROUGH: 28` only on certain objectives. Invalid combos surface as a Meta 400. Example: `[{ \"eventType\": \"CLICK_THROUGH\", \"windowDays\": 7 }, { \"eventType\": \"VIEW_THROUGH\", \"windowDays\": 1 }]`
 	AttributionSpec []CreateStandaloneAdRequestAttributionSpecInner `json:"attributionSpec,omitempty"`
-	// Meta only. Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Ignored by non-Meta platforms.
+	// Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Applied on Meta, TikTok and Pinterest. Ignored on Google, LinkedIn and X.
 	Gender *string `json:"gender,omitempty"`
 	// Meta bid strategy applied to the ad set.
 	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`

@@ -22,7 +22,7 @@ var _ MappedNullable = &BoostPostRequestTargeting{}
 type BoostPostRequestTargeting struct {
 	AgeMin *int32 `json:"ageMin,omitempty"`
 	AgeMax *int32 `json:"ageMax,omitempty"`
-	// Meta only.
+	// Applied on Meta, TikTok and Pinterest. Ignored on Google, LinkedIn and X.
 	Gender *string `json:"gender,omitempty"`
 	// Meta locale ids (numeric), passed through as given.
 	Languages []string `json:"languages,omitempty"`

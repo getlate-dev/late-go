@@ -35,7 +35,7 @@ type TargetingSpec struct {
 	ExcludedLocations *TargetingSpecExcludedLocations                 `json:"excludedLocations,omitempty"`
 	AgeMin            *int32                                          `json:"ageMin,omitempty"`
 	AgeMax            *int32                                          `json:"ageMax,omitempty"`
-	// Restrict by gender. 'all' (default) targets everyone.
+	// Restrict by gender. 'all' (default) targets everyone. Applied on Meta, TikTok and Pinterest. Ignored on Google, LinkedIn and X.
 	Gender *string `json:"gender,omitempty"`
 	// Normalized household-income tier (ZIP/percentile based). Meta and TikTok express all four. Google maps only `top_10` (its INCOME_RANGE_90_UP); other tiers on Google, and any income tier on LinkedIn / X / Pinterest, are rejected. On Meta, income/zip targeting requires the relevant `specialAdCategories` to be unset (housing/employment/credit ads cannot use it).
 	IncomeTier *string `json:"incomeTier,omitempty"`
