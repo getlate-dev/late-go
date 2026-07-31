@@ -29,10 +29,10 @@ type CreateStandaloneAdRequestCreativesInner struct {
 	// Link description for this ad (link_data.description; video creatives: video_data.link_description). Falls back to the top-level `description`; when both are omitted Meta scrapes the destination URL's OG description.
 	Description *string `json:"description,omitempty"`
 	// Image creative. Mutually exclusive with `video`.
-	ImageUrl     *string                         `json:"imageUrl,omitempty"`
-	Video        *CreateStandaloneAdRequestVideo `json:"video,omitempty"`
-	LinkUrl      string                          `json:"linkUrl"`
-	CallToAction string                          `json:"callToAction"`
+	ImageUrl     *string                                       `json:"imageUrl,omitempty"`
+	Video        *CreateStandaloneAdRequestCreativesInnerVideo `json:"video,omitempty"`
+	LinkUrl      string                                        `json:"linkUrl"`
+	CallToAction string                                        `json:"callToAction"`
 }
 
 type _CreateStandaloneAdRequestCreativesInner CreateStandaloneAdRequestCreativesInner
@@ -203,9 +203,9 @@ func (o *CreateStandaloneAdRequestCreativesInner) SetImageUrl(v string) {
 }
 
 // GetVideo returns the Video field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequestCreativesInner) GetVideo() CreateStandaloneAdRequestVideo {
+func (o *CreateStandaloneAdRequestCreativesInner) GetVideo() CreateStandaloneAdRequestCreativesInnerVideo {
 	if o == nil || IsNil(o.Video) {
-		var ret CreateStandaloneAdRequestVideo
+		var ret CreateStandaloneAdRequestCreativesInnerVideo
 		return ret
 	}
 	return *o.Video
@@ -213,7 +213,7 @@ func (o *CreateStandaloneAdRequestCreativesInner) GetVideo() CreateStandaloneAdR
 
 // GetVideoOk returns a tuple with the Video field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequestCreativesInner) GetVideoOk() (*CreateStandaloneAdRequestVideo, bool) {
+func (o *CreateStandaloneAdRequestCreativesInner) GetVideoOk() (*CreateStandaloneAdRequestCreativesInnerVideo, bool) {
 	if o == nil || IsNil(o.Video) {
 		return nil, false
 	}
@@ -229,8 +229,8 @@ func (o *CreateStandaloneAdRequestCreativesInner) HasVideo() bool {
 	return false
 }
 
-// SetVideo gets a reference to the given CreateStandaloneAdRequestVideo and assigns it to the Video field.
-func (o *CreateStandaloneAdRequestCreativesInner) SetVideo(v CreateStandaloneAdRequestVideo) {
+// SetVideo gets a reference to the given CreateStandaloneAdRequestCreativesInnerVideo and assigns it to the Video field.
+func (o *CreateStandaloneAdRequestCreativesInner) SetVideo(v CreateStandaloneAdRequestCreativesInnerVideo) {
 	o.Video = &v
 }
 

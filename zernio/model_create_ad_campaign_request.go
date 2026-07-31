@@ -34,6 +34,12 @@ type CreateAdCampaignRequest struct {
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	BudgetType   *string  `json:"budgetType,omitempty"`
 	Status       *string  `json:"status,omitempty"`
+	// Campaign bid strategy. Meta puts `bid_strategy` where the budget lives, so this applies only alongside a campaign budget (CBO). Previously settable only via `PUT /v1/ads/campaigns/{campaignId}`.
+	BidStrategy *string `json:"bidStrategy,omitempty"`
+	// Whole currency units (USD: 5 = $5.00). Required for LOWEST_COST_WITH_BID_CAP and COST_CAP; ignored otherwise.
+	BidAmount *float32 `json:"bidAmount,omitempty"`
+	// Decimal ROAS multiplier (2.0 = 2.0x). Required for LOWEST_COST_WITH_MIN_ROAS.
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 }
 
 type _CreateAdCampaignRequest CreateAdCampaignRequest
@@ -287,6 +293,102 @@ func (o *CreateAdCampaignRequest) SetStatus(v string) {
 	o.Status = &v
 }
 
+// GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetBidStrategy() string {
+	if o == nil || IsNil(o.BidStrategy) {
+		var ret string
+		return ret
+	}
+	return *o.BidStrategy
+}
+
+// GetBidStrategyOk returns a tuple with the BidStrategy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetBidStrategyOk() (*string, bool) {
+	if o == nil || IsNil(o.BidStrategy) {
+		return nil, false
+	}
+	return o.BidStrategy, true
+}
+
+// HasBidStrategy returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasBidStrategy() bool {
+	if o != nil && !IsNil(o.BidStrategy) {
+		return true
+	}
+
+	return false
+}
+
+// SetBidStrategy gets a reference to the given string and assigns it to the BidStrategy field.
+func (o *CreateAdCampaignRequest) SetBidStrategy(v string) {
+	o.BidStrategy = &v
+}
+
+// GetBidAmount returns the BidAmount field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetBidAmount() float32 {
+	if o == nil || IsNil(o.BidAmount) {
+		var ret float32
+		return ret
+	}
+	return *o.BidAmount
+}
+
+// GetBidAmountOk returns a tuple with the BidAmount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetBidAmountOk() (*float32, bool) {
+	if o == nil || IsNil(o.BidAmount) {
+		return nil, false
+	}
+	return o.BidAmount, true
+}
+
+// HasBidAmount returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasBidAmount() bool {
+	if o != nil && !IsNil(o.BidAmount) {
+		return true
+	}
+
+	return false
+}
+
+// SetBidAmount gets a reference to the given float32 and assigns it to the BidAmount field.
+func (o *CreateAdCampaignRequest) SetBidAmount(v float32) {
+	o.BidAmount = &v
+}
+
+// GetRoasAverageFloor returns the RoasAverageFloor field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetRoasAverageFloor() float32 {
+	if o == nil || IsNil(o.RoasAverageFloor) {
+		var ret float32
+		return ret
+	}
+	return *o.RoasAverageFloor
+}
+
+// GetRoasAverageFloorOk returns a tuple with the RoasAverageFloor field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetRoasAverageFloorOk() (*float32, bool) {
+	if o == nil || IsNil(o.RoasAverageFloor) {
+		return nil, false
+	}
+	return o.RoasAverageFloor, true
+}
+
+// HasRoasAverageFloor returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasRoasAverageFloor() bool {
+	if o != nil && !IsNil(o.RoasAverageFloor) {
+		return true
+	}
+
+	return false
+}
+
+// SetRoasAverageFloor gets a reference to the given float32 and assigns it to the RoasAverageFloor field.
+func (o *CreateAdCampaignRequest) SetRoasAverageFloor(v float32) {
+	o.RoasAverageFloor = &v
+}
+
 func (o CreateAdCampaignRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -312,6 +414,15 @@ func (o CreateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.BidStrategy) {
+		toSerialize["bidStrategy"] = o.BidStrategy
+	}
+	if !IsNil(o.BidAmount) {
+		toSerialize["bidAmount"] = o.BidAmount
+	}
+	if !IsNil(o.RoasAverageFloor) {
+		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
 	}
 	return toSerialize, nil
 }

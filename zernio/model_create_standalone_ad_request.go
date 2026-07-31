@@ -129,8 +129,12 @@ type CreateStandaloneAdRequest struct {
 	InstagramAccountId *string                                   `json:"instagramAccountId,omitempty"`
 	DynamicCreative    *CreateStandaloneAdRequestDynamicCreative `json:"dynamicCreative,omitempty"`
 	// Meta only. Hand-built carousel: 2-10 authored cards in DETERMINISTIC order, mapped to the creative's `link_data.child_attachments`. Unlike `dynamicCreative`, you control the card order and per-card copy/link. Requires top-level `body`, `linkUrl` and `callToAction`. Mutually exclusive with `imageUrl`/`video`, `creatives[]`, `dynamicCreative`, `placementAssets`, `existingCreativeId`, `adSetId`, `leadGenFormId` and goal `catalog_sales`.
-	CarouselCards   []CreateStandaloneAdRequestCarouselCardsInner `json:"carouselCards,omitempty"`
-	PlacementAssets *CreateStandaloneAdRequestPlacementAssets     `json:"placementAssets,omitempty"`
+	CarouselCards []CreateStandaloneAdRequestCarouselCardsInner `json:"carouselCards,omitempty"`
+	// Meta only. Language the top-level copy is written in (e.g. `en`, `pt_BR`), used by the `translations` default rule. Defaults to `en`. Meta rejects a language asset feed whose default rule carries no locales of its own.
+	DefaultLocale *string `json:"defaultLocale,omitempty"`
+	// Meta only. Multi-language ads (Dynamic Language Optimization): ONE ad carrying per-locale copy and, optionally, per-locale media — the \"Languages\" toggle in Ads Manager. Keeps social proof (likes/comments/shares) on a SINGLE post instead of splitting it across one ad per language.  The ad's top-level copy and media are the DEFAULT every unlisted locale falls back to, and a variant inherits any field it omits, so send only what differs per language. Media shared across languages is uploaded once.  Mutually exclusive with `dynamicCreative`, `placementAssets`, `carouselCards` and `existingCreativeId` — Meta allows one `asset_feed_spec` shape per creative.
+	Translations    []CreateStandaloneAdRequestTranslationsInner `json:"translations,omitempty"`
+	PlacementAssets *CreateStandaloneAdRequestPlacementAssets    `json:"placementAssets,omitempty"`
 	// Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
 	// Google only
@@ -2063,6 +2067,70 @@ func (o *CreateStandaloneAdRequest) SetCarouselCards(v []CreateStandaloneAdReque
 	o.CarouselCards = v
 }
 
+// GetDefaultLocale returns the DefaultLocale field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetDefaultLocale() string {
+	if o == nil || IsNil(o.DefaultLocale) {
+		var ret string
+		return ret
+	}
+	return *o.DefaultLocale
+}
+
+// GetDefaultLocaleOk returns a tuple with the DefaultLocale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetDefaultLocaleOk() (*string, bool) {
+	if o == nil || IsNil(o.DefaultLocale) {
+		return nil, false
+	}
+	return o.DefaultLocale, true
+}
+
+// HasDefaultLocale returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasDefaultLocale() bool {
+	if o != nil && !IsNil(o.DefaultLocale) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultLocale gets a reference to the given string and assigns it to the DefaultLocale field.
+func (o *CreateStandaloneAdRequest) SetDefaultLocale(v string) {
+	o.DefaultLocale = &v
+}
+
+// GetTranslations returns the Translations field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetTranslations() []CreateStandaloneAdRequestTranslationsInner {
+	if o == nil || IsNil(o.Translations) {
+		var ret []CreateStandaloneAdRequestTranslationsInner
+		return ret
+	}
+	return o.Translations
+}
+
+// GetTranslationsOk returns a tuple with the Translations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetTranslationsOk() ([]CreateStandaloneAdRequestTranslationsInner, bool) {
+	if o == nil || IsNil(o.Translations) {
+		return nil, false
+	}
+	return o.Translations, true
+}
+
+// HasTranslations returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasTranslations() bool {
+	if o != nil && !IsNil(o.Translations) {
+		return true
+	}
+
+	return false
+}
+
+// SetTranslations gets a reference to the given []CreateStandaloneAdRequestTranslationsInner and assigns it to the Translations field.
+func (o *CreateStandaloneAdRequest) SetTranslations(v []CreateStandaloneAdRequestTranslationsInner) {
+	o.Translations = v
+}
+
 // GetPlacementAssets returns the PlacementAssets field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetPlacementAssets() CreateStandaloneAdRequestPlacementAssets {
 	if o == nil || IsNil(o.PlacementAssets) {
@@ -2819,6 +2887,12 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CarouselCards) {
 		toSerialize["carouselCards"] = o.CarouselCards
+	}
+	if !IsNil(o.DefaultLocale) {
+		toSerialize["defaultLocale"] = o.DefaultLocale
+	}
+	if !IsNil(o.Translations) {
+		toSerialize["translations"] = o.Translations
 	}
 	if !IsNil(o.PlacementAssets) {
 		toSerialize["placementAssets"] = o.PlacementAssets

@@ -272,10 +272,17 @@ type AdCampaignsAPICreateAdCampaignRequest struct {
 	ctx                     context.Context
 	ApiService              *AdCampaignsAPIService
 	createAdCampaignRequest *CreateAdCampaignRequest
+	idempotencyKey          *string
 }
 
 func (r AdCampaignsAPICreateAdCampaignRequest) CreateAdCampaignRequest(createAdCampaignRequest CreateAdCampaignRequest) AdCampaignsAPICreateAdCampaignRequest {
 	r.createAdCampaignRequest = &createAdCampaignRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. Only 2xx responses are stored, so a request that failed with a 4xx can be retried with a corrected body under the SAME key.
+func (r AdCampaignsAPICreateAdCampaignRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPICreateAdCampaignRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -291,6 +298,8 @@ later via `existingCampaignId` on the create endpoints. A budget here is campaig
 (CBO) by definition; omit it for ABO (each ad set carries its own budget). Created
 `PAUSED` unless `status: ACTIVE`. The campaign materializes in `/v1/ads/tree` via the
 next sync discovery pass.
+
+**Idempotency:** send an `Idempotency-Key` header to make retries safe.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPICreateAdCampaignRequest
@@ -343,6 +352,9 @@ func (a *AdCampaignsAPIService) CreateAdCampaignExecute(r AdCampaignsAPICreateAd
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.createAdCampaignRequest
@@ -788,7 +800,14 @@ type AdCampaignsAPIDuplicateAdRequest struct {
 	ctx                context.Context
 	ApiService         *AdCampaignsAPIService
 	adId               string
+	idempotencyKey     *string
 	duplicateAdRequest *DuplicateAdRequest
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. Only 2xx responses are stored, so a request that failed with a 4xx can be retried with a corrected body under the SAME key.
+func (r AdCampaignsAPIDuplicateAdRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIDuplicateAdRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
 }
 
 func (r AdCampaignsAPIDuplicateAdRequest) DuplicateAdRequest(duplicateAdRequest DuplicateAdRequest) AdCampaignsAPIDuplicateAdRequest {
@@ -860,6 +879,9 @@ func (a *AdCampaignsAPIService) DuplicateAdExecute(r AdCampaignsAPIDuplicateAdRe
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
 	// body params
 	localVarPostBody = r.duplicateAdRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -915,10 +937,17 @@ type AdCampaignsAPIDuplicateAdCampaignRequest struct {
 	ApiService                 *AdCampaignsAPIService
 	campaignId                 string
 	duplicateAdCampaignRequest *DuplicateAdCampaignRequest
+	idempotencyKey             *string
 }
 
 func (r AdCampaignsAPIDuplicateAdCampaignRequest) DuplicateAdCampaignRequest(duplicateAdCampaignRequest DuplicateAdCampaignRequest) AdCampaignsAPIDuplicateAdCampaignRequest {
 	r.duplicateAdCampaignRequest = &duplicateAdCampaignRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. Only 2xx responses are stored, so a request that failed with a 4xx can be retried with a corrected body under the SAME key.
+func (r AdCampaignsAPIDuplicateAdCampaignRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIDuplicateAdCampaignRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -1014,6 +1043,9 @@ func (a *AdCampaignsAPIService) DuplicateAdCampaignExecute(r AdCampaignsAPIDupli
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
 	// body params
 	localVarPostBody = r.duplicateAdCampaignRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -1069,10 +1101,17 @@ type AdCampaignsAPIDuplicateAdSetRequest struct {
 	ApiService            *AdCampaignsAPIService
 	adSetId               string
 	duplicateAdSetRequest *DuplicateAdSetRequest
+	idempotencyKey        *string
 }
 
 func (r AdCampaignsAPIDuplicateAdSetRequest) DuplicateAdSetRequest(duplicateAdSetRequest DuplicateAdSetRequest) AdCampaignsAPIDuplicateAdSetRequest {
 	r.duplicateAdSetRequest = &duplicateAdSetRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. Only 2xx responses are stored, so a request that failed with a 4xx can be retried with a corrected body under the SAME key.
+func (r AdCampaignsAPIDuplicateAdSetRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIDuplicateAdSetRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -1143,6 +1182,9 @@ func (a *AdCampaignsAPIService) DuplicateAdSetExecute(r AdCampaignsAPIDuplicateA
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.duplicateAdSetRequest

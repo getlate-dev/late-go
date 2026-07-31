@@ -32,8 +32,8 @@ type AdDailyMetrics struct {
 	// Cost per 1000 impressions
 	Cpm        *float32 `json:"cpm,omitempty"`
 	Engagement *int32   `json:"engagement,omitempty"`
-	// Count of conversion events over the requested date range. Meta: events matching the campaign's promoted_object.custom_event_type (PURCHASE, LEAD, etc.). Google: the account's tracked conversions. X and LinkedIn: their reported website/lead conversions (added 2026-07). 0 for non-conversion campaigns or when no events have fired.
-	Conversions *int32 `json:"conversions,omitempty"`
+	// Count of conversion events over the requested date range. FRACTIONAL: attribution splits one conversion across touchpoints and Google additionally reports modeled conversions, so values like 0.347 are normal. Meta: events matching the campaign's promoted_object.custom_event_type (PURCHASE, LEAD, etc.). Google: the account's tracked conversions. X and LinkedIn: their reported website/lead conversions (added 2026-07). 0 for non-conversion campaigns or when no events have fired.
+	Conversions *float32 `json:"conversions,omitempty"`
 	// Derived spend / conversions in the same currency as spend. 0 when conversions is 0.
 	CostPerConversion *float32 `json:"costPerConversion,omitempty"`
 	// Per-action-type counts summed over the date range, keyed by the platform's action-type names. Meta: raw Insights action_type keys (link_click, offsite_conversion.fb_pixel_purchase, onsite_conversion.lead_grouped, ...) — both engagement and conversion events. X: conversion types (purchase, sign_up, site_visit, download, custom). LinkedIn: conversion types (post_click, post_view, lead_gen). Google returns {} (its per-action names aren't synced per ad). Empty object when no actions are reported. NOTE: keys differ by platform, so branch on the ad's platform when interpreting them.
@@ -342,9 +342,9 @@ func (o *AdDailyMetrics) SetEngagement(v int32) {
 }
 
 // GetConversions returns the Conversions field value if set, zero value otherwise.
-func (o *AdDailyMetrics) GetConversions() int32 {
+func (o *AdDailyMetrics) GetConversions() float32 {
 	if o == nil || IsNil(o.Conversions) {
-		var ret int32
+		var ret float32
 		return ret
 	}
 	return *o.Conversions
@@ -352,7 +352,7 @@ func (o *AdDailyMetrics) GetConversions() int32 {
 
 // GetConversionsOk returns a tuple with the Conversions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdDailyMetrics) GetConversionsOk() (*int32, bool) {
+func (o *AdDailyMetrics) GetConversionsOk() (*float32, bool) {
 	if o == nil || IsNil(o.Conversions) {
 		return nil, false
 	}
@@ -368,8 +368,8 @@ func (o *AdDailyMetrics) HasConversions() bool {
 	return false
 }
 
-// SetConversions gets a reference to the given int32 and assigns it to the Conversions field.
-func (o *AdDailyMetrics) SetConversions(v int32) {
+// SetConversions gets a reference to the given float32 and assigns it to the Conversions field.
+func (o *AdDailyMetrics) SetConversions(v float32) {
 	o.Conversions = &v
 }
 

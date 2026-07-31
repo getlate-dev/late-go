@@ -33,8 +33,8 @@ type GetAdsTimeline200ResponseRowsInner struct {
 	Cpc *float32 `json:"cpc,omitempty"`
 	// Cost per 1000 impressions in native currency.
 	Cpm *float32 `json:"cpm,omitempty"`
-	// Sum of conversion events over the range. Meta: events matching the campaign optimization goal. Google: tracked conversions. X / LinkedIn: reported website/lead conversions (added 2026-07).
-	Conversions       *int32   `json:"conversions,omitempty"`
+	// Sum of conversion events over the range. Fractional values are normal (attribution splitting + Google modeled conversions). Meta: events matching the campaign optimization goal. Google: tracked conversions. X / LinkedIn: reported website/lead conversions (added 2026-07).
+	Conversions       *float32 `json:"conversions,omitempty"`
 	CostPerConversion *float32 `json:"costPerConversion,omitempty"`
 	// Per-action-type counts merged across all ads on this day. Keys are platform-native action types.
 	Actions map[string]float32 `json:"actions,omitempty"`
@@ -352,9 +352,9 @@ func (o *GetAdsTimeline200ResponseRowsInner) SetCpm(v float32) {
 }
 
 // GetConversions returns the Conversions field value if set, zero value otherwise.
-func (o *GetAdsTimeline200ResponseRowsInner) GetConversions() int32 {
+func (o *GetAdsTimeline200ResponseRowsInner) GetConversions() float32 {
 	if o == nil || IsNil(o.Conversions) {
-		var ret int32
+		var ret float32
 		return ret
 	}
 	return *o.Conversions
@@ -362,7 +362,7 @@ func (o *GetAdsTimeline200ResponseRowsInner) GetConversions() int32 {
 
 // GetConversionsOk returns a tuple with the Conversions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetAdsTimeline200ResponseRowsInner) GetConversionsOk() (*int32, bool) {
+func (o *GetAdsTimeline200ResponseRowsInner) GetConversionsOk() (*float32, bool) {
 	if o == nil || IsNil(o.Conversions) {
 		return nil, false
 	}
@@ -378,8 +378,8 @@ func (o *GetAdsTimeline200ResponseRowsInner) HasConversions() bool {
 	return false
 }
 
-// SetConversions gets a reference to the given int32 and assigns it to the Conversions field.
-func (o *GetAdsTimeline200ResponseRowsInner) SetConversions(v int32) {
+// SetConversions gets a reference to the given float32 and assigns it to the Conversions field.
+func (o *GetAdsTimeline200ResponseRowsInner) SetConversions(v float32) {
 	o.Conversions = &v
 }
 

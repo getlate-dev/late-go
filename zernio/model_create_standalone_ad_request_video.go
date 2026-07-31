@@ -12,9 +12,7 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the CreateStandaloneAdRequestVideo type satisfies the MappedNullable interface at compile time
@@ -22,21 +20,20 @@ var _ MappedNullable = &CreateStandaloneAdRequestVideo{}
 
 // CreateStandaloneAdRequestVideo Meta (facebook, instagram) and LinkedIn. When set, creates a VIDEO ad on the legacy (or, for Meta, attach) shape. Mutually exclusive with `imageUrl`. For Meta multi-creative, set `video` per entry inside `creatives[]` instead. For LinkedIn the video is uploaded to LinkedIn under the authoring Company Page (see `organizationId`) and the campaign format is set to SINGLE_VIDEO; LinkedIn ignores `thumbnailUrl` (it auto-generates the poster frame) — supply MP4 H.264/AAC, 3s-30min, 75KB-500MB.
 type CreateStandaloneAdRequestVideo struct {
-	// Public URL of the video. Meta: uploaded via chunked transfer on /act_X/advideos, then the request blocks on Meta's transcoding until status.video_status === 'ready'. LinkedIn: uploaded via the Videos API (multipart), then the request blocks until LinkedIn finishes transcoding (status AVAILABLE) — short clips take ~10-30s.
-	Url string `json:"url"`
+	// Public URL of the video. Meta: uploaded via chunked transfer on /act_X/advideos, then the request blocks on Meta's transcoding until status.video_status === 'ready'. LinkedIn: uploaded via the Videos API (multipart), then the request blocks until LinkedIn finishes transcoding (status AVAILABLE) — short clips take ~10-30s. Provide either `url` or `id`.
+	Url *string `json:"url,omitempty"`
+	// Meta only. Reuse a video ALREADY uploaded to this ad account instead of re-uploading the file: pass the `videoId` returned by a previous create. Wins over `url`, so N ads that differ only in copy share one upload (`existingCreativeId` only covers the identical-copy case). Provide either `url` or `id`.
+	Id *string `json:"id,omitempty"`
 	// Public URL of a still-image thumbnail for the video. OPTIONAL: when omitted on Meta, the poster is auto-generated from Meta's own preferred video thumbnail (the same candidates Ads Manager shows), so video ads publish without supplying one. Provide it to control the poster frame exactly (uploaded as an ad image and referenced in object_story_spec.video_data). Ignored by LinkedIn (auto-generated poster frame).
 	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
 }
-
-type _CreateStandaloneAdRequestVideo CreateStandaloneAdRequestVideo
 
 // NewCreateStandaloneAdRequestVideo instantiates a new CreateStandaloneAdRequestVideo object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateStandaloneAdRequestVideo(url string) *CreateStandaloneAdRequestVideo {
+func NewCreateStandaloneAdRequestVideo() *CreateStandaloneAdRequestVideo {
 	this := CreateStandaloneAdRequestVideo{}
-	this.Url = url
 	return &this
 }
 
@@ -48,28 +45,68 @@ func NewCreateStandaloneAdRequestVideoWithDefaults() *CreateStandaloneAdRequestV
 	return &this
 }
 
-// GetUrl returns the Url field value
+// GetUrl returns the Url field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequestVideo) GetUrl() string {
-	if o == nil {
+	if o == nil || IsNil(o.Url) {
 		var ret string
 		return ret
 	}
-
-	return o.Url
+	return *o.Url
 }
 
-// GetUrlOk returns a tuple with the Url field value
+// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CreateStandaloneAdRequestVideo) GetUrlOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Url) {
 		return nil, false
 	}
-	return &o.Url, true
+	return o.Url, true
 }
 
-// SetUrl sets field value
+// HasUrl returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestVideo) HasUrl() bool {
+	if o != nil && !IsNil(o.Url) {
+		return true
+	}
+
+	return false
+}
+
+// SetUrl gets a reference to the given string and assigns it to the Url field.
 func (o *CreateStandaloneAdRequestVideo) SetUrl(v string) {
-	o.Url = v
+	o.Url = &v
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequestVideo) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequestVideo) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestVideo) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *CreateStandaloneAdRequestVideo) SetId(v string) {
+	o.Id = &v
 }
 
 // GetThumbnailUrl returns the ThumbnailUrl field value if set, zero value otherwise.
@@ -114,48 +151,16 @@ func (o CreateStandaloneAdRequestVideo) MarshalJSON() ([]byte, error) {
 
 func (o CreateStandaloneAdRequestVideo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["url"] = o.Url
+	if !IsNil(o.Url) {
+		toSerialize["url"] = o.Url
+	}
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
+	}
 	if !IsNil(o.ThumbnailUrl) {
 		toSerialize["thumbnailUrl"] = o.ThumbnailUrl
 	}
 	return toSerialize, nil
-}
-
-func (o *CreateStandaloneAdRequestVideo) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"url",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varCreateStandaloneAdRequestVideo := _CreateStandaloneAdRequestVideo{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCreateStandaloneAdRequestVideo)
-
-	if err != nil {
-		return err
-	}
-
-	*o = CreateStandaloneAdRequestVideo(varCreateStandaloneAdRequestVideo)
-
-	return err
 }
 
 type NullableCreateStandaloneAdRequestVideo struct {
