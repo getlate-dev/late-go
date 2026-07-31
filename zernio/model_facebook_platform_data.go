@@ -18,25 +18,18 @@ import (
 // checks if the FacebookPlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &FacebookPlatformData{}
 
-// FacebookPlatformData Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Carousel posts (carouselCards) render a 2-5 card multi-link post, images only, mutually exclusive with story/reel. Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
+// FacebookPlatformData Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories. Draft, carousel, and colored-background text options live under facebookSettings, see FacebookSettings.
 type FacebookPlatformData struct {
-	// When true, creates the post as a draft in Facebook Publishing Tools instead of publishing immediately. Supported for feed posts (text, link, image, video) and reels. Not supported for stories. Drafts expire after ~30 days.
-	Draft *bool `json:"draft,omitempty"`
 	// Set to 'story' for Page Stories (24h ephemeral) or 'reel' for Reels (short vertical video). Defaults to feed post if omitted.
 	ContentType *string `json:"contentType,omitempty"`
 	// Reel title (only for contentType=reel). Separate from the caption/content field.
 	Title *string `json:"title,omitempty"`
-	// Optional first comment to post immediately after publishing (feed posts and reels, not stories). Skipped when draft is true.
+	// Optional first comment to post immediately after publishing (feed posts and reels, not stories). Skipped when facebookSettings.draft is true.
 	FirstComment *string `json:"firstComment,omitempty"`
 	// Target Facebook Page ID for multi-page posting. If omitted, uses the default page. Use GET /v1/accounts/{id}/facebook-page to list pages.
-	PageId         *string         `json:"pageId,omitempty"`
-	GeoRestriction *GeoRestriction `json:"geoRestriction,omitempty"`
-	// Renders the post as a multi-link carousel (organic Page post). When set, mediaItems must be provided with the same length and all items must be images (no videos). Each cards[i] adds the click-through link and headline for the image at mediaItems[i]. Mutually exclusive with contentType=story|reel. Facebook display truncates name at ~35 chars and description at ~30 chars; longer strings are accepted but get truncated on render.
-	CarouselCards []FacebookPlatformDataCarouselCardsInner `json:"carouselCards,omitempty"`
-	// Optional top-level \"See more\" destination shown on the carousel end card. Defaults to the first card's link when omitted. Only used together with carouselCards.
-	CarouselLink *string `json:"carouselLink,omitempty"`
-	// Facebook-defined preset ID that renders the post as large text on a colored background (Graph `text_format_preset_id`). Supply the raw numeric ID from Meta; we do not publish a catalog of presets and Facebook may change the available set. Pages only (ignored on personal profiles and groups) and text-only feed posts only: the request is rejected with 400 when mediaItems or carouselCards are present, when contentType is story or reel, or when content is empty. An attachment makes Facebook drop the background silently, so those are rejected up front. Length is NOT rejected: Facebook's composer stops offering a background at around 130 characters, but Meta documents no API limit, so longer content publishes and returns a warning instead. A URL detected in the content is NOT attached as a link preview while a preset is set, because a link attachment also makes Facebook drop the background.
-	TextFormatPresetId *string `json:"textFormatPresetId,omitempty" validate:"regexp=^\\\\d+$"`
+	PageId           *string           `json:"pageId,omitempty"`
+	GeoRestriction   *GeoRestriction   `json:"geoRestriction,omitempty"`
+	FacebookSettings *FacebookSettings `json:"facebookSettings,omitempty"`
 }
 
 // NewFacebookPlatformData instantiates a new FacebookPlatformData object
@@ -45,8 +38,6 @@ type FacebookPlatformData struct {
 // will change when the set of required properties is changed
 func NewFacebookPlatformData() *FacebookPlatformData {
 	this := FacebookPlatformData{}
-	var draft bool = false
-	this.Draft = &draft
 	return &this
 }
 
@@ -55,41 +46,7 @@ func NewFacebookPlatformData() *FacebookPlatformData {
 // but it doesn't guarantee that properties required by API are set
 func NewFacebookPlatformDataWithDefaults() *FacebookPlatformData {
 	this := FacebookPlatformData{}
-	var draft bool = false
-	this.Draft = &draft
 	return &this
-}
-
-// GetDraft returns the Draft field value if set, zero value otherwise.
-func (o *FacebookPlatformData) GetDraft() bool {
-	if o == nil || IsNil(o.Draft) {
-		var ret bool
-		return ret
-	}
-	return *o.Draft
-}
-
-// GetDraftOk returns a tuple with the Draft field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FacebookPlatformData) GetDraftOk() (*bool, bool) {
-	if o == nil || IsNil(o.Draft) {
-		return nil, false
-	}
-	return o.Draft, true
-}
-
-// HasDraft returns a boolean if a field has been set.
-func (o *FacebookPlatformData) HasDraft() bool {
-	if o != nil && !IsNil(o.Draft) {
-		return true
-	}
-
-	return false
-}
-
-// SetDraft gets a reference to the given bool and assigns it to the Draft field.
-func (o *FacebookPlatformData) SetDraft(v bool) {
-	o.Draft = &v
 }
 
 // GetContentType returns the ContentType field value if set, zero value otherwise.
@@ -252,100 +209,36 @@ func (o *FacebookPlatformData) SetGeoRestriction(v GeoRestriction) {
 	o.GeoRestriction = &v
 }
 
-// GetCarouselCards returns the CarouselCards field value if set, zero value otherwise.
-func (o *FacebookPlatformData) GetCarouselCards() []FacebookPlatformDataCarouselCardsInner {
-	if o == nil || IsNil(o.CarouselCards) {
-		var ret []FacebookPlatformDataCarouselCardsInner
+// GetFacebookSettings returns the FacebookSettings field value if set, zero value otherwise.
+func (o *FacebookPlatformData) GetFacebookSettings() FacebookSettings {
+	if o == nil || IsNil(o.FacebookSettings) {
+		var ret FacebookSettings
 		return ret
 	}
-	return o.CarouselCards
+	return *o.FacebookSettings
 }
 
-// GetCarouselCardsOk returns a tuple with the CarouselCards field value if set, nil otherwise
+// GetFacebookSettingsOk returns a tuple with the FacebookSettings field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FacebookPlatformData) GetCarouselCardsOk() ([]FacebookPlatformDataCarouselCardsInner, bool) {
-	if o == nil || IsNil(o.CarouselCards) {
+func (o *FacebookPlatformData) GetFacebookSettingsOk() (*FacebookSettings, bool) {
+	if o == nil || IsNil(o.FacebookSettings) {
 		return nil, false
 	}
-	return o.CarouselCards, true
+	return o.FacebookSettings, true
 }
 
-// HasCarouselCards returns a boolean if a field has been set.
-func (o *FacebookPlatformData) HasCarouselCards() bool {
-	if o != nil && !IsNil(o.CarouselCards) {
+// HasFacebookSettings returns a boolean if a field has been set.
+func (o *FacebookPlatformData) HasFacebookSettings() bool {
+	if o != nil && !IsNil(o.FacebookSettings) {
 		return true
 	}
 
 	return false
 }
 
-// SetCarouselCards gets a reference to the given []FacebookPlatformDataCarouselCardsInner and assigns it to the CarouselCards field.
-func (o *FacebookPlatformData) SetCarouselCards(v []FacebookPlatformDataCarouselCardsInner) {
-	o.CarouselCards = v
-}
-
-// GetCarouselLink returns the CarouselLink field value if set, zero value otherwise.
-func (o *FacebookPlatformData) GetCarouselLink() string {
-	if o == nil || IsNil(o.CarouselLink) {
-		var ret string
-		return ret
-	}
-	return *o.CarouselLink
-}
-
-// GetCarouselLinkOk returns a tuple with the CarouselLink field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FacebookPlatformData) GetCarouselLinkOk() (*string, bool) {
-	if o == nil || IsNil(o.CarouselLink) {
-		return nil, false
-	}
-	return o.CarouselLink, true
-}
-
-// HasCarouselLink returns a boolean if a field has been set.
-func (o *FacebookPlatformData) HasCarouselLink() bool {
-	if o != nil && !IsNil(o.CarouselLink) {
-		return true
-	}
-
-	return false
-}
-
-// SetCarouselLink gets a reference to the given string and assigns it to the CarouselLink field.
-func (o *FacebookPlatformData) SetCarouselLink(v string) {
-	o.CarouselLink = &v
-}
-
-// GetTextFormatPresetId returns the TextFormatPresetId field value if set, zero value otherwise.
-func (o *FacebookPlatformData) GetTextFormatPresetId() string {
-	if o == nil || IsNil(o.TextFormatPresetId) {
-		var ret string
-		return ret
-	}
-	return *o.TextFormatPresetId
-}
-
-// GetTextFormatPresetIdOk returns a tuple with the TextFormatPresetId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FacebookPlatformData) GetTextFormatPresetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.TextFormatPresetId) {
-		return nil, false
-	}
-	return o.TextFormatPresetId, true
-}
-
-// HasTextFormatPresetId returns a boolean if a field has been set.
-func (o *FacebookPlatformData) HasTextFormatPresetId() bool {
-	if o != nil && !IsNil(o.TextFormatPresetId) {
-		return true
-	}
-
-	return false
-}
-
-// SetTextFormatPresetId gets a reference to the given string and assigns it to the TextFormatPresetId field.
-func (o *FacebookPlatformData) SetTextFormatPresetId(v string) {
-	o.TextFormatPresetId = &v
+// SetFacebookSettings gets a reference to the given FacebookSettings and assigns it to the FacebookSettings field.
+func (o *FacebookPlatformData) SetFacebookSettings(v FacebookSettings) {
+	o.FacebookSettings = &v
 }
 
 func (o FacebookPlatformData) MarshalJSON() ([]byte, error) {
@@ -358,9 +251,6 @@ func (o FacebookPlatformData) MarshalJSON() ([]byte, error) {
 
 func (o FacebookPlatformData) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Draft) {
-		toSerialize["draft"] = o.Draft
-	}
 	if !IsNil(o.ContentType) {
 		toSerialize["contentType"] = o.ContentType
 	}
@@ -376,14 +266,8 @@ func (o FacebookPlatformData) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.GeoRestriction) {
 		toSerialize["geoRestriction"] = o.GeoRestriction
 	}
-	if !IsNil(o.CarouselCards) {
-		toSerialize["carouselCards"] = o.CarouselCards
-	}
-	if !IsNil(o.CarouselLink) {
-		toSerialize["carouselLink"] = o.CarouselLink
-	}
-	if !IsNil(o.TextFormatPresetId) {
-		toSerialize["textFormatPresetId"] = o.TextFormatPresetId
+	if !IsNil(o.FacebookSettings) {
+		toSerialize["facebookSettings"] = o.FacebookSettings
 	}
 	return toSerialize, nil
 }

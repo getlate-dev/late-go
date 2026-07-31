@@ -43,9 +43,9 @@ type UpdatePostRequest struct {
 	QueueId *string `json:"queueId,omitempty"`
 	// Root-level TikTok settings applied to all TikTok platforms. Merged into each platform's platformSpecificData, with platform-specific settings taking precedence.
 	TiktokSettings *TikTokPlatformData `json:"tiktokSettings,omitempty"`
-	// Root-level Facebook settings applied to all Facebook platforms. Merged into each platform's platformSpecificData, with platform-specific settings taking precedence.
-	FacebookSettings     *FacebookPlatformData `json:"facebookSettings,omitempty"`
-	Recycling            *RecyclingConfig      `json:"recycling,omitempty"`
+	// Root-level Facebook settings applied to all Facebook platforms. Merged into each platform's platformSpecificData.facebookSettings, with platform-specific settings taking precedence.
+	FacebookSettings     *FacebookSettings `json:"facebookSettings,omitempty"`
+	Recycling            *RecyclingConfig  `json:"recycling,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -617,9 +617,9 @@ func (o *UpdatePostRequest) SetTiktokSettings(v TikTokPlatformData) {
 }
 
 // GetFacebookSettings returns the FacebookSettings field value if set, zero value otherwise.
-func (o *UpdatePostRequest) GetFacebookSettings() FacebookPlatformData {
+func (o *UpdatePostRequest) GetFacebookSettings() FacebookSettings {
 	if o == nil || IsNil(o.FacebookSettings) {
-		var ret FacebookPlatformData
+		var ret FacebookSettings
 		return ret
 	}
 	return *o.FacebookSettings
@@ -627,7 +627,7 @@ func (o *UpdatePostRequest) GetFacebookSettings() FacebookPlatformData {
 
 // GetFacebookSettingsOk returns a tuple with the FacebookSettings field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdatePostRequest) GetFacebookSettingsOk() (*FacebookPlatformData, bool) {
+func (o *UpdatePostRequest) GetFacebookSettingsOk() (*FacebookSettings, bool) {
 	if o == nil || IsNil(o.FacebookSettings) {
 		return nil, false
 	}
@@ -643,8 +643,8 @@ func (o *UpdatePostRequest) HasFacebookSettings() bool {
 	return false
 }
 
-// SetFacebookSettings gets a reference to the given FacebookPlatformData and assigns it to the FacebookSettings field.
-func (o *UpdatePostRequest) SetFacebookSettings(v FacebookPlatformData) {
+// SetFacebookSettings gets a reference to the given FacebookSettings and assigns it to the FacebookSettings field.
+func (o *UpdatePostRequest) SetFacebookSettings(v FacebookSettings) {
 	o.FacebookSettings = &v
 }
 
