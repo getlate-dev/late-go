@@ -22,8 +22,10 @@ var _ MappedNullable = &UpdateAdCampaignRequest{}
 
 // UpdateAdCampaignRequest struct for UpdateAdCampaignRequest
 type UpdateAdCampaignRequest struct {
-	Platform string                         `json:"platform"`
-	Budget   *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
+	// Zernio SocialAccount id owning the ad account. Required only to update an EMPTY campaign (zero ads), which has no local Ad documents to resolve a token from.
+	AccountId *string                        `json:"accountId,omitempty"`
+	Platform  string                         `json:"platform"`
+	Budget    *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
 	// Campaign-level default. Ad sets inherit this unless they override.
 	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
 	// Rename the campaign (Meta only; other platforms return 501). At least one of budget/bidStrategy/name/platformSpecificData is required.
@@ -49,6 +51,38 @@ func NewUpdateAdCampaignRequest(platform string) *UpdateAdCampaignRequest {
 func NewUpdateAdCampaignRequestWithDefaults() *UpdateAdCampaignRequest {
 	this := UpdateAdCampaignRequest{}
 	return &this
+}
+
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *UpdateAdCampaignRequest) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaignRequest) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *UpdateAdCampaignRequest) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *UpdateAdCampaignRequest) SetAccountId(v string) {
+	o.AccountId = &v
 }
 
 // GetPlatform returns the Platform field value
@@ -213,6 +247,9 @@ func (o UpdateAdCampaignRequest) MarshalJSON() ([]byte, error) {
 
 func (o UpdateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
+	}
 	toSerialize["platform"] = o.Platform
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget

@@ -1993,19 +1993,26 @@ func (a *AdCampaignsAPIService) GetAdsTimelineExecute(r AdCampaignsAPIGetAdsTime
 }
 
 type AdCampaignsAPIListAdCampaignsRequest struct {
-	ctx         context.Context
-	ApiService  *AdCampaignsAPIService
-	page        *int32
-	limit       *int32
-	source      *string
-	platform    *string
-	status      *AdStatus
-	adAccountId *string
-	pageId      *string
-	accountId   *string
-	profileId   *string
-	fromDate    *string
-	toDate      *string
+	ctx          context.Context
+	ApiService   *AdCampaignsAPIService
+	includeEmpty *bool
+	page         *int32
+	limit        *int32
+	source       *string
+	platform     *string
+	status       *AdStatus
+	adAccountId  *string
+	pageId       *string
+	accountId    *string
+	profileId    *string
+	fromDate     *string
+	toDate       *string
+}
+
+// Meta only. Campaign reads aggregate over ad documents, so a campaign with ZERO ads is normally invisible here — the state the two-step create (campaign, then ads via &#x60;existingCampaignId&#x60;) leaves behind whenever Meta rejects the ad step. Set true to list those too, with &#x60;adCount: 0&#x60; and zeroed metrics. Requires &#x60;accountId&#x60; and &#x60;adAccountId&#x60;, since an empty campaign has no ad row to resolve a token or ad account from.
+func (r AdCampaignsAPIListAdCampaignsRequest) IncludeEmpty(includeEmpty bool) AdCampaignsAPIListAdCampaignsRequest {
+	r.includeEmpty = &includeEmpty
+	return r
 }
 
 // Page number (1-based)
@@ -2115,6 +2122,9 @@ func (a *AdCampaignsAPIService) ListAdCampaignsExecute(r AdCampaignsAPIListAdCam
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.includeEmpty != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeEmpty", r.includeEmpty, "form", "")
+	}
 	if r.page != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
 	} else {
@@ -2941,6 +2951,12 @@ func (r AdCampaignsAPIUpdateAdCampaignRequest) Execute() (*UpdateAdCampaign200Re
 UpdateAdCampaign Update a campaign
 
 Campaign-level edits. At least one of `budget`, `bidStrategy`, `name` or `platformSpecificData` is required.
+
+**Empty campaigns.** A campaign with zero ads has no local Ad documents to
+resolve, so this would 404 even though it exists on Meta. Send `accountId`
+in the body to skip the local lookup and forward the update to Meta. The
+response then carries `updated: 0`, since there are no local rows to mirror
+onto. `accountId` is ignored when the campaign does have ads.
 
   - `budget` updates the CBO (Campaign Budget Optimization) budget. For ABO campaigns
     (where the budget lives on the ad set), use PUT /v1/ads/ad-sets/{adSetId} instead — this endpoint
