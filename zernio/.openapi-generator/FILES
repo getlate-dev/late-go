@@ -16,6 +16,7 @@ api_calls.go
 api_comment_automations.go
 api_comments.go
 api_connect.go
+api_connected_apps.go
 api_contacts.go
 api_conversions.go
 api_custom_fields.go
@@ -184,6 +185,7 @@ model_connect_whats_app_credentials_200_response_account.go
 model_connect_whats_app_credentials_request.go
 model_connected.go
 model_connected_account.go
+model_connected_app.go
 model_conversion_destination.go
 model_conversion_event.go
 model_conversion_event_items_inner.go
@@ -821,6 +823,7 @@ model_list_comment_automation_logs_200_response.go
 model_list_comment_automations_200_response.go
 model_list_comment_automations_200_response_automations_inner.go
 model_list_comment_automations_200_response_automations_inner_stats.go
+model_list_connected_apps_200_response.go
 model_list_contacts_200_response.go
 model_list_contacts_200_response_contacts_inner.go
 model_list_contacts_200_response_filters.go
@@ -1064,6 +1067,7 @@ model_review_phone_number_kyc_packet_request.go
 model_review_webhook_review.go
 model_review_webhook_review_reply.go
 model_review_webhook_review_reviewer.go
+model_revoke_connected_app_200_response.go
 model_rf_prediction.go
 model_saved_targeting_audience.go
 model_schedule_broadcast_200_response.go

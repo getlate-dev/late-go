@@ -81,6 +81,8 @@ type APIClient struct {
 
 	ConnectAPI *ConnectAPIService
 
+	ConnectedAppsAPI *ConnectedAppsAPIService
+
 	ContactsAPI *ContactsAPIService
 
 	ConversionsAPI *ConversionsAPIService
@@ -206,6 +208,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.CommentAutomationsAPI = (*CommentAutomationsAPIService)(&c.common)
 	c.CommentsAPI = (*CommentsAPIService)(&c.common)
 	c.ConnectAPI = (*ConnectAPIService)(&c.common)
+	c.ConnectedAppsAPI = (*ConnectedAppsAPIService)(&c.common)
 	c.ContactsAPI = (*ContactsAPIService)(&c.common)
 	c.ConversionsAPI = (*ConversionsAPIService)(&c.common)
 	c.CustomFieldsAPI = (*CustomFieldsAPIService)(&c.common)
