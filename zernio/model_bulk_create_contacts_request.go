@@ -22,10 +22,12 @@ var _ MappedNullable = &BulkCreateContactsRequest{}
 
 // BulkCreateContactsRequest struct for BulkCreateContactsRequest
 type BulkCreateContactsRequest struct {
-	ProfileId string                                   `json:"profileId"`
-	AccountId string                                   `json:"accountId"`
-	Platform  string                                   `json:"platform"`
-	Contacts  []BulkCreateContactsRequestContactsInner `json:"contacts"`
+	ProfileId string `json:"profileId"`
+	// Required when contacts carry channel data (platformIdentifier or a row-level accountId). Omit for a plain CRM import with no channels.
+	AccountId *string `json:"accountId,omitempty"`
+	// Ignored when accountId is set: the platform is derived from the resolved account. Only relevant to disambiguate accountId lookup; a mismatch 404s.
+	Platform *string                                  `json:"platform,omitempty"`
+	Contacts []BulkCreateContactsRequestContactsInner `json:"contacts"`
 }
 
 type _BulkCreateContactsRequest BulkCreateContactsRequest
@@ -34,11 +36,9 @@ type _BulkCreateContactsRequest BulkCreateContactsRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkCreateContactsRequest(profileId string, accountId string, platform string, contacts []BulkCreateContactsRequestContactsInner) *BulkCreateContactsRequest {
+func NewBulkCreateContactsRequest(profileId string, contacts []BulkCreateContactsRequestContactsInner) *BulkCreateContactsRequest {
 	this := BulkCreateContactsRequest{}
 	this.ProfileId = profileId
-	this.AccountId = accountId
-	this.Platform = platform
 	this.Contacts = contacts
 	return &this
 }
@@ -75,52 +75,68 @@ func (o *BulkCreateContactsRequest) SetProfileId(v string) {
 	o.ProfileId = v
 }
 
-// GetAccountId returns the AccountId field value
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
 func (o *BulkCreateContactsRequest) GetAccountId() string {
-	if o == nil {
+	if o == nil || IsNil(o.AccountId) {
 		var ret string
 		return ret
 	}
-
-	return o.AccountId
+	return *o.AccountId
 }
 
-// GetAccountIdOk returns a tuple with the AccountId field value
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BulkCreateContactsRequest) GetAccountIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.AccountId) {
 		return nil, false
 	}
-	return &o.AccountId, true
+	return o.AccountId, true
 }
 
-// SetAccountId sets field value
+// HasAccountId returns a boolean if a field has been set.
+func (o *BulkCreateContactsRequest) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
 func (o *BulkCreateContactsRequest) SetAccountId(v string) {
-	o.AccountId = v
+	o.AccountId = &v
 }
 
-// GetPlatform returns the Platform field value
+// GetPlatform returns the Platform field value if set, zero value otherwise.
 func (o *BulkCreateContactsRequest) GetPlatform() string {
-	if o == nil {
+	if o == nil || IsNil(o.Platform) {
 		var ret string
 		return ret
 	}
-
-	return o.Platform
+	return *o.Platform
 }
 
-// GetPlatformOk returns a tuple with the Platform field value
+// GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BulkCreateContactsRequest) GetPlatformOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Platform) {
 		return nil, false
 	}
-	return &o.Platform, true
+	return o.Platform, true
 }
 
-// SetPlatform sets field value
+// HasPlatform returns a boolean if a field has been set.
+func (o *BulkCreateContactsRequest) HasPlatform() bool {
+	if o != nil && !IsNil(o.Platform) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatform gets a reference to the given string and assigns it to the Platform field.
 func (o *BulkCreateContactsRequest) SetPlatform(v string) {
-	o.Platform = v
+	o.Platform = &v
 }
 
 // GetContacts returns the Contacts field value
@@ -158,8 +174,12 @@ func (o BulkCreateContactsRequest) MarshalJSON() ([]byte, error) {
 func (o BulkCreateContactsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["profileId"] = o.ProfileId
-	toSerialize["accountId"] = o.AccountId
-	toSerialize["platform"] = o.Platform
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
+	}
+	if !IsNil(o.Platform) {
+		toSerialize["platform"] = o.Platform
+	}
 	toSerialize["contacts"] = o.Contacts
 	return toSerialize, nil
 }
@@ -170,8 +190,6 @@ func (o *BulkCreateContactsRequest) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"profileId",
-		"accountId",
-		"platform",
 		"contacts",
 	}
 
