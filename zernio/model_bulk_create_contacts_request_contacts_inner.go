@@ -22,8 +22,9 @@ var _ MappedNullable = &BulkCreateContactsRequestContactsInner{}
 
 // BulkCreateContactsRequestContactsInner struct for BulkCreateContactsRequestContactsInner
 type BulkCreateContactsRequestContactsInner struct {
-	Name               string   `json:"name"`
-	PlatformIdentifier string   `json:"platformIdentifier"`
+	Name string `json:"name"`
+	// Required when the top-level accountId is set (channel mode). A row missing it in that mode is rejected individually and reported in errors[], not a 400 for the whole import.
+	PlatformIdentifier *string  `json:"platformIdentifier,omitempty"`
 	DisplayIdentifier  *string  `json:"displayIdentifier,omitempty"`
 	Email              *string  `json:"email,omitempty"`
 	Company            *string  `json:"company,omitempty"`
@@ -36,10 +37,9 @@ type _BulkCreateContactsRequestContactsInner BulkCreateContactsRequestContactsIn
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkCreateContactsRequestContactsInner(name string, platformIdentifier string) *BulkCreateContactsRequestContactsInner {
+func NewBulkCreateContactsRequestContactsInner(name string) *BulkCreateContactsRequestContactsInner {
 	this := BulkCreateContactsRequestContactsInner{}
 	this.Name = name
-	this.PlatformIdentifier = platformIdentifier
 	return &this
 }
 
@@ -75,28 +75,36 @@ func (o *BulkCreateContactsRequestContactsInner) SetName(v string) {
 	o.Name = v
 }
 
-// GetPlatformIdentifier returns the PlatformIdentifier field value
+// GetPlatformIdentifier returns the PlatformIdentifier field value if set, zero value otherwise.
 func (o *BulkCreateContactsRequestContactsInner) GetPlatformIdentifier() string {
-	if o == nil {
+	if o == nil || IsNil(o.PlatformIdentifier) {
 		var ret string
 		return ret
 	}
-
-	return o.PlatformIdentifier
+	return *o.PlatformIdentifier
 }
 
-// GetPlatformIdentifierOk returns a tuple with the PlatformIdentifier field value
+// GetPlatformIdentifierOk returns a tuple with the PlatformIdentifier field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BulkCreateContactsRequestContactsInner) GetPlatformIdentifierOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.PlatformIdentifier) {
 		return nil, false
 	}
-	return &o.PlatformIdentifier, true
+	return o.PlatformIdentifier, true
 }
 
-// SetPlatformIdentifier sets field value
+// HasPlatformIdentifier returns a boolean if a field has been set.
+func (o *BulkCreateContactsRequestContactsInner) HasPlatformIdentifier() bool {
+	if o != nil && !IsNil(o.PlatformIdentifier) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformIdentifier gets a reference to the given string and assigns it to the PlatformIdentifier field.
 func (o *BulkCreateContactsRequestContactsInner) SetPlatformIdentifier(v string) {
-	o.PlatformIdentifier = v
+	o.PlatformIdentifier = &v
 }
 
 // GetDisplayIdentifier returns the DisplayIdentifier field value if set, zero value otherwise.
@@ -238,7 +246,9 @@ func (o BulkCreateContactsRequestContactsInner) MarshalJSON() ([]byte, error) {
 func (o BulkCreateContactsRequestContactsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["name"] = o.Name
-	toSerialize["platformIdentifier"] = o.PlatformIdentifier
+	if !IsNil(o.PlatformIdentifier) {
+		toSerialize["platformIdentifier"] = o.PlatformIdentifier
+	}
 	if !IsNil(o.DisplayIdentifier) {
 		toSerialize["displayIdentifier"] = o.DisplayIdentifier
 	}
@@ -260,7 +270,6 @@ func (o *BulkCreateContactsRequestContactsInner) UnmarshalJSON(data []byte) (err
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"name",
-		"platformIdentifier",
 	}
 
 	allProperties := make(map[string]interface{})
