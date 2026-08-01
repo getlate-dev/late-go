@@ -24,7 +24,13 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	Id       *string `json:"id,omitempty"`
 	Name     *string `json:"name,omitempty"`
 	Currency *string `json:"currency,omitempty"`
-	Status   *string `json:"status,omitempty"`
+	// LinkedIn only. LinkedIn's own ad account status. In practice always `ACTIVE`, because the LinkedIn query filters to active accounts. Meta, Google, TikTok and Pinterest report `accountStatus` instead; X reports `approvalStatus`.
+	Status        *string     `json:"status,omitempty"`
+	AccountStatus interface{} `json:"accountStatus,omitempty"`
+	// X only. X's own ad account approval status. Observed values are `ACCEPTED`, `PENDING` and `REJECTED`, but X does not publish the full vocabulary, so treat an unrecognised value as not usable. Other platforms report `accountStatus` or `status` instead.
+	ApprovalStatus *string `json:"approvalStatus,omitempty"`
+	// Meta only. Meta's `disable_reason` code, forwarded unchanged. Present when `accountStatus` is `2` (DISABLED) and Meta gives a reason, which is what separates a policy action from a payment problem. Meta does not publish a stable list of values for this field, so none are enumerated here: resolve the code against Meta's own ad account reference. Absent when Meta reports no reason, or when the connected token cannot read the field.
+	DisableReason *int32 `json:"disableReason,omitempty"`
 	// IANA timezone of the ad account (Meta only). Drives daily-budget reset and Insights day boundaries.
 	TimezoneName *string `json:"timezoneName,omitempty"`
 	// Signed UTC offset in hours, reflecting current DST (Meta only).
@@ -180,6 +186,103 @@ func (o *ListAdAccounts200ResponseAccountsInner) HasStatus() bool {
 // SetStatus gets a reference to the given string and assigns it to the Status field.
 func (o *ListAdAccounts200ResponseAccountsInner) SetStatus(v string) {
 	o.Status = &v
+}
+
+// GetAccountStatus returns the AccountStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListAdAccounts200ResponseAccountsInner) GetAccountStatus() interface{} {
+	if o == nil {
+		var ret interface{}
+		return ret
+	}
+	return o.AccountStatus
+}
+
+// GetAccountStatusOk returns a tuple with the AccountStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListAdAccounts200ResponseAccountsInner) GetAccountStatusOk() (*interface{}, bool) {
+	if o == nil || IsNil(o.AccountStatus) {
+		return nil, false
+	}
+	return &o.AccountStatus, true
+}
+
+// HasAccountStatus returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasAccountStatus() bool {
+	if o != nil && !IsNil(o.AccountStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountStatus gets a reference to the given interface{} and assigns it to the AccountStatus field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetAccountStatus(v interface{}) {
+	o.AccountStatus = v
+}
+
+// GetApprovalStatus returns the ApprovalStatus field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetApprovalStatus() string {
+	if o == nil || IsNil(o.ApprovalStatus) {
+		var ret string
+		return ret
+	}
+	return *o.ApprovalStatus
+}
+
+// GetApprovalStatusOk returns a tuple with the ApprovalStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetApprovalStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.ApprovalStatus) {
+		return nil, false
+	}
+	return o.ApprovalStatus, true
+}
+
+// HasApprovalStatus returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasApprovalStatus() bool {
+	if o != nil && !IsNil(o.ApprovalStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetApprovalStatus gets a reference to the given string and assigns it to the ApprovalStatus field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetApprovalStatus(v string) {
+	o.ApprovalStatus = &v
+}
+
+// GetDisableReason returns the DisableReason field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetDisableReason() int32 {
+	if o == nil || IsNil(o.DisableReason) {
+		var ret int32
+		return ret
+	}
+	return *o.DisableReason
+}
+
+// GetDisableReasonOk returns a tuple with the DisableReason field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetDisableReasonOk() (*int32, bool) {
+	if o == nil || IsNil(o.DisableReason) {
+		return nil, false
+	}
+	return o.DisableReason, true
+}
+
+// HasDisableReason returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasDisableReason() bool {
+	if o != nil && !IsNil(o.DisableReason) {
+		return true
+	}
+
+	return false
+}
+
+// SetDisableReason gets a reference to the given int32 and assigns it to the DisableReason field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetDisableReason(v int32) {
+	o.DisableReason = &v
 }
 
 // GetTimezoneName returns the TimezoneName field value if set, zero value otherwise.
@@ -374,6 +477,15 @@ func (o ListAdAccounts200ResponseAccountsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if o.AccountStatus != nil {
+		toSerialize["accountStatus"] = o.AccountStatus
+	}
+	if !IsNil(o.ApprovalStatus) {
+		toSerialize["approvalStatus"] = o.ApprovalStatus
+	}
+	if !IsNil(o.DisableReason) {
+		toSerialize["disableReason"] = o.DisableReason
 	}
 	if !IsNil(o.TimezoneName) {
 		toSerialize["timezoneName"] = o.TimezoneName
