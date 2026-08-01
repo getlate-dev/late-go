@@ -28,15 +28,19 @@ type AdTreeAdSet struct {
 	Budget      *AdBudget  `json:"budget,omitempty"`
 	AdSetBudget *AdBudget  `json:"adSetBudget,omitempty"`
 	Metrics     *AdMetrics `json:"metrics,omitempty"`
-	// Meta ad set optimization goal (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION)
+	// What the delivery system optimizes for. Meta ad set optimization goal (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION), or on LinkedIn the campaign's effective optimizationTargetType (NONE means manual bidding). See the `optimizationGoal` field on `Ad` for the full value spaces.
 	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
-	// Bid strategy for this ad set (overrides campaign level when set)
+	// Bid strategy for this ad set (overrides campaign level when set). Meta and TikTok only; LinkedIn uses `costType` instead.
 	BidStrategy NullableBidStrategy `json:"bidStrategy,omitempty"`
-	// Bid cap in whole currency units. Populated when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP.
+	// Bid amount in whole currency units. On Meta/TikTok populated when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP; on LinkedIn it is the campaign's effective unitCost and pairs with `costType`, where 0 is a real, delivery-stopping value.
 	BidAmount NullableFloat32 `json:"bidAmount,omitempty"`
 	// Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Populated when bidStrategy is LOWEST_COST_WITH_MIN_ROAS.
-	RoasAverageFloor NullableFloat32            `json:"roasAverageFloor,omitempty"`
-	PromotedObject   *AdTreeAdSetPromotedObject `json:"promotedObject,omitempty"`
+	RoasAverageFloor NullableFloat32 `json:"roasAverageFloor,omitempty"`
+	// LinkedIn only. Effective cost model (billing event) of the LinkedIn campaign backing this ad set: CPM, CPC or CPV. Null for non-LinkedIn ad sets.
+	CostType NullableString `json:"costType,omitempty"`
+	// LinkedIn only. Why the LinkedIn campaign backing this ad set is (or is not) delivering. A LinkedIn Campaign maps to this ad-set node, so this is the level where LinkedIn's holds actually apply. Empty means no serving data, [\"RUNNABLE\"] means eligible to serve, anything else is a hold. See the `servingStatuses` field on `Ad` for the known values.
+	ServingStatuses []string                   `json:"servingStatuses,omitempty"`
+	PromotedObject  *AdTreeAdSetPromotedObject `json:"promotedObject,omitempty"`
 	// Individual ads within this ad set (capped at 100). Returns a subset of Ad fields from the aggregation (core fields like _id, name, platform, status, budget, metrics, creative, goal are included; targeting and schedule may be absent). When `timeIncrement=1&dailyLevel=ad`, each entry also carries a `daily[]` array of `AdDailyMetrics`.
 	Ads []Ad `json:"ads,omitempty"`
 	// Per-day metric series for this ad set. Present only when `GET /v1/ads/tree` is called with `timeIncrement=1` and `dailyLevel` is `adset` or `ad`.
@@ -456,6 +460,81 @@ func (o *AdTreeAdSet) UnsetRoasAverageFloor() {
 	o.RoasAverageFloor.Unset()
 }
 
+// GetCostType returns the CostType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdTreeAdSet) GetCostType() string {
+	if o == nil || IsNil(o.CostType.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CostType.Get()
+}
+
+// GetCostTypeOk returns a tuple with the CostType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdTreeAdSet) GetCostTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CostType.Get(), o.CostType.IsSet()
+}
+
+// HasCostType returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasCostType() bool {
+	if o != nil && o.CostType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCostType gets a reference to the given NullableString and assigns it to the CostType field.
+func (o *AdTreeAdSet) SetCostType(v string) {
+	o.CostType.Set(&v)
+}
+
+// SetCostTypeNil sets the value for CostType to be an explicit nil
+func (o *AdTreeAdSet) SetCostTypeNil() {
+	o.CostType.Set(nil)
+}
+
+// UnsetCostType ensures that no value is present for CostType, not even an explicit nil
+func (o *AdTreeAdSet) UnsetCostType() {
+	o.CostType.Unset()
+}
+
+// GetServingStatuses returns the ServingStatuses field value if set, zero value otherwise.
+func (o *AdTreeAdSet) GetServingStatuses() []string {
+	if o == nil || IsNil(o.ServingStatuses) {
+		var ret []string
+		return ret
+	}
+	return o.ServingStatuses
+}
+
+// GetServingStatusesOk returns a tuple with the ServingStatuses field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeAdSet) GetServingStatusesOk() ([]string, bool) {
+	if o == nil || IsNil(o.ServingStatuses) {
+		return nil, false
+	}
+	return o.ServingStatuses, true
+}
+
+// HasServingStatuses returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasServingStatuses() bool {
+	if o != nil && !IsNil(o.ServingStatuses) {
+		return true
+	}
+
+	return false
+}
+
+// SetServingStatuses gets a reference to the given []string and assigns it to the ServingStatuses field.
+func (o *AdTreeAdSet) SetServingStatuses(v []string) {
+	o.ServingStatuses = v
+}
+
 // GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
 func (o *AdTreeAdSet) GetPromotedObject() AdTreeAdSetPromotedObject {
 	if o == nil || IsNil(o.PromotedObject) {
@@ -594,6 +673,12 @@ func (o AdTreeAdSet) ToMap() (map[string]interface{}, error) {
 	}
 	if o.RoasAverageFloor.IsSet() {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor.Get()
+	}
+	if o.CostType.IsSet() {
+		toSerialize["costType"] = o.CostType.Get()
+	}
+	if !IsNil(o.ServingStatuses) {
+		toSerialize["servingStatuses"] = o.ServingStatuses
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject

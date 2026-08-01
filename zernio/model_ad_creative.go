@@ -44,6 +44,10 @@ type AdCreative struct {
 	InstagramPermalinkUrl NullableString `json:"instagramPermalinkUrl,omitempty"`
 	// All media URLs for this ad (carousel images, multiple assets). Populated for Meta (carousel child_attachments), Google Ads (responsive display marketing_images), and LinkedIn (multi-image posts).
 	MediaUrls []string `json:"mediaUrls,omitempty"`
+	// LinkedIn only. Whether LinkedIn is currently serving this specific creative. Complements the ad-level `servingStatuses`, which describes the parent campaign.
+	IsServing NullableBool `json:"isServing,omitempty"`
+	// LinkedIn only. Why this specific creative is not being served. Empty when it is serving. A superset of the ad-level `servingStatuses`: it repeats the inherited campaign, campaign group and account holds AND adds creative-only causes such as UNDER_REVIEW, REJECTED, PROCESSING, PROCESSING_FAILED, FORM_HOLD (lead-gen-form creatives), REFERRED_CONTENT_QUALITY_HOLD, JOB_POSTING_ON_HOLD and JOB_POSTING_INVALID (job ads). Some values are format-specific and will never appear on other ad formats. The list is open, so treat unrecognized values as holds rather than errors.
+	ServingHoldReasons []string `json:"servingHoldReasons,omitempty"`
 	// Ad copy/text
 	Body *string `json:"body,omitempty"`
 	// Google Ads headline
@@ -546,6 +550,81 @@ func (o *AdCreative) SetMediaUrls(v []string) {
 	o.MediaUrls = v
 }
 
+// GetIsServing returns the IsServing field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdCreative) GetIsServing() bool {
+	if o == nil || IsNil(o.IsServing.Get()) {
+		var ret bool
+		return ret
+	}
+	return *o.IsServing.Get()
+}
+
+// GetIsServingOk returns a tuple with the IsServing field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdCreative) GetIsServingOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.IsServing.Get(), o.IsServing.IsSet()
+}
+
+// HasIsServing returns a boolean if a field has been set.
+func (o *AdCreative) HasIsServing() bool {
+	if o != nil && o.IsServing.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetIsServing gets a reference to the given NullableBool and assigns it to the IsServing field.
+func (o *AdCreative) SetIsServing(v bool) {
+	o.IsServing.Set(&v)
+}
+
+// SetIsServingNil sets the value for IsServing to be an explicit nil
+func (o *AdCreative) SetIsServingNil() {
+	o.IsServing.Set(nil)
+}
+
+// UnsetIsServing ensures that no value is present for IsServing, not even an explicit nil
+func (o *AdCreative) UnsetIsServing() {
+	o.IsServing.Unset()
+}
+
+// GetServingHoldReasons returns the ServingHoldReasons field value if set, zero value otherwise.
+func (o *AdCreative) GetServingHoldReasons() []string {
+	if o == nil || IsNil(o.ServingHoldReasons) {
+		var ret []string
+		return ret
+	}
+	return o.ServingHoldReasons
+}
+
+// GetServingHoldReasonsOk returns a tuple with the ServingHoldReasons field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetServingHoldReasonsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ServingHoldReasons) {
+		return nil, false
+	}
+	return o.ServingHoldReasons, true
+}
+
+// HasServingHoldReasons returns a boolean if a field has been set.
+func (o *AdCreative) HasServingHoldReasons() bool {
+	if o != nil && !IsNil(o.ServingHoldReasons) {
+		return true
+	}
+
+	return false
+}
+
+// SetServingHoldReasons gets a reference to the given []string and assigns it to the ServingHoldReasons field.
+func (o *AdCreative) SetServingHoldReasons(v []string) {
+	o.ServingHoldReasons = v
+}
+
 // GetBody returns the Body field value if set, zero value otherwise.
 func (o *AdCreative) GetBody() string {
 	if o == nil || IsNil(o.Body) {
@@ -815,6 +894,12 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MediaUrls) {
 		toSerialize["mediaUrls"] = o.MediaUrls
+	}
+	if o.IsServing.IsSet() {
+		toSerialize["isServing"] = o.IsServing.Get()
+	}
+	if !IsNil(o.ServingHoldReasons) {
+		toSerialize["servingHoldReasons"] = o.ServingHoldReasons
 	}
 	if !IsNil(o.Body) {
 		toSerialize["body"] = o.Body
