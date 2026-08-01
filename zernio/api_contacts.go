@@ -635,6 +635,7 @@ type ContactsAPIListContactsRequest struct {
 	profileId    *string
 	search       *string
 	tag          *string
+	tags         *string
 	platform     *string
 	isSubscribed *string
 	limit        *int32
@@ -654,6 +655,12 @@ func (r ContactsAPIListContactsRequest) Search(search string) ContactsAPIListCon
 
 func (r ContactsAPIListContactsRequest) Tag(tag string) ContactsAPIListContactsRequest {
 	r.tag = &tag
+	return r
+}
+
+// Comma-separated tags, matches contacts carrying any of them
+func (r ContactsAPIListContactsRequest) Tags(tags string) ContactsAPIListContactsRequest {
+	r.tags = &tags
 	return r
 }
 
@@ -726,6 +733,9 @@ func (a *ContactsAPIService) ListContactsExecute(r ContactsAPIListContactsReques
 	}
 	if r.tag != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "tag", r.tag, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	if r.platform != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
