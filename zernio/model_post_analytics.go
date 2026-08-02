@@ -35,9 +35,11 @@ type PostAnalytics struct {
 	// Instagram Reels only: average watch time per play, in milliseconds. 0 for non-Reels media and other platforms.
 	IgReelsAvgWatchTime *int32 `json:"igReelsAvgWatchTime,omitempty"`
 	// Instagram Reels only: total watch time including replays, in milliseconds. 0 for non-Reels media and other platforms.
-	IgReelsVideoViewTotalTime *int32     `json:"igReelsVideoViewTotalTime,omitempty"`
-	EngagementRate            *float32   `json:"engagementRate,omitempty"`
-	LastUpdated               *time.Time `json:"lastUpdated,omitempty"`
+	IgReelsVideoViewTotalTime *int32 `json:"igReelsVideoViewTotalTime,omitempty"`
+	// Video length in seconds. Currently Instagram Reels only; combine with igReelsAvgWatchTime (ms) to estimate retention. Null when unknown (other platforms, non-video media, or when Instagram does not expose the media URL, e.g. reels with copyrighted audio).
+	VideoDurationSeconds NullableInt32 `json:"videoDurationSeconds,omitempty"`
+	EngagementRate       *float32      `json:"engagementRate,omitempty"`
+	LastUpdated          *time.Time    `json:"lastUpdated,omitempty"`
 }
 
 // NewPostAnalytics instantiates a new PostAnalytics object
@@ -409,6 +411,49 @@ func (o *PostAnalytics) SetIgReelsVideoViewTotalTime(v int32) {
 	o.IgReelsVideoViewTotalTime = &v
 }
 
+// GetVideoDurationSeconds returns the VideoDurationSeconds field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PostAnalytics) GetVideoDurationSeconds() int32 {
+	if o == nil || IsNil(o.VideoDurationSeconds.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.VideoDurationSeconds.Get()
+}
+
+// GetVideoDurationSecondsOk returns a tuple with the VideoDurationSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PostAnalytics) GetVideoDurationSecondsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.VideoDurationSeconds.Get(), o.VideoDurationSeconds.IsSet()
+}
+
+// HasVideoDurationSeconds returns a boolean if a field has been set.
+func (o *PostAnalytics) HasVideoDurationSeconds() bool {
+	if o != nil && o.VideoDurationSeconds.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoDurationSeconds gets a reference to the given NullableInt32 and assigns it to the VideoDurationSeconds field.
+func (o *PostAnalytics) SetVideoDurationSeconds(v int32) {
+	o.VideoDurationSeconds.Set(&v)
+}
+
+// SetVideoDurationSecondsNil sets the value for VideoDurationSeconds to be an explicit nil
+func (o *PostAnalytics) SetVideoDurationSecondsNil() {
+	o.VideoDurationSeconds.Set(nil)
+}
+
+// UnsetVideoDurationSeconds ensures that no value is present for VideoDurationSeconds, not even an explicit nil
+func (o *PostAnalytics) UnsetVideoDurationSeconds() {
+	o.VideoDurationSeconds.Unset()
+}
+
 // GetEngagementRate returns the EngagementRate field value if set, zero value otherwise.
 func (o *PostAnalytics) GetEngagementRate() float32 {
 	if o == nil || IsNil(o.EngagementRate) {
@@ -515,6 +560,9 @@ func (o PostAnalytics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IgReelsVideoViewTotalTime) {
 		toSerialize["igReelsVideoViewTotalTime"] = o.IgReelsVideoViewTotalTime
+	}
+	if o.VideoDurationSeconds.IsSet() {
+		toSerialize["videoDurationSeconds"] = o.VideoDurationSeconds.Get()
 	}
 	if !IsNil(o.EngagementRate) {
 		toSerialize["engagementRate"] = o.EngagementRate
