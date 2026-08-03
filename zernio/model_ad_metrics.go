@@ -23,8 +23,9 @@ var _ MappedNullable = &AdMetrics{}
 type AdMetrics struct {
 	Spend       *float32 `json:"spend,omitempty"`
 	Impressions *int32   `json:"impressions,omitempty"`
-	Reach       *int32   `json:"reach,omitempty"`
-	Clicks      *int32   `json:"clicks,omitempty"`
+	// Unique people reached in the requested date range. Meta (facebook/instagram): Meta's own de-duplicated reach for the exact range, fetched live and cached up to ~1 hour (may lag recent delivery; on a transient Meta error the value temporarily falls back to a sum of per-day reach, which overcounts people reached on multiple days or by multiple child ads). Because it is de-duplicated, Meta reach is NOT additive: neither daily values nor child nodes sum to the range total. TikTok: sum of per-day reach, so multi-day ranges overcount vs TikTok Ads Manager. Google, LinkedIn, X, Pinterest and OpenAI report 0 (reach not synced). Only derive frequency (impressions / reach) for Meta.
+	Reach  *int32 `json:"reach,omitempty"`
+	Clicks *int32 `json:"clicks,omitempty"`
 	// Click-through rate (%)
 	Ctr *float32 `json:"ctr,omitempty"`
 	// Cost per click

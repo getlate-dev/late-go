@@ -24,9 +24,10 @@ type GetAdsTimeline200ResponseRowsInner struct {
 	// Native currency units (matches /ads/tree convention).
 	Spend       *float32 `json:"spend,omitempty"`
 	Impressions *int32   `json:"impressions,omitempty"`
-	Reach       *int32   `json:"reach,omitempty"`
-	Clicks      *int32   `json:"clicks,omitempty"`
-	Engagement  *int32   `json:"engagement,omitempty"`
+	// Reach summed across the account's ads for this single day. A person seen by two ads the same day counts twice, and reach is de-duplicated per day only: do NOT sum it across days (people reached on multiple days would be double-counted).
+	Reach      *int32 `json:"reach,omitempty"`
+	Clicks     *int32 `json:"clicks,omitempty"`
+	Engagement *int32 `json:"engagement,omitempty"`
 	// Click-through rate as a percentage (0–100).
 	Ctr *float32 `json:"ctr,omitempty"`
 	// Cost per click in native currency.
