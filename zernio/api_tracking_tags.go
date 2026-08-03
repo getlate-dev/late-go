@@ -330,6 +330,11 @@ Unified read of the platform's native click-URL tracking params.
 
 Returns 405 for platforms without a click-URL tracking surface (TikTok, X, Pinterest).
 
+**Not pixels.** Despite the shared path segment, this endpoint has nothing to do with
+measurement tags. For an ad account's pixels use
+`GET /v1/accounts/{accountId}/tracking-tags?adAccountId=act_...` (Meta Pixels, with `kind`
+and `ownerAdAccountId`) or `GET /v1/accounts/{accountId}/conversion-destinations`.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Ad id (hex _id, platformAdId, or effective story/media id).
 	@return TrackingTagsAPIGetAdTrackingTagsRequest

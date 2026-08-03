@@ -1645,6 +1645,12 @@ per-day metrics (same fields as the aggregated `metrics`) in the same call. Use 
 (`campaign` default, or `adset` / `ad`) to choose which levels carry the series. This replaces
 calling the tree once per day for per-campaign daily trends.
 
+**Deleted objects stay in the tree.** Deleting an ad or a campaign is a soft delete: the Ad
+documents move to `status: cancelled` and are kept indefinitely, so their historical spend
+still counts toward the metrics of any date range they fall in. There is no pruning job and
+no retention window. Filter on `status` if your view should hide them, but do that after
+reading the totals, not before.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIGetAdTreeRequest
 */
