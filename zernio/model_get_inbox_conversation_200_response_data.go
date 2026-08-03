@@ -35,6 +35,7 @@ type GetInboxConversation200ResponseData struct {
 	UpdatedTime             *time.Time                                                  `json:"updatedTime,omitempty"`
 	Participants            []UpdateFacebookPage200ResponseSelectedPage                 `json:"participants,omitempty"`
 	InstagramProfile        *ListInboxConversations200ResponseDataInnerInstagramProfile `json:"instagramProfile,omitempty"`
+	Metadata                *GetInboxConversation200ResponseDataMetadata                `json:"metadata,omitempty"`
 }
 
 // NewGetInboxConversation200ResponseData instantiates a new GetInboxConversation200ResponseData object
@@ -481,6 +482,38 @@ func (o *GetInboxConversation200ResponseData) SetInstagramProfile(v ListInboxCon
 	o.InstagramProfile = &v
 }
 
+// GetMetadata returns the Metadata field value if set, zero value otherwise.
+func (o *GetInboxConversation200ResponseData) GetMetadata() GetInboxConversation200ResponseDataMetadata {
+	if o == nil || IsNil(o.Metadata) {
+		var ret GetInboxConversation200ResponseDataMetadata
+		return ret
+	}
+	return *o.Metadata
+}
+
+// GetMetadataOk returns a tuple with the Metadata field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxConversation200ResponseData) GetMetadataOk() (*GetInboxConversation200ResponseDataMetadata, bool) {
+	if o == nil || IsNil(o.Metadata) {
+		return nil, false
+	}
+	return o.Metadata, true
+}
+
+// HasMetadata returns a boolean if a field has been set.
+func (o *GetInboxConversation200ResponseData) HasMetadata() bool {
+	if o != nil && !IsNil(o.Metadata) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetadata gets a reference to the given GetInboxConversation200ResponseDataMetadata and assigns it to the Metadata field.
+func (o *GetInboxConversation200ResponseData) SetMetadata(v GetInboxConversation200ResponseDataMetadata) {
+	o.Metadata = &v
+}
+
 func (o GetInboxConversation200ResponseData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -529,6 +562,9 @@ func (o GetInboxConversation200ResponseData) ToMap() (map[string]interface{}, er
 	}
 	if !IsNil(o.InstagramProfile) {
 		toSerialize["instagramProfile"] = o.InstagramProfile
+	}
+	if !IsNil(o.Metadata) {
+		toSerialize["metadata"] = o.Metadata
 	}
 	return toSerialize, nil
 }
