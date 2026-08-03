@@ -41,9 +41,9 @@ type UpdatePostRequest struct {
 	QueuedFromProfile *string `json:"queuedFromProfile,omitempty"`
 	// Specific queue ID to use when scheduling via queue.
 	QueueId *string `json:"queueId,omitempty"`
-	// Root-level TikTok settings applied to all TikTok platforms. Merged into each platform's platformSpecificData, with platform-specific settings taking precedence.
+	// Root-level TikTok settings applied to the TikTok platforms sent in the same request. Merged into each platform's platformSpecificData, with platform-specific settings taking precedence. Returns 400 if sent without a platforms array.
 	TiktokSettings *TikTokPlatformData `json:"tiktokSettings,omitempty"`
-	// Root-level Facebook settings applied to all Facebook platforms. Merged into each platform's platformSpecificData.facebookSettings, with platform-specific settings taking precedence.
+	// Root-level Facebook settings applied to the Facebook platforms sent in the same request. Merged into each platform's platformSpecificData.facebookSettings, with platform-specific settings taking precedence. Returns 400 if sent without a platforms array.
 	FacebookSettings     *FacebookSettings `json:"facebookSettings,omitempty"`
 	Recycling            *RecyclingConfig  `json:"recycling,omitempty"`
 	AdditionalProperties map[string]interface{}

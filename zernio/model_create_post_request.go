@@ -39,9 +39,9 @@ type CreatePostRequest struct {
 	Mentions            []string               `json:"mentions,omitempty"`
 	CrosspostingEnabled *bool                  `json:"crosspostingEnabled,omitempty"`
 	Metadata            map[string]interface{} `json:"metadata,omitempty"`
-	// Root-level TikTok settings applied to all TikTok platforms. Merged into each platform's platformSpecificData, with platform-specific settings taking precedence.
+	// Root-level TikTok settings applied to the TikTok platforms sent in the same request. Merged into each platform's platformSpecificData, with platform-specific settings taking precedence.
 	TiktokSettings *TikTokPlatformData `json:"tiktokSettings,omitempty"`
-	// Root-level Facebook settings applied to all Facebook platforms. Merged into each platform's platformSpecificData.facebookSettings, with platform-specific settings taking precedence.
+	// Root-level Facebook settings applied to the Facebook platforms sent in the same request. Merged into each platform's platformSpecificData.facebookSettings, with platform-specific settings taking precedence.
 	FacebookSettings *FacebookSettings `json:"facebookSettings,omitempty"`
 	Recycling        *RecyclingConfig  `json:"recycling,omitempty"`
 	// Profile ID to schedule via queue. When provided without scheduledFor, the post is auto-assigned to the next available slot. Do not call /v1/queue/next-slot and use that time in scheduledFor, as that bypasses queue locking.
