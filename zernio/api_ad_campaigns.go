@@ -418,7 +418,7 @@ func (r AdCampaignsAPICreateStandaloneAdRequest) CreateStandaloneAdRequest(creat
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes create retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
 func (r AdCampaignsAPICreateStandaloneAdRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPICreateStandaloneAdRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r

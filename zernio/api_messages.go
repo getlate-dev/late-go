@@ -1564,10 +1564,17 @@ type MessagesAPISendInboxMessageRequest struct {
 	ApiService              *MessagesAPIService
 	conversationId          string
 	sendInboxMessageRequest *SendInboxMessageRequest
+	idempotencyKey          *string
 }
 
 func (r MessagesAPISendInboxMessageRequest) SendInboxMessageRequest(sendInboxMessageRequest SendInboxMessageRequest) MessagesAPISendInboxMessageRequest {
 	r.sendInboxMessageRequest = &sendInboxMessageRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+func (r MessagesAPISendInboxMessageRequest) IdempotencyKey(idempotencyKey string) MessagesAPISendInboxMessageRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -1594,6 +1601,13 @@ WhatsApp rich interactive messages (list, CTA URL, Flow, location request)
 are available via the `interactive` field. Tap events are delivered through
 the `message.received` webhook with WhatsApp-specific `metadata` fields
 (`interactiveType`, `interactiveId`, `flowResponseJson`, `flowResponseData`).
+
+**Idempotency:** send an `Idempotency-Key` header to make retries safe
+(e.g. after a client-side timeout where delivery is unknown): same key +
+same body replays the original response (with `Idempotent-Replayed: true`)
+instead of sending the message a second time; same key + different body
+returns 422; a key still in flight returns 409. Works for JSON and
+multipart (file upload) requests alike. Keys are retained for 24 hours.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param conversationId The conversation ID (id field from list conversations endpoint). This is the platform-specific conversation identifier, not an internal database ID.
@@ -1649,6 +1663,9 @@ func (a *MessagesAPIService) SendInboxMessageExecute(r MessagesAPISendInboxMessa
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.sendInboxMessageRequest

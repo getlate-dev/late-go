@@ -36,7 +36,7 @@ func (r VoiceAPICreateVoiceCallRequest) CreateVoiceCallRequest(createVoiceCallRe
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes dial retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
 func (r VoiceAPICreateVoiceCallRequest) IdempotencyKey(idempotencyKey string) VoiceAPICreateVoiceCallRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r

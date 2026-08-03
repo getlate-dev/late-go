@@ -2106,7 +2106,7 @@ func (r SMSAPISendSmsRequest) SendSmsRequest(sendSmsRequest SendSmsRequest) SMSA
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes send retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
 func (r SMSAPISendSmsRequest) IdempotencyKey(idempotencyKey string) SMSAPISendSmsRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r

@@ -35,7 +35,7 @@ func (r ProfilesAPICreateProfileRequest) CreateProfileRequest(createProfileReque
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes create retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
 func (r ProfilesAPICreateProfileRequest) IdempotencyKey(idempotencyKey string) ProfilesAPICreateProfileRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r

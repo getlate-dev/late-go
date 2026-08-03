@@ -1335,7 +1335,7 @@ func (r WhatsAppCallingAPIInitiateWhatsAppCallRequest) InitiateWhatsAppCallReque
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes dial retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
 func (r WhatsAppCallingAPIInitiateWhatsAppCallRequest) IdempotencyKey(idempotencyKey string) WhatsAppCallingAPIInitiateWhatsAppCallRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
