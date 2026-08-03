@@ -28,6 +28,8 @@ type SendInboxMessageRequest struct {
 	Message *string `json:"message,omitempty"`
 	// URL of the attachment to send (image, video, audio, or file). The URL must be publicly accessible. For binary file uploads, use multipart/form-data instead.
 	AttachmentUrl *string `json:"attachmentUrl,omitempty"`
+	// WhatsApp only (Meta Direct Send). Sends this message as a business-initiated UTILITY message without an approved template, for example outside the 24-hour customer service window; Meta matches or auto-creates a template asynchronously. The WhatsApp Business Account must be eligible for Direct Send, otherwise the send fails with an error telling you to use an approved message template instead. Supported only for text messages (link preview ok) and interactive messages (reply buttons, CTA URL buttons, voice-call button, header of text/image/video/document). Cannot be combined with template, attachments, location, or contacts. Utility messages only; marketing content is not allowed under this category. Accepted on the JSON body only, not on multipart requests.
+	Category *string `json:"category,omitempty"`
 	// Type of attachment. Defaults to file if not specified.
 	AttachmentType *string `json:"attachmentType,omitempty"`
 	// WhatsApp only. Display name for a document sent via attachmentUrl with attachmentType: file (e.g. \"Report.pdf\"). Maps to the recipient's file name; without it WhatsApp derives the name from the URL and shows \"Untitled\". Ignored for image/video/audio and for binary uploads (which use the uploaded file's name).
@@ -158,6 +160,38 @@ func (o *SendInboxMessageRequest) HasAttachmentUrl() bool {
 // SetAttachmentUrl gets a reference to the given string and assigns it to the AttachmentUrl field.
 func (o *SendInboxMessageRequest) SetAttachmentUrl(v string) {
 	o.AttachmentUrl = &v
+}
+
+// GetCategory returns the Category field value if set, zero value otherwise.
+func (o *SendInboxMessageRequest) GetCategory() string {
+	if o == nil || IsNil(o.Category) {
+		var ret string
+		return ret
+	}
+	return *o.Category
+}
+
+// GetCategoryOk returns a tuple with the Category field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequest) GetCategoryOk() (*string, bool) {
+	if o == nil || IsNil(o.Category) {
+		return nil, false
+	}
+	return o.Category, true
+}
+
+// HasCategory returns a boolean if a field has been set.
+func (o *SendInboxMessageRequest) HasCategory() bool {
+	if o != nil && !IsNil(o.Category) {
+		return true
+	}
+
+	return false
+}
+
+// SetCategory gets a reference to the given string and assigns it to the Category field.
+func (o *SendInboxMessageRequest) SetCategory(v string) {
+	o.Category = &v
 }
 
 // GetAttachmentType returns the AttachmentType field value if set, zero value otherwise.
@@ -592,6 +626,9 @@ func (o SendInboxMessageRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AttachmentUrl) {
 		toSerialize["attachmentUrl"] = o.AttachmentUrl
+	}
+	if !IsNil(o.Category) {
+		toSerialize["category"] = o.Category
 	}
 	if !IsNil(o.AttachmentType) {
 		toSerialize["attachmentType"] = o.AttachmentType

@@ -28,12 +28,14 @@ type CreateInboxConversationRequest struct {
 	ParticipantId *string `json:"participantId,omitempty"`
 	// Recipient handle/username — an X or Bluesky handle (with or without @) or a Reddit username (with or without u/). Resolved via lookup. Provide either this or participantId.
 	ParticipantUsername *string `json:"participantUsername,omitempty"`
-	// Text content of the message. At least one of message, attachment, or (for WhatsApp) templateName is required.
+	// Text content of the message. At least one of message, attachment, or (for WhatsApp) templateName is required. Required when category is set (a Direct Send utility message is a text message).
 	Message *string `json:"message,omitempty"`
 	// X/Twitter only. Skip the receives_your_dm eligibility check before sending. Use if you have already verified the recipient accepts DMs.
 	SkipDmCheck *bool `json:"skipDmCheck,omitempty"`
-	// WhatsApp only. Name of the approved template to start the conversation with (required for WhatsApp).
+	// WhatsApp only. Name of the approved template to start the conversation with. Required for WhatsApp unless category is used instead (Direct Send). Cannot be combined with category.
 	TemplateName *string `json:"templateName,omitempty"`
+	// WhatsApp only (Meta Direct Send). Combined with message and without templateName, starts the conversation with a business-initiated UTILITY message and no pre-approved template; Meta matches or auto-creates a template asynchronously. The WhatsApp Business Account must be eligible for Direct Send, otherwise the send fails with an error telling you to use an approved message template instead. Cannot be combined with templateName (templates are already categorized at creation). Utility messages only; marketing content is not allowed under this category. Accepted on the JSON body only, not on multipart requests.
+	Category *string `json:"category,omitempty"`
 	// WhatsApp only. Template language code (e.g. en_US).
 	TemplateLanguage *string `json:"templateLanguage,omitempty"`
 	// WhatsApp only. Template variable values as one flat array, in the order the variables appear across the whole template: text-header variables first, then body variables, then one value per dynamic URL button (in button order). Works with positional placeholders ({{1}}, {{2}}, ...) and with named placeholders ({{name}}, {{company}} - how Meta Business Manager creates templates), where values fill the named slots in order of appearance. Example - a body with {{1}}, {{2}} plus a URL button https://example.com/{{1}} takes three values: [body1, body2, buttonSuffix]. Media headers (image, video, document) are filled automatically from the approved template and take no value here (use headerMedia to override the header asset per send).
@@ -249,6 +251,38 @@ func (o *CreateInboxConversationRequest) SetTemplateName(v string) {
 	o.TemplateName = &v
 }
 
+// GetCategory returns the Category field value if set, zero value otherwise.
+func (o *CreateInboxConversationRequest) GetCategory() string {
+	if o == nil || IsNil(o.Category) {
+		var ret string
+		return ret
+	}
+	return *o.Category
+}
+
+// GetCategoryOk returns a tuple with the Category field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInboxConversationRequest) GetCategoryOk() (*string, bool) {
+	if o == nil || IsNil(o.Category) {
+		return nil, false
+	}
+	return o.Category, true
+}
+
+// HasCategory returns a boolean if a field has been set.
+func (o *CreateInboxConversationRequest) HasCategory() bool {
+	if o != nil && !IsNil(o.Category) {
+		return true
+	}
+
+	return false
+}
+
+// SetCategory gets a reference to the given string and assigns it to the Category field.
+func (o *CreateInboxConversationRequest) SetCategory(v string) {
+	o.Category = &v
+}
+
 // GetTemplateLanguage returns the TemplateLanguage field value if set, zero value otherwise.
 func (o *CreateInboxConversationRequest) GetTemplateLanguage() string {
 	if o == nil || IsNil(o.TemplateLanguage) {
@@ -370,6 +404,9 @@ func (o CreateInboxConversationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.TemplateName) {
 		toSerialize["templateName"] = o.TemplateName
+	}
+	if !IsNil(o.Category) {
+		toSerialize["category"] = o.Category
 	}
 	if !IsNil(o.TemplateLanguage) {
 		toSerialize["templateLanguage"] = o.TemplateLanguage
