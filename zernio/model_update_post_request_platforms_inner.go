@@ -29,7 +29,8 @@ type UpdatePostRequestPlatformsInner struct {
 	CustomContent *string     `json:"customContent,omitempty"`
 	CustomMedia   []MediaItem `json:"customMedia,omitempty"`
 	// Optional per-platform scheduled time override.
-	ScheduledFor         *time.Time             `json:"scheduledFor,omitempty"`
+	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
+	// A <platform>Settings namespace (e.g. facebookSettings, tiktokSettings) omitted from the request is preserved from the stored post. Sending the key replaces the whole namespace; it is not deep-merged.
 	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
 }
 
