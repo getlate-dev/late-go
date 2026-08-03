@@ -186,10 +186,10 @@ registration is needed; once created, pass it as `from` on
 Constraints: 3-11 characters (letters, digits, spaces; at least one
 letter). Sends cannot reach the US, Canada, or Puerto Rico, are
 text-only, and recipients cannot reply. Sender IDs that impersonate
-well-known brands or institutions are rejected, and an ID already
-registered by another workspace returns 409 (active sender IDs are
-globally unique, first-come-first-served). Creating the same sender ID
-again is a no-op (re-activates it after a delete).
+well-known brands or institutions are rejected. Names are not
+exclusive: the same sender ID can be registered by any number of
+workspaces. Creating the same sender ID again is a no-op
+(re-activates it after a delete).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return SMSAPICreateSmsSenderIdRequest
