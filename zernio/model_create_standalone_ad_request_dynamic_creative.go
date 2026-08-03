@@ -12,18 +12,18 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the CreateStandaloneAdRequestDynamicCreative type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreateStandaloneAdRequestDynamicCreative{}
 
-// CreateStandaloneAdRequestDynamicCreative Meta only. Dynamic Creative: supply a POOL of assets and Meta auto-combines and optimises them into the best-performing variations within a single ad (mapped to the creative's `asset_feed_spec`). When set, the top-level single-creative fields (`imageUrl`, `headline`, `body`, `linkUrl`, `callToAction`) are ignored. Mutually exclusive with the `creatives[]` multi-creative shape. Meta limits: ≤10 images, ≤5 bodies / titles / descriptions.
+// CreateStandaloneAdRequestDynamicCreative Meta only. Dynamic Creative: supply a POOL of assets and Meta auto-combines and optimises them into the best-performing variations within a single ad (mapped to the creative's `asset_feed_spec`). When set, the top-level single-creative fields (`imageUrl`, `headline`, `body`, `linkUrl`, `callToAction`) are ignored. Mutually exclusive with the `creatives[]` multi-creative shape. Exactly ONE of `imageUrls` / `videoUrls` is required (Meta allows one ad format per asset feed; sending both → 400). Meta limits: ≤10 images or ≤10 videos, ≤5 bodies / titles / descriptions.
 type CreateStandaloneAdRequestDynamicCreative struct {
-	// Pool of image URLs (1-10). Uploaded to the ad account and referenced by hash in the asset feed.
-	ImageUrls []string `json:"imageUrls"`
+	// Pool of image URLs (1-10). Uploaded to the ad account and referenced by hash in the asset feed. Mutually exclusive with `videoUrls`.
+	ImageUrls []string `json:"imageUrls,omitempty"`
+	// Pool of video URLs (1-10). Uploaded to the ad account and referenced by video id in the asset feed. No thumbnails are needed: Meta auto-generates a poster per video. Mutually exclusive with `imageUrls`; `adFormat` defaults to SINGLE_VIDEO.
+	VideoUrls []string `json:"videoUrls,omitempty"`
 	// Primary-text variations (the body copy).
 	Bodies []string `json:"bodies,omitempty"`
 	// Headline variations.
@@ -34,21 +34,16 @@ type CreateStandaloneAdRequestDynamicCreative struct {
 	LinkUrls []string `json:"linkUrls,omitempty"`
 	// CTA-button variations. Required.
 	CallToActionTypes []string `json:"callToActionTypes,omitempty"`
-	// Asset-feed ad format. Defaults to SINGLE_IMAGE.
+	// Asset-feed ad format. Must match the pool: SINGLE_IMAGE / CAROUSEL_IMAGE require `imageUrls`, SINGLE_VIDEO requires `videoUrls` (400 otherwise). Defaults to SINGLE_IMAGE with `imageUrls`, SINGLE_VIDEO with `videoUrls`.
 	AdFormat *string `json:"adFormat,omitempty"`
 }
-
-type _CreateStandaloneAdRequestDynamicCreative CreateStandaloneAdRequestDynamicCreative
 
 // NewCreateStandaloneAdRequestDynamicCreative instantiates a new CreateStandaloneAdRequestDynamicCreative object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateStandaloneAdRequestDynamicCreative(imageUrls []string) *CreateStandaloneAdRequestDynamicCreative {
+func NewCreateStandaloneAdRequestDynamicCreative() *CreateStandaloneAdRequestDynamicCreative {
 	this := CreateStandaloneAdRequestDynamicCreative{}
-	this.ImageUrls = imageUrls
-	var adFormat string = "SINGLE_IMAGE"
-	this.AdFormat = &adFormat
 	return &this
 }
 
@@ -57,33 +52,71 @@ func NewCreateStandaloneAdRequestDynamicCreative(imageUrls []string) *CreateStan
 // but it doesn't guarantee that properties required by API are set
 func NewCreateStandaloneAdRequestDynamicCreativeWithDefaults() *CreateStandaloneAdRequestDynamicCreative {
 	this := CreateStandaloneAdRequestDynamicCreative{}
-	var adFormat string = "SINGLE_IMAGE"
-	this.AdFormat = &adFormat
 	return &this
 }
 
-// GetImageUrls returns the ImageUrls field value
+// GetImageUrls returns the ImageUrls field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequestDynamicCreative) GetImageUrls() []string {
-	if o == nil {
+	if o == nil || IsNil(o.ImageUrls) {
 		var ret []string
 		return ret
 	}
-
 	return o.ImageUrls
 }
 
-// GetImageUrlsOk returns a tuple with the ImageUrls field value
+// GetImageUrlsOk returns a tuple with the ImageUrls field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CreateStandaloneAdRequestDynamicCreative) GetImageUrlsOk() ([]string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.ImageUrls) {
 		return nil, false
 	}
 	return o.ImageUrls, true
 }
 
-// SetImageUrls sets field value
+// HasImageUrls returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestDynamicCreative) HasImageUrls() bool {
+	if o != nil && !IsNil(o.ImageUrls) {
+		return true
+	}
+
+	return false
+}
+
+// SetImageUrls gets a reference to the given []string and assigns it to the ImageUrls field.
 func (o *CreateStandaloneAdRequestDynamicCreative) SetImageUrls(v []string) {
 	o.ImageUrls = v
+}
+
+// GetVideoUrls returns the VideoUrls field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequestDynamicCreative) GetVideoUrls() []string {
+	if o == nil || IsNil(o.VideoUrls) {
+		var ret []string
+		return ret
+	}
+	return o.VideoUrls
+}
+
+// GetVideoUrlsOk returns a tuple with the VideoUrls field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequestDynamicCreative) GetVideoUrlsOk() ([]string, bool) {
+	if o == nil || IsNil(o.VideoUrls) {
+		return nil, false
+	}
+	return o.VideoUrls, true
+}
+
+// HasVideoUrls returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestDynamicCreative) HasVideoUrls() bool {
+	if o != nil && !IsNil(o.VideoUrls) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoUrls gets a reference to the given []string and assigns it to the VideoUrls field.
+func (o *CreateStandaloneAdRequestDynamicCreative) SetVideoUrls(v []string) {
+	o.VideoUrls = v
 }
 
 // GetBodies returns the Bodies field value if set, zero value otherwise.
@@ -288,7 +321,12 @@ func (o CreateStandaloneAdRequestDynamicCreative) MarshalJSON() ([]byte, error) 
 
 func (o CreateStandaloneAdRequestDynamicCreative) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["imageUrls"] = o.ImageUrls
+	if !IsNil(o.ImageUrls) {
+		toSerialize["imageUrls"] = o.ImageUrls
+	}
+	if !IsNil(o.VideoUrls) {
+		toSerialize["videoUrls"] = o.VideoUrls
+	}
 	if !IsNil(o.Bodies) {
 		toSerialize["bodies"] = o.Bodies
 	}
@@ -308,43 +346,6 @@ func (o CreateStandaloneAdRequestDynamicCreative) ToMap() (map[string]interface{
 		toSerialize["adFormat"] = o.AdFormat
 	}
 	return toSerialize, nil
-}
-
-func (o *CreateStandaloneAdRequestDynamicCreative) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"imageUrls",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varCreateStandaloneAdRequestDynamicCreative := _CreateStandaloneAdRequestDynamicCreative{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCreateStandaloneAdRequestDynamicCreative)
-
-	if err != nil {
-		return err
-	}
-
-	*o = CreateStandaloneAdRequestDynamicCreative(varCreateStandaloneAdRequestDynamicCreative)
-
-	return err
 }
 
 type NullableCreateStandaloneAdRequestDynamicCreative struct {
