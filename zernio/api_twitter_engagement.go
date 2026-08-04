@@ -271,6 +271,157 @@ func (a *TwitterEngagementAPIService) FollowUserExecute(r TwitterEngagementAPIFo
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type TwitterEngagementAPIGetTweetRequest struct {
+	ctx        context.Context
+	ApiService *TwitterEngagementAPIService
+	accountId  *string
+	id         *string
+}
+
+// The social account ID whose X token is used for the lookup
+func (r TwitterEngagementAPIGetTweetRequest) AccountId(accountId string) TwitterEngagementAPIGetTweetRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Numeric tweet ID or a tweet URL (e.g. https://x.com/user/status/123...)
+func (r TwitterEngagementAPIGetTweetRequest) Id(id string) TwitterEngagementAPIGetTweetRequest {
+	r.id = &id
+	return r
+}
+
+func (r TwitterEngagementAPIGetTweetRequest) Execute() (*GetTweet200Response, *http.Response, error) {
+	return r.ApiService.GetTweetExecute(r)
+}
+
+/*
+GetTweet Look up a tweet
+
+Resolve a single tweet by ID or URL into its text, author and public metrics.
+
+Use this to render a post you are referencing, e.g. the tweet quoted by a quote-style post.
+Unlike `/v1/twitter/search` this is not limited to the last 7 days and works for any tweet
+visible to the connected account.
+
+Billed as an X posts read ($0.005). Repeat lookups of the same tweet within the same UTC day
+are charged once.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return TwitterEngagementAPIGetTweetRequest
+*/
+func (a *TwitterEngagementAPIService) GetTweet(ctx context.Context) TwitterEngagementAPIGetTweetRequest {
+	return TwitterEngagementAPIGetTweetRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetTweet200Response
+func (a *TwitterEngagementAPIService) GetTweetExecute(r TwitterEngagementAPIGetTweetRequest) (*GetTweet200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetTweet200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TwitterEngagementAPIService.GetTweet")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/twitter/tweet"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.id == nil {
+		return localVarReturnValue, nil, reportError("id is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "id", r.id, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type TwitterEngagementAPIRemoveBookmarkRequest struct {
 	ctx        context.Context
 	ApiService *TwitterEngagementAPIService
