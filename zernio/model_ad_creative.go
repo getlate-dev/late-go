@@ -21,7 +21,7 @@ var _ MappedNullable = &AdCreative{}
 // AdCreative Platform-specific creative data. Fields vary by platform.
 type AdCreative struct {
 	// Primary thumbnail/image URL
-	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
+	ThumbnailUrl NullableString `json:"thumbnailUrl,omitempty"`
 	// Alternative image URL
 	ImageUrl *string `json:"imageUrl,omitempty"`
 	// Meta video ID for VIDEO-type ads. Null for non-video ads. Callers that need an embeddable MP4 can call GET /{videoId}?fields=source with the page access token.
@@ -78,36 +78,47 @@ func NewAdCreativeWithDefaults() *AdCreative {
 	return &this
 }
 
-// GetThumbnailUrl returns the ThumbnailUrl field value if set, zero value otherwise.
+// GetThumbnailUrl returns the ThumbnailUrl field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AdCreative) GetThumbnailUrl() string {
-	if o == nil || IsNil(o.ThumbnailUrl) {
+	if o == nil || IsNil(o.ThumbnailUrl.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.ThumbnailUrl
+	return *o.ThumbnailUrl.Get()
 }
 
 // GetThumbnailUrlOk returns a tuple with the ThumbnailUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AdCreative) GetThumbnailUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.ThumbnailUrl) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ThumbnailUrl, true
+	return o.ThumbnailUrl.Get(), o.ThumbnailUrl.IsSet()
 }
 
 // HasThumbnailUrl returns a boolean if a field has been set.
 func (o *AdCreative) HasThumbnailUrl() bool {
-	if o != nil && !IsNil(o.ThumbnailUrl) {
+	if o != nil && o.ThumbnailUrl.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetThumbnailUrl gets a reference to the given string and assigns it to the ThumbnailUrl field.
+// SetThumbnailUrl gets a reference to the given NullableString and assigns it to the ThumbnailUrl field.
 func (o *AdCreative) SetThumbnailUrl(v string) {
-	o.ThumbnailUrl = &v
+	o.ThumbnailUrl.Set(&v)
+}
+
+// SetThumbnailUrlNil sets the value for ThumbnailUrl to be an explicit nil
+func (o *AdCreative) SetThumbnailUrlNil() {
+	o.ThumbnailUrl.Set(nil)
+}
+
+// UnsetThumbnailUrl ensures that no value is present for ThumbnailUrl, not even an explicit nil
+func (o *AdCreative) UnsetThumbnailUrl() {
+	o.ThumbnailUrl.Unset()
 }
 
 // GetImageUrl returns the ImageUrl field value if set, zero value otherwise.
@@ -859,8 +870,8 @@ func (o AdCreative) MarshalJSON() ([]byte, error) {
 
 func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.ThumbnailUrl) {
-		toSerialize["thumbnailUrl"] = o.ThumbnailUrl
+	if o.ThumbnailUrl.IsSet() {
+		toSerialize["thumbnailUrl"] = o.ThumbnailUrl.Get()
 	}
 	if !IsNil(o.ImageUrl) {
 		toSerialize["imageUrl"] = o.ImageUrl
