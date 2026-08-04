@@ -22,6 +22,8 @@ var _ MappedNullable = &WhatsAppHeaderComponentExample{}
 type WhatsAppHeaderComponentExample struct {
 	// Sample values for header text variables
 	HeaderText []string `json:"header_text,omitempty"`
+	// Sample values for NAMED header variables (templates using {{customer_name}}-style tokens with parameter_format: NAMED).
+	HeaderTextNamedParams []WhatsAppNamedParamExample `json:"header_text_named_params,omitempty"`
 	// When the header format is a media type (image, video, gif, document), provide a public URL here. Zernio will download and upload it to WhatsApp on your behalf, replacing it with the internal file handle before creating the template.
 	HeaderHandle []string `json:"header_handle,omitempty"`
 }
@@ -75,6 +77,38 @@ func (o *WhatsAppHeaderComponentExample) SetHeaderText(v []string) {
 	o.HeaderText = v
 }
 
+// GetHeaderTextNamedParams returns the HeaderTextNamedParams field value if set, zero value otherwise.
+func (o *WhatsAppHeaderComponentExample) GetHeaderTextNamedParams() []WhatsAppNamedParamExample {
+	if o == nil || IsNil(o.HeaderTextNamedParams) {
+		var ret []WhatsAppNamedParamExample
+		return ret
+	}
+	return o.HeaderTextNamedParams
+}
+
+// GetHeaderTextNamedParamsOk returns a tuple with the HeaderTextNamedParams field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WhatsAppHeaderComponentExample) GetHeaderTextNamedParamsOk() ([]WhatsAppNamedParamExample, bool) {
+	if o == nil || IsNil(o.HeaderTextNamedParams) {
+		return nil, false
+	}
+	return o.HeaderTextNamedParams, true
+}
+
+// HasHeaderTextNamedParams returns a boolean if a field has been set.
+func (o *WhatsAppHeaderComponentExample) HasHeaderTextNamedParams() bool {
+	if o != nil && !IsNil(o.HeaderTextNamedParams) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeaderTextNamedParams gets a reference to the given []WhatsAppNamedParamExample and assigns it to the HeaderTextNamedParams field.
+func (o *WhatsAppHeaderComponentExample) SetHeaderTextNamedParams(v []WhatsAppNamedParamExample) {
+	o.HeaderTextNamedParams = v
+}
+
 // GetHeaderHandle returns the HeaderHandle field value if set, zero value otherwise.
 func (o *WhatsAppHeaderComponentExample) GetHeaderHandle() []string {
 	if o == nil || IsNil(o.HeaderHandle) {
@@ -119,6 +153,9 @@ func (o WhatsAppHeaderComponentExample) ToMap() (map[string]interface{}, error) 
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.HeaderText) {
 		toSerialize["header_text"] = o.HeaderText
+	}
+	if !IsNil(o.HeaderTextNamedParams) {
+		toSerialize["header_text_named_params"] = o.HeaderTextNamedParams
 	}
 	if !IsNil(o.HeaderHandle) {
 		toSerialize["header_handle"] = o.HeaderHandle

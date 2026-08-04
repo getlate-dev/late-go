@@ -22,6 +22,8 @@ var _ MappedNullable = &WhatsAppBodyComponentExample{}
 type WhatsAppBodyComponentExample struct {
 	// Sample values for body variables (array of arrays)
 	BodyText [][]string `json:"body_text,omitempty"`
+	// Sample values for NAMED body variables (templates using {{customer_name}}-style tokens with parameter_format: NAMED).
+	BodyTextNamedParams []WhatsAppNamedParamExample `json:"body_text_named_params,omitempty"`
 }
 
 // NewWhatsAppBodyComponentExample instantiates a new WhatsAppBodyComponentExample object
@@ -73,6 +75,38 @@ func (o *WhatsAppBodyComponentExample) SetBodyText(v [][]string) {
 	o.BodyText = v
 }
 
+// GetBodyTextNamedParams returns the BodyTextNamedParams field value if set, zero value otherwise.
+func (o *WhatsAppBodyComponentExample) GetBodyTextNamedParams() []WhatsAppNamedParamExample {
+	if o == nil || IsNil(o.BodyTextNamedParams) {
+		var ret []WhatsAppNamedParamExample
+		return ret
+	}
+	return o.BodyTextNamedParams
+}
+
+// GetBodyTextNamedParamsOk returns a tuple with the BodyTextNamedParams field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WhatsAppBodyComponentExample) GetBodyTextNamedParamsOk() ([]WhatsAppNamedParamExample, bool) {
+	if o == nil || IsNil(o.BodyTextNamedParams) {
+		return nil, false
+	}
+	return o.BodyTextNamedParams, true
+}
+
+// HasBodyTextNamedParams returns a boolean if a field has been set.
+func (o *WhatsAppBodyComponentExample) HasBodyTextNamedParams() bool {
+	if o != nil && !IsNil(o.BodyTextNamedParams) {
+		return true
+	}
+
+	return false
+}
+
+// SetBodyTextNamedParams gets a reference to the given []WhatsAppNamedParamExample and assigns it to the BodyTextNamedParams field.
+func (o *WhatsAppBodyComponentExample) SetBodyTextNamedParams(v []WhatsAppNamedParamExample) {
+	o.BodyTextNamedParams = v
+}
+
 func (o WhatsAppBodyComponentExample) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -85,6 +119,9 @@ func (o WhatsAppBodyComponentExample) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.BodyText) {
 		toSerialize["body_text"] = o.BodyText
+	}
+	if !IsNil(o.BodyTextNamedParams) {
+		toSerialize["body_text_named_params"] = o.BodyTextNamedParams
 	}
 	return toSerialize, nil
 }

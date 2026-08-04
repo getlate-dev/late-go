@@ -30,6 +30,8 @@ type CreateWhatsAppTemplateRequest struct {
 	Category string `json:"category"`
 	// Template language code (e.g., en_US)
 	Language string `json:"language"`
+	// Variable style: POSITIONAL ({{1}}, the default) or NAMED ({{customer_name}}). Named templates provide examples via body_text_named_params / header_text_named_params. Inferred as NAMED when omitted but a named-params example is present.
+	ParameterFormat *string `json:"parameter_format,omitempty"`
 	// Template components (header, body, footer, buttons, carousel, limited_time_offer). Required for custom templates, omit when using library_template_name.
 	Components []WhatsAppTemplateComponent `json:"components,omitempty"`
 	// Name of a pre-built template from Meta's template library (e.g., \"appointment_reminder\", \"auto_pay_reminder_1\", \"address_update\"). When provided, the template is pre-approved by Meta with no review wait. Omit components when using this field.
@@ -157,6 +159,38 @@ func (o *CreateWhatsAppTemplateRequest) GetLanguageOk() (*string, bool) {
 // SetLanguage sets field value
 func (o *CreateWhatsAppTemplateRequest) SetLanguage(v string) {
 	o.Language = v
+}
+
+// GetParameterFormat returns the ParameterFormat field value if set, zero value otherwise.
+func (o *CreateWhatsAppTemplateRequest) GetParameterFormat() string {
+	if o == nil || IsNil(o.ParameterFormat) {
+		var ret string
+		return ret
+	}
+	return *o.ParameterFormat
+}
+
+// GetParameterFormatOk returns a tuple with the ParameterFormat field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateWhatsAppTemplateRequest) GetParameterFormatOk() (*string, bool) {
+	if o == nil || IsNil(o.ParameterFormat) {
+		return nil, false
+	}
+	return o.ParameterFormat, true
+}
+
+// HasParameterFormat returns a boolean if a field has been set.
+func (o *CreateWhatsAppTemplateRequest) HasParameterFormat() bool {
+	if o != nil && !IsNil(o.ParameterFormat) {
+		return true
+	}
+
+	return false
+}
+
+// SetParameterFormat gets a reference to the given string and assigns it to the ParameterFormat field.
+func (o *CreateWhatsAppTemplateRequest) SetParameterFormat(v string) {
+	o.ParameterFormat = &v
 }
 
 // GetComponents returns the Components field value if set, zero value otherwise.
@@ -301,6 +335,9 @@ func (o CreateWhatsAppTemplateRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["name"] = o.Name
 	toSerialize["category"] = o.Category
 	toSerialize["language"] = o.Language
+	if !IsNil(o.ParameterFormat) {
+		toSerialize["parameter_format"] = o.ParameterFormat
+	}
 	if !IsNil(o.Components) {
 		toSerialize["components"] = o.Components
 	}
