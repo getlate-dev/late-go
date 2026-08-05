@@ -62,6 +62,8 @@ type BoostPostRequest struct {
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
 	DsaPayor *string `json:"dsaPayor,omitempty"`
+	// Meta only. Explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. The value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name).
+	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 }
 
 type _BoostPostRequest BoostPostRequest
@@ -784,6 +786,38 @@ func (o *BoostPostRequest) SetDsaPayor(v string) {
 	o.DsaPayor = &v
 }
 
+// GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetOptimizationGoal() string {
+	if o == nil || IsNil(o.OptimizationGoal) {
+		var ret string
+		return ret
+	}
+	return *o.OptimizationGoal
+}
+
+// GetOptimizationGoalOk returns a tuple with the OptimizationGoal field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetOptimizationGoalOk() (*string, bool) {
+	if o == nil || IsNil(o.OptimizationGoal) {
+		return nil, false
+	}
+	return o.OptimizationGoal, true
+}
+
+// HasOptimizationGoal returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasOptimizationGoal() bool {
+	if o != nil && !IsNil(o.OptimizationGoal) {
+		return true
+	}
+
+	return false
+}
+
+// SetOptimizationGoal gets a reference to the given string and assigns it to the OptimizationGoal field.
+func (o *BoostPostRequest) SetOptimizationGoal(v string) {
+	o.OptimizationGoal = &v
+}
+
 func (o BoostPostRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -852,6 +886,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DsaPayor) {
 		toSerialize["dsaPayor"] = o.DsaPayor
+	}
+	if !IsNil(o.OptimizationGoal) {
+		toSerialize["optimizationGoal"] = o.OptimizationGoal
 	}
 	return toSerialize, nil
 }
