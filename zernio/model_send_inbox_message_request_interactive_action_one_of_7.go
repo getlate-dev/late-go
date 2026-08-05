@@ -20,10 +20,12 @@ import (
 // checks if the SendInboxMessageRequestInteractiveActionOneOf7 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &SendInboxMessageRequestInteractiveActionOneOf7{}
 
-// SendInboxMessageRequestInteractiveActionOneOf7 Catalog-message action. `type` on the parent must be `catalog_message`. May be omitted entirely; it is defaulted to `{ \"name\": \"catalog_message\" }`. Requires a Meta catalog connected to the WhatsApp Business Account in Commerce Manager.
+// SendInboxMessageRequestInteractiveActionOneOf7 Multi-product action. `type` on the parent must be `product_list`. Requires a Meta catalog connected to the WhatsApp Business Account in Commerce Manager.
 type SendInboxMessageRequestInteractiveActionOneOf7 struct {
-	Name       string                                                    `json:"name"`
-	Parameters *SendInboxMessageRequestInteractiveActionOneOf7Parameters `json:"parameters,omitempty"`
+	// Meta catalog ID connected to the WhatsApp Business Account.
+	CatalogId string `json:"catalog_id"`
+	// 1-10 sections. Total products across all sections cannot exceed 30.
+	Sections []SendInboxMessageRequestInteractiveActionOneOf7SectionsInner `json:"sections"`
 }
 
 type _SendInboxMessageRequestInteractiveActionOneOf7 SendInboxMessageRequestInteractiveActionOneOf7
@@ -32,9 +34,10 @@ type _SendInboxMessageRequestInteractiveActionOneOf7 SendInboxMessageRequestInte
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSendInboxMessageRequestInteractiveActionOneOf7(name string) *SendInboxMessageRequestInteractiveActionOneOf7 {
+func NewSendInboxMessageRequestInteractiveActionOneOf7(catalogId string, sections []SendInboxMessageRequestInteractiveActionOneOf7SectionsInner) *SendInboxMessageRequestInteractiveActionOneOf7 {
 	this := SendInboxMessageRequestInteractiveActionOneOf7{}
-	this.Name = name
+	this.CatalogId = catalogId
+	this.Sections = sections
 	return &this
 }
 
@@ -46,60 +49,52 @@ func NewSendInboxMessageRequestInteractiveActionOneOf7WithDefaults() *SendInboxM
 	return &this
 }
 
-// GetName returns the Name field value
-func (o *SendInboxMessageRequestInteractiveActionOneOf7) GetName() string {
+// GetCatalogId returns the CatalogId field value
+func (o *SendInboxMessageRequestInteractiveActionOneOf7) GetCatalogId() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Name
+	return o.CatalogId
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetCatalogIdOk returns a tuple with the CatalogId field value
 // and a boolean to check if the value has been set.
-func (o *SendInboxMessageRequestInteractiveActionOneOf7) GetNameOk() (*string, bool) {
+func (o *SendInboxMessageRequestInteractiveActionOneOf7) GetCatalogIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Name, true
+	return &o.CatalogId, true
 }
 
-// SetName sets field value
-func (o *SendInboxMessageRequestInteractiveActionOneOf7) SetName(v string) {
-	o.Name = v
+// SetCatalogId sets field value
+func (o *SendInboxMessageRequestInteractiveActionOneOf7) SetCatalogId(v string) {
+	o.CatalogId = v
 }
 
-// GetParameters returns the Parameters field value if set, zero value otherwise.
-func (o *SendInboxMessageRequestInteractiveActionOneOf7) GetParameters() SendInboxMessageRequestInteractiveActionOneOf7Parameters {
-	if o == nil || IsNil(o.Parameters) {
-		var ret SendInboxMessageRequestInteractiveActionOneOf7Parameters
+// GetSections returns the Sections field value
+func (o *SendInboxMessageRequestInteractiveActionOneOf7) GetSections() []SendInboxMessageRequestInteractiveActionOneOf7SectionsInner {
+	if o == nil {
+		var ret []SendInboxMessageRequestInteractiveActionOneOf7SectionsInner
 		return ret
 	}
-	return *o.Parameters
+
+	return o.Sections
 }
 
-// GetParametersOk returns a tuple with the Parameters field value if set, nil otherwise
+// GetSectionsOk returns a tuple with the Sections field value
 // and a boolean to check if the value has been set.
-func (o *SendInboxMessageRequestInteractiveActionOneOf7) GetParametersOk() (*SendInboxMessageRequestInteractiveActionOneOf7Parameters, bool) {
-	if o == nil || IsNil(o.Parameters) {
+func (o *SendInboxMessageRequestInteractiveActionOneOf7) GetSectionsOk() ([]SendInboxMessageRequestInteractiveActionOneOf7SectionsInner, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Parameters, true
+	return o.Sections, true
 }
 
-// HasParameters returns a boolean if a field has been set.
-func (o *SendInboxMessageRequestInteractiveActionOneOf7) HasParameters() bool {
-	if o != nil && !IsNil(o.Parameters) {
-		return true
-	}
-
-	return false
-}
-
-// SetParameters gets a reference to the given SendInboxMessageRequestInteractiveActionOneOf7Parameters and assigns it to the Parameters field.
-func (o *SendInboxMessageRequestInteractiveActionOneOf7) SetParameters(v SendInboxMessageRequestInteractiveActionOneOf7Parameters) {
-	o.Parameters = &v
+// SetSections sets field value
+func (o *SendInboxMessageRequestInteractiveActionOneOf7) SetSections(v []SendInboxMessageRequestInteractiveActionOneOf7SectionsInner) {
+	o.Sections = v
 }
 
 func (o SendInboxMessageRequestInteractiveActionOneOf7) MarshalJSON() ([]byte, error) {
@@ -112,10 +107,8 @@ func (o SendInboxMessageRequestInteractiveActionOneOf7) MarshalJSON() ([]byte, e
 
 func (o SendInboxMessageRequestInteractiveActionOneOf7) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["name"] = o.Name
-	if !IsNil(o.Parameters) {
-		toSerialize["parameters"] = o.Parameters
-	}
+	toSerialize["catalog_id"] = o.CatalogId
+	toSerialize["sections"] = o.Sections
 	return toSerialize, nil
 }
 
@@ -124,7 +117,8 @@ func (o *SendInboxMessageRequestInteractiveActionOneOf7) UnmarshalJSON(data []by
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"name",
+		"catalog_id",
+		"sections",
 	}
 
 	allProperties := make(map[string]interface{})

@@ -28,6 +28,7 @@ type SendInboxMessageRequestInteractiveAction struct {
 	SendInboxMessageRequestInteractiveActionOneOf6 *SendInboxMessageRequestInteractiveActionOneOf6
 	SendInboxMessageRequestInteractiveActionOneOf7 *SendInboxMessageRequestInteractiveActionOneOf7
 	SendInboxMessageRequestInteractiveActionOneOf8 *SendInboxMessageRequestInteractiveActionOneOf8
+	SendInboxMessageRequestInteractiveActionOneOf9 *SendInboxMessageRequestInteractiveActionOneOf9
 }
 
 // SendInboxMessageRequestInteractiveActionOneOfAsSendInboxMessageRequestInteractiveAction is a convenience function that returns SendInboxMessageRequestInteractiveActionOneOf wrapped in SendInboxMessageRequestInteractiveAction
@@ -90,6 +91,13 @@ func SendInboxMessageRequestInteractiveActionOneOf7AsSendInboxMessageRequestInte
 func SendInboxMessageRequestInteractiveActionOneOf8AsSendInboxMessageRequestInteractiveAction(v *SendInboxMessageRequestInteractiveActionOneOf8) SendInboxMessageRequestInteractiveAction {
 	return SendInboxMessageRequestInteractiveAction{
 		SendInboxMessageRequestInteractiveActionOneOf8: v,
+	}
+}
+
+// SendInboxMessageRequestInteractiveActionOneOf9AsSendInboxMessageRequestInteractiveAction is a convenience function that returns SendInboxMessageRequestInteractiveActionOneOf9 wrapped in SendInboxMessageRequestInteractiveAction
+func SendInboxMessageRequestInteractiveActionOneOf9AsSendInboxMessageRequestInteractiveAction(v *SendInboxMessageRequestInteractiveActionOneOf9) SendInboxMessageRequestInteractiveAction {
+	return SendInboxMessageRequestInteractiveAction{
+		SendInboxMessageRequestInteractiveActionOneOf9: v,
 	}
 }
 
@@ -250,6 +258,23 @@ func (dst *SendInboxMessageRequestInteractiveAction) UnmarshalJSON(data []byte) 
 		dst.SendInboxMessageRequestInteractiveActionOneOf8 = nil
 	}
 
+	// try to unmarshal data into SendInboxMessageRequestInteractiveActionOneOf9
+	err = newStrictDecoder(data).Decode(&dst.SendInboxMessageRequestInteractiveActionOneOf9)
+	if err == nil {
+		jsonSendInboxMessageRequestInteractiveActionOneOf9, _ := json.Marshal(dst.SendInboxMessageRequestInteractiveActionOneOf9)
+		if string(jsonSendInboxMessageRequestInteractiveActionOneOf9) == "{}" { // empty struct
+			dst.SendInboxMessageRequestInteractiveActionOneOf9 = nil
+		} else {
+			if err = validator.Validate(dst.SendInboxMessageRequestInteractiveActionOneOf9); err != nil {
+				dst.SendInboxMessageRequestInteractiveActionOneOf9 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.SendInboxMessageRequestInteractiveActionOneOf9 = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf = nil
@@ -261,6 +286,7 @@ func (dst *SendInboxMessageRequestInteractiveAction) UnmarshalJSON(data []byte) 
 		dst.SendInboxMessageRequestInteractiveActionOneOf6 = nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf7 = nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf8 = nil
+		dst.SendInboxMessageRequestInteractiveActionOneOf9 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(SendInboxMessageRequestInteractiveAction)")
 	} else if match == 1 {
@@ -308,6 +334,10 @@ func (src SendInboxMessageRequestInteractiveAction) MarshalJSON() ([]byte, error
 		return json.Marshal(&src.SendInboxMessageRequestInteractiveActionOneOf8)
 	}
 
+	if src.SendInboxMessageRequestInteractiveActionOneOf9 != nil {
+		return json.Marshal(&src.SendInboxMessageRequestInteractiveActionOneOf9)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -352,6 +382,10 @@ func (obj *SendInboxMessageRequestInteractiveAction) GetActualInstance() interfa
 		return obj.SendInboxMessageRequestInteractiveActionOneOf8
 	}
 
+	if obj.SendInboxMessageRequestInteractiveActionOneOf9 != nil {
+		return obj.SendInboxMessageRequestInteractiveActionOneOf9
+	}
+
 	// all schemas are nil
 	return nil
 }
@@ -392,6 +426,10 @@ func (obj SendInboxMessageRequestInteractiveAction) GetActualInstanceValue() int
 
 	if obj.SendInboxMessageRequestInteractiveActionOneOf8 != nil {
 		return *obj.SendInboxMessageRequestInteractiveActionOneOf8
+	}
+
+	if obj.SendInboxMessageRequestInteractiveActionOneOf9 != nil {
+		return *obj.SendInboxMessageRequestInteractiveActionOneOf9
 	}
 
 	// all schemas are nil

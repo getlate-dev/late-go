@@ -20,9 +20,10 @@ import (
 // checks if the SendInboxMessageRequestInteractiveActionOneOf8 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &SendInboxMessageRequestInteractiveActionOneOf8{}
 
-// SendInboxMessageRequestInteractiveActionOneOf8 Carousel action. `type` on the parent must be `carousel`. Carries 2-10 cards, either all product cards (`type: \"product\"`, all referencing the same `catalog_id`) or media cards (any other `type`, e.g. `cta_url`, with a required image/video `header` on each card). `card_index` (0-9, non-repeating) is auto-filled sequentially when omitted. Product carousels require a Meta catalog connected to the WhatsApp Business Account in Commerce Manager; media carousels do not.
+// SendInboxMessageRequestInteractiveActionOneOf8 Catalog-message action. `type` on the parent must be `catalog_message`. May be omitted entirely; it is defaulted to `{ \"name\": \"catalog_message\" }`. Requires a Meta catalog connected to the WhatsApp Business Account in Commerce Manager.
 type SendInboxMessageRequestInteractiveActionOneOf8 struct {
-	Cards []SendInboxMessageRequestInteractiveActionOneOf8CardsInner `json:"cards"`
+	Name       string                                                    `json:"name"`
+	Parameters *SendInboxMessageRequestInteractiveActionOneOf8Parameters `json:"parameters,omitempty"`
 }
 
 type _SendInboxMessageRequestInteractiveActionOneOf8 SendInboxMessageRequestInteractiveActionOneOf8
@@ -31,9 +32,9 @@ type _SendInboxMessageRequestInteractiveActionOneOf8 SendInboxMessageRequestInte
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSendInboxMessageRequestInteractiveActionOneOf8(cards []SendInboxMessageRequestInteractiveActionOneOf8CardsInner) *SendInboxMessageRequestInteractiveActionOneOf8 {
+func NewSendInboxMessageRequestInteractiveActionOneOf8(name string) *SendInboxMessageRequestInteractiveActionOneOf8 {
 	this := SendInboxMessageRequestInteractiveActionOneOf8{}
-	this.Cards = cards
+	this.Name = name
 	return &this
 }
 
@@ -45,28 +46,60 @@ func NewSendInboxMessageRequestInteractiveActionOneOf8WithDefaults() *SendInboxM
 	return &this
 }
 
-// GetCards returns the Cards field value
-func (o *SendInboxMessageRequestInteractiveActionOneOf8) GetCards() []SendInboxMessageRequestInteractiveActionOneOf8CardsInner {
+// GetName returns the Name field value
+func (o *SendInboxMessageRequestInteractiveActionOneOf8) GetName() string {
 	if o == nil {
-		var ret []SendInboxMessageRequestInteractiveActionOneOf8CardsInner
+		var ret string
 		return ret
 	}
 
-	return o.Cards
+	return o.Name
 }
 
-// GetCardsOk returns a tuple with the Cards field value
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
-func (o *SendInboxMessageRequestInteractiveActionOneOf8) GetCardsOk() ([]SendInboxMessageRequestInteractiveActionOneOf8CardsInner, bool) {
+func (o *SendInboxMessageRequestInteractiveActionOneOf8) GetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.Cards, true
+	return &o.Name, true
 }
 
-// SetCards sets field value
-func (o *SendInboxMessageRequestInteractiveActionOneOf8) SetCards(v []SendInboxMessageRequestInteractiveActionOneOf8CardsInner) {
-	o.Cards = v
+// SetName sets field value
+func (o *SendInboxMessageRequestInteractiveActionOneOf8) SetName(v string) {
+	o.Name = v
+}
+
+// GetParameters returns the Parameters field value if set, zero value otherwise.
+func (o *SendInboxMessageRequestInteractiveActionOneOf8) GetParameters() SendInboxMessageRequestInteractiveActionOneOf8Parameters {
+	if o == nil || IsNil(o.Parameters) {
+		var ret SendInboxMessageRequestInteractiveActionOneOf8Parameters
+		return ret
+	}
+	return *o.Parameters
+}
+
+// GetParametersOk returns a tuple with the Parameters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequestInteractiveActionOneOf8) GetParametersOk() (*SendInboxMessageRequestInteractiveActionOneOf8Parameters, bool) {
+	if o == nil || IsNil(o.Parameters) {
+		return nil, false
+	}
+	return o.Parameters, true
+}
+
+// HasParameters returns a boolean if a field has been set.
+func (o *SendInboxMessageRequestInteractiveActionOneOf8) HasParameters() bool {
+	if o != nil && !IsNil(o.Parameters) {
+		return true
+	}
+
+	return false
+}
+
+// SetParameters gets a reference to the given SendInboxMessageRequestInteractiveActionOneOf8Parameters and assigns it to the Parameters field.
+func (o *SendInboxMessageRequestInteractiveActionOneOf8) SetParameters(v SendInboxMessageRequestInteractiveActionOneOf8Parameters) {
+	o.Parameters = &v
 }
 
 func (o SendInboxMessageRequestInteractiveActionOneOf8) MarshalJSON() ([]byte, error) {
@@ -79,7 +112,10 @@ func (o SendInboxMessageRequestInteractiveActionOneOf8) MarshalJSON() ([]byte, e
 
 func (o SendInboxMessageRequestInteractiveActionOneOf8) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["cards"] = o.Cards
+	toSerialize["name"] = o.Name
+	if !IsNil(o.Parameters) {
+		toSerialize["parameters"] = o.Parameters
+	}
 	return toSerialize, nil
 }
 
@@ -88,7 +124,7 @@ func (o *SendInboxMessageRequestInteractiveActionOneOf8) UnmarshalJSON(data []by
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"cards",
+		"name",
 	}
 
 	allProperties := make(map[string]interface{})

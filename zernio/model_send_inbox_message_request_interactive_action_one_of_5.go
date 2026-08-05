@@ -20,12 +20,9 @@ import (
 // checks if the SendInboxMessageRequestInteractiveActionOneOf5 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &SendInboxMessageRequestInteractiveActionOneOf5{}
 
-// SendInboxMessageRequestInteractiveActionOneOf5 Single-product action. `type` on the parent must be `product`. Requires a Meta catalog connected to the WhatsApp Business Account in Commerce Manager.
+// SendInboxMessageRequestInteractiveActionOneOf5 Contact-info request action. `type` on the parent must be `request_contact_info`. May be omitted entirely; it is defaulted.
 type SendInboxMessageRequestInteractiveActionOneOf5 struct {
-	// Meta catalog ID connected to the WhatsApp Business Account.
-	CatalogId string `json:"catalog_id"`
-	// Retailer ID (SKU) of the product inside the catalog.
-	ProductRetailerId string `json:"product_retailer_id"`
+	Name string `json:"name"`
 }
 
 type _SendInboxMessageRequestInteractiveActionOneOf5 SendInboxMessageRequestInteractiveActionOneOf5
@@ -34,10 +31,9 @@ type _SendInboxMessageRequestInteractiveActionOneOf5 SendInboxMessageRequestInte
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSendInboxMessageRequestInteractiveActionOneOf5(catalogId string, productRetailerId string) *SendInboxMessageRequestInteractiveActionOneOf5 {
+func NewSendInboxMessageRequestInteractiveActionOneOf5(name string) *SendInboxMessageRequestInteractiveActionOneOf5 {
 	this := SendInboxMessageRequestInteractiveActionOneOf5{}
-	this.CatalogId = catalogId
-	this.ProductRetailerId = productRetailerId
+	this.Name = name
 	return &this
 }
 
@@ -49,52 +45,28 @@ func NewSendInboxMessageRequestInteractiveActionOneOf5WithDefaults() *SendInboxM
 	return &this
 }
 
-// GetCatalogId returns the CatalogId field value
-func (o *SendInboxMessageRequestInteractiveActionOneOf5) GetCatalogId() string {
+// GetName returns the Name field value
+func (o *SendInboxMessageRequestInteractiveActionOneOf5) GetName() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.CatalogId
+	return o.Name
 }
 
-// GetCatalogIdOk returns a tuple with the CatalogId field value
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
-func (o *SendInboxMessageRequestInteractiveActionOneOf5) GetCatalogIdOk() (*string, bool) {
+func (o *SendInboxMessageRequestInteractiveActionOneOf5) GetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.CatalogId, true
+	return &o.Name, true
 }
 
-// SetCatalogId sets field value
-func (o *SendInboxMessageRequestInteractiveActionOneOf5) SetCatalogId(v string) {
-	o.CatalogId = v
-}
-
-// GetProductRetailerId returns the ProductRetailerId field value
-func (o *SendInboxMessageRequestInteractiveActionOneOf5) GetProductRetailerId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.ProductRetailerId
-}
-
-// GetProductRetailerIdOk returns a tuple with the ProductRetailerId field value
-// and a boolean to check if the value has been set.
-func (o *SendInboxMessageRequestInteractiveActionOneOf5) GetProductRetailerIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.ProductRetailerId, true
-}
-
-// SetProductRetailerId sets field value
-func (o *SendInboxMessageRequestInteractiveActionOneOf5) SetProductRetailerId(v string) {
-	o.ProductRetailerId = v
+// SetName sets field value
+func (o *SendInboxMessageRequestInteractiveActionOneOf5) SetName(v string) {
+	o.Name = v
 }
 
 func (o SendInboxMessageRequestInteractiveActionOneOf5) MarshalJSON() ([]byte, error) {
@@ -107,8 +79,7 @@ func (o SendInboxMessageRequestInteractiveActionOneOf5) MarshalJSON() ([]byte, e
 
 func (o SendInboxMessageRequestInteractiveActionOneOf5) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["catalog_id"] = o.CatalogId
-	toSerialize["product_retailer_id"] = o.ProductRetailerId
+	toSerialize["name"] = o.Name
 	return toSerialize, nil
 }
 
@@ -117,8 +88,7 @@ func (o *SendInboxMessageRequestInteractiveActionOneOf5) UnmarshalJSON(data []by
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"catalog_id",
-		"product_retailer_id",
+		"name",
 	}
 
 	allProperties := make(map[string]interface{})
