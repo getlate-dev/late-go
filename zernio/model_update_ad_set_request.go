@@ -33,7 +33,11 @@ type UpdateAdSetRequest struct {
 	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. Internally converted to Meta's smallest-denomination integer, or (on OpenAI) to micros (× 1,000,000).
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Required when bidStrategy is LOWEST_COST_WITH_MIN_ROAS. Sent to Meta as `bid_constraints.roas_average_floor` × 10000. Not supported on OpenAI (422).
-	RoasAverageFloor     *float32                                `json:"roasAverageFloor,omitempty"`
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+	// Meta only (other platforms return 501). Value rule set to attach to this ad set, from `/v1/ads/value-rule-sets`. Sending a different id replaces the current association. To DETACH, send `valueRulesApplied: false` and omit this field.
+	ValueRuleSetId *string `json:"valueRuleSetId,omitempty" validate:"regexp=^\\\\d+$"`
+	// Meta only (other platforms return 501). `false` DETACHES the ad set's value rule set and must be sent WITHOUT `valueRuleSetId`; the combination returns 400. `true` is optional when attaching, since attachment is driven by `valueRuleSetId`, and requires it to be present.
+	ValueRulesApplied    *bool                                   `json:"valueRulesApplied,omitempty"`
 	PlatformSpecificData *UpdateAdSetRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
 }
 
@@ -273,6 +277,70 @@ func (o *UpdateAdSetRequest) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
 
+// GetValueRuleSetId returns the ValueRuleSetId field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetValueRuleSetId() string {
+	if o == nil || IsNil(o.ValueRuleSetId) {
+		var ret string
+		return ret
+	}
+	return *o.ValueRuleSetId
+}
+
+// GetValueRuleSetIdOk returns a tuple with the ValueRuleSetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetValueRuleSetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ValueRuleSetId) {
+		return nil, false
+	}
+	return o.ValueRuleSetId, true
+}
+
+// HasValueRuleSetId returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasValueRuleSetId() bool {
+	if o != nil && !IsNil(o.ValueRuleSetId) {
+		return true
+	}
+
+	return false
+}
+
+// SetValueRuleSetId gets a reference to the given string and assigns it to the ValueRuleSetId field.
+func (o *UpdateAdSetRequest) SetValueRuleSetId(v string) {
+	o.ValueRuleSetId = &v
+}
+
+// GetValueRulesApplied returns the ValueRulesApplied field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetValueRulesApplied() bool {
+	if o == nil || IsNil(o.ValueRulesApplied) {
+		var ret bool
+		return ret
+	}
+	return *o.ValueRulesApplied
+}
+
+// GetValueRulesAppliedOk returns a tuple with the ValueRulesApplied field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetValueRulesAppliedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ValueRulesApplied) {
+		return nil, false
+	}
+	return o.ValueRulesApplied, true
+}
+
+// HasValueRulesApplied returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasValueRulesApplied() bool {
+	if o != nil && !IsNil(o.ValueRulesApplied) {
+		return true
+	}
+
+	return false
+}
+
+// SetValueRulesApplied gets a reference to the given bool and assigns it to the ValueRulesApplied field.
+func (o *UpdateAdSetRequest) SetValueRulesApplied(v bool) {
+	o.ValueRulesApplied = &v
+}
+
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
 func (o *UpdateAdSetRequest) GetPlatformSpecificData() UpdateAdSetRequestPlatformSpecificData {
 	if o == nil || IsNil(o.PlatformSpecificData) {
@@ -333,6 +401,12 @@ func (o UpdateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RoasAverageFloor) {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
+	}
+	if !IsNil(o.ValueRuleSetId) {
+		toSerialize["valueRuleSetId"] = o.ValueRuleSetId
+	}
+	if !IsNil(o.ValueRulesApplied) {
+		toSerialize["valueRulesApplied"] = o.ValueRulesApplied
 	}
 	if !IsNil(o.PlatformSpecificData) {
 		toSerialize["platformSpecificData"] = o.PlatformSpecificData

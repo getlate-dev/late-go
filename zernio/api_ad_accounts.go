@@ -23,6 +23,286 @@ import (
 // AdAccountsAPIService AdAccountsAPI service
 type AdAccountsAPIService service
 
+type AdAccountsAPICreateValueRuleSetRequest struct {
+	ctx                       context.Context
+	ApiService                *AdAccountsAPIService
+	createValueRuleSetRequest *CreateValueRuleSetRequest
+}
+
+func (r AdAccountsAPICreateValueRuleSetRequest) CreateValueRuleSetRequest(createValueRuleSetRequest CreateValueRuleSetRequest) AdAccountsAPICreateValueRuleSetRequest {
+	r.createValueRuleSetRequest = &createValueRuleSetRequest
+	return r
+}
+
+func (r AdAccountsAPICreateValueRuleSetRequest) Execute() (*CreateValueRuleSet201Response, *http.Response, error) {
+	return r.ApiService.CreateValueRuleSetExecute(r)
+}
+
+/*
+CreateValueRuleSet Create a value rule set
+
+Creates a value rule set on the ad account (Meta's `POST /act_X/value_rule_set`).
+Attach the returned id to an ad set with `valueRuleSetId` on `POST /v1/ads/create` or
+`PUT /v1/ads/ad-sets/{adSetId}`.
+
+**Rule order is semantic**: rules are evaluated in array order and only the first
+matching rule adjusts the bid for an overlapping audience.
+
+`adjustValue` is an unsigned magnitude in percent; the direction lives in `adjustSign`.
+`INCREASE` accepts 1-1000, `DECREASE` accepts 1-90. There is no signed field and 0 is
+out of range.
+
+`criteriaValueTypes` is positionally paired with `criteriaValues` (same length, same
+order). Every type is the literal `"NONE"` except on `LOCATION`, which uses
+`LOCATION_COUNTRY` / `LOCATION_REGION` / `LOCATION_CITY` / `LOCATION_COMSCORE_MARKET`
+and may mix them within one criterion. Location values are Targeting-Search keys: a
+two-letter country code for `LOCATION_COUNTRY`, a numeric key for the rest.
+
+`LOCATION_DMA` was replaced by `LOCATION_COMSCORE_MARKET` on 2026-06-22 and rules using
+DMAs are no longer active, so this API rejects it.
+
+`AUDIENCE_LABEL` values (e.g. `HIGH_VALUE`) are applied to a Custom Audience in Ads
+Manager. There is no API to provision them, so label strings are passed through
+unvalidated and a typo produces a rule that never fires.
+
+Ads Manager turns a rule set read-only (this API stays editable) when a rule uses more
+than 2 criteria, a custom age range, or the placements `FB_MARKETPLACE`, `FB_SEARCH`,
+`FB_VIDEO` or `IG_EXPLORE`.
+
+Limits: 6 rule sets per ad account, 10 rules per set, 4 criteria per rule. The
+per-account cap is enforced by Meta, not here.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdAccountsAPICreateValueRuleSetRequest
+*/
+func (a *AdAccountsAPIService) CreateValueRuleSet(ctx context.Context) AdAccountsAPICreateValueRuleSetRequest {
+	return AdAccountsAPICreateValueRuleSetRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateValueRuleSet201Response
+func (a *AdAccountsAPIService) CreateValueRuleSetExecute(r AdAccountsAPICreateValueRuleSetRequest) (*CreateValueRuleSet201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateValueRuleSet201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.CreateValueRuleSet")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/value-rule-sets"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createValueRuleSetRequest == nil {
+		return localVarReturnValue, nil, reportError("createValueRuleSetRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createValueRuleSetRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAccountsAPIDeleteValueRuleSetRequest struct {
+	ctx            context.Context
+	ApiService     *AdAccountsAPIService
+	valueRuleSetId string
+	accountId      *string
+}
+
+// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+func (r AdAccountsAPIDeleteValueRuleSetRequest) AccountId(accountId string) AdAccountsAPIDeleteValueRuleSetRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r AdAccountsAPIDeleteValueRuleSetRequest) Execute() (*DeleteValueRuleSet200Response, *http.Response, error) {
+	return r.ApiService.DeleteValueRuleSetExecute(r)
+}
+
+/*
+DeleteValueRuleSet Delete a value rule set
+
+Deletes the rule set (Meta's `POST /{value-rule-set-id}/delete_rule_set`, a custom
+action edge rather than an HTTP DELETE on its side). Ad sets pointing at it are not
+modified here; detach them first with `valueRulesApplied: false` on
+`PUT /v1/ads/ad-sets/{adSetId}`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param valueRuleSetId Platform value rule set id.
+	@return AdAccountsAPIDeleteValueRuleSetRequest
+*/
+func (a *AdAccountsAPIService) DeleteValueRuleSet(ctx context.Context, valueRuleSetId string) AdAccountsAPIDeleteValueRuleSetRequest {
+	return AdAccountsAPIDeleteValueRuleSetRequest{
+		ApiService:     a,
+		ctx:            ctx,
+		valueRuleSetId: valueRuleSetId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return DeleteValueRuleSet200Response
+func (a *AdAccountsAPIService) DeleteValueRuleSetExecute(r AdAccountsAPIDeleteValueRuleSetRequest) (*DeleteValueRuleSet200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeleteValueRuleSet200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.DeleteValueRuleSet")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/value-rule-sets/{valueRuleSetId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"valueRuleSetId"+"}", url.PathEscape(parameterValueToString(r.valueRuleSetId, "valueRuleSetId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdAccountsAPIGetAdAccountFinanceRequest struct {
 	ctx         context.Context
 	ApiService  *AdAccountsAPIService
@@ -744,6 +1024,138 @@ func (a *AdAccountsAPIService) GetDsaRecommendationsExecute(r AdAccountsAPIGetDs
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAccountsAPIGetValueRuleSetRequest struct {
+	ctx            context.Context
+	ApiService     *AdAccountsAPIService
+	valueRuleSetId string
+	accountId      *string
+}
+
+// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+func (r AdAccountsAPIGetValueRuleSetRequest) AccountId(accountId string) AdAccountsAPIGetValueRuleSetRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r AdAccountsAPIGetValueRuleSetRequest) Execute() (*GetValueRuleSet200Response, *http.Response, error) {
+	return r.ApiService.GetValueRuleSetExecute(r)
+}
+
+/*
+GetValueRuleSet Read a value rule set
+
+Reads one value rule set including every nested rule id and criterion id. This is step
+one of any edit: `PUT` is a full replace, so you need the ids before you can keep the
+objects you are not changing.
+
+Meta's own read returns `GENDER` values lowercase (`"male"`) while writes require
+`"MALE"`. Values are passed through untouched, so never case-compare a stored rule
+against a fetched one.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param valueRuleSetId Platform value rule set id.
+	@return AdAccountsAPIGetValueRuleSetRequest
+*/
+func (a *AdAccountsAPIService) GetValueRuleSet(ctx context.Context, valueRuleSetId string) AdAccountsAPIGetValueRuleSetRequest {
+	return AdAccountsAPIGetValueRuleSetRequest{
+		ApiService:     a,
+		ctx:            ctx,
+		valueRuleSetId: valueRuleSetId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetValueRuleSet200Response
+func (a *AdAccountsAPIService) GetValueRuleSetExecute(r AdAccountsAPIGetValueRuleSetRequest) (*GetValueRuleSet200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetValueRuleSet200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.GetValueRuleSet")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/value-rule-sets/{valueRuleSetId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"valueRuleSetId"+"}", url.PathEscape(parameterValueToString(r.valueRuleSetId, "valueRuleSetId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1753,6 +2165,179 @@ func (a *AdAccountsAPIService) ListMetaBusinessesExecute(r AdAccountsAPIListMeta
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdAccountsAPIListValueRuleSetsRequest struct {
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	adAccountId *string
+	limit       *int32
+	after       *string
+}
+
+// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+func (r AdAccountsAPIListValueRuleSetsRequest) AccountId(accountId string) AdAccountsAPIListValueRuleSetsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account id (act_&lt;n&gt;).
+func (r AdAccountsAPIListValueRuleSetsRequest) AdAccountId(adAccountId string) AdAccountsAPIListValueRuleSetsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Rows per page
+func (r AdAccountsAPIListValueRuleSetsRequest) Limit(limit int32) AdAccountsAPIListValueRuleSetsRequest {
+	r.limit = &limit
+	return r
+}
+
+// Cursor from paging.after of the previous page. Meta does not document paging on this edge; &#x60;after&#x60; comes back null when it omits cursors.
+func (r AdAccountsAPIListValueRuleSetsRequest) After(after string) AdAccountsAPIListValueRuleSetsRequest {
+	r.after = &after
+	return r
+}
+
+func (r AdAccountsAPIListValueRuleSetsRequest) Execute() (*ListValueRuleSets200Response, *http.Response, error) {
+	return r.ApiService.ListValueRuleSetsExecute(r)
+}
+
+/*
+ListValueRuleSets List value rule sets
+
+Lists the ad account's value rule sets (Meta's `/act_X/value_rule_set`). A value rule
+set adjusts the auction bid up or down for audience segments you value differently;
+attach one to an ad set with `valueRuleSetId` on `POST /v1/ads/create` or
+`PUT /v1/ads/ad-sets/{adSetId}`.
+
+Rows are returned in the same camelCase shape the `PUT` body takes, ids included, so a
+set round-trips 1:1: **the update is a full replace, not a patch**, so you GET, mutate
+and send the whole thing back.
+
+Limits: 6 rule sets per ad account, 10 rules per set, 4 criteria per rule.
+
+**Rule order is semantic.** Rules are evaluated in array order and only the FIRST
+matching rule adjusts the bid for an overlapping audience. The order you send is the
+order that is stored and returned.
+
+Eligibility: value rule sets apply only to ad sets on the `LOWEST_COST_WITHOUT_CAP`
+(auto-bid) or `COST_CAP` bid strategies. Meta rejects the rest server-side.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdAccountsAPIListValueRuleSetsRequest
+*/
+func (a *AdAccountsAPIService) ListValueRuleSets(ctx context.Context) AdAccountsAPIListValueRuleSetsRequest {
+	return AdAccountsAPIListValueRuleSetsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListValueRuleSets200Response
+func (a *AdAccountsAPIService) ListValueRuleSetsExecute(r AdAccountsAPIListValueRuleSetsRequest) (*ListValueRuleSets200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListValueRuleSets200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.ListValueRuleSets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/value-rule-sets"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 25
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.after != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "after", r.after, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdAccountsAPIUpdateAdAccountRequest struct {
 	ctx                    context.Context
 	ApiService             *AdAccountsAPIService
@@ -1842,6 +2427,147 @@ func (a *AdAccountsAPIService) UpdateAdAccountExecute(r AdAccountsAPIUpdateAdAcc
 	}
 	// body params
 	localVarPostBody = r.updateAdAccountRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAccountsAPIUpdateValueRuleSetRequest struct {
+	ctx                       context.Context
+	ApiService                *AdAccountsAPIService
+	valueRuleSetId            string
+	updateValueRuleSetRequest *UpdateValueRuleSetRequest
+}
+
+func (r AdAccountsAPIUpdateValueRuleSetRequest) UpdateValueRuleSetRequest(updateValueRuleSetRequest UpdateValueRuleSetRequest) AdAccountsAPIUpdateValueRuleSetRequest {
+	r.updateValueRuleSetRequest = &updateValueRuleSetRequest
+	return r
+}
+
+func (r AdAccountsAPIUpdateValueRuleSetRequest) Execute() (*UpdateValueRuleSet200Response, *http.Response, error) {
+	return r.ApiService.UpdateValueRuleSetExecute(r)
+}
+
+/*
+UpdateValueRuleSet Replace a value rule set
+
+**THIS IS A FULL REPLACE, NOT A PATCH.** Meta's update is declarative: the body you
+send becomes the rule set.
+
+- `GET /v1/ads/value-rule-sets/{valueRuleSetId}` FIRST.
+- Keep a rule or criterion by echoing its `id`.
+- Create one by including the object WITHOUT an `id`.
+- Delete one by OMITTING it from the array. There is no warning and no undo.
+
+`name` and `rules` are both required for exactly this reason: a partial body would
+silently destroy every rule left out.
+
+**Rule order is semantic**: the array order you send is the evaluation order, and only
+the first matching rule adjusts the bid for an overlapping audience.
+
+Existing rule sets created elsewhere may contain `LOCATION_DMA` criteria. Those went
+inert on 2026-06-22 and are rejected here; migrate them to `LOCATION_COMSCORE_MARKET`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param valueRuleSetId Platform value rule set id.
+	@return AdAccountsAPIUpdateValueRuleSetRequest
+*/
+func (a *AdAccountsAPIService) UpdateValueRuleSet(ctx context.Context, valueRuleSetId string) AdAccountsAPIUpdateValueRuleSetRequest {
+	return AdAccountsAPIUpdateValueRuleSetRequest{
+		ApiService:     a,
+		ctx:            ctx,
+		valueRuleSetId: valueRuleSetId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateValueRuleSet200Response
+func (a *AdAccountsAPIService) UpdateValueRuleSetExecute(r AdAccountsAPIUpdateValueRuleSetRequest) (*UpdateValueRuleSet200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateValueRuleSet200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.UpdateValueRuleSet")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/value-rule-sets/{valueRuleSetId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"valueRuleSetId"+"}", url.PathEscape(parameterValueToString(r.valueRuleSetId, "valueRuleSetId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateValueRuleSetRequest == nil {
+		return localVarReturnValue, nil, reportError("updateValueRuleSetRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateValueRuleSetRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

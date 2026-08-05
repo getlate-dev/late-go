@@ -3226,9 +3226,25 @@ func (r AdCampaignsAPIUpdateAdSetRequest) Execute() (*UpdateAdSet200Response, *h
 UpdateAdSet Update an ad set
 
 Ad-set-level writes. Use this for ABO budget updates, ad-set-scoped
-pause/resume, bid-strategy edits, and Meta-only post-launch delivery
-settings via `platformSpecificData`. At least one updatable field
-is required.
+pause/resume, bid-strategy edits, Meta value-rule-set attach/detach, and
+Meta-only post-launch delivery settings via `platformSpecificData`. At
+least one updatable field is required.
+
+Value rule sets (Meta only, see `/v1/ads/value-rule-sets`):
+  - ATTACH or REPLACE: send `valueRuleSetId`. Attachment is driven by the id's
+    presence, so `valueRulesApplied: true` is optional. Sending a different id
+    replaces the previous association; there is no separate replace call.
+  - DETACH: send `valueRulesApplied: false` and OMIT `valueRuleSetId`.
+  - Sending `valueRulesApplied: false` TOGETHER with `valueRuleSetId` returns 400
+    `mutually_exclusive_fields`. This is deliberate: Meta attaches the rule set
+    whenever `value_rule_set_id` is present, even with `value_rules_applied` false,
+    so echoing stored state while asking to detach would silently keep the bid
+    adjustments live.
+  - Eligibility: only ad sets on `LOWEST_COST_WITHOUT_CAP` or `COST_CAP`. Meta
+    rejects the rest server-side.
+  - Read back with `GET /v1/ads/ad-sets/{adSetId}?fields=value_rule_set_id`. Meta
+    does not document `value_rules_applied` as a readable ad-set field, so the
+    boolean cannot be read back.
 
 Bid strategy compatibility (per Meta's spec):
 - `LOWEST_COST_WITHOUT_CAP`: no `bidAmount`, no `roasAverageFloor`.

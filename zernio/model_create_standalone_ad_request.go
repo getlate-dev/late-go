@@ -157,6 +157,10 @@ type CreateStandaloneAdRequest struct {
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as `bid_constraints.roas_average_floor` × 10000.
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+	// Meta only (facebook, instagram; other platforms return 400). Value rule set to attach to the new ad set, from `/v1/ads/value-rule-sets`. Attachment is driven by this id, so `valueRulesApplied` is optional alongside it.  Rejected with 400 in `adSetId` attach mode: that shape inherits the existing ad set's attachment, so the field would be silently ignored. Use `PUT /v1/ads/ad-sets/{adSetId}` there instead.  Ignored (stripped before the ad-set create) when `buyingType` is `RESERVED`: value rules only apply to auction ad sets on `LOWEST_COST_WITHOUT_CAP` or `COST_CAP`, and a Reach & Frequency reservation has no auction bid strategy.  Read back with `GET /v1/ads/ad-sets/{adSetId}?fields=value_rule_set_id`; the attachment is not mirrored onto Zernio's ad documents.
+	ValueRuleSetId *string `json:"valueRuleSetId,omitempty" validate:"regexp=^\\\\d+$"`
+	// Meta only (facebook, instagram; other platforms return 400). Optional when attaching, and requires `valueRuleSetId`. `false` is REJECTED here with 400: a newly created ad set has nothing to detach, so detaching lives on `PUT /v1/ads/ad-sets/{adSetId}`.
+	ValueRulesApplied *bool `json:"valueRulesApplied,omitempty"`
 	// Platform-specific options. The platform is derived from `accountId`; sending options for a different platform returns a 400. LinkedIn (campaign bidding and delivery controls) is the only platform with options today.
 	PlatformSpecificData *LinkedInAdsPlatformData `json:"platformSpecificData,omitempty"`
 	// Legal entity that benefits from the ad. Required when targeting EU users (EU DSA, Article 26). Optional if the ad account has a default beneficiary: set it once via `PATCH /v1/ads/accounts` or in Meta Ads Manager, and Meta fills it in whenever the field is omitted.
@@ -2515,6 +2519,70 @@ func (o *CreateStandaloneAdRequest) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
 
+// GetValueRuleSetId returns the ValueRuleSetId field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetValueRuleSetId() string {
+	if o == nil || IsNil(o.ValueRuleSetId) {
+		var ret string
+		return ret
+	}
+	return *o.ValueRuleSetId
+}
+
+// GetValueRuleSetIdOk returns a tuple with the ValueRuleSetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetValueRuleSetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ValueRuleSetId) {
+		return nil, false
+	}
+	return o.ValueRuleSetId, true
+}
+
+// HasValueRuleSetId returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasValueRuleSetId() bool {
+	if o != nil && !IsNil(o.ValueRuleSetId) {
+		return true
+	}
+
+	return false
+}
+
+// SetValueRuleSetId gets a reference to the given string and assigns it to the ValueRuleSetId field.
+func (o *CreateStandaloneAdRequest) SetValueRuleSetId(v string) {
+	o.ValueRuleSetId = &v
+}
+
+// GetValueRulesApplied returns the ValueRulesApplied field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetValueRulesApplied() bool {
+	if o == nil || IsNil(o.ValueRulesApplied) {
+		var ret bool
+		return ret
+	}
+	return *o.ValueRulesApplied
+}
+
+// GetValueRulesAppliedOk returns a tuple with the ValueRulesApplied field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetValueRulesAppliedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ValueRulesApplied) {
+		return nil, false
+	}
+	return o.ValueRulesApplied, true
+}
+
+// HasValueRulesApplied returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasValueRulesApplied() bool {
+	if o != nil && !IsNil(o.ValueRulesApplied) {
+		return true
+	}
+
+	return false
+}
+
+// SetValueRulesApplied gets a reference to the given bool and assigns it to the ValueRulesApplied field.
+func (o *CreateStandaloneAdRequest) SetValueRulesApplied(v bool) {
+	o.ValueRulesApplied = &v
+}
+
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetPlatformSpecificData() LinkedInAdsPlatformData {
 	if o == nil || IsNil(o.PlatformSpecificData) {
@@ -2929,6 +2997,12 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RoasAverageFloor) {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
+	}
+	if !IsNil(o.ValueRuleSetId) {
+		toSerialize["valueRuleSetId"] = o.ValueRuleSetId
+	}
+	if !IsNil(o.ValueRulesApplied) {
+		toSerialize["valueRulesApplied"] = o.ValueRulesApplied
 	}
 	if !IsNil(o.PlatformSpecificData) {
 		toSerialize["platformSpecificData"] = o.PlatformSpecificData
