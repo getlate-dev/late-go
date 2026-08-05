@@ -908,6 +908,7 @@ func (r PostsAPIListPostsRequest) Platform(platform string) PostsAPIListPostsReq
 	return r
 }
 
+// Filter posts to a specific profile (24-char hex ObjectId). Omit it, or send &#x60;all&#x60; or an empty value, to list posts across every profile.
 func (r PostsAPIListPostsRequest) ProfileId(profileId string) PostsAPIListPostsRequest {
 	r.profileId = &profileId
 	return r
