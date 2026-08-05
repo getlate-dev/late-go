@@ -1424,6 +1424,7 @@ model_value_rule.go
 model_value_rule_criterion.go
 model_value_rule_set.go
 model_verification.go
+model_verify_credential_200_response.go
 model_verify_sms_registration_otp_200_response.go
 model_verify_sms_registration_otp_request.go
 model_verify_whats_app_caller_id_request.go
