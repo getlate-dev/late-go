@@ -1496,6 +1496,9 @@ To promote a draft to scheduled, send `isDraft: false` together with `scheduledF
 or `queuedFromProfile`). If `isDraft` is omitted the post keeps its current draft status, so sending only
 `scheduledFor` to a draft returns 200 but the post remains a draft.
 
+Non-draft updates run the same per-platform validation as post creation (media requirements, platform-specific
+field rules, etc.) against the resulting platforms, returning 400 on failure.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
 	@return PostsAPIUpdatePostRequest

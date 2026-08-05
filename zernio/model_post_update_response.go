@@ -20,8 +20,9 @@ var _ MappedNullable = &PostUpdateResponse{}
 
 // PostUpdateResponse struct for PostUpdateResponse
 type PostUpdateResponse struct {
-	Message *string `json:"message,omitempty"`
-	Post    *Post   `json:"post,omitempty"`
+	Message  *string  `json:"message,omitempty"`
+	Post     *Post    `json:"post,omitempty"`
+	Warnings []string `json:"warnings,omitempty"`
 }
 
 // NewPostUpdateResponse instantiates a new PostUpdateResponse object
@@ -105,6 +106,38 @@ func (o *PostUpdateResponse) SetPost(v Post) {
 	o.Post = &v
 }
 
+// GetWarnings returns the Warnings field value if set, zero value otherwise.
+func (o *PostUpdateResponse) GetWarnings() []string {
+	if o == nil || IsNil(o.Warnings) {
+		var ret []string
+		return ret
+	}
+	return o.Warnings
+}
+
+// GetWarningsOk returns a tuple with the Warnings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostUpdateResponse) GetWarningsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Warnings) {
+		return nil, false
+	}
+	return o.Warnings, true
+}
+
+// HasWarnings returns a boolean if a field has been set.
+func (o *PostUpdateResponse) HasWarnings() bool {
+	if o != nil && !IsNil(o.Warnings) {
+		return true
+	}
+
+	return false
+}
+
+// SetWarnings gets a reference to the given []string and assigns it to the Warnings field.
+func (o *PostUpdateResponse) SetWarnings(v []string) {
+	o.Warnings = v
+}
+
 func (o PostUpdateResponse) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +153,9 @@ func (o PostUpdateResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Post) {
 		toSerialize["post"] = o.Post
+	}
+	if !IsNil(o.Warnings) {
+		toSerialize["warnings"] = o.Warnings
 	}
 	return toSerialize, nil
 }
