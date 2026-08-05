@@ -145,6 +145,8 @@ type APIClient struct {
 
 	SequencesAPI *SequencesAPIService
 
+	SlackAPI *SlackAPIService
+
 	TrackingTagsAPI *TrackingTagsAPIService
 
 	TwitterEngagementAPI *TwitterEngagementAPIService
@@ -240,6 +242,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.ReviewsAPI = (*ReviewsAPIService)(&c.common)
 	c.SMSAPI = (*SMSAPIService)(&c.common)
 	c.SequencesAPI = (*SequencesAPIService)(&c.common)
+	c.SlackAPI = (*SlackAPIService)(&c.common)
 	c.TrackingTagsAPI = (*TrackingTagsAPIService)(&c.common)
 	c.TwitterEngagementAPI = (*TwitterEngagementAPIService)(&c.common)
 	c.UsageAPI = (*UsageAPIService)(&c.common)

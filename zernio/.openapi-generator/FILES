@@ -47,6 +47,7 @@ api_reach_and_frequency.go
 api_reddit_search.go
 api_reviews.go
 api_sequences.go
+api_slack.go
 api_sms.go
 api_tracking_tags.go
 api_twitter_engagement.go
@@ -910,6 +911,8 @@ model_list_sequence_enrollments_200_response.go
 model_list_sequence_enrollments_200_response_enrollments_inner.go
 model_list_sequences_200_response.go
 model_list_sequences_200_response_sequences_inner.go
+model_list_slack_members_200_response.go
+model_list_slack_members_200_response_members_inner.go
 model_list_sms_opt_outs_200_response.go
 model_list_sms_opt_outs_200_response_opt_outs_inner.go
 model_list_sms_registrations_200_response.go
