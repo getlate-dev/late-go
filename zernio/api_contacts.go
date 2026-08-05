@@ -633,6 +633,7 @@ type ContactsAPIListContactsRequest struct {
 	ctx          context.Context
 	ApiService   *ContactsAPIService
 	profileId    *string
+	accountId    *string
 	search       *string
 	tag          *string
 	tags         *string
@@ -642,9 +643,15 @@ type ContactsAPIListContactsRequest struct {
 	skip         *int32
 }
 
-// Filter by profile. Omit to list across all profiles
+// Filter by profile. Omit to list across all profiles. Matches the profile recorded on the contact itself, which is set when the contact is created and is independent of the profile its account currently belongs to. Filter by accountId to list a contact through its channel instead.
 func (r ContactsAPIListContactsRequest) ProfileId(profileId string) ContactsAPIListContactsRequest {
 	r.profileId = &profileId
+	return r
+}
+
+// Filter by the SocialAccount that owns the contact channel. Contacts are resolved through their channels, so the profileId contact filter is not applied while accountId is set. A profileId sent alongside is still access-checked and still scopes the returned filters.tags list.
+func (r ContactsAPIListContactsRequest) AccountId(accountId string) ContactsAPIListContactsRequest {
+	r.accountId = &accountId
 	return r
 }
 
@@ -727,6 +734,9 @@ func (a *ContactsAPIService) ListContactsExecute(r ContactsAPIListContactsReques
 
 	if r.profileId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	}
 	if r.search != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "search", r.search, "form", "")
