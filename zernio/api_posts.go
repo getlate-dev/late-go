@@ -920,11 +920,13 @@ func (r PostsAPIListPostsRequest) CreatedBy(createdBy string) PostsAPIListPostsR
 	return r
 }
 
+// Zero-padded YYYY-MM-DD, or a full ISO 8601 datetime. An empty value means no date filter; any other malformed value returns 400.
 func (r PostsAPIListPostsRequest) DateFrom(dateFrom string) PostsAPIListPostsRequest {
 	r.dateFrom = &dateFrom
 	return r
 }
 
+// Zero-padded YYYY-MM-DD, or a full ISO 8601 datetime. An empty value means no date filter; any other malformed value returns 400.
 func (r PostsAPIListPostsRequest) DateTo(dateTo string) PostsAPIListPostsRequest {
 	r.dateTo = &dateTo
 	return r
