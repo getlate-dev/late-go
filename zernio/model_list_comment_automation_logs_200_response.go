@@ -20,9 +20,10 @@ var _ MappedNullable = &ListCommentAutomationLogs200Response{}
 
 // ListCommentAutomationLogs200Response struct for ListCommentAutomationLogs200Response
 type ListCommentAutomationLogs200Response struct {
-	Success    *bool                                      `json:"success,omitempty"`
-	Logs       []GetCommentAutomation200ResponseLogsInner `json:"logs,omitempty"`
-	Pagination *ListContacts200ResponsePagination         `json:"pagination,omitempty"`
+	Success    *bool                                       `json:"success,omitempty"`
+	Logs       []GetCommentAutomation200ResponseLogsInner  `json:"logs,omitempty"`
+	Pagination *ListContacts200ResponsePagination          `json:"pagination,omitempty"`
+	Misses     *ListCommentAutomationLogs200ResponseMisses `json:"misses,omitempty"`
 }
 
 // NewListCommentAutomationLogs200Response instantiates a new ListCommentAutomationLogs200Response object
@@ -138,6 +139,38 @@ func (o *ListCommentAutomationLogs200Response) SetPagination(v ListContacts200Re
 	o.Pagination = &v
 }
 
+// GetMisses returns the Misses field value if set, zero value otherwise.
+func (o *ListCommentAutomationLogs200Response) GetMisses() ListCommentAutomationLogs200ResponseMisses {
+	if o == nil || IsNil(o.Misses) {
+		var ret ListCommentAutomationLogs200ResponseMisses
+		return ret
+	}
+	return *o.Misses
+}
+
+// GetMissesOk returns a tuple with the Misses field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomationLogs200Response) GetMissesOk() (*ListCommentAutomationLogs200ResponseMisses, bool) {
+	if o == nil || IsNil(o.Misses) {
+		return nil, false
+	}
+	return o.Misses, true
+}
+
+// HasMisses returns a boolean if a field has been set.
+func (o *ListCommentAutomationLogs200Response) HasMisses() bool {
+	if o != nil && !IsNil(o.Misses) {
+		return true
+	}
+
+	return false
+}
+
+// SetMisses gets a reference to the given ListCommentAutomationLogs200ResponseMisses and assigns it to the Misses field.
+func (o *ListCommentAutomationLogs200Response) SetMisses(v ListCommentAutomationLogs200ResponseMisses) {
+	o.Misses = &v
+}
+
 func (o ListCommentAutomationLogs200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -156,6 +189,9 @@ func (o ListCommentAutomationLogs200Response) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.Pagination) {
 		toSerialize["pagination"] = o.Pagination
+	}
+	if !IsNil(o.Misses) {
+		toSerialize["misses"] = o.Misses
 	}
 	return toSerialize, nil
 }
