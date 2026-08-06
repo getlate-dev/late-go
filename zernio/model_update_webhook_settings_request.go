@@ -36,6 +36,8 @@ type UpdateWebhookSettingsRequest struct {
 	IsActive *bool `json:"isActive,omitempty"`
 	// Custom headers to include in webhook requests
 	CustomHeaders map[string]string `json:"customHeaders,omitempty"`
+	// Replaces the subscription's denylist. Send an empty array to clear it and receive every event in `events` again. Omitting the field leaves the current denylist untouched. Applies to events emitted after the update; already-queued events can still deliver for up to five minutes after they were enqueued. When the caller is a restricted (zrk_) key, that key's own disabled groups are unioned back in either way, so a restricted key can neither clear nor widen a subscription past its own groups.
+	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
 }
 
 type _UpdateWebhookSettingsRequest UpdateWebhookSettingsRequest
@@ -274,6 +276,38 @@ func (o *UpdateWebhookSettingsRequest) SetCustomHeaders(v map[string]string) {
 	o.CustomHeaders = v
 }
 
+// GetDisabledResourceGroups returns the DisabledResourceGroups field value if set, zero value otherwise.
+func (o *UpdateWebhookSettingsRequest) GetDisabledResourceGroups() []string {
+	if o == nil || IsNil(o.DisabledResourceGroups) {
+		var ret []string
+		return ret
+	}
+	return o.DisabledResourceGroups
+}
+
+// GetDisabledResourceGroupsOk returns a tuple with the DisabledResourceGroups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateWebhookSettingsRequest) GetDisabledResourceGroupsOk() ([]string, bool) {
+	if o == nil || IsNil(o.DisabledResourceGroups) {
+		return nil, false
+	}
+	return o.DisabledResourceGroups, true
+}
+
+// HasDisabledResourceGroups returns a boolean if a field has been set.
+func (o *UpdateWebhookSettingsRequest) HasDisabledResourceGroups() bool {
+	if o != nil && !IsNil(o.DisabledResourceGroups) {
+		return true
+	}
+
+	return false
+}
+
+// SetDisabledResourceGroups gets a reference to the given []string and assigns it to the DisabledResourceGroups field.
+func (o *UpdateWebhookSettingsRequest) SetDisabledResourceGroups(v []string) {
+	o.DisabledResourceGroups = v
+}
+
 func (o UpdateWebhookSettingsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -302,6 +336,9 @@ func (o UpdateWebhookSettingsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CustomHeaders) {
 		toSerialize["customHeaders"] = o.CustomHeaders
+	}
+	if !IsNil(o.DisabledResourceGroups) {
+		toSerialize["disabledResourceGroups"] = o.DisabledResourceGroups
 	}
 	return toSerialize, nil
 }
