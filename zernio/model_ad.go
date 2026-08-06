@@ -31,6 +31,8 @@ type Ad struct {
 	// Platform review state of this ad, independent of delivery `status` / `configuredStatus`. Absent when the platform reports no review signal.
 	ReviewStatus *AdReviewStatus `json:"reviewStatus,omitempty"`
 	AdType       *string         `json:"adType,omitempty"`
+	// Creative format, classified from the media the creative carries. `null` when the creative carries no media to classify — an unsynced creative and a genuine text-only ad are indistinguishable, so neither is guessed at. Returned by `GET /v1/ads`, `GET /v1/ads/{adId}` and the ad nodes of `GET /v1/ads/tree`.
+	CreativeType NullableString `json:"creativeType,omitempty"`
 	// Available goals vary by platform. Meta (Facebook/Instagram) supports all 9 (incl. `lead_conversion` = website pixel lead optimization and `catalog_sales` = Advantage+ catalog ads). TikTok supports the 7 non-`lead_conversion` goals. LinkedIn supports all except app_promotion / lead_conversion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 	Goal *string `json:"goal,omitempty"`
 	// True for ads synced from platform ad managers
@@ -321,6 +323,49 @@ func (o *Ad) HasAdType() bool {
 // SetAdType gets a reference to the given string and assigns it to the AdType field.
 func (o *Ad) SetAdType(v string) {
 	o.AdType = &v
+}
+
+// GetCreativeType returns the CreativeType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Ad) GetCreativeType() string {
+	if o == nil || IsNil(o.CreativeType.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CreativeType.Get()
+}
+
+// GetCreativeTypeOk returns a tuple with the CreativeType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Ad) GetCreativeTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CreativeType.Get(), o.CreativeType.IsSet()
+}
+
+// HasCreativeType returns a boolean if a field has been set.
+func (o *Ad) HasCreativeType() bool {
+	if o != nil && o.CreativeType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCreativeType gets a reference to the given NullableString and assigns it to the CreativeType field.
+func (o *Ad) SetCreativeType(v string) {
+	o.CreativeType.Set(&v)
+}
+
+// SetCreativeTypeNil sets the value for CreativeType to be an explicit nil
+func (o *Ad) SetCreativeTypeNil() {
+	o.CreativeType.Set(nil)
+}
+
+// UnsetCreativeType ensures that no value is present for CreativeType, not even an explicit nil
+func (o *Ad) UnsetCreativeType() {
+	o.CreativeType.Unset()
 }
 
 // GetGoal returns the Goal field value if set, zero value otherwise.
@@ -1284,6 +1329,9 @@ func (o Ad) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AdType) {
 		toSerialize["adType"] = o.AdType
+	}
+	if o.CreativeType.IsSet() {
+		toSerialize["creativeType"] = o.CreativeType.Get()
 	}
 	if !IsNil(o.Goal) {
 		toSerialize["goal"] = o.Goal

@@ -63,6 +63,10 @@ type AdDailyMetrics struct {
 	VideoP100WatchedActions *int32 `json:"videoP100WatchedActions,omitempty"`
 	// Average seconds watched per play (Meta `video_avg_time_watched_actions`). Aggregated over date ranges and across children as a play-weighted average (total watch time / total plays), never a plain average of averages.
 	VideoAvgTimeWatchedActions *float32 `json:"videoAvgTimeWatchedActions,omitempty"`
+	// Derived `spend / videoThruplayWatchedActions`, in ad-account native currency. Rounded to 4 decimals rather than the usual 2 because a ThruPlay routinely costs well under a cent. 0 when the ad has no ThruPlays.
+	CostPerThruplay     *float32            `json:"costPerThruplay,omitempty"`
+	Funnel              *AdFunnelCounts     `json:"funnel,omitempty"`
+	EngagementBreakdown *AdEngagementCounts `json:"engagementBreakdown,omitempty"`
 	// Present on individual ads only, not on campaign aggregations
 	LastSyncedAt *time.Time `json:"lastSyncedAt,omitempty"`
 	// Calendar day (YYYY-MM-DD) these metrics apply to.
@@ -822,6 +826,102 @@ func (o *AdDailyMetrics) SetVideoAvgTimeWatchedActions(v float32) {
 	o.VideoAvgTimeWatchedActions = &v
 }
 
+// GetCostPerThruplay returns the CostPerThruplay field value if set, zero value otherwise.
+func (o *AdDailyMetrics) GetCostPerThruplay() float32 {
+	if o == nil || IsNil(o.CostPerThruplay) {
+		var ret float32
+		return ret
+	}
+	return *o.CostPerThruplay
+}
+
+// GetCostPerThruplayOk returns a tuple with the CostPerThruplay field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdDailyMetrics) GetCostPerThruplayOk() (*float32, bool) {
+	if o == nil || IsNil(o.CostPerThruplay) {
+		return nil, false
+	}
+	return o.CostPerThruplay, true
+}
+
+// HasCostPerThruplay returns a boolean if a field has been set.
+func (o *AdDailyMetrics) HasCostPerThruplay() bool {
+	if o != nil && !IsNil(o.CostPerThruplay) {
+		return true
+	}
+
+	return false
+}
+
+// SetCostPerThruplay gets a reference to the given float32 and assigns it to the CostPerThruplay field.
+func (o *AdDailyMetrics) SetCostPerThruplay(v float32) {
+	o.CostPerThruplay = &v
+}
+
+// GetFunnel returns the Funnel field value if set, zero value otherwise.
+func (o *AdDailyMetrics) GetFunnel() AdFunnelCounts {
+	if o == nil || IsNil(o.Funnel) {
+		var ret AdFunnelCounts
+		return ret
+	}
+	return *o.Funnel
+}
+
+// GetFunnelOk returns a tuple with the Funnel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdDailyMetrics) GetFunnelOk() (*AdFunnelCounts, bool) {
+	if o == nil || IsNil(o.Funnel) {
+		return nil, false
+	}
+	return o.Funnel, true
+}
+
+// HasFunnel returns a boolean if a field has been set.
+func (o *AdDailyMetrics) HasFunnel() bool {
+	if o != nil && !IsNil(o.Funnel) {
+		return true
+	}
+
+	return false
+}
+
+// SetFunnel gets a reference to the given AdFunnelCounts and assigns it to the Funnel field.
+func (o *AdDailyMetrics) SetFunnel(v AdFunnelCounts) {
+	o.Funnel = &v
+}
+
+// GetEngagementBreakdown returns the EngagementBreakdown field value if set, zero value otherwise.
+func (o *AdDailyMetrics) GetEngagementBreakdown() AdEngagementCounts {
+	if o == nil || IsNil(o.EngagementBreakdown) {
+		var ret AdEngagementCounts
+		return ret
+	}
+	return *o.EngagementBreakdown
+}
+
+// GetEngagementBreakdownOk returns a tuple with the EngagementBreakdown field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdDailyMetrics) GetEngagementBreakdownOk() (*AdEngagementCounts, bool) {
+	if o == nil || IsNil(o.EngagementBreakdown) {
+		return nil, false
+	}
+	return o.EngagementBreakdown, true
+}
+
+// HasEngagementBreakdown returns a boolean if a field has been set.
+func (o *AdDailyMetrics) HasEngagementBreakdown() bool {
+	if o != nil && !IsNil(o.EngagementBreakdown) {
+		return true
+	}
+
+	return false
+}
+
+// SetEngagementBreakdown gets a reference to the given AdEngagementCounts and assigns it to the EngagementBreakdown field.
+func (o *AdDailyMetrics) SetEngagementBreakdown(v AdEngagementCounts) {
+	o.EngagementBreakdown = &v
+}
+
 // GetLastSyncedAt returns the LastSyncedAt field value if set, zero value otherwise.
 func (o *AdDailyMetrics) GetLastSyncedAt() time.Time {
 	if o == nil || IsNil(o.LastSyncedAt) {
@@ -964,6 +1064,15 @@ func (o AdDailyMetrics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.VideoAvgTimeWatchedActions) {
 		toSerialize["videoAvgTimeWatchedActions"] = o.VideoAvgTimeWatchedActions
+	}
+	if !IsNil(o.CostPerThruplay) {
+		toSerialize["costPerThruplay"] = o.CostPerThruplay
+	}
+	if !IsNil(o.Funnel) {
+		toSerialize["funnel"] = o.Funnel
+	}
+	if !IsNil(o.EngagementBreakdown) {
+		toSerialize["engagementBreakdown"] = o.EngagementBreakdown
 	}
 	if !IsNil(o.LastSyncedAt) {
 		toSerialize["lastSyncedAt"] = o.LastSyncedAt
