@@ -38,6 +38,8 @@ type PlatformTarget struct {
 	PlatformPostUrl *string `json:"platformPostUrl,omitempty"`
 	// Timestamp when the post was published to this platform
 	PublishedAt *time.Time `json:"publishedAt,omitempty"`
+	// Set when a post that was successfully published later disappears from the platform (deleted on-platform or taken down by the platform). status stays \"published\" (it reflects the publish outcome); poll this field to detect post-publish removals. Absent while the post is live, and cleared if the post reappears. Detection runs with the analytics sync, so expect up to a few hours of lag.
+	RemovedFromPlatformAt NullableTime `json:"removedFromPlatformAt,omitempty"`
 	// Present and true only when this Instagram reel was launched as a Trial through Zernio (created with platformSpecificData.trialParams). Use it to segment trial reels in analytics. Note: Instagram's Graph API exposes no readable trial field, so this reflects creation-time intent only. It indicates the reel STARTED as a trial, not whether or when it graduated.
 	IsTrialReel *bool `json:"isTrialReel,omitempty"`
 	// Graduation strategy the trial reel was launched with. Present only when isTrialReel is true.
@@ -387,6 +389,49 @@ func (o *PlatformTarget) SetPublishedAt(v time.Time) {
 	o.PublishedAt = &v
 }
 
+// GetRemovedFromPlatformAt returns the RemovedFromPlatformAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PlatformTarget) GetRemovedFromPlatformAt() time.Time {
+	if o == nil || IsNil(o.RemovedFromPlatformAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.RemovedFromPlatformAt.Get()
+}
+
+// GetRemovedFromPlatformAtOk returns a tuple with the RemovedFromPlatformAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PlatformTarget) GetRemovedFromPlatformAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RemovedFromPlatformAt.Get(), o.RemovedFromPlatformAt.IsSet()
+}
+
+// HasRemovedFromPlatformAt returns a boolean if a field has been set.
+func (o *PlatformTarget) HasRemovedFromPlatformAt() bool {
+	if o != nil && o.RemovedFromPlatformAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRemovedFromPlatformAt gets a reference to the given NullableTime and assigns it to the RemovedFromPlatformAt field.
+func (o *PlatformTarget) SetRemovedFromPlatformAt(v time.Time) {
+	o.RemovedFromPlatformAt.Set(&v)
+}
+
+// SetRemovedFromPlatformAtNil sets the value for RemovedFromPlatformAt to be an explicit nil
+func (o *PlatformTarget) SetRemovedFromPlatformAtNil() {
+	o.RemovedFromPlatformAt.Set(nil)
+}
+
+// UnsetRemovedFromPlatformAt ensures that no value is present for RemovedFromPlatformAt, not even an explicit nil
+func (o *PlatformTarget) UnsetRemovedFromPlatformAt() {
+	o.RemovedFromPlatformAt.Unset()
+}
+
 // GetIsTrialReel returns the IsTrialReel field value if set, zero value otherwise.
 func (o *PlatformTarget) GetIsTrialReel() bool {
 	if o == nil || IsNil(o.IsTrialReel) {
@@ -586,6 +631,9 @@ func (o PlatformTarget) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PublishedAt) {
 		toSerialize["publishedAt"] = o.PublishedAt
+	}
+	if o.RemovedFromPlatformAt.IsSet() {
+		toSerialize["removedFromPlatformAt"] = o.RemovedFromPlatformAt.Get()
 	}
 	if !IsNil(o.IsTrialReel) {
 		toSerialize["isTrialReel"] = o.IsTrialReel
