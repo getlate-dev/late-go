@@ -26,8 +26,13 @@ type GetCommentAutomation200ResponseLogsInner struct {
 	CommenterId   *string `json:"commenterId,omitempty"`
 	CommenterName *string `json:"commenterName,omitempty"`
 	CommentText   *string `json:"commentText,omitempty"`
-	// DM outcome
+	// DM outcome. 'gated' = the follow-gate confirmation DM went out and we are waiting for the tap; it flips to 'sent' or 'skipped' when they tap.
 	Status *string `json:"status,omitempty"`
+	// How the audience rule resolved. Absent on automations without one.
+	AudienceOutcome *string `json:"audienceOutcome,omitempty"`
+	// Follow relationship at decision time. Absent when Instagram would not tell us (the commenter never messaged the account).
+	CommenterIsFollower    *bool  `json:"commenterIsFollower,omitempty"`
+	CommenterFollowerCount *int32 `json:"commenterFollowerCount,omitempty"`
 	// DM error message if status is failed
 	Error *string `json:"error,omitempty"`
 	// Outcome of the optional public reply on the triggering comment. 'skipped' if no commentReply was configured or if the DM failed (the public reply is not attempted in that case).
@@ -246,6 +251,102 @@ func (o *GetCommentAutomation200ResponseLogsInner) SetStatus(v string) {
 	o.Status = &v
 }
 
+// GetAudienceOutcome returns the AudienceOutcome field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseLogsInner) GetAudienceOutcome() string {
+	if o == nil || IsNil(o.AudienceOutcome) {
+		var ret string
+		return ret
+	}
+	return *o.AudienceOutcome
+}
+
+// GetAudienceOutcomeOk returns a tuple with the AudienceOutcome field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) GetAudienceOutcomeOk() (*string, bool) {
+	if o == nil || IsNil(o.AudienceOutcome) {
+		return nil, false
+	}
+	return o.AudienceOutcome, true
+}
+
+// HasAudienceOutcome returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) HasAudienceOutcome() bool {
+	if o != nil && !IsNil(o.AudienceOutcome) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudienceOutcome gets a reference to the given string and assigns it to the AudienceOutcome field.
+func (o *GetCommentAutomation200ResponseLogsInner) SetAudienceOutcome(v string) {
+	o.AudienceOutcome = &v
+}
+
+// GetCommenterIsFollower returns the CommenterIsFollower field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseLogsInner) GetCommenterIsFollower() bool {
+	if o == nil || IsNil(o.CommenterIsFollower) {
+		var ret bool
+		return ret
+	}
+	return *o.CommenterIsFollower
+}
+
+// GetCommenterIsFollowerOk returns a tuple with the CommenterIsFollower field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) GetCommenterIsFollowerOk() (*bool, bool) {
+	if o == nil || IsNil(o.CommenterIsFollower) {
+		return nil, false
+	}
+	return o.CommenterIsFollower, true
+}
+
+// HasCommenterIsFollower returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) HasCommenterIsFollower() bool {
+	if o != nil && !IsNil(o.CommenterIsFollower) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommenterIsFollower gets a reference to the given bool and assigns it to the CommenterIsFollower field.
+func (o *GetCommentAutomation200ResponseLogsInner) SetCommenterIsFollower(v bool) {
+	o.CommenterIsFollower = &v
+}
+
+// GetCommenterFollowerCount returns the CommenterFollowerCount field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseLogsInner) GetCommenterFollowerCount() int32 {
+	if o == nil || IsNil(o.CommenterFollowerCount) {
+		var ret int32
+		return ret
+	}
+	return *o.CommenterFollowerCount
+}
+
+// GetCommenterFollowerCountOk returns a tuple with the CommenterFollowerCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) GetCommenterFollowerCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.CommenterFollowerCount) {
+		return nil, false
+	}
+	return o.CommenterFollowerCount, true
+}
+
+// HasCommenterFollowerCount returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) HasCommenterFollowerCount() bool {
+	if o != nil && !IsNil(o.CommenterFollowerCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommenterFollowerCount gets a reference to the given int32 and assigns it to the CommenterFollowerCount field.
+func (o *GetCommentAutomation200ResponseLogsInner) SetCommenterFollowerCount(v int32) {
+	o.CommenterFollowerCount = &v
+}
+
 // GetError returns the Error field value if set, zero value otherwise.
 func (o *GetCommentAutomation200ResponseLogsInner) GetError() string {
 	if o == nil || IsNil(o.Error) {
@@ -401,6 +502,15 @@ func (o GetCommentAutomation200ResponseLogsInner) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.AudienceOutcome) {
+		toSerialize["audienceOutcome"] = o.AudienceOutcome
+	}
+	if !IsNil(o.CommenterIsFollower) {
+		toSerialize["commenterIsFollower"] = o.CommenterIsFollower
+	}
+	if !IsNil(o.CommenterFollowerCount) {
+		toSerialize["commenterFollowerCount"] = o.CommenterFollowerCount
 	}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error

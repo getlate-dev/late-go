@@ -69,6 +69,7 @@ func main() {
 | `client.AccountsAPI.GetAccountHealth(ctx)` | Check account health |
 | `client.AccountsAPI.GetFollowerStats(ctx)` | Get follower stats |
 | `client.GMBReviewsAPI.GetGoogleBusinessReviews(ctx)` | Get reviews |
+| `client.AccountsAPI.GetInstagramFollowStatus(ctx)` | Check whether an Instagram user follows the account |
 | `client.LinkedInMentionsAPI.GetLinkedInMentions(ctx)` | Resolve LinkedIn mention |
 | `client.AccountsAPI.GetSlackSettings(ctx)` | Get Slack account settings |
 | `client.AccountsAPI.GetTikTokCreatorInfo(ctx)` | Get TikTok creator info |

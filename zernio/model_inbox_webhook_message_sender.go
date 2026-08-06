@@ -36,8 +36,8 @@ type InboxWebhookMessageSender struct {
 	// WhatsApp only. Parent BSUID for businesses with linked business portfolios. Omitted for standalone portfolios.
 	ParentBusinessScopedUserId *string `json:"parentBusinessScopedUserId,omitempty"`
 	// WhatsApp only. User's WhatsApp username (e.g. `@jane`). Not a stable identifier — users can change it. Useful for display, not recommended as an identity anchor.
-	WhatsappUsername *string                                    `json:"whatsappUsername,omitempty"`
-	InstagramProfile *InboxWebhookMessageSenderInstagramProfile `json:"instagramProfile,omitempty"`
+	WhatsappUsername *string                                             `json:"whatsappUsername,omitempty"`
+	InstagramProfile *WebhookPayloadCommentCommentAuthorInstagramProfile `json:"instagramProfile,omitempty"`
 }
 
 type _InboxWebhookMessageSender InboxWebhookMessageSender
@@ -352,9 +352,9 @@ func (o *InboxWebhookMessageSender) SetWhatsappUsername(v string) {
 }
 
 // GetInstagramProfile returns the InstagramProfile field value if set, zero value otherwise.
-func (o *InboxWebhookMessageSender) GetInstagramProfile() InboxWebhookMessageSenderInstagramProfile {
+func (o *InboxWebhookMessageSender) GetInstagramProfile() WebhookPayloadCommentCommentAuthorInstagramProfile {
 	if o == nil || IsNil(o.InstagramProfile) {
-		var ret InboxWebhookMessageSenderInstagramProfile
+		var ret WebhookPayloadCommentCommentAuthorInstagramProfile
 		return ret
 	}
 	return *o.InstagramProfile
@@ -362,7 +362,7 @@ func (o *InboxWebhookMessageSender) GetInstagramProfile() InboxWebhookMessageSen
 
 // GetInstagramProfileOk returns a tuple with the InstagramProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InboxWebhookMessageSender) GetInstagramProfileOk() (*InboxWebhookMessageSenderInstagramProfile, bool) {
+func (o *InboxWebhookMessageSender) GetInstagramProfileOk() (*WebhookPayloadCommentCommentAuthorInstagramProfile, bool) {
 	if o == nil || IsNil(o.InstagramProfile) {
 		return nil, false
 	}
@@ -378,8 +378,8 @@ func (o *InboxWebhookMessageSender) HasInstagramProfile() bool {
 	return false
 }
 
-// SetInstagramProfile gets a reference to the given InboxWebhookMessageSenderInstagramProfile and assigns it to the InstagramProfile field.
-func (o *InboxWebhookMessageSender) SetInstagramProfile(v InboxWebhookMessageSenderInstagramProfile) {
+// SetInstagramProfile gets a reference to the given WebhookPayloadCommentCommentAuthorInstagramProfile and assigns it to the InstagramProfile field.
+func (o *InboxWebhookMessageSender) SetInstagramProfile(v WebhookPayloadCommentCommentAuthorInstagramProfile) {
 	o.InstagramProfile = &v
 }
 

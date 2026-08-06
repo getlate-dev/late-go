@@ -41,8 +41,10 @@ type UpdateCommentAutomationRequest struct {
 	// Wrap link buttons in a tracked redirect to count clicks. Pass false to send links untouched.
 	LinkTracking *bool `json:"linkTracking,omitempty"`
 	// Tag applied to a contact when they click a tracked link (requires linkTracking). Empty string clears it.
-	ClickTag *string `json:"clickTag,omitempty"`
-	IsActive *bool   `json:"isActive,omitempty"`
+	ClickTag   *string                      `json:"clickTag,omitempty"`
+	Audience   *CommentAutomationAudience   `json:"audience,omitempty"`
+	FollowGate *CommentAutomationFollowGate `json:"followGate,omitempty"`
+	IsActive   *bool                        `json:"isActive,omitempty"`
 }
 
 // NewUpdateCommentAutomationRequest instantiates a new UpdateCommentAutomationRequest object
@@ -478,6 +480,70 @@ func (o *UpdateCommentAutomationRequest) SetClickTag(v string) {
 	o.ClickTag = &v
 }
 
+// GetAudience returns the Audience field value if set, zero value otherwise.
+func (o *UpdateCommentAutomationRequest) GetAudience() CommentAutomationAudience {
+	if o == nil || IsNil(o.Audience) {
+		var ret CommentAutomationAudience
+		return ret
+	}
+	return *o.Audience
+}
+
+// GetAudienceOk returns a tuple with the Audience field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCommentAutomationRequest) GetAudienceOk() (*CommentAutomationAudience, bool) {
+	if o == nil || IsNil(o.Audience) {
+		return nil, false
+	}
+	return o.Audience, true
+}
+
+// HasAudience returns a boolean if a field has been set.
+func (o *UpdateCommentAutomationRequest) HasAudience() bool {
+	if o != nil && !IsNil(o.Audience) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudience gets a reference to the given CommentAutomationAudience and assigns it to the Audience field.
+func (o *UpdateCommentAutomationRequest) SetAudience(v CommentAutomationAudience) {
+	o.Audience = &v
+}
+
+// GetFollowGate returns the FollowGate field value if set, zero value otherwise.
+func (o *UpdateCommentAutomationRequest) GetFollowGate() CommentAutomationFollowGate {
+	if o == nil || IsNil(o.FollowGate) {
+		var ret CommentAutomationFollowGate
+		return ret
+	}
+	return *o.FollowGate
+}
+
+// GetFollowGateOk returns a tuple with the FollowGate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCommentAutomationRequest) GetFollowGateOk() (*CommentAutomationFollowGate, bool) {
+	if o == nil || IsNil(o.FollowGate) {
+		return nil, false
+	}
+	return o.FollowGate, true
+}
+
+// HasFollowGate returns a boolean if a field has been set.
+func (o *UpdateCommentAutomationRequest) HasFollowGate() bool {
+	if o != nil && !IsNil(o.FollowGate) {
+		return true
+	}
+
+	return false
+}
+
+// SetFollowGate gets a reference to the given CommentAutomationFollowGate and assigns it to the FollowGate field.
+func (o *UpdateCommentAutomationRequest) SetFollowGate(v CommentAutomationFollowGate) {
+	o.FollowGate = &v
+}
+
 // GetIsActive returns the IsActive field value if set, zero value otherwise.
 func (o *UpdateCommentAutomationRequest) GetIsActive() bool {
 	if o == nil || IsNil(o.IsActive) {
@@ -558,6 +624,12 @@ func (o UpdateCommentAutomationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.ClickTag) {
 		toSerialize["clickTag"] = o.ClickTag
+	}
+	if !IsNil(o.Audience) {
+		toSerialize["audience"] = o.Audience
+	}
+	if !IsNil(o.FollowGate) {
+		toSerialize["followGate"] = o.FollowGate
 	}
 	if !IsNil(o.IsActive) {
 		toSerialize["isActive"] = o.IsActive

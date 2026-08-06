@@ -600,6 +600,178 @@ func (a *AccountsAPIService) GetFollowerStatsExecute(r AccountsAPIGetFollowerSta
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AccountsAPIGetInstagramFollowStatusRequest struct {
+	ctx        context.Context
+	ApiService *AccountsAPIService
+	accountId  string
+	userId     string
+	refresh    *bool
+}
+
+// Bypass the cache and re-query Meta
+func (r AccountsAPIGetInstagramFollowStatusRequest) Refresh(refresh bool) AccountsAPIGetInstagramFollowStatusRequest {
+	r.refresh = &refresh
+	return r
+}
+
+func (r AccountsAPIGetInstagramFollowStatusRequest) Execute() (*GetInstagramFollowStatus200Response, *http.Response, error) {
+	return r.ApiService.GetInstagramFollowStatusExecute(r)
+}
+
+/*
+GetInstagramFollowStatus Check whether an Instagram user follows the account
+
+Resolves the follow relationship between an Instagram user and the connected
+account, plus their public profile counters.
+
+`userId` is the Instagram-scoped id (IGSID) Meta gives you on a webhook:
+`sender.id` on `message.received`, `comment.author.id` on `comment.received`.
+
+**Meta only answers for people who have MESSAGED the account.** Commenting grants
+no consent, so a commenter who has never DMed you is unresolvable - that is a
+platform rule, not a limitation of this endpoint. When it cannot be resolved the
+response is still `200` with `isFollower: null` and an `unavailableReason`, because
+"unknown" is a normal state to branch on:
+
+  - `consent_required` - the user has never messaged this account.
+  - `dm_access_disabled` - the account owner turned off Instagram Direct API access.
+  - `not_messageable` - the id is not a messaging-scoped id.
+  - `error` - a transient Graph API failure.
+
+To gate a comment automation on this, use the automation's `audience` rules instead
+of calling this per comment - they run the same lookup only on comments that
+actually match a keyword, and can ask the commenter to confirm with one tap.
+
+Answers are cached briefly per (account, user). Pass `refresh=true` right after
+asking someone to follow, so a follow from a moment ago is visible.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId Instagram account ID
+	@param userId Instagram-scoped user id (IGSID) from a webhook payload
+	@return AccountsAPIGetInstagramFollowStatusRequest
+*/
+func (a *AccountsAPIService) GetInstagramFollowStatus(ctx context.Context, accountId string, userId string) AccountsAPIGetInstagramFollowStatusRequest {
+	return AccountsAPIGetInstagramFollowStatusRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+		userId:     userId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetInstagramFollowStatus200Response
+func (a *AccountsAPIService) GetInstagramFollowStatusExecute(r AccountsAPIGetInstagramFollowStatusRequest) (*GetInstagramFollowStatus200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetInstagramFollowStatus200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.GetInstagramFollowStatus")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/follow-status/{userId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"userId"+"}", url.PathEscape(parameterValueToString(r.userId, "userId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.refresh != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "refresh", r.refresh, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AccountsAPIGetSlackSettingsRequest struct {
 	ctx        context.Context
 	ApiService *AccountsAPIService

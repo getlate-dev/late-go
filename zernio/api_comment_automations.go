@@ -59,6 +59,13 @@ Targeting (comment trigger):
     account-wide automations, each with its own keyword set, and they all run
     independently. Per-post automations take priority on their post.
 
+Audience (`audience`, Instagram only): restrict the automation to followers or
+non-followers, and/or to accounts above a follower count. Instagram only reveals the
+follow relationship for people who have messaged the account, so `audience.whenUnknown`
+decides what happens for everyone else - including `verify`, which sends a one-tap
+confirmation DM (`followGate`) and then delivers the real DM automatically. People we
+already know follow you skip the tap entirely.
+
 Links in the DM's buttons can be click-tracked (`linkTracking`, on by default) and
 clickers optionally tagged (`clickTag`) for segmentation. Stats returned include
 delivered, read, and link clicks.

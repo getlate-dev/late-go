@@ -23,10 +23,11 @@ var _ MappedNullable = &WebhookPayloadCommentCommentAuthor{}
 // WebhookPayloadCommentCommentAuthor struct for WebhookPayloadCommentCommentAuthor
 type WebhookPayloadCommentCommentAuthor struct {
 	// Author's platform ID
-	Id       string         `json:"id"`
-	Username *string        `json:"username,omitempty"`
-	Name     *string        `json:"name,omitempty"`
-	Picture  NullableString `json:"picture,omitempty"`
+	Id               string                                              `json:"id"`
+	Username         *string                                             `json:"username,omitempty"`
+	Name             *string                                             `json:"name,omitempty"`
+	Picture          NullableString                                      `json:"picture,omitempty"`
+	InstagramProfile *WebhookPayloadCommentCommentAuthorInstagramProfile `json:"instagramProfile,omitempty"`
 }
 
 type _WebhookPayloadCommentCommentAuthor WebhookPayloadCommentCommentAuthor
@@ -180,6 +181,38 @@ func (o *WebhookPayloadCommentCommentAuthor) UnsetPicture() {
 	o.Picture.Unset()
 }
 
+// GetInstagramProfile returns the InstagramProfile field value if set, zero value otherwise.
+func (o *WebhookPayloadCommentCommentAuthor) GetInstagramProfile() WebhookPayloadCommentCommentAuthorInstagramProfile {
+	if o == nil || IsNil(o.InstagramProfile) {
+		var ret WebhookPayloadCommentCommentAuthorInstagramProfile
+		return ret
+	}
+	return *o.InstagramProfile
+}
+
+// GetInstagramProfileOk returns a tuple with the InstagramProfile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCommentCommentAuthor) GetInstagramProfileOk() (*WebhookPayloadCommentCommentAuthorInstagramProfile, bool) {
+	if o == nil || IsNil(o.InstagramProfile) {
+		return nil, false
+	}
+	return o.InstagramProfile, true
+}
+
+// HasInstagramProfile returns a boolean if a field has been set.
+func (o *WebhookPayloadCommentCommentAuthor) HasInstagramProfile() bool {
+	if o != nil && !IsNil(o.InstagramProfile) {
+		return true
+	}
+
+	return false
+}
+
+// SetInstagramProfile gets a reference to the given WebhookPayloadCommentCommentAuthorInstagramProfile and assigns it to the InstagramProfile field.
+func (o *WebhookPayloadCommentCommentAuthor) SetInstagramProfile(v WebhookPayloadCommentCommentAuthorInstagramProfile) {
+	o.InstagramProfile = &v
+}
+
 func (o WebhookPayloadCommentCommentAuthor) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -199,6 +232,9 @@ func (o WebhookPayloadCommentCommentAuthor) ToMap() (map[string]interface{}, err
 	}
 	if o.Picture.IsSet() {
 		toSerialize["picture"] = o.Picture.Get()
+	}
+	if !IsNil(o.InstagramProfile) {
+		toSerialize["instagramProfile"] = o.InstagramProfile
 	}
 	return toSerialize, nil
 }
