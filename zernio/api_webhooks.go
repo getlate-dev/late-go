@@ -46,6 +46,11 @@ Create a new webhook configuration. Maximum 50 webhooks per user.
 
 Webhooks are automatically disabled after 10 consecutive delivery failures.
 
+A restricted (zrk_) API key can only subscribe to events whose resource group
+the key holds; an event outside the key's groups is rejected with 403. Note
+that the KEY cannot access private messages; the ACCOUNT's pre-existing
+webhook subscriptions are a separate grant surface.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPICreateWebhookSettingsRequest
 */
@@ -124,6 +129,17 @@ func (a *WebhooksAPIService) CreateWebhookSettingsExecute(r WebhooksAPICreateWeb
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -326,6 +342,10 @@ Retrieve recorded webhook delivery attempts for the authenticated user, most rec
 Logs are retained for 30 days. Supports filtering by status, event type, webhook ID, and event ID,
 plus offset-based pagination.
 
+For a restricted (zrk_) API key, rows for events outside the key's resource
+groups are omitted (`pagination.total` may over-count), and an `event` filter
+naming such an event is rejected with 403.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPIGetWebhookLogsRequest
 */
@@ -425,6 +445,17 @@ func (a *WebhooksAPIService) GetWebhookLogsExecute(r WebhooksAPIGetWebhookLogsRe
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -714,6 +745,9 @@ When provided, `name` must be 1-50 characters, `url` must be a valid URL, and `e
 
 Webhooks are automatically disabled after 10 consecutive delivery failures.
 
+A restricted (zrk_) API key can only set `events` to events whose resource
+group the key holds; an event outside the key's groups is rejected with 403.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPIUpdateWebhookSettingsRequest
 */
@@ -792,6 +826,17 @@ func (a *WebhooksAPIService) UpdateWebhookSettingsExecute(r WebhooksAPIUpdateWeb
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

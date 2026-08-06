@@ -34,6 +34,8 @@ type ApiKey struct {
 	ProfileIds []ApiKeyProfileIdsInner `json:"profileIds,omitempty"`
 	// 'read-write' allows all operations, 'read' restricts to GET requests only
 	Permission *string `json:"permission,omitempty"`
+	// Resource groups this key can NOT access (opt-out denylist). Absent or empty means legacy full access. A key with any group disabled is a restricted key (zrk_ prefix) and can never manage API keys, invites, or member identity. Each operation's group is published as x-resource-group. With 'messages' disabled, the KEY cannot access private messages; the ACCOUNT's pre-existing webhook subscriptions are a separate grant surface.
+	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
 }
 
 // NewApiKey instantiates a new ApiKey object
@@ -349,6 +351,38 @@ func (o *ApiKey) SetPermission(v string) {
 	o.Permission = &v
 }
 
+// GetDisabledResourceGroups returns the DisabledResourceGroups field value if set, zero value otherwise.
+func (o *ApiKey) GetDisabledResourceGroups() []string {
+	if o == nil || IsNil(o.DisabledResourceGroups) {
+		var ret []string
+		return ret
+	}
+	return o.DisabledResourceGroups
+}
+
+// GetDisabledResourceGroupsOk returns a tuple with the DisabledResourceGroups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApiKey) GetDisabledResourceGroupsOk() ([]string, bool) {
+	if o == nil || IsNil(o.DisabledResourceGroups) {
+		return nil, false
+	}
+	return o.DisabledResourceGroups, true
+}
+
+// HasDisabledResourceGroups returns a boolean if a field has been set.
+func (o *ApiKey) HasDisabledResourceGroups() bool {
+	if o != nil && !IsNil(o.DisabledResourceGroups) {
+		return true
+	}
+
+	return false
+}
+
+// SetDisabledResourceGroups gets a reference to the given []string and assigns it to the DisabledResourceGroups field.
+func (o *ApiKey) SetDisabledResourceGroups(v []string) {
+	o.DisabledResourceGroups = v
+}
+
 func (o ApiKey) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -385,6 +419,9 @@ func (o ApiKey) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Permission) {
 		toSerialize["permission"] = o.Permission
+	}
+	if !IsNil(o.DisabledResourceGroups) {
+		toSerialize["disabledResourceGroups"] = o.DisabledResourceGroups
 	}
 	return toSerialize, nil
 }

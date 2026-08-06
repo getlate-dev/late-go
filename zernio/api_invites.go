@@ -43,6 +43,9 @@ CreateInviteToken Create invite token
 Generate a secure invite link to grant team members access to your profiles.
 Invites expire after 7 days and are single-use.
 
+Returns 403 when a requested profile is not found or not owned, or when
+called with a restricted (zrk_) API key: invite management is admin-plane.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return InvitesAPICreateInviteTokenRequest
 */
@@ -129,6 +132,16 @@ func (a *InvitesAPIService) CreateInviteTokenExecute(r InvitesAPICreateInviteTok
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

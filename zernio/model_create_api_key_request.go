@@ -31,6 +31,8 @@ type CreateApiKeyRequest struct {
 	ProfileIds []string `json:"profileIds,omitempty"`
 	// 'read-write' allows all operations (default), 'read' restricts to GET requests only
 	Permission *string `json:"permission,omitempty"`
+	// Resource groups to DISABLE on this key (opt-out denylist). Omit for a legacy full-access key. A key with any group disabled mints with the zrk_ prefix, gets 403 with code=insufficient_permissions and required_group on operations in disabled groups (each operation's group is published as x-resource-group), and can never manage API keys, invites, or member identity. With 'messages' disabled, the KEY cannot access private messages; the ACCOUNT's pre-existing webhook subscriptions are a separate grant surface.
+	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
 }
 
 type _CreateApiKeyRequest CreateApiKeyRequest
@@ -213,6 +215,38 @@ func (o *CreateApiKeyRequest) SetPermission(v string) {
 	o.Permission = &v
 }
 
+// GetDisabledResourceGroups returns the DisabledResourceGroups field value if set, zero value otherwise.
+func (o *CreateApiKeyRequest) GetDisabledResourceGroups() []string {
+	if o == nil || IsNil(o.DisabledResourceGroups) {
+		var ret []string
+		return ret
+	}
+	return o.DisabledResourceGroups
+}
+
+// GetDisabledResourceGroupsOk returns a tuple with the DisabledResourceGroups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateApiKeyRequest) GetDisabledResourceGroupsOk() ([]string, bool) {
+	if o == nil || IsNil(o.DisabledResourceGroups) {
+		return nil, false
+	}
+	return o.DisabledResourceGroups, true
+}
+
+// HasDisabledResourceGroups returns a boolean if a field has been set.
+func (o *CreateApiKeyRequest) HasDisabledResourceGroups() bool {
+	if o != nil && !IsNil(o.DisabledResourceGroups) {
+		return true
+	}
+
+	return false
+}
+
+// SetDisabledResourceGroups gets a reference to the given []string and assigns it to the DisabledResourceGroups field.
+func (o *CreateApiKeyRequest) SetDisabledResourceGroups(v []string) {
+	o.DisabledResourceGroups = v
+}
+
 func (o CreateApiKeyRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -235,6 +269,9 @@ func (o CreateApiKeyRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Permission) {
 		toSerialize["permission"] = o.Permission
+	}
+	if !IsNil(o.DisabledResourceGroups) {
+		toSerialize["disabledResourceGroups"] = o.DisabledResourceGroups
 	}
 	return toSerialize, nil
 }

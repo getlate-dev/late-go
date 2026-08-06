@@ -38,9 +38,10 @@ ListConnectedApps List connected apps
 Returns the OAuth clients (AI assistants and MCP connectors) the authenticated
 user has authorized and that still hold a live token.
 
-Requires a session or a full-scope API key. A profile-scoped API key or an
-OAuth access token is rejected with 403: an app must not be able to enumerate
-its sibling authorizations.
+Requires a session or a full-access API key. A profile-scoped API key, a
+restricted (zrk_) API key, or an OAuth access token is rejected with 403: an
+app must not be able to enumerate its sibling authorizations, and connected-app
+management is admin-plane.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectedAppsAPIListConnectedAppsRequest
@@ -125,7 +126,7 @@ func (a *ConnectedAppsAPIService) ListConnectedAppsExecute(r ConnectedAppsAPILis
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v ErrorResponse
+			var v InlineObject
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -168,6 +169,9 @@ the app's next request.
 
 Idempotent while the authorization is still on record: revoking an app that
 was already revoked returns 200 with `revokedTokens: 0`.
+
+Requires a session or a full-access API key. A profile-scoped API key, a
+restricted (zrk_) API key, or an OAuth access token is rejected with 403.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param clientId OAuth client id, as returned by GET /v1/me/connected-apps.
@@ -272,7 +276,7 @@ func (a *ConnectedAppsAPIService) RevokeConnectedAppExecute(r ConnectedAppsAPIRe
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v ErrorResponse
+			var v InlineObject
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
