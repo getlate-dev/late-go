@@ -30,6 +30,8 @@ type CreateStandaloneAdRequestTranslationsInner struct {
 	Body string `json:"body"`
 	// Link description for this language. REQUIRED, and must differ from every other locale and from the ad's top-level description.
 	Description string `json:"description"`
+	// Destination URL for this language. Inherits the ad's top-level `linkUrl` when omitted, and requires it to be present (400 otherwise): the top-level URL is the destination for every locale you did not override. Unlike text, identical URLs across locales are fine (they share one asset).
+	LinkUrl *string `json:"linkUrl,omitempty"`
 	// Image for this language. Inherits the ad's `imageUrl` when omitted. The feed is all-image OR all-video.
 	ImageUrl *string `json:"imageUrl,omitempty"`
 	// Video for this language. Inherits the ad's `video.url` when omitted. The feed is all-image OR all-video.
@@ -157,6 +159,38 @@ func (o *CreateStandaloneAdRequestTranslationsInner) SetDescription(v string) {
 	o.Description = v
 }
 
+// GetLinkUrl returns the LinkUrl field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequestTranslationsInner) GetLinkUrl() string {
+	if o == nil || IsNil(o.LinkUrl) {
+		var ret string
+		return ret
+	}
+	return *o.LinkUrl
+}
+
+// GetLinkUrlOk returns a tuple with the LinkUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequestTranslationsInner) GetLinkUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.LinkUrl) {
+		return nil, false
+	}
+	return o.LinkUrl, true
+}
+
+// HasLinkUrl returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestTranslationsInner) HasLinkUrl() bool {
+	if o != nil && !IsNil(o.LinkUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetLinkUrl gets a reference to the given string and assigns it to the LinkUrl field.
+func (o *CreateStandaloneAdRequestTranslationsInner) SetLinkUrl(v string) {
+	o.LinkUrl = &v
+}
+
 // GetImageUrl returns the ImageUrl field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequestTranslationsInner) GetImageUrl() string {
 	if o == nil || IsNil(o.ImageUrl) {
@@ -267,6 +301,9 @@ func (o CreateStandaloneAdRequestTranslationsInner) ToMap() (map[string]interfac
 	toSerialize["headline"] = o.Headline
 	toSerialize["body"] = o.Body
 	toSerialize["description"] = o.Description
+	if !IsNil(o.LinkUrl) {
+		toSerialize["linkUrl"] = o.LinkUrl
+	}
 	if !IsNil(o.ImageUrl) {
 		toSerialize["imageUrl"] = o.ImageUrl
 	}
