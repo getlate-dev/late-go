@@ -20,7 +20,9 @@ var _ MappedNullable = &UpdateCommentAutomationRequest{}
 
 // UpdateCommentAutomationRequest struct for UpdateCommentAutomationRequest
 type UpdateCommentAutomationRequest struct {
-	Name     *string  `json:"name,omitempty"`
+	Name *string `json:"name,omitempty"`
+	// What fires the automation. Changing it detaches the automation from its bound post or story (a post id and a story id are different objects), unless this same request sets a new binding. 'story_reply' is Instagram only.
+	Trigger  *string  `json:"trigger,omitempty"`
 	Keywords []string `json:"keywords,omitempty"`
 	// How a keyword is compared with the comment. 'contains' (default) matches anywhere, even inside another word (keyword 'app' fires on 'happy'). 'word' matches the keyword only as a standalone word. 'exact' requires the whole comment to be exactly the keyword.
 	MatchMode *string `json:"matchMode,omitempty"`
@@ -90,6 +92,38 @@ func (o *UpdateCommentAutomationRequest) HasName() bool {
 // SetName gets a reference to the given string and assigns it to the Name field.
 func (o *UpdateCommentAutomationRequest) SetName(v string) {
 	o.Name = &v
+}
+
+// GetTrigger returns the Trigger field value if set, zero value otherwise.
+func (o *UpdateCommentAutomationRequest) GetTrigger() string {
+	if o == nil || IsNil(o.Trigger) {
+		var ret string
+		return ret
+	}
+	return *o.Trigger
+}
+
+// GetTriggerOk returns a tuple with the Trigger field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCommentAutomationRequest) GetTriggerOk() (*string, bool) {
+	if o == nil || IsNil(o.Trigger) {
+		return nil, false
+	}
+	return o.Trigger, true
+}
+
+// HasTrigger returns a boolean if a field has been set.
+func (o *UpdateCommentAutomationRequest) HasTrigger() bool {
+	if o != nil && !IsNil(o.Trigger) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrigger gets a reference to the given string and assigns it to the Trigger field.
+func (o *UpdateCommentAutomationRequest) SetTrigger(v string) {
+	o.Trigger = &v
 }
 
 // GetKeywords returns the Keywords field value if set, zero value otherwise.
@@ -488,6 +522,9 @@ func (o UpdateCommentAutomationRequest) ToMap() (map[string]interface{}, error) 
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.Trigger) {
+		toSerialize["trigger"] = o.Trigger
 	}
 	if !IsNil(o.Keywords) {
 		toSerialize["keywords"] = o.Keywords
