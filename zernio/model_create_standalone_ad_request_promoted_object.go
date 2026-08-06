@@ -18,12 +18,14 @@ import (
 // checks if the CreateStandaloneAdRequestPromotedObject type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreateStandaloneAdRequestPromotedObject{}
 
-// CreateStandaloneAdRequestPromotedObject What the ad optimises against. Behaviour depends on the platform.  **Meta**: forwarded to the ad set's `promoted_object` (snake-cased). Required for goals whose ad-set optimization_goal points at a specific event/page/app (without it Meta rejects the ad-set create with `error_subcode: 1815430` \"Please select a promoted object for your ad set\"):   - `goal: conversions` / `lead_conversion` (OFFSITE_CONVERSIONS): requires `pixelId` + `customEventType`, or `customConversionId` when optimising against a Custom Conversion (the conversion carries its own event definition)   - `goal: app_promotion` (APP_INSTALLS): requires `applicationId` + `objectStoreUrl`   - `goal: lead_generation` (LEAD_GENERATION): `pageId` is auto-filled from the connected Page when omitted  Other Meta goals (engagement, traffic, awareness, video_views) ignore this field.  **TikTok**: only `goal: conversions` uses it.   - `pixelId` maps to the ad group's `pixel_id`. Required: a TikTok website-conversion     ad group without a pixel is rejected with `40002: Please select a pixel`.   - `customEventType` maps to the ad group's `optimization_event` (the pixel event to     optimise for). Optional: TikTok accepts a pixel-only auto-bid conversion ad group.     See the `customEventType` field below for the valid TikTok codes.  The remaining `promotedObject.*` fields are Meta-only. Platforms other than Meta and TikTok ignore `promotedObject` entirely.
+// CreateStandaloneAdRequestPromotedObject What the ad optimises against. Behaviour depends on the platform.  **Meta**: forwarded to the ad set's `promoted_object` (snake-cased). Required for goals whose ad-set optimization_goal points at a specific event/page/app (without it Meta rejects the ad-set create with `error_subcode: 1815430` \"Please select a promoted object for your ad set\"):   - `goal: conversions` / `lead_conversion` (OFFSITE_CONVERSIONS): requires `pixelId` + `customEventType`, or `customConversionId` when optimising against a Custom Conversion (the conversion carries its own event definition). For a pixel CUSTOM event (one you named yourself in CAPI/Events Manager), send `customEventType: OTHER` + `customEventStr` with the event name.   - `goal: app_promotion` (APP_INSTALLS): requires `applicationId` + `objectStoreUrl`   - `goal: lead_generation` (LEAD_GENERATION): `pageId` is auto-filled from the connected Page when omitted  Other Meta goals (engagement, traffic, awareness, video_views) ignore this field.  **TikTok**: only `goal: conversions` uses it.   - `pixelId` maps to the ad group's `pixel_id`. Required: a TikTok website-conversion     ad group without a pixel is rejected with `40002: Please select a pixel`.   - `customEventType` maps to the ad group's `optimization_event` (the pixel event to     optimise for). Optional: TikTok accepts a pixel-only auto-bid conversion ad group.     See the `customEventType` field below for the valid TikTok codes.  The remaining `promotedObject.*` fields are Meta-only. Platforms other than Meta and TikTok ignore `promotedObject` entirely.
 type CreateStandaloneAdRequestPromotedObject struct {
 	// Pixel ID. **Meta:** Facebook Pixel ID, required for `goal: conversions`. **TikTok:** TikTok Pixel ID, required for `goal: conversions`. To discover the pixels an ad account can use, call `GET /v1/accounts/{accountId}/tracking-tags?adAccountId=act_...` (each entry carries `kind` and `ownerAdAccountId`), or `GET /v1/accounts/{accountId}/conversion-destinations`. Note this is a different resource from `GET /v1/ads/{adId}/tracking-tags`, which reads an ad's click-URL params (`url_tags`), not pixels.
 	PixelId *string `json:"pixelId,omitempty"`
 	// The event the campaign/ad group optimises against.  **Meta:** standard event like `PURCHASE`, `LEAD`, `COMPLETE_REGISTRATION`, `ADD_TO_CART`. Uppercased internally so callers can pass any case. Required for `goal: conversions`.  **TikTok:** an `optimization_event` code (UPPER_SNAKE, not Meta's vocabulary and not PascalCase), OR the exact event name shown in TikTok Events Manager (auto-resolved to its code). Must be one of the event types your TikTok Pixel tracks; custom events are not optimizable. Current taxonomy: `SHOPPING` (Purchase), `ON_WEB_CART` (Add to Cart), `INITIATE_ORDER` (Initiate Checkout), `FORM` (Lead), `ON_WEB_REGISTER` (Complete Registration), `ON_WEB_DETAIL` (View Content). `ON_WEB_ORDER` is deprecated. On rejection the error lists the event types your pixel actually tracks. Optional for `goal: conversions`.
 	CustomEventType *string `json:"customEventType,omitempty"`
+	// Meta only. Pixel custom-event name to optimise against (Meta's `custom_event_str`), exactly as it appears in Events Manager and in your CAPI payloads (case-sensitive, not uppercased). Requires `customEventType: OTHER`, and `OTHER` requires this field (400 either way). The same as picking a custom event in Ads Manager's conversion-event dropdown. For rule-based Custom Conversions use `customConversionId` instead.
+	CustomEventStr *string `json:"customEventStr,omitempty"`
 	// Facebook Page ID. Used by `goal: lead_generation`. Auto-filled from the connected Page when omitted.
 	PageId *string `json:"pageId,omitempty"`
 	// App ID. Required for `goal: app_promotion`.
@@ -124,6 +126,38 @@ func (o *CreateStandaloneAdRequestPromotedObject) HasCustomEventType() bool {
 // SetCustomEventType gets a reference to the given string and assigns it to the CustomEventType field.
 func (o *CreateStandaloneAdRequestPromotedObject) SetCustomEventType(v string) {
 	o.CustomEventType = &v
+}
+
+// GetCustomEventStr returns the CustomEventStr field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequestPromotedObject) GetCustomEventStr() string {
+	if o == nil || IsNil(o.CustomEventStr) {
+		var ret string
+		return ret
+	}
+	return *o.CustomEventStr
+}
+
+// GetCustomEventStrOk returns a tuple with the CustomEventStr field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequestPromotedObject) GetCustomEventStrOk() (*string, bool) {
+	if o == nil || IsNil(o.CustomEventStr) {
+		return nil, false
+	}
+	return o.CustomEventStr, true
+}
+
+// HasCustomEventStr returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestPromotedObject) HasCustomEventStr() bool {
+	if o != nil && !IsNil(o.CustomEventStr) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomEventStr gets a reference to the given string and assigns it to the CustomEventStr field.
+func (o *CreateStandaloneAdRequestPromotedObject) SetCustomEventStr(v string) {
+	o.CustomEventStr = &v
 }
 
 // GetPageId returns the PageId field value if set, zero value otherwise.
@@ -398,6 +432,9 @@ func (o CreateStandaloneAdRequestPromotedObject) ToMap() (map[string]interface{}
 	if !IsNil(o.CustomEventType) {
 		toSerialize["customEventType"] = o.CustomEventType
 	}
+	if !IsNil(o.CustomEventStr) {
+		toSerialize["customEventStr"] = o.CustomEventStr
+	}
 	if !IsNil(o.PageId) {
 		toSerialize["pageId"] = o.PageId
 	}
@@ -446,6 +483,7 @@ func (o *CreateStandaloneAdRequestPromotedObject) UnmarshalJSON(data []byte) (er
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "pixelId")
 		delete(additionalProperties, "customEventType")
+		delete(additionalProperties, "customEventStr")
 		delete(additionalProperties, "pageId")
 		delete(additionalProperties, "applicationId")
 		delete(additionalProperties, "objectStoreUrl")

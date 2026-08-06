@@ -20,8 +20,10 @@ var _ MappedNullable = &UpdateAdSetRequestPlatformSpecificDataPromotedObject{}
 
 // UpdateAdSetRequestPlatformSpecificDataPromotedObject Meta ad-set promoted_object, forwarded verbatim (same shape as /v1/ads/create). Unknown keys are rejected with 400.
 type UpdateAdSetRequestPlatformSpecificDataPromotedObject struct {
-	PixelId                    *string `json:"pixelId,omitempty"`
-	CustomEventType            *string `json:"customEventType,omitempty"`
+	PixelId         *string `json:"pixelId,omitempty"`
+	CustomEventType *string `json:"customEventType,omitempty"`
+	// Pixel custom-event name (custom_event_str); requires customEventType OTHER. Same pairing rules as /v1/ads/create.
+	CustomEventStr             *string `json:"customEventStr,omitempty"`
 	PageId                     *string `json:"pageId,omitempty"`
 	ApplicationId              *string `json:"applicationId,omitempty"`
 	ObjectStoreUrl             *string `json:"objectStoreUrl,omitempty"`
@@ -114,6 +116,38 @@ func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) HasCustomEventTyp
 // SetCustomEventType gets a reference to the given string and assigns it to the CustomEventType field.
 func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) SetCustomEventType(v string) {
 	o.CustomEventType = &v
+}
+
+// GetCustomEventStr returns the CustomEventStr field value if set, zero value otherwise.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) GetCustomEventStr() string {
+	if o == nil || IsNil(o.CustomEventStr) {
+		var ret string
+		return ret
+	}
+	return *o.CustomEventStr
+}
+
+// GetCustomEventStrOk returns a tuple with the CustomEventStr field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) GetCustomEventStrOk() (*string, bool) {
+	if o == nil || IsNil(o.CustomEventStr) {
+		return nil, false
+	}
+	return o.CustomEventStr, true
+}
+
+// HasCustomEventStr returns a boolean if a field has been set.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) HasCustomEventStr() bool {
+	if o != nil && !IsNil(o.CustomEventStr) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomEventStr gets a reference to the given string and assigns it to the CustomEventStr field.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) SetCustomEventStr(v string) {
+	o.CustomEventStr = &v
 }
 
 // GetPageId returns the PageId field value if set, zero value otherwise.
@@ -388,6 +422,9 @@ func (o UpdateAdSetRequestPlatformSpecificDataPromotedObject) ToMap() (map[strin
 	if !IsNil(o.CustomEventType) {
 		toSerialize["customEventType"] = o.CustomEventType
 	}
+	if !IsNil(o.CustomEventStr) {
+		toSerialize["customEventStr"] = o.CustomEventStr
+	}
 	if !IsNil(o.PageId) {
 		toSerialize["pageId"] = o.PageId
 	}
@@ -436,6 +473,7 @@ func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) UnmarshalJSON(dat
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "pixelId")
 		delete(additionalProperties, "customEventType")
+		delete(additionalProperties, "customEventStr")
 		delete(additionalProperties, "pageId")
 		delete(additionalProperties, "applicationId")
 		delete(additionalProperties, "objectStoreUrl")
