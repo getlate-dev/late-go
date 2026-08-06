@@ -18,8 +18,10 @@ import (
 // checks if the WebhookPayloadMessageMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageMetadata{}
 
-// WebhookPayloadMessageMetadata Interactive message metadata (present when message is a quick reply tap, postback button tap, or inline keyboard callback)
+// WebhookPayloadMessageMetadata Platform-specific message context (present when the message is a quick reply tap, postback button tap, inline keyboard callback, or a quote-reply to an earlier message)
 type WebhookPayloadMessageMetadata struct {
+	// platformMessageId of the message this one is a quote-reply to. WhatsApp (`context.id`), Instagram and Facebook Messenger (`reply_to.mid`). On `message.sent` echoes (operator replied from the native app) this is the only metadata field populated.
+	QuotedMessageId *string `json:"quotedMessageId,omitempty"`
 	// Payload from a quick reply tap (Facebook/Instagram Messenger).
 	QuickReplyPayload *string `json:"quickReplyPayload,omitempty"`
 	// Payload from a postback button tap (Facebook/Instagram Messenger).
@@ -65,6 +67,38 @@ func NewWebhookPayloadMessageMetadata() *WebhookPayloadMessageMetadata {
 func NewWebhookPayloadMessageMetadataWithDefaults() *WebhookPayloadMessageMetadata {
 	this := WebhookPayloadMessageMetadata{}
 	return &this
+}
+
+// GetQuotedMessageId returns the QuotedMessageId field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetQuotedMessageId() string {
+	if o == nil || IsNil(o.QuotedMessageId) {
+		var ret string
+		return ret
+	}
+	return *o.QuotedMessageId
+}
+
+// GetQuotedMessageIdOk returns a tuple with the QuotedMessageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetQuotedMessageIdOk() (*string, bool) {
+	if o == nil || IsNil(o.QuotedMessageId) {
+		return nil, false
+	}
+	return o.QuotedMessageId, true
+}
+
+// HasQuotedMessageId returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasQuotedMessageId() bool {
+	if o != nil && !IsNil(o.QuotedMessageId) {
+		return true
+	}
+
+	return false
+}
+
+// SetQuotedMessageId gets a reference to the given string and assigns it to the QuotedMessageId field.
+func (o *WebhookPayloadMessageMetadata) SetQuotedMessageId(v string) {
+	o.QuotedMessageId = &v
 }
 
 // GetQuickReplyPayload returns the QuickReplyPayload field value if set, zero value otherwise.
@@ -589,6 +623,9 @@ func (o WebhookPayloadMessageMetadata) MarshalJSON() ([]byte, error) {
 
 func (o WebhookPayloadMessageMetadata) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.QuotedMessageId) {
+		toSerialize["quotedMessageId"] = o.QuotedMessageId
+	}
 	if !IsNil(o.QuickReplyPayload) {
 		toSerialize["quickReplyPayload"] = o.QuickReplyPayload
 	}
