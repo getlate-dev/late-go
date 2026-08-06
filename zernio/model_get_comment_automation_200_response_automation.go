@@ -30,8 +30,13 @@ type GetCommentAutomation200ResponseAutomation struct {
 	PostId         *string  `json:"postId,omitempty"`
 	PostTitle      *string  `json:"postTitle,omitempty"`
 	Keywords       []string `json:"keywords,omitempty"`
-	MatchMode      *string  `json:"matchMode,omitempty"`
-	DmMessage      *string  `json:"dmMessage,omitempty"`
+	// How a keyword is compared with the comment. 'contains' (default) matches anywhere, even inside another word (keyword 'app' fires on 'happy'). 'word' matches the keyword only as a standalone word. 'exact' requires the whole comment to be exactly the keyword.
+	MatchMode *string `json:"matchMode,omitempty"`
+	// Comments containing one of these never trigger the automation, even when a trigger keyword also matches. Compared using the same matchMode.
+	ExcludeKeywords []string `json:"excludeKeywords,omitempty"`
+	// Only with matchMode=word: also fire on close misspellings of a keyword (one edit for 4-7 character keywords, two from 8 up). Keywords shorter than 4 characters are never fuzzy-matched.
+	TypoTolerance *bool   `json:"typoTolerance,omitempty"`
+	DmMessage     *string `json:"dmMessage,omitempty"`
 	// Inline DM buttons (up to 3). Omitted when none are set.
 	Buttons      []DmButton `json:"buttons,omitempty"`
 	CommentReply *string    `json:"commentReply,omitempty"`
@@ -382,6 +387,70 @@ func (o *GetCommentAutomation200ResponseAutomation) HasMatchMode() bool {
 // SetMatchMode gets a reference to the given string and assigns it to the MatchMode field.
 func (o *GetCommentAutomation200ResponseAutomation) SetMatchMode(v string) {
 	o.MatchMode = &v
+}
+
+// GetExcludeKeywords returns the ExcludeKeywords field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseAutomation) GetExcludeKeywords() []string {
+	if o == nil || IsNil(o.ExcludeKeywords) {
+		var ret []string
+		return ret
+	}
+	return o.ExcludeKeywords
+}
+
+// GetExcludeKeywordsOk returns a tuple with the ExcludeKeywords field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseAutomation) GetExcludeKeywordsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ExcludeKeywords) {
+		return nil, false
+	}
+	return o.ExcludeKeywords, true
+}
+
+// HasExcludeKeywords returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseAutomation) HasExcludeKeywords() bool {
+	if o != nil && !IsNil(o.ExcludeKeywords) {
+		return true
+	}
+
+	return false
+}
+
+// SetExcludeKeywords gets a reference to the given []string and assigns it to the ExcludeKeywords field.
+func (o *GetCommentAutomation200ResponseAutomation) SetExcludeKeywords(v []string) {
+	o.ExcludeKeywords = v
+}
+
+// GetTypoTolerance returns the TypoTolerance field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseAutomation) GetTypoTolerance() bool {
+	if o == nil || IsNil(o.TypoTolerance) {
+		var ret bool
+		return ret
+	}
+	return *o.TypoTolerance
+}
+
+// GetTypoToleranceOk returns a tuple with the TypoTolerance field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseAutomation) GetTypoToleranceOk() (*bool, bool) {
+	if o == nil || IsNil(o.TypoTolerance) {
+		return nil, false
+	}
+	return o.TypoTolerance, true
+}
+
+// HasTypoTolerance returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseAutomation) HasTypoTolerance() bool {
+	if o != nil && !IsNil(o.TypoTolerance) {
+		return true
+	}
+
+	return false
+}
+
+// SetTypoTolerance gets a reference to the given bool and assigns it to the TypoTolerance field.
+func (o *GetCommentAutomation200ResponseAutomation) SetTypoTolerance(v bool) {
+	o.TypoTolerance = &v
 }
 
 // GetDmMessage returns the DmMessage field value if set, zero value otherwise.
@@ -775,6 +844,12 @@ func (o GetCommentAutomation200ResponseAutomation) ToMap() (map[string]interface
 	}
 	if !IsNil(o.MatchMode) {
 		toSerialize["matchMode"] = o.MatchMode
+	}
+	if !IsNil(o.ExcludeKeywords) {
+		toSerialize["excludeKeywords"] = o.ExcludeKeywords
+	}
+	if !IsNil(o.TypoTolerance) {
+		toSerialize["typoTolerance"] = o.TypoTolerance
 	}
 	if !IsNil(o.DmMessage) {
 		toSerialize["dmMessage"] = o.DmMessage

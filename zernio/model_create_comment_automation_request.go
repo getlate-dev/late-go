@@ -36,8 +36,13 @@ type CreateCommentAutomationRequest struct {
 	// Automation label
 	Name string `json:"name"`
 	// Trigger keywords (empty = any comment triggers)
-	Keywords  []string `json:"keywords,omitempty"`
-	MatchMode *string  `json:"matchMode,omitempty"`
+	Keywords []string `json:"keywords,omitempty"`
+	// How a keyword is compared with the comment. 'contains' (default) matches anywhere, even inside another word (keyword 'app' fires on 'happy'). 'word' matches the keyword only as a standalone word. 'exact' requires the whole comment to be exactly the keyword.
+	MatchMode *string `json:"matchMode,omitempty"`
+	// Comments containing one of these never trigger the automation, even when a trigger keyword also matches. Compared using the same matchMode.
+	ExcludeKeywords []string `json:"excludeKeywords,omitempty"`
+	// Only with matchMode=word: also fire on close misspellings of a keyword (one edit for 4-7 character keywords, two from 8 up). Keywords shorter than 4 characters are never fuzzy-matched.
+	TypoTolerance *bool `json:"typoTolerance,omitempty"`
 	// DM text to send to commenter. Max 640 chars when buttons are set, otherwise ~1000.
 	DmMessage string `json:"dmMessage"`
 	// Optional inline DM buttons (1-3). Phone buttons are Facebook-only. Omit or pass [] for a plain-text DM.
@@ -353,6 +358,70 @@ func (o *CreateCommentAutomationRequest) SetMatchMode(v string) {
 	o.MatchMode = &v
 }
 
+// GetExcludeKeywords returns the ExcludeKeywords field value if set, zero value otherwise.
+func (o *CreateCommentAutomationRequest) GetExcludeKeywords() []string {
+	if o == nil || IsNil(o.ExcludeKeywords) {
+		var ret []string
+		return ret
+	}
+	return o.ExcludeKeywords
+}
+
+// GetExcludeKeywordsOk returns a tuple with the ExcludeKeywords field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomationRequest) GetExcludeKeywordsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ExcludeKeywords) {
+		return nil, false
+	}
+	return o.ExcludeKeywords, true
+}
+
+// HasExcludeKeywords returns a boolean if a field has been set.
+func (o *CreateCommentAutomationRequest) HasExcludeKeywords() bool {
+	if o != nil && !IsNil(o.ExcludeKeywords) {
+		return true
+	}
+
+	return false
+}
+
+// SetExcludeKeywords gets a reference to the given []string and assigns it to the ExcludeKeywords field.
+func (o *CreateCommentAutomationRequest) SetExcludeKeywords(v []string) {
+	o.ExcludeKeywords = v
+}
+
+// GetTypoTolerance returns the TypoTolerance field value if set, zero value otherwise.
+func (o *CreateCommentAutomationRequest) GetTypoTolerance() bool {
+	if o == nil || IsNil(o.TypoTolerance) {
+		var ret bool
+		return ret
+	}
+	return *o.TypoTolerance
+}
+
+// GetTypoToleranceOk returns a tuple with the TypoTolerance field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomationRequest) GetTypoToleranceOk() (*bool, bool) {
+	if o == nil || IsNil(o.TypoTolerance) {
+		return nil, false
+	}
+	return o.TypoTolerance, true
+}
+
+// HasTypoTolerance returns a boolean if a field has been set.
+func (o *CreateCommentAutomationRequest) HasTypoTolerance() bool {
+	if o != nil && !IsNil(o.TypoTolerance) {
+		return true
+	}
+
+	return false
+}
+
+// SetTypoTolerance gets a reference to the given bool and assigns it to the TypoTolerance field.
+func (o *CreateCommentAutomationRequest) SetTypoTolerance(v bool) {
+	o.TypoTolerance = &v
+}
+
 // GetDmMessage returns the DmMessage field value
 func (o *CreateCommentAutomationRequest) GetDmMessage() string {
 	if o == nil {
@@ -599,6 +668,12 @@ func (o CreateCommentAutomationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.MatchMode) {
 		toSerialize["matchMode"] = o.MatchMode
+	}
+	if !IsNil(o.ExcludeKeywords) {
+		toSerialize["excludeKeywords"] = o.ExcludeKeywords
+	}
+	if !IsNil(o.TypoTolerance) {
+		toSerialize["typoTolerance"] = o.TypoTolerance
 	}
 	toSerialize["dmMessage"] = o.DmMessage
 	if !IsNil(o.Buttons) {
