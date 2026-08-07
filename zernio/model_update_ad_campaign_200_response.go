@@ -18,12 +18,15 @@ import (
 // checks if the UpdateAdCampaign200Response type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdCampaign200Response{}
 
-// UpdateAdCampaign200Response struct for UpdateAdCampaign200Response
+// UpdateAdCampaign200Response Echoes back only the fields you sent, plus `updated`.
 type UpdateAdCampaign200Response struct {
+	// Local Ad documents mirrored. 0 on the empty-campaign path.
 	Updated              *int32                 `json:"updated,omitempty"`
 	Budget               *AdBudget              `json:"budget,omitempty"`
 	BudgetLevel          *string                `json:"budgetLevel,omitempty"`
 	BidStrategy          *BidStrategy           `json:"bidStrategy,omitempty"`
+	BidAmount            *float32               `json:"bidAmount,omitempty"`
+	RoasAverageFloor     *float32               `json:"roasAverageFloor,omitempty"`
 	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
 }
 
@@ -172,6 +175,70 @@ func (o *UpdateAdCampaign200Response) SetBidStrategy(v BidStrategy) {
 	o.BidStrategy = &v
 }
 
+// GetBidAmount returns the BidAmount field value if set, zero value otherwise.
+func (o *UpdateAdCampaign200Response) GetBidAmount() float32 {
+	if o == nil || IsNil(o.BidAmount) {
+		var ret float32
+		return ret
+	}
+	return *o.BidAmount
+}
+
+// GetBidAmountOk returns a tuple with the BidAmount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaign200Response) GetBidAmountOk() (*float32, bool) {
+	if o == nil || IsNil(o.BidAmount) {
+		return nil, false
+	}
+	return o.BidAmount, true
+}
+
+// HasBidAmount returns a boolean if a field has been set.
+func (o *UpdateAdCampaign200Response) HasBidAmount() bool {
+	if o != nil && !IsNil(o.BidAmount) {
+		return true
+	}
+
+	return false
+}
+
+// SetBidAmount gets a reference to the given float32 and assigns it to the BidAmount field.
+func (o *UpdateAdCampaign200Response) SetBidAmount(v float32) {
+	o.BidAmount = &v
+}
+
+// GetRoasAverageFloor returns the RoasAverageFloor field value if set, zero value otherwise.
+func (o *UpdateAdCampaign200Response) GetRoasAverageFloor() float32 {
+	if o == nil || IsNil(o.RoasAverageFloor) {
+		var ret float32
+		return ret
+	}
+	return *o.RoasAverageFloor
+}
+
+// GetRoasAverageFloorOk returns a tuple with the RoasAverageFloor field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaign200Response) GetRoasAverageFloorOk() (*float32, bool) {
+	if o == nil || IsNil(o.RoasAverageFloor) {
+		return nil, false
+	}
+	return o.RoasAverageFloor, true
+}
+
+// HasRoasAverageFloor returns a boolean if a field has been set.
+func (o *UpdateAdCampaign200Response) HasRoasAverageFloor() bool {
+	if o != nil && !IsNil(o.RoasAverageFloor) {
+		return true
+	}
+
+	return false
+}
+
+// SetRoasAverageFloor gets a reference to the given float32 and assigns it to the RoasAverageFloor field.
+func (o *UpdateAdCampaign200Response) SetRoasAverageFloor(v float32) {
+	o.RoasAverageFloor = &v
+}
+
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
 func (o *UpdateAdCampaign200Response) GetPlatformSpecificData() map[string]interface{} {
 	if o == nil || IsNil(o.PlatformSpecificData) {
@@ -225,6 +292,12 @@ func (o UpdateAdCampaign200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy
+	}
+	if !IsNil(o.BidAmount) {
+		toSerialize["bidAmount"] = o.BidAmount
+	}
+	if !IsNil(o.RoasAverageFloor) {
+		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
 	}
 	if !IsNil(o.PlatformSpecificData) {
 		toSerialize["platformSpecificData"] = o.PlatformSpecificData

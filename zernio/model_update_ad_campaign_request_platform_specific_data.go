@@ -18,9 +18,9 @@ import (
 // checks if the UpdateAdCampaignRequestPlatformSpecificData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdCampaignRequestPlatformSpecificData{}
 
-// UpdateAdCampaignRequestPlatformSpecificData Platform-specific campaign settings. The platform is implied by the `platform` body param (same convention as platformSpecificData on POST /v1/ads/create). Meta (facebook/instagram) only; other platforms return 400.
+// UpdateAdCampaignRequestPlatformSpecificData **Meta only.** Platform implied by the `platform` body param, same convention as POST /v1/ads/create.
 type UpdateAdCampaignRequestPlatformSpecificData struct {
-	// Campaign lifetime spend cap, in the ad account's currency (Meta `spend_cap`). Pass null to remove the cap (0 is rejected by Meta).
+	// Campaign lifetime spend cap, in the ad account's currency (Meta `spend_cap`). Pass null to remove the cap; 0 is rejected by Meta.
 	SpendCap NullableFloat32 `json:"spendCap,omitempty"`
 }
 
