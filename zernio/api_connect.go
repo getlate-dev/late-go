@@ -1309,7 +1309,7 @@ type ConnectAPIGetConnectUrlRequest struct {
 	headless    *bool
 }
 
-// Your Zernio profile ID (get from /v1/profiles)
+// Your Zernio profile ID (get from /v1/profiles). For WhatsApp, a Zernio-provisioned number can only be connected on the profile it was provisioned to; connecting from any other profile is rejected with a 409.
 func (r ConnectAPIGetConnectUrlRequest) ProfileId(profileId string) ConnectAPIGetConnectUrlRequest {
 	r.profileId = &profileId
 	return r
