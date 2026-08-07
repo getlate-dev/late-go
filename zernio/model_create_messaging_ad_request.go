@@ -38,9 +38,12 @@ type CreateMessagingAdRequest struct {
 	Video    *CtwaAdRequestBodyVideo `json:"video,omitempty"`
 	// Multi-creative shape: N CTWA ads under one campaign + one ad set, sharing budget and targeting. Mutually exclusive with the top-level single-creative fields (`headline` / `body` / `imageUrl` / `video`). Each entry must supply its own headline, body, and exactly one of `imageUrl` / `video`.
 	Creatives []CtwaAdRequestBodyCreativesInner `json:"creatives,omitempty"`
-	// Budget amount in the ad account's currency major units (e.g. dollars for USD, not cents). Must be > 0.
-	BudgetAmount float32 `json:"budgetAmount"`
-	BudgetType   string  `json:"budgetType"`
+	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `endDate`, `objective`, `countries`, `interests` and `audienceId` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
+	AdSetId *string `json:"adSetId,omitempty"`
+	// Budget amount in the ad account's currency major units (e.g. dollars for USD, not cents). Must be > 0. Required unless `adSetId` is set, where the ad set owns it.
+	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
+	// Required unless `adSetId` is set.
+	BudgetType *string `json:"budgetType,omitempty"`
 	// ISO 4217 currency code matching the ad account's currency (e.g. `USD`). Optional; Meta infers from the ad account when omitted.
 	Currency *string `json:"currency,omitempty"`
 	// ISO 8601 datetime. Required when `budgetType` is `lifetime`.
@@ -87,13 +90,11 @@ type _CreateMessagingAdRequest CreateMessagingAdRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateMessagingAdRequest(accountId string, adAccountId string, name string, budgetAmount float32, budgetType string, destination string) *CreateMessagingAdRequest {
+func NewCreateMessagingAdRequest(accountId string, adAccountId string, name string, destination string) *CreateMessagingAdRequest {
 	this := CreateMessagingAdRequest{}
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
 	this.Name = name
-	this.BudgetAmount = budgetAmount
-	this.BudgetType = budgetType
 	this.Destination = destination
 	return &this
 }
@@ -338,52 +339,100 @@ func (o *CreateMessagingAdRequest) SetCreatives(v []CtwaAdRequestBodyCreativesIn
 	o.Creatives = v
 }
 
-// GetBudgetAmount returns the BudgetAmount field value
-func (o *CreateMessagingAdRequest) GetBudgetAmount() float32 {
-	if o == nil {
-		var ret float32
-		return ret
-	}
-
-	return o.BudgetAmount
-}
-
-// GetBudgetAmountOk returns a tuple with the BudgetAmount field value
-// and a boolean to check if the value has been set.
-func (o *CreateMessagingAdRequest) GetBudgetAmountOk() (*float32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.BudgetAmount, true
-}
-
-// SetBudgetAmount sets field value
-func (o *CreateMessagingAdRequest) SetBudgetAmount(v float32) {
-	o.BudgetAmount = v
-}
-
-// GetBudgetType returns the BudgetType field value
-func (o *CreateMessagingAdRequest) GetBudgetType() string {
-	if o == nil {
+// GetAdSetId returns the AdSetId field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetAdSetId() string {
+	if o == nil || IsNil(o.AdSetId) {
 		var ret string
 		return ret
 	}
-
-	return o.BudgetType
+	return *o.AdSetId
 }
 
-// GetBudgetTypeOk returns a tuple with the BudgetType field value
+// GetAdSetIdOk returns a tuple with the AdSetId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateMessagingAdRequest) GetBudgetTypeOk() (*string, bool) {
-	if o == nil {
+func (o *CreateMessagingAdRequest) GetAdSetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdSetId) {
 		return nil, false
 	}
-	return &o.BudgetType, true
+	return o.AdSetId, true
 }
 
-// SetBudgetType sets field value
+// HasAdSetId returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasAdSetId() bool {
+	if o != nil && !IsNil(o.AdSetId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSetId gets a reference to the given string and assigns it to the AdSetId field.
+func (o *CreateMessagingAdRequest) SetAdSetId(v string) {
+	o.AdSetId = &v
+}
+
+// GetBudgetAmount returns the BudgetAmount field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetBudgetAmount() float32 {
+	if o == nil || IsNil(o.BudgetAmount) {
+		var ret float32
+		return ret
+	}
+	return *o.BudgetAmount
+}
+
+// GetBudgetAmountOk returns a tuple with the BudgetAmount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetBudgetAmountOk() (*float32, bool) {
+	if o == nil || IsNil(o.BudgetAmount) {
+		return nil, false
+	}
+	return o.BudgetAmount, true
+}
+
+// HasBudgetAmount returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasBudgetAmount() bool {
+	if o != nil && !IsNil(o.BudgetAmount) {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetAmount gets a reference to the given float32 and assigns it to the BudgetAmount field.
+func (o *CreateMessagingAdRequest) SetBudgetAmount(v float32) {
+	o.BudgetAmount = &v
+}
+
+// GetBudgetType returns the BudgetType field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetBudgetType() string {
+	if o == nil || IsNil(o.BudgetType) {
+		var ret string
+		return ret
+	}
+	return *o.BudgetType
+}
+
+// GetBudgetTypeOk returns a tuple with the BudgetType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetBudgetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.BudgetType) {
+		return nil, false
+	}
+	return o.BudgetType, true
+}
+
+// HasBudgetType returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasBudgetType() bool {
+	if o != nil && !IsNil(o.BudgetType) {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetType gets a reference to the given string and assigns it to the BudgetType field.
 func (o *CreateMessagingAdRequest) SetBudgetType(v string) {
-	o.BudgetType = v
+	o.BudgetType = &v
 }
 
 // GetCurrency returns the Currency field value if set, zero value otherwise.
@@ -1078,8 +1127,15 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Creatives) {
 		toSerialize["creatives"] = o.Creatives
 	}
-	toSerialize["budgetAmount"] = o.BudgetAmount
-	toSerialize["budgetType"] = o.BudgetType
+	if !IsNil(o.AdSetId) {
+		toSerialize["adSetId"] = o.AdSetId
+	}
+	if !IsNil(o.BudgetAmount) {
+		toSerialize["budgetAmount"] = o.BudgetAmount
+	}
+	if !IsNil(o.BudgetType) {
+		toSerialize["budgetType"] = o.BudgetType
+	}
 	if !IsNil(o.Currency) {
 		toSerialize["currency"] = o.Currency
 	}
@@ -1152,8 +1208,6 @@ func (o *CreateMessagingAdRequest) UnmarshalJSON(data []byte) (err error) {
 		"accountId",
 		"adAccountId",
 		"name",
-		"budgetAmount",
-		"budgetType",
 		"destination",
 	}
 

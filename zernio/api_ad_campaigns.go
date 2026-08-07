@@ -41,7 +41,18 @@ func (r AdCampaignsAPIBoostPostRequest) Execute() (*UpdateAd200Response, *http.R
 /*
 BoostPost Boost post as ad
 
-Creates a paid ad campaign from an existing published post. Creates the full platform campaign hierarchy (campaign, ad set, ad).
+Creates a paid ad from an existing published post, keeping the post's
+engagement. By default it provisions the whole hierarchy (campaign, ad
+set, ad).
+
+**Attach shape (Meta).** Send `adSetId` to put the ad under an EXISTING
+ad set instead, so that ad set keeps its learning phase. It then owns
+`budget`, `schedule` and `targeting`, and sending any of those alongside
+`adSetId` is a 400 rather than a silent drop. `budget` is required only
+without `adSetId`.
+
+`instagramAccountId`, `destinationType` and `adSetId` are Meta-only and
+return 400 on other platforms.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIBoostPostRequest

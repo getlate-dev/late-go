@@ -32,11 +32,17 @@ type BoostPostRequest struct {
 	AdAccountId string `json:"adAccountId"`
 	Name        string `json:"name"`
 	// Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
-	Goal      string                        `json:"goal"`
-	Budget    UpdateAdCampaignRequestBudget `json:"budget"`
-	Currency  *string                       `json:"currency,omitempty"`
-	Schedule  *BoostPostRequestSchedule     `json:"schedule,omitempty"`
-	Targeting *BoostPostRequestTargeting    `json:"targeting,omitempty"`
+	Goal string `json:"goal"`
+	// Meta only. Attach the boosted post to this existing ad set instead of creating a campaign. The ad set then owns budget, schedule and targeting; sending those too is a 400.
+	AdSetId *string                        `json:"adSetId,omitempty"`
+	Budget  *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
+	// Meta only. Instagram identity the ad runs AS (creative.instagram_user_id), overriding the account linked to the Page. Live-verified against a Page-post creative.
+	InstagramAccountId *string `json:"instagramAccountId,omitempty"`
+	// Meta only. Ad-set destination_type — where the click LANDS, as opposed to instagramAccountId which is who the ad runs as. Lead ads force ON_AD and ignore this.
+	DestinationType *string                    `json:"destinationType,omitempty"`
+	Currency        *string                    `json:"currency,omitempty"`
+	Schedule        *BoostPostRequestSchedule  `json:"schedule,omitempty"`
+	Targeting       *BoostPostRequestTargeting `json:"targeting,omitempty"`
 	// Meta only. A Meta-native targeting spec (e.g. `{ \"geo_locations\": { \"cities\": [{ \"key\": \"...\", \"radius\": 15, \"distance_unit\": \"kilometer\" }] } }`). Sent alone it is forwarded unchanged. Use for advanced fields the structured object does not expose (flexible_spec, excluded audiences, business places, user_os, wireless_carrier).  Can be combined with `targeting`: rawTargeting is the BASE layer and the built camelCase spec is merged on top, key by key (camelCase wins on collision). The merge goes one level deep inside `geo_locations` and `excluded_geo_locations` (built sub-keys win; raw-only sub-keys such as `location_types` survive). Array values (`flexible_spec`, ...) are replaced as a whole key, never element-merged.  When `rawTargeting` is present the `advantage_audience: 0` default that Zernio normally applies is no longer emitted, so it cannot clobber a `targeting_automation` sent in the raw spec. Meta requires `targeting_automation` on ad set creation, so include it in the raw spec, or send `targeting.advantage_audience` (0 or 1), which is merged over raw as `targeting_automation`.
 	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
 	// Meta bid strategy applied to the ad set. On TikTok, mapped to `bid_type` / `bid_price` / `deep_bid_type` automatically.
@@ -52,9 +58,9 @@ type BoostPostRequest struct {
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// Meta (metaads) only. 2-letter ISO country codes the special ad category applies to. Requires specialAdCategories to be set (400 otherwise).
 	SpecialAdCategoryCountry []string `json:"specialAdCategoryCountry,omitempty"`
-	// TikTok-only. Custom destination URL for the Spark Ad. Without this, TikTok Spark Ads have no clickable destination — required for traffic / conversion objectives. Maps to `landing_page_url` on the creative entry of /v2/ad/create/ (TikTok SDK `AdcreateCreatives.landing_page_url`). Ignored on Meta / LinkedIn / Pinterest / X / Google (those infer the destination from the boosted post).
+	// Destination URL for the CTA button. Send it together with `callToAction`.  **Meta**: adds a top-level `call_to_action` to the post-reference creative. This is what gives a `traffic` boost a clickable destination without replacing the creative and losing the post's social proof. Ignored when `leadGenFormId` is set, which supplies its own destination. Live-verified against a Page-post creative.  **TikTok**: maps to `landing_page_url` on the Spark Ad creative (`AdcreateCreatives.landing_page_url`); Spark Ads have no clickable destination without it.  Ignored on LinkedIn / Pinterest / X / Google, which infer the destination from the boosted post.
 	LinkUrl *string `json:"linkUrl,omitempty"`
-	// TikTok-only. Call-to-action button label on the Spark Ad creative (e.g. `LEARN_MORE`, `SHOP_NOW`, `DOWNLOAD_NOW`, `SIGN_UP`, `WATCH_NOW`). Maps to `call_to_action` on the creative entry of /v2/ad/create/. Pass-through — the platform validates the value. See TikTok's \"Enumeration - Call-to-Action\" reference for the full list.
+	// CTA button label. Send it together with `linkUrl` — a CTA without a destination produces a button that goes nowhere, so sending one alone is a 400.  **Meta**: validated against the Meta CTA enum (same values as POST /v1/ads/create), e.g. `LEARN_MORE`, `SHOP_NOW`, `SIGN_UP`.  **TikTok**: pass-through to `call_to_action` on the Spark Ad creative; the platform validates the value. See TikTok's \"Enumeration - Call-to-Action\".
 	CallToAction *string `json:"callToAction,omitempty"`
 	// TikTok-only. Spark Code (creator's `auth_code`) authorizing cross-creator Spark Ads — the advertiser can boost a video owned by a DIFFERENT TikTok account. Without this, boosts are limited to videos owned by the same account running the ads (same-BC creators only). The creator generates the code in their TikTok app's Promote settings and shares it with the advertiser. Maps to `auth_code` on the creative entry of /v2/ad/create/.
 	SparkAuthCode *string `json:"sparkAuthCode,omitempty"`
@@ -72,13 +78,12 @@ type _BoostPostRequest BoostPostRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBoostPostRequest(accountId string, adAccountId string, name string, goal string, budget UpdateAdCampaignRequestBudget) *BoostPostRequest {
+func NewBoostPostRequest(accountId string, adAccountId string, name string, goal string) *BoostPostRequest {
 	this := BoostPostRequest{}
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
 	this.Name = name
 	this.Goal = goal
-	this.Budget = budget
 	return &this
 }
 
@@ -250,28 +255,132 @@ func (o *BoostPostRequest) SetGoal(v string) {
 	o.Goal = v
 }
 
-// GetBudget returns the Budget field value
+// GetAdSetId returns the AdSetId field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetAdSetId() string {
+	if o == nil || IsNil(o.AdSetId) {
+		var ret string
+		return ret
+	}
+	return *o.AdSetId
+}
+
+// GetAdSetIdOk returns a tuple with the AdSetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetAdSetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdSetId) {
+		return nil, false
+	}
+	return o.AdSetId, true
+}
+
+// HasAdSetId returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasAdSetId() bool {
+	if o != nil && !IsNil(o.AdSetId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSetId gets a reference to the given string and assigns it to the AdSetId field.
+func (o *BoostPostRequest) SetAdSetId(v string) {
+	o.AdSetId = &v
+}
+
+// GetBudget returns the Budget field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetBudget() UpdateAdCampaignRequestBudget {
-	if o == nil {
+	if o == nil || IsNil(o.Budget) {
 		var ret UpdateAdCampaignRequestBudget
 		return ret
 	}
-
-	return o.Budget
+	return *o.Budget
 }
 
-// GetBudgetOk returns a tuple with the Budget field value
+// GetBudgetOk returns a tuple with the Budget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BoostPostRequest) GetBudgetOk() (*UpdateAdCampaignRequestBudget, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Budget) {
 		return nil, false
 	}
-	return &o.Budget, true
+	return o.Budget, true
 }
 
-// SetBudget sets field value
+// HasBudget returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasBudget() bool {
+	if o != nil && !IsNil(o.Budget) {
+		return true
+	}
+
+	return false
+}
+
+// SetBudget gets a reference to the given UpdateAdCampaignRequestBudget and assigns it to the Budget field.
 func (o *BoostPostRequest) SetBudget(v UpdateAdCampaignRequestBudget) {
-	o.Budget = v
+	o.Budget = &v
+}
+
+// GetInstagramAccountId returns the InstagramAccountId field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetInstagramAccountId() string {
+	if o == nil || IsNil(o.InstagramAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.InstagramAccountId
+}
+
+// GetInstagramAccountIdOk returns a tuple with the InstagramAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetInstagramAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.InstagramAccountId) {
+		return nil, false
+	}
+	return o.InstagramAccountId, true
+}
+
+// HasInstagramAccountId returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasInstagramAccountId() bool {
+	if o != nil && !IsNil(o.InstagramAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetInstagramAccountId gets a reference to the given string and assigns it to the InstagramAccountId field.
+func (o *BoostPostRequest) SetInstagramAccountId(v string) {
+	o.InstagramAccountId = &v
+}
+
+// GetDestinationType returns the DestinationType field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetDestinationType() string {
+	if o == nil || IsNil(o.DestinationType) {
+		var ret string
+		return ret
+	}
+	return *o.DestinationType
+}
+
+// GetDestinationTypeOk returns a tuple with the DestinationType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetDestinationTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.DestinationType) {
+		return nil, false
+	}
+	return o.DestinationType, true
+}
+
+// HasDestinationType returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasDestinationType() bool {
+	if o != nil && !IsNil(o.DestinationType) {
+		return true
+	}
+
+	return false
+}
+
+// SetDestinationType gets a reference to the given string and assigns it to the DestinationType field.
+func (o *BoostPostRequest) SetDestinationType(v string) {
+	o.DestinationType = &v
 }
 
 // GetCurrency returns the Currency field value if set, zero value otherwise.
@@ -838,7 +947,18 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["name"] = o.Name
 	toSerialize["goal"] = o.Goal
-	toSerialize["budget"] = o.Budget
+	if !IsNil(o.AdSetId) {
+		toSerialize["adSetId"] = o.AdSetId
+	}
+	if !IsNil(o.Budget) {
+		toSerialize["budget"] = o.Budget
+	}
+	if !IsNil(o.InstagramAccountId) {
+		toSerialize["instagramAccountId"] = o.InstagramAccountId
+	}
+	if !IsNil(o.DestinationType) {
+		toSerialize["destinationType"] = o.DestinationType
+	}
 	if !IsNil(o.Currency) {
 		toSerialize["currency"] = o.Currency
 	}
@@ -902,7 +1022,6 @@ func (o *BoostPostRequest) UnmarshalJSON(data []byte) (err error) {
 		"adAccountId",
 		"name",
 		"goal",
-		"budget",
 	}
 
 	allProperties := make(map[string]interface{})
