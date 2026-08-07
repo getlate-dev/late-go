@@ -20,7 +20,7 @@ import (
 // checks if the WebhookPayloadReactionReactionSender type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadReactionReactionSender{}
 
-// WebhookPayloadReactionReactionSender The participant who added or removed the reaction.
+// WebhookPayloadReactionReactionSender Whoever added or removed the reaction. Usually the participant, but on Slack, Instagram and Facebook Messenger it is the business own platform id when the reaction was made from the native app: compare it with conversation.participantId.
 type WebhookPayloadReactionReactionSender struct {
 	Id string `json:"id"`
 	// Zernio CRM Contact id for this sender, when one exists.

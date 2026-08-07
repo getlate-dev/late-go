@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadReaction type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadReaction{}
 
-// WebhookPayloadReaction Webhook payload for reaction received events (WhatsApp, Telegram)
+// WebhookPayloadReaction Webhook payload for reaction received events (WhatsApp, Telegram, Slack, Instagram, Facebook Messenger)
 type WebhookPayloadReaction struct {
 	// Stable webhook event ID
 	Id           string                         `json:"id"`
