@@ -981,6 +981,7 @@ model_money.go
 model_money_amount.go
 model_move_account_to_profile_200_response.go
 model_move_account_to_profile_request.go
+model_move_whats_app_number_to_profile_200_response.go
 model_on_verification_approved_request.go
 model_on_verification_approved_request_verification.go
 model_on_verification_failed_request.go

@@ -793,6 +793,7 @@ func main() {
 | `client.WhatsAppPhoneNumbersAPI.GetWhatsAppPhoneNumber(ctx)` | Get phone number |
 | `client.WhatsAppPhoneNumbersAPI.GetWhatsAppPhoneNumbers(ctx)` | List phone numbers |
 | `client.WhatsAppPhoneNumbersAPI.CheckWhatsAppNumberAvailability(ctx)` | Check country availability |
+| `client.WhatsAppPhoneNumbersAPI.MoveWhatsAppNumberToProfile(ctx)` | Move a number to another profile |
 | `client.WhatsAppPhoneNumbersAPI.PurchaseWhatsAppPhoneNumber(ctx)` | Purchase phone number |
 | `client.WhatsAppPhoneNumbersAPI.ReleaseWhatsAppPhoneNumber(ctx)` | Release phone number |
 | `client.WhatsAppPhoneNumbersAPI.RemediateWhatsAppNumber(ctx)` | Resubmit a declined number |

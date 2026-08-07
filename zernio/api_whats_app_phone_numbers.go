@@ -1122,6 +1122,160 @@ func (a *WhatsAppPhoneNumbersAPIService) ListWhatsAppNumberCountriesExecute(r Wh
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type WhatsAppPhoneNumbersAPIMoveWhatsAppNumberToProfileRequest struct {
+	ctx                         context.Context
+	ApiService                  *WhatsAppPhoneNumbersAPIService
+	id                          string
+	moveAccountToProfileRequest *MoveAccountToProfileRequest
+}
+
+func (r WhatsAppPhoneNumbersAPIMoveWhatsAppNumberToProfileRequest) MoveAccountToProfileRequest(moveAccountToProfileRequest MoveAccountToProfileRequest) WhatsAppPhoneNumbersAPIMoveWhatsAppNumberToProfileRequest {
+	r.moveAccountToProfileRequest = &moveAccountToProfileRequest
+	return r
+}
+
+func (r WhatsAppPhoneNumbersAPIMoveWhatsAppNumberToProfileRequest) Execute() (*MoveWhatsAppNumberToProfile200Response, *http.Response, error) {
+	return r.ApiService.MoveWhatsAppNumberToProfileExecute(r)
+}
+
+/*
+MoveWhatsAppNumberToProfile Move a number to another profile
+
+Move a provisioned number to a different profile.
+
+A number is not a single record. Alongside the number itself there are
+hidden telephony owner accounts (platform `phone`, plus `sms` when SMS is
+enabled) and, once WhatsApp is connected, the `whatsapp` account. They all
+carry a profileId and this endpoint moves them together.
+
+Use this instead of `PATCH /v1/accounts/{accountId}`: that one moves the
+social account only and leaves the number itself pinned to its original
+profile, which splits the number across two profiles. Connecting a
+provisioned number always places it on the profile the NUMBER is on, so a
+`profileId` passed to `GET /v1/connect/whatsapp` cannot re-home it and a
+later reconnect pulls the account back. This endpoint is how you re-home it.
+
+`id` is the number record id from `GET /v1/phone-numbers`, not an account id.
+
+A profile holds at most one account per platform, so the destination must be
+free of every platform this number occupies.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id WhatsAppPhoneNumber id.
+	@return WhatsAppPhoneNumbersAPIMoveWhatsAppNumberToProfileRequest
+*/
+func (a *WhatsAppPhoneNumbersAPIService) MoveWhatsAppNumberToProfile(ctx context.Context, id string) WhatsAppPhoneNumbersAPIMoveWhatsAppNumberToProfileRequest {
+	return WhatsAppPhoneNumbersAPIMoveWhatsAppNumberToProfileRequest{
+		ApiService: a,
+		ctx:        ctx,
+		id:         id,
+	}
+}
+
+// Execute executes the request
+//
+//	@return MoveWhatsAppNumberToProfile200Response
+func (a *WhatsAppPhoneNumbersAPIService) MoveWhatsAppNumberToProfileExecute(r WhatsAppPhoneNumbersAPIMoveWhatsAppNumberToProfileRequest) (*MoveWhatsAppNumberToProfile200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MoveWhatsAppNumberToProfile200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.MoveWhatsAppNumberToProfile")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/phone-numbers/{id}/profile"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.moveAccountToProfileRequest == nil {
+		return localVarReturnValue, nil, reportError("moveAccountToProfileRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.moveAccountToProfileRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest struct {
 	ctx                                context.Context
 	ApiService                         *WhatsAppPhoneNumbersAPIService
