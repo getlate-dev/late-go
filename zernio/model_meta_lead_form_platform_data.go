@@ -22,21 +22,20 @@ var _ MappedNullable = &MetaLeadFormPlatformData{}
 
 // MetaLeadFormPlatformData struct for MetaLeadFormPlatformData
 type MetaLeadFormPlatformData struct {
-	Questions                        []CreateLeadFormRequestQuestionsInner `json:"questions"`
-	PrivacyPolicyLinkText            *string                               `json:"privacyPolicyLinkText,omitempty"`
-	FollowUpActionUrl                *string                               `json:"followUpActionUrl,omitempty"`
-	Locale                           *string                               `json:"locale,omitempty"`
-	ThankYouTitle                    *string                               `json:"thankYouTitle,omitempty"`
-	ThankYouBody                     *string                               `json:"thankYouBody,omitempty"`
-	ThankYouButtonText               *string                               `json:"thankYouButtonText,omitempty"`
-	ThankYouButtonType               *string                               `json:"thankYouButtonType,omitempty"`
-	ThankYouWebsiteUrl               *string                               `json:"thankYouWebsiteUrl,omitempty"`
-	IsOptimizedForQuality            *bool                                 `json:"isOptimizedForQuality,omitempty"`
-	FormType                         *string                               `json:"formType,omitempty"`
-	BlockDisplayForNonTargetedViewer *bool                                 `json:"blockDisplayForNonTargetedViewer,omitempty"`
-	AllowOrganicLeadGen              *bool                                 `json:"allowOrganicLeadGen,omitempty"`
-	QuestionPageCustomHeadline       *string                               `json:"questionPageCustomHeadline,omitempty"`
-	ContextCard                      *MetaLeadFormPlatformDataContextCard  `json:"contextCard,omitempty"`
+	Questions             []CreateLeadFormRequestQuestionsInner `json:"questions"`
+	PrivacyPolicyLinkText *string                               `json:"privacyPolicyLinkText,omitempty"`
+	FollowUpActionUrl     *string                               `json:"followUpActionUrl,omitempty"`
+	Locale                *string                               `json:"locale,omitempty"`
+	ThankYouTitle         *string                               `json:"thankYouTitle,omitempty"`
+	ThankYouBody          *string                               `json:"thankYouBody,omitempty"`
+	ThankYouButtonText    *string                               `json:"thankYouButtonText,omitempty"`
+	ThankYouButtonType    *string                               `json:"thankYouButtonType,omitempty"`
+	ThankYouWebsiteUrl    *string                               `json:"thankYouWebsiteUrl,omitempty"`
+	// Set true for a higher-intent form (adds a review step before submit).
+	IsOptimizedForQuality            *bool                                `json:"isOptimizedForQuality,omitempty"`
+	BlockDisplayForNonTargetedViewer *bool                                `json:"blockDisplayForNonTargetedViewer,omitempty"`
+	QuestionPageCustomHeadline       *string                              `json:"questionPageCustomHeadline,omitempty"`
+	ContextCard                      *MetaLeadFormPlatformDataContextCard `json:"contextCard,omitempty"`
 }
 
 type _MetaLeadFormPlatformData MetaLeadFormPlatformData
@@ -371,38 +370,6 @@ func (o *MetaLeadFormPlatformData) SetIsOptimizedForQuality(v bool) {
 	o.IsOptimizedForQuality = &v
 }
 
-// GetFormType returns the FormType field value if set, zero value otherwise.
-func (o *MetaLeadFormPlatformData) GetFormType() string {
-	if o == nil || IsNil(o.FormType) {
-		var ret string
-		return ret
-	}
-	return *o.FormType
-}
-
-// GetFormTypeOk returns a tuple with the FormType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *MetaLeadFormPlatformData) GetFormTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.FormType) {
-		return nil, false
-	}
-	return o.FormType, true
-}
-
-// HasFormType returns a boolean if a field has been set.
-func (o *MetaLeadFormPlatformData) HasFormType() bool {
-	if o != nil && !IsNil(o.FormType) {
-		return true
-	}
-
-	return false
-}
-
-// SetFormType gets a reference to the given string and assigns it to the FormType field.
-func (o *MetaLeadFormPlatformData) SetFormType(v string) {
-	o.FormType = &v
-}
-
 // GetBlockDisplayForNonTargetedViewer returns the BlockDisplayForNonTargetedViewer field value if set, zero value otherwise.
 func (o *MetaLeadFormPlatformData) GetBlockDisplayForNonTargetedViewer() bool {
 	if o == nil || IsNil(o.BlockDisplayForNonTargetedViewer) {
@@ -433,38 +400,6 @@ func (o *MetaLeadFormPlatformData) HasBlockDisplayForNonTargetedViewer() bool {
 // SetBlockDisplayForNonTargetedViewer gets a reference to the given bool and assigns it to the BlockDisplayForNonTargetedViewer field.
 func (o *MetaLeadFormPlatformData) SetBlockDisplayForNonTargetedViewer(v bool) {
 	o.BlockDisplayForNonTargetedViewer = &v
-}
-
-// GetAllowOrganicLeadGen returns the AllowOrganicLeadGen field value if set, zero value otherwise.
-func (o *MetaLeadFormPlatformData) GetAllowOrganicLeadGen() bool {
-	if o == nil || IsNil(o.AllowOrganicLeadGen) {
-		var ret bool
-		return ret
-	}
-	return *o.AllowOrganicLeadGen
-}
-
-// GetAllowOrganicLeadGenOk returns a tuple with the AllowOrganicLeadGen field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *MetaLeadFormPlatformData) GetAllowOrganicLeadGenOk() (*bool, bool) {
-	if o == nil || IsNil(o.AllowOrganicLeadGen) {
-		return nil, false
-	}
-	return o.AllowOrganicLeadGen, true
-}
-
-// HasAllowOrganicLeadGen returns a boolean if a field has been set.
-func (o *MetaLeadFormPlatformData) HasAllowOrganicLeadGen() bool {
-	if o != nil && !IsNil(o.AllowOrganicLeadGen) {
-		return true
-	}
-
-	return false
-}
-
-// SetAllowOrganicLeadGen gets a reference to the given bool and assigns it to the AllowOrganicLeadGen field.
-func (o *MetaLeadFormPlatformData) SetAllowOrganicLeadGen(v bool) {
-	o.AllowOrganicLeadGen = &v
 }
 
 // GetQuestionPageCustomHeadline returns the QuestionPageCustomHeadline field value if set, zero value otherwise.
@@ -569,14 +504,8 @@ func (o MetaLeadFormPlatformData) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.IsOptimizedForQuality) {
 		toSerialize["isOptimizedForQuality"] = o.IsOptimizedForQuality
 	}
-	if !IsNil(o.FormType) {
-		toSerialize["formType"] = o.FormType
-	}
 	if !IsNil(o.BlockDisplayForNonTargetedViewer) {
 		toSerialize["blockDisplayForNonTargetedViewer"] = o.BlockDisplayForNonTargetedViewer
-	}
-	if !IsNil(o.AllowOrganicLeadGen) {
-		toSerialize["allowOrganicLeadGen"] = o.AllowOrganicLeadGen
 	}
 	if !IsNil(o.QuestionPageCustomHeadline) {
 		toSerialize["questionPageCustomHeadline"] = o.QuestionPageCustomHeadline
