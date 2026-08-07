@@ -45,7 +45,9 @@ type ConversionEventUser struct {
 	// Meta advanced matching (db). YYYYMMDD; hashed server-side. Meta only.
 	Dob *string `json:"dob,omitempty"`
 	// Meta advanced matching (ge). 'f' or 'm'; hashed server-side. Meta only.
-	Gender   *string                      `json:"gender,omitempty"`
+	Gender *string `json:"gender,omitempty"`
+	// Meta lead ID from a Lead Ad submission, as a string. Required for Conversion Leads CRM events: send it with `actionSource: 'crm'` and `platformData: { event_source: 'crm', lead_event_source: '<CRM name>' }`. Forwarded unhashed to Meta's `user_data.lead_id`. Meta only.
+	LeadId   *string                      `json:"leadId,omitempty"`
 	ClickIds *ConversionEventUserClickIds `json:"clickIds,omitempty"`
 }
 
@@ -482,6 +484,38 @@ func (o *ConversionEventUser) SetGender(v string) {
 	o.Gender = &v
 }
 
+// GetLeadId returns the LeadId field value if set, zero value otherwise.
+func (o *ConversionEventUser) GetLeadId() string {
+	if o == nil || IsNil(o.LeadId) {
+		var ret string
+		return ret
+	}
+	return *o.LeadId
+}
+
+// GetLeadIdOk returns a tuple with the LeadId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUser) GetLeadIdOk() (*string, bool) {
+	if o == nil || IsNil(o.LeadId) {
+		return nil, false
+	}
+	return o.LeadId, true
+}
+
+// HasLeadId returns a boolean if a field has been set.
+func (o *ConversionEventUser) HasLeadId() bool {
+	if o != nil && !IsNil(o.LeadId) {
+		return true
+	}
+
+	return false
+}
+
+// SetLeadId gets a reference to the given string and assigns it to the LeadId field.
+func (o *ConversionEventUser) SetLeadId(v string) {
+	o.LeadId = &v
+}
+
 // GetClickIds returns the ClickIds field value if set, zero value otherwise.
 func (o *ConversionEventUser) GetClickIds() ConversionEventUserClickIds {
 	if o == nil || IsNil(o.ClickIds) {
@@ -562,6 +596,9 @@ func (o ConversionEventUser) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Gender) {
 		toSerialize["gender"] = o.Gender
+	}
+	if !IsNil(o.LeadId) {
+		toSerialize["leadId"] = o.LeadId
 	}
 	if !IsNil(o.ClickIds) {
 		toSerialize["clickIds"] = o.ClickIds

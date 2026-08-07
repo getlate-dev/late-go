@@ -56,9 +56,13 @@ type CreateCommentAutomationRequest struct {
 	// Wrap link buttons in the DM in a tracked redirect so clicks are counted (Link Clicks / CTR). Pass false to send links exactly as written. Defaults to on.
 	LinkTracking *bool `json:"linkTracking,omitempty"`
 	// Optional tag applied to a contact when they click a tracked link (requires linkTracking). Lets you segment clickers for broadcasts/sequences.
-	ClickTag   *string                      `json:"clickTag,omitempty"`
-	Audience   *CommentAutomationAudience   `json:"audience,omitempty"`
-	FollowGate *CommentAutomationFollowGate `json:"followGate,omitempty"`
+	ClickTag *string `json:"clickTag,omitempty"`
+	// Seconds to wait after the trigger before sending the DM. Omit or send 0 to reply immediately (the default). Max 86400 (24h). The trigger is still matched and deduplicated the moment the comment arrives, so a delay only moves when the response is sent.
+	DmDelaySeconds *int32 `json:"dmDelaySeconds,omitempty"`
+	// Seconds to wait before posting the public comment reply. Omit or send 0 to post it right after the DM (the default). The reply never goes out before the DM, so a value below dmDelaySeconds is raised to it. Ignored when trigger=story_reply, which has no public reply.
+	CommentReplyDelaySeconds *int32                       `json:"commentReplyDelaySeconds,omitempty"`
+	Audience                 *CommentAutomationAudience   `json:"audience,omitempty"`
+	FollowGate               *CommentAutomationFollowGate `json:"followGate,omitempty"`
 }
 
 type _CreateCommentAutomationRequest CreateCommentAutomationRequest
@@ -640,6 +644,70 @@ func (o *CreateCommentAutomationRequest) SetClickTag(v string) {
 	o.ClickTag = &v
 }
 
+// GetDmDelaySeconds returns the DmDelaySeconds field value if set, zero value otherwise.
+func (o *CreateCommentAutomationRequest) GetDmDelaySeconds() int32 {
+	if o == nil || IsNil(o.DmDelaySeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.DmDelaySeconds
+}
+
+// GetDmDelaySecondsOk returns a tuple with the DmDelaySeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomationRequest) GetDmDelaySecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.DmDelaySeconds) {
+		return nil, false
+	}
+	return o.DmDelaySeconds, true
+}
+
+// HasDmDelaySeconds returns a boolean if a field has been set.
+func (o *CreateCommentAutomationRequest) HasDmDelaySeconds() bool {
+	if o != nil && !IsNil(o.DmDelaySeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetDmDelaySeconds gets a reference to the given int32 and assigns it to the DmDelaySeconds field.
+func (o *CreateCommentAutomationRequest) SetDmDelaySeconds(v int32) {
+	o.DmDelaySeconds = &v
+}
+
+// GetCommentReplyDelaySeconds returns the CommentReplyDelaySeconds field value if set, zero value otherwise.
+func (o *CreateCommentAutomationRequest) GetCommentReplyDelaySeconds() int32 {
+	if o == nil || IsNil(o.CommentReplyDelaySeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.CommentReplyDelaySeconds
+}
+
+// GetCommentReplyDelaySecondsOk returns a tuple with the CommentReplyDelaySeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomationRequest) GetCommentReplyDelaySecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.CommentReplyDelaySeconds) {
+		return nil, false
+	}
+	return o.CommentReplyDelaySeconds, true
+}
+
+// HasCommentReplyDelaySeconds returns a boolean if a field has been set.
+func (o *CreateCommentAutomationRequest) HasCommentReplyDelaySeconds() bool {
+	if o != nil && !IsNil(o.CommentReplyDelaySeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommentReplyDelaySeconds gets a reference to the given int32 and assigns it to the CommentReplyDelaySeconds field.
+func (o *CreateCommentAutomationRequest) SetCommentReplyDelaySeconds(v int32) {
+	o.CommentReplyDelaySeconds = &v
+}
+
 // GetAudience returns the Audience field value if set, zero value otherwise.
 func (o *CreateCommentAutomationRequest) GetAudience() CommentAutomationAudience {
 	if o == nil || IsNil(o.Audience) {
@@ -759,6 +827,12 @@ func (o CreateCommentAutomationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.ClickTag) {
 		toSerialize["clickTag"] = o.ClickTag
+	}
+	if !IsNil(o.DmDelaySeconds) {
+		toSerialize["dmDelaySeconds"] = o.DmDelaySeconds
+	}
+	if !IsNil(o.CommentReplyDelaySeconds) {
+		toSerialize["commentReplyDelaySeconds"] = o.CommentReplyDelaySeconds
 	}
 	if !IsNil(o.Audience) {
 		toSerialize["audience"] = o.Audience

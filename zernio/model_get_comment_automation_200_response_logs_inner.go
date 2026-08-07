@@ -26,7 +26,7 @@ type GetCommentAutomation200ResponseLogsInner struct {
 	CommenterId   *string `json:"commenterId,omitempty"`
 	CommenterName *string `json:"commenterName,omitempty"`
 	CommentText   *string `json:"commentText,omitempty"`
-	// DM outcome. 'gated' = the follow-gate confirmation DM went out and we are waiting for the tap; it flips to 'sent' or 'skipped' when they tap.
+	// DM outcome. 'pending' = the automation has a dmDelaySeconds and the response is queued but not sent yet. 'gated' = the follow-gate confirmation DM went out and we are waiting for the tap; it flips to 'sent' or 'skipped' when they tap.
 	Status *string `json:"status,omitempty"`
 	// How the audience rule resolved. Absent on automations without one.
 	AudienceOutcome *string `json:"audienceOutcome,omitempty"`
@@ -38,8 +38,10 @@ type GetCommentAutomation200ResponseLogsInner struct {
 	// Outcome of the optional public reply on the triggering comment. 'skipped' if no commentReply was configured or if the DM failed (the public reply is not attempted in that case).
 	CommentReplyStatus *string `json:"commentReplyStatus,omitempty"`
 	// Public-reply error message if commentReplyStatus is failed
-	CommentReplyError *string    `json:"commentReplyError,omitempty"`
-	CreatedAt         *time.Time `json:"createdAt,omitempty"`
+	CommentReplyError *string `json:"commentReplyError,omitempty"`
+	// When the next queued send fires. Present only while something is still pending.
+	NextDueAt *time.Time `json:"nextDueAt,omitempty"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
 }
 
 // NewGetCommentAutomation200ResponseLogsInner instantiates a new GetCommentAutomation200ResponseLogsInner object
@@ -443,6 +445,38 @@ func (o *GetCommentAutomation200ResponseLogsInner) SetCommentReplyError(v string
 	o.CommentReplyError = &v
 }
 
+// GetNextDueAt returns the NextDueAt field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseLogsInner) GetNextDueAt() time.Time {
+	if o == nil || IsNil(o.NextDueAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.NextDueAt
+}
+
+// GetNextDueAtOk returns a tuple with the NextDueAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) GetNextDueAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.NextDueAt) {
+		return nil, false
+	}
+	return o.NextDueAt, true
+}
+
+// HasNextDueAt returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) HasNextDueAt() bool {
+	if o != nil && !IsNil(o.NextDueAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetNextDueAt gets a reference to the given time.Time and assigns it to the NextDueAt field.
+func (o *GetCommentAutomation200ResponseLogsInner) SetNextDueAt(v time.Time) {
+	o.NextDueAt = &v
+}
+
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
 func (o *GetCommentAutomation200ResponseLogsInner) GetCreatedAt() time.Time {
 	if o == nil || IsNil(o.CreatedAt) {
@@ -520,6 +554,9 @@ func (o GetCommentAutomation200ResponseLogsInner) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.CommentReplyError) {
 		toSerialize["commentReplyError"] = o.CommentReplyError
+	}
+	if !IsNil(o.NextDueAt) {
+		toSerialize["nextDueAt"] = o.NextDueAt
 	}
 	if !IsNil(o.CreatedAt) {
 		toSerialize["createdAt"] = o.CreatedAt

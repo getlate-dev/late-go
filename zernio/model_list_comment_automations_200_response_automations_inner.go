@@ -46,10 +46,14 @@ type ListCommentAutomations200ResponseAutomationsInner struct {
 	// Whether link buttons in the DM are wrapped in a tracked redirect to count clicks.
 	LinkTracking *bool `json:"linkTracking,omitempty"`
 	// Tag applied to a contact when they click a tracked link.
-	ClickTag  *string                                                 `json:"clickTag,omitempty"`
-	IsActive  *bool                                                   `json:"isActive,omitempty"`
-	Stats     *ListCommentAutomations200ResponseAutomationsInnerStats `json:"stats,omitempty"`
-	CreatedAt *time.Time                                              `json:"createdAt,omitempty"`
+	ClickTag *string `json:"clickTag,omitempty"`
+	// Seconds waited after the trigger before the DM is sent. Absent when the DM goes out immediately.
+	DmDelaySeconds *int32 `json:"dmDelaySeconds,omitempty"`
+	// Seconds waited before the public reply is posted. Absent when it follows the DM immediately.
+	CommentReplyDelaySeconds *int32                                                  `json:"commentReplyDelaySeconds,omitempty"`
+	IsActive                 *bool                                                   `json:"isActive,omitempty"`
+	Stats                    *ListCommentAutomations200ResponseAutomationsInnerStats `json:"stats,omitempty"`
+	CreatedAt                *time.Time                                              `json:"createdAt,omitempty"`
 }
 
 // NewListCommentAutomations200ResponseAutomationsInner instantiates a new ListCommentAutomations200ResponseAutomationsInner object
@@ -645,6 +649,70 @@ func (o *ListCommentAutomations200ResponseAutomationsInner) SetClickTag(v string
 	o.ClickTag = &v
 }
 
+// GetDmDelaySeconds returns the DmDelaySeconds field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetDmDelaySeconds() int32 {
+	if o == nil || IsNil(o.DmDelaySeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.DmDelaySeconds
+}
+
+// GetDmDelaySecondsOk returns a tuple with the DmDelaySeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetDmDelaySecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.DmDelaySeconds) {
+		return nil, false
+	}
+	return o.DmDelaySeconds, true
+}
+
+// HasDmDelaySeconds returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasDmDelaySeconds() bool {
+	if o != nil && !IsNil(o.DmDelaySeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetDmDelaySeconds gets a reference to the given int32 and assigns it to the DmDelaySeconds field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetDmDelaySeconds(v int32) {
+	o.DmDelaySeconds = &v
+}
+
+// GetCommentReplyDelaySeconds returns the CommentReplyDelaySeconds field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetCommentReplyDelaySeconds() int32 {
+	if o == nil || IsNil(o.CommentReplyDelaySeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.CommentReplyDelaySeconds
+}
+
+// GetCommentReplyDelaySecondsOk returns a tuple with the CommentReplyDelaySeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetCommentReplyDelaySecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.CommentReplyDelaySeconds) {
+		return nil, false
+	}
+	return o.CommentReplyDelaySeconds, true
+}
+
+// HasCommentReplyDelaySeconds returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasCommentReplyDelaySeconds() bool {
+	if o != nil && !IsNil(o.CommentReplyDelaySeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommentReplyDelaySeconds gets a reference to the given int32 and assigns it to the CommentReplyDelaySeconds field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetCommentReplyDelaySeconds(v int32) {
+	o.CommentReplyDelaySeconds = &v
+}
+
 // GetIsActive returns the IsActive field value if set, zero value otherwise.
 func (o *ListCommentAutomations200ResponseAutomationsInner) GetIsActive() bool {
 	if o == nil || IsNil(o.IsActive) {
@@ -804,6 +872,12 @@ func (o ListCommentAutomations200ResponseAutomationsInner) ToMap() (map[string]i
 	}
 	if !IsNil(o.ClickTag) {
 		toSerialize["clickTag"] = o.ClickTag
+	}
+	if !IsNil(o.DmDelaySeconds) {
+		toSerialize["dmDelaySeconds"] = o.DmDelaySeconds
+	}
+	if !IsNil(o.CommentReplyDelaySeconds) {
+		toSerialize["commentReplyDelaySeconds"] = o.CommentReplyDelaySeconds
 	}
 	if !IsNil(o.IsActive) {
 		toSerialize["isActive"] = o.IsActive

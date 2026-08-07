@@ -43,15 +43,19 @@ type GetCommentAutomation200ResponseAutomation struct {
 	// Alternate DM texts rotated at random with dmMessage. Omitted when none.
 	DmMessageVariations []string `json:"dmMessageVariations,omitempty"`
 	// Alternate public replies rotated at random with commentReply. Omitted when none.
-	CommentReplyVariations []string                                           `json:"commentReplyVariations,omitempty"`
-	LinkTracking           *bool                                              `json:"linkTracking,omitempty"`
-	ClickTag               *string                                            `json:"clickTag,omitempty"`
-	Audience               *CommentAutomationAudience                         `json:"audience,omitempty"`
-	FollowGate             *CommentAutomationFollowGate                       `json:"followGate,omitempty"`
-	IsActive               *bool                                              `json:"isActive,omitempty"`
-	Stats                  *CreateCommentAutomation200ResponseAutomationStats `json:"stats,omitempty"`
-	CreatedAt              *time.Time                                         `json:"createdAt,omitempty"`
-	UpdatedAt              *time.Time                                         `json:"updatedAt,omitempty"`
+	CommentReplyVariations []string `json:"commentReplyVariations,omitempty"`
+	LinkTracking           *bool    `json:"linkTracking,omitempty"`
+	ClickTag               *string  `json:"clickTag,omitempty"`
+	// Seconds waited after the trigger before the DM is sent. Absent when the DM goes out immediately.
+	DmDelaySeconds *int32 `json:"dmDelaySeconds,omitempty"`
+	// Seconds waited before the public reply is posted. Absent when it follows the DM immediately.
+	CommentReplyDelaySeconds *int32                                             `json:"commentReplyDelaySeconds,omitempty"`
+	Audience                 *CommentAutomationAudience                         `json:"audience,omitempty"`
+	FollowGate               *CommentAutomationFollowGate                       `json:"followGate,omitempty"`
+	IsActive                 *bool                                              `json:"isActive,omitempty"`
+	Stats                    *CreateCommentAutomation200ResponseAutomationStats `json:"stats,omitempty"`
+	CreatedAt                *time.Time                                         `json:"createdAt,omitempty"`
+	UpdatedAt                *time.Time                                         `json:"updatedAt,omitempty"`
 }
 
 // NewGetCommentAutomation200ResponseAutomation instantiates a new GetCommentAutomation200ResponseAutomation object
@@ -679,6 +683,70 @@ func (o *GetCommentAutomation200ResponseAutomation) SetClickTag(v string) {
 	o.ClickTag = &v
 }
 
+// GetDmDelaySeconds returns the DmDelaySeconds field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseAutomation) GetDmDelaySeconds() int32 {
+	if o == nil || IsNil(o.DmDelaySeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.DmDelaySeconds
+}
+
+// GetDmDelaySecondsOk returns a tuple with the DmDelaySeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseAutomation) GetDmDelaySecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.DmDelaySeconds) {
+		return nil, false
+	}
+	return o.DmDelaySeconds, true
+}
+
+// HasDmDelaySeconds returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseAutomation) HasDmDelaySeconds() bool {
+	if o != nil && !IsNil(o.DmDelaySeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetDmDelaySeconds gets a reference to the given int32 and assigns it to the DmDelaySeconds field.
+func (o *GetCommentAutomation200ResponseAutomation) SetDmDelaySeconds(v int32) {
+	o.DmDelaySeconds = &v
+}
+
+// GetCommentReplyDelaySeconds returns the CommentReplyDelaySeconds field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseAutomation) GetCommentReplyDelaySeconds() int32 {
+	if o == nil || IsNil(o.CommentReplyDelaySeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.CommentReplyDelaySeconds
+}
+
+// GetCommentReplyDelaySecondsOk returns a tuple with the CommentReplyDelaySeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseAutomation) GetCommentReplyDelaySecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.CommentReplyDelaySeconds) {
+		return nil, false
+	}
+	return o.CommentReplyDelaySeconds, true
+}
+
+// HasCommentReplyDelaySeconds returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseAutomation) HasCommentReplyDelaySeconds() bool {
+	if o != nil && !IsNil(o.CommentReplyDelaySeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommentReplyDelaySeconds gets a reference to the given int32 and assigns it to the CommentReplyDelaySeconds field.
+func (o *GetCommentAutomation200ResponseAutomation) SetCommentReplyDelaySeconds(v int32) {
+	o.CommentReplyDelaySeconds = &v
+}
+
 // GetAudience returns the Audience field value if set, zero value otherwise.
 func (o *GetCommentAutomation200ResponseAutomation) GetAudience() CommentAutomationAudience {
 	if o == nil || IsNil(o.Audience) {
@@ -937,6 +1005,12 @@ func (o GetCommentAutomation200ResponseAutomation) ToMap() (map[string]interface
 	}
 	if !IsNil(o.ClickTag) {
 		toSerialize["clickTag"] = o.ClickTag
+	}
+	if !IsNil(o.DmDelaySeconds) {
+		toSerialize["dmDelaySeconds"] = o.DmDelaySeconds
+	}
+	if !IsNil(o.CommentReplyDelaySeconds) {
+		toSerialize["commentReplyDelaySeconds"] = o.CommentReplyDelaySeconds
 	}
 	if !IsNil(o.Audience) {
 		toSerialize["audience"] = o.Audience

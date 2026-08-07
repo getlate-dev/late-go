@@ -39,7 +39,7 @@ type ConversionEvent struct {
 	SourceUrl *string `json:"sourceUrl,omitempty"`
 	// Where the conversion happened. Used by Meta. Google also requires an event source internally; omitting this field sends OTHER to Google. Send an explicit value for accurate origin reporting.
 	ActionSource *string `json:"actionSource,omitempty"`
-	// Escape hatch for platform-specific fields we haven't normalized. Forwarded as-is.
+	// Escape hatch for platform-specific fields we haven't normalized. On Meta, keys are shallow-merged into `custom_data` only: fields Zernio already builds (`value`, `currency`, `contents`, `num_items`) always win on collision, and `user_data` (hashed match keys) is never touched. Use first-class fields (e.g. `user.leadId`) for anything that must reach `user_data`.
 	PlatformData map[string]interface{} `json:"platformData,omitempty"`
 }
 

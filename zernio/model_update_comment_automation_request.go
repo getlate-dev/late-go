@@ -41,10 +41,14 @@ type UpdateCommentAutomationRequest struct {
 	// Wrap link buttons in a tracked redirect to count clicks. Pass false to send links untouched.
 	LinkTracking *bool `json:"linkTracking,omitempty"`
 	// Tag applied to a contact when they click a tracked link (requires linkTracking). Empty string clears it.
-	ClickTag   *string                      `json:"clickTag,omitempty"`
-	Audience   *CommentAutomationAudience   `json:"audience,omitempty"`
-	FollowGate *CommentAutomationFollowGate `json:"followGate,omitempty"`
-	IsActive   *bool                        `json:"isActive,omitempty"`
+	ClickTag *string `json:"clickTag,omitempty"`
+	// Seconds to wait after the trigger before sending the DM. Send 0 to clear the delay and reply immediately.
+	DmDelaySeconds *int32 `json:"dmDelaySeconds,omitempty"`
+	// Seconds to wait before posting the public comment reply. Send 0 to clear it. The reply never goes out before the DM.
+	CommentReplyDelaySeconds *int32                       `json:"commentReplyDelaySeconds,omitempty"`
+	Audience                 *CommentAutomationAudience   `json:"audience,omitempty"`
+	FollowGate               *CommentAutomationFollowGate `json:"followGate,omitempty"`
+	IsActive                 *bool                        `json:"isActive,omitempty"`
 }
 
 // NewUpdateCommentAutomationRequest instantiates a new UpdateCommentAutomationRequest object
@@ -480,6 +484,70 @@ func (o *UpdateCommentAutomationRequest) SetClickTag(v string) {
 	o.ClickTag = &v
 }
 
+// GetDmDelaySeconds returns the DmDelaySeconds field value if set, zero value otherwise.
+func (o *UpdateCommentAutomationRequest) GetDmDelaySeconds() int32 {
+	if o == nil || IsNil(o.DmDelaySeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.DmDelaySeconds
+}
+
+// GetDmDelaySecondsOk returns a tuple with the DmDelaySeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCommentAutomationRequest) GetDmDelaySecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.DmDelaySeconds) {
+		return nil, false
+	}
+	return o.DmDelaySeconds, true
+}
+
+// HasDmDelaySeconds returns a boolean if a field has been set.
+func (o *UpdateCommentAutomationRequest) HasDmDelaySeconds() bool {
+	if o != nil && !IsNil(o.DmDelaySeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetDmDelaySeconds gets a reference to the given int32 and assigns it to the DmDelaySeconds field.
+func (o *UpdateCommentAutomationRequest) SetDmDelaySeconds(v int32) {
+	o.DmDelaySeconds = &v
+}
+
+// GetCommentReplyDelaySeconds returns the CommentReplyDelaySeconds field value if set, zero value otherwise.
+func (o *UpdateCommentAutomationRequest) GetCommentReplyDelaySeconds() int32 {
+	if o == nil || IsNil(o.CommentReplyDelaySeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.CommentReplyDelaySeconds
+}
+
+// GetCommentReplyDelaySecondsOk returns a tuple with the CommentReplyDelaySeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCommentAutomationRequest) GetCommentReplyDelaySecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.CommentReplyDelaySeconds) {
+		return nil, false
+	}
+	return o.CommentReplyDelaySeconds, true
+}
+
+// HasCommentReplyDelaySeconds returns a boolean if a field has been set.
+func (o *UpdateCommentAutomationRequest) HasCommentReplyDelaySeconds() bool {
+	if o != nil && !IsNil(o.CommentReplyDelaySeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommentReplyDelaySeconds gets a reference to the given int32 and assigns it to the CommentReplyDelaySeconds field.
+func (o *UpdateCommentAutomationRequest) SetCommentReplyDelaySeconds(v int32) {
+	o.CommentReplyDelaySeconds = &v
+}
+
 // GetAudience returns the Audience field value if set, zero value otherwise.
 func (o *UpdateCommentAutomationRequest) GetAudience() CommentAutomationAudience {
 	if o == nil || IsNil(o.Audience) {
@@ -624,6 +692,12 @@ func (o UpdateCommentAutomationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.ClickTag) {
 		toSerialize["clickTag"] = o.ClickTag
+	}
+	if !IsNil(o.DmDelaySeconds) {
+		toSerialize["dmDelaySeconds"] = o.DmDelaySeconds
+	}
+	if !IsNil(o.CommentReplyDelaySeconds) {
+		toSerialize["commentReplyDelaySeconds"] = o.CommentReplyDelaySeconds
 	}
 	if !IsNil(o.Audience) {
 		toSerialize["audience"] = o.Audience
