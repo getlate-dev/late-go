@@ -1616,7 +1616,7 @@ returns 422; a key still in flight returns 409. Works for JSON and
 multipart (file upload) requests alike. Keys are retained for 24 hours.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param conversationId The conversation ID (id field from list conversations endpoint). This is the platform-specific conversation identifier, not an internal database ID.
+	@param conversationId Opaque conversation identifier, accepted verbatim from the list endpoint or from the conversationId on inbox webhooks. Format not to be assumed.
 	@return MessagesAPISendInboxMessageRequest
 */
 func (a *MessagesAPIService) SendInboxMessage(ctx context.Context, conversationId string) MessagesAPISendInboxMessageRequest {
