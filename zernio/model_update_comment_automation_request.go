@@ -32,8 +32,10 @@ type UpdateCommentAutomationRequest struct {
 	TypoTolerance *bool   `json:"typoTolerance,omitempty"`
 	DmMessage     *string `json:"dmMessage,omitempty"`
 	// Inline DM buttons (1-3). Pass [] to clear all buttons.
-	Buttons      []DmButton `json:"buttons,omitempty"`
-	CommentReply *string    `json:"commentReply,omitempty"`
+	Buttons []DmButton `json:"buttons,omitempty"`
+	// Product card sent instead of the plain dmMessage bubble. Pass null to clear it and fall back to dmMessage. Mutually exclusive with buttons, including with the buttons already stored on the automation.
+	Template     NullableCommentAutomationTemplate `json:"template,omitempty"`
+	CommentReply *string                           `json:"commentReply,omitempty"`
 	// Alternate DM texts for random rotation (see create). Pass [] to clear.
 	DmMessageVariations []string `json:"dmMessageVariations,omitempty"`
 	// Alternate public replies for random rotation. Pass [] to clear.
@@ -322,6 +324,49 @@ func (o *UpdateCommentAutomationRequest) HasButtons() bool {
 // SetButtons gets a reference to the given []DmButton and assigns it to the Buttons field.
 func (o *UpdateCommentAutomationRequest) SetButtons(v []DmButton) {
 	o.Buttons = v
+}
+
+// GetTemplate returns the Template field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateCommentAutomationRequest) GetTemplate() CommentAutomationTemplate {
+	if o == nil || IsNil(o.Template.Get()) {
+		var ret CommentAutomationTemplate
+		return ret
+	}
+	return *o.Template.Get()
+}
+
+// GetTemplateOk returns a tuple with the Template field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateCommentAutomationRequest) GetTemplateOk() (*CommentAutomationTemplate, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Template.Get(), o.Template.IsSet()
+}
+
+// HasTemplate returns a boolean if a field has been set.
+func (o *UpdateCommentAutomationRequest) HasTemplate() bool {
+	if o != nil && o.Template.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplate gets a reference to the given NullableCommentAutomationTemplate and assigns it to the Template field.
+func (o *UpdateCommentAutomationRequest) SetTemplate(v CommentAutomationTemplate) {
+	o.Template.Set(&v)
+}
+
+// SetTemplateNil sets the value for Template to be an explicit nil
+func (o *UpdateCommentAutomationRequest) SetTemplateNil() {
+	o.Template.Set(nil)
+}
+
+// UnsetTemplate ensures that no value is present for Template, not even an explicit nil
+func (o *UpdateCommentAutomationRequest) UnsetTemplate() {
+	o.Template.Unset()
 }
 
 // GetCommentReply returns the CommentReply field value if set, zero value otherwise.
@@ -677,6 +722,9 @@ func (o UpdateCommentAutomationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.Buttons) {
 		toSerialize["buttons"] = o.Buttons
+	}
+	if o.Template.IsSet() {
+		toSerialize["template"] = o.Template.Get()
 	}
 	if !IsNil(o.CommentReply) {
 		toSerialize["commentReply"] = o.CommentReply

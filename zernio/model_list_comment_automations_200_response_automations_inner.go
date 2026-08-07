@@ -37,8 +37,9 @@ type ListCommentAutomations200ResponseAutomationsInner struct {
 	TypoTolerance *bool   `json:"typoTolerance,omitempty"`
 	DmMessage     *string `json:"dmMessage,omitempty"`
 	// Inline DM buttons (up to 3). Omitted when none are set.
-	Buttons      []DmButton `json:"buttons,omitempty"`
-	CommentReply *string    `json:"commentReply,omitempty"`
+	Buttons      []DmButton                 `json:"buttons,omitempty"`
+	Template     *CommentAutomationTemplate `json:"template,omitempty"`
+	CommentReply *string                    `json:"commentReply,omitempty"`
 	// Alternate DM texts rotated at random with dmMessage. Omitted when none.
 	DmMessageVariations []string `json:"dmMessageVariations,omitempty"`
 	// Alternate public replies rotated at random with commentReply. Omitted when none.
@@ -489,6 +490,38 @@ func (o *ListCommentAutomations200ResponseAutomationsInner) SetButtons(v []DmBut
 	o.Buttons = v
 }
 
+// GetTemplate returns the Template field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetTemplate() CommentAutomationTemplate {
+	if o == nil || IsNil(o.Template) {
+		var ret CommentAutomationTemplate
+		return ret
+	}
+	return *o.Template
+}
+
+// GetTemplateOk returns a tuple with the Template field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetTemplateOk() (*CommentAutomationTemplate, bool) {
+	if o == nil || IsNil(o.Template) {
+		return nil, false
+	}
+	return o.Template, true
+}
+
+// HasTemplate returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasTemplate() bool {
+	if o != nil && !IsNil(o.Template) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplate gets a reference to the given CommentAutomationTemplate and assigns it to the Template field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetTemplate(v CommentAutomationTemplate) {
+	o.Template = &v
+}
+
 // GetCommentReply returns the CommentReply field value if set, zero value otherwise.
 func (o *ListCommentAutomations200ResponseAutomationsInner) GetCommentReply() string {
 	if o == nil || IsNil(o.CommentReply) {
@@ -857,6 +890,9 @@ func (o ListCommentAutomations200ResponseAutomationsInner) ToMap() (map[string]i
 	}
 	if !IsNil(o.Buttons) {
 		toSerialize["buttons"] = o.Buttons
+	}
+	if !IsNil(o.Template) {
+		toSerialize["template"] = o.Template
 	}
 	if !IsNil(o.CommentReply) {
 		toSerialize["commentReply"] = o.CommentReply
