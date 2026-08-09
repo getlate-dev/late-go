@@ -1307,6 +1307,7 @@ type ConnectAPIGetConnectUrlRequest struct {
 	profileId   *string
 	redirectUrl *string
 	headless    *bool
+	loginMethod *string
 }
 
 // Your Zernio profile ID (get from /v1/profiles). For WhatsApp, a Zernio-provisioned number can only be connected on the profile it was provisioned to; connecting from any other profile is rejected with a 409.
@@ -1324,6 +1325,12 @@ func (r ConnectAPIGetConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectA
 // When true, the user is redirected to your redirect_url with raw OAuth data (code, state) instead of Zernio&#39;s default account selection UI. Use this to build a custom connect experience.
 func (r ConnectAPIGetConnectUrlRequest) Headless(headless bool) ConnectAPIGetConnectUrlRequest {
 	r.headless = &headless
+	return r
+}
+
+// Instagram only. Which of the two Instagram connection methods to use. Ignored for every other platform.  &#x60;instagram_login&#x60; (the default, and what you get if you omit this): the Instagram Login dialog. The user authorizes their Instagram professional account directly, no Facebook Page required.  &#x60;facebook_login&#x60;: the Facebook Login dialog, i.e. \&quot;Instagram API with Facebook Login\&quot;. The user authorizes a Facebook Page that has a linked Instagram professional account, and every API call for that account then runs through the Page. Use this when the customer manages Instagram through a Page and expects the Facebook consent screen. Because the user has to pick which Page to connect, the callback continues at the account-selection step, &#x60;/v1/connect/instagram/select-account&#x60;.  &#x60;facebook_login&#x60; does not support &#x60;headless&#x3D;true&#x60;: its callback always redirects to Zernio&#39;s hosted account-selection page. Pass a &#x60;redirect_url&#x60; and let the standard flow return the user to you.
+func (r ConnectAPIGetConnectUrlRequest) LoginMethod(loginMethod string) ConnectAPIGetConnectUrlRequest {
+	r.loginMethod = &loginMethod
 	return r
 }
 
@@ -1385,6 +1392,13 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "headless", defaultValue, "form", "")
 		r.headless = &defaultValue
+	}
+	if r.loginMethod != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "loginMethod", r.loginMethod, "form", "")
+	} else {
+		var defaultValue string = "instagram_login"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "loginMethod", defaultValue, "form", "")
+		r.loginMethod = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3284,6 +3298,157 @@ func (a *ConnectAPIService) ListGoogleBusinessLocationsExecute(r ConnectAPIListG
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIListInstagramPagesRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+	profileId  *string
+	tempToken  *string
+}
+
+// Profile ID from your connection flow
+func (r ConnectAPIListInstagramPagesRequest) ProfileId(profileId string) ConnectAPIListInstagramPagesRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Long-lived Facebook user access token from the OAuth callback redirect
+func (r ConnectAPIListInstagramPagesRequest) TempToken(tempToken string) ConnectAPIListInstagramPagesRequest {
+	r.tempToken = &tempToken
+	return r
+}
+
+func (r ConnectAPIListInstagramPagesRequest) Execute() (*ListInstagramPages200Response, *http.Response, error) {
+	return r.ApiService.ListInstagramPagesExecute(r)
+}
+
+/*
+ListInstagramPages List Pages with a linked Instagram account
+
+Completes the `loginMethod=facebook_login` Instagram flow, i.e. "Instagram API with Facebook Login".
+
+After the user authorizes on Facebook, extract `tempToken` from the redirect params and pass it here to list the Facebook Pages they manage. Only Pages that have a linked Instagram professional account are returned, so an empty array means the user has no eligible Page. Use the X-Connect-Token header if connecting via API key.
+
+Not used by the default `instagram_login` flow, which creates the account without a selection step.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIListInstagramPagesRequest
+*/
+func (a *ConnectAPIService) ListInstagramPages(ctx context.Context) ConnectAPIListInstagramPagesRequest {
+	return ConnectAPIListInstagramPagesRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListInstagramPages200Response
+func (a *ConnectAPIService) ListInstagramPagesExecute(r ConnectAPIListInstagramPagesRequest) (*ListInstagramPages200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListInstagramPages200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ListInstagramPages")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/instagram/select-account"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.profileId == nil {
+		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
+	}
+	if r.tempToken == nil {
+		return localVarReturnValue, nil, reportError("tempToken is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "tempToken", r.tempToken, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIListLinkedInOrganizationsRequest struct {
 	ctx        context.Context
 	ApiService *ConnectAPIService
@@ -4134,6 +4299,155 @@ func (a *ConnectAPIService) SelectGoogleBusinessLocationExecute(r ConnectAPISele
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPISelectInstagramAccountRequest struct {
+	ctx                           context.Context
+	ApiService                    *ConnectAPIService
+	selectInstagramAccountRequest *SelectInstagramAccountRequest
+}
+
+func (r ConnectAPISelectInstagramAccountRequest) SelectInstagramAccountRequest(selectInstagramAccountRequest SelectInstagramAccountRequest) ConnectAPISelectInstagramAccountRequest {
+	r.selectInstagramAccountRequest = &selectInstagramAccountRequest
+	return r
+}
+
+func (r ConnectAPISelectInstagramAccountRequest) Execute() (*SelectInstagramAccount200Response, *http.Response, error) {
+	return r.ApiService.SelectInstagramAccountExecute(r)
+}
+
+/*
+SelectInstagramAccount Select the Page whose Instagram account to connect
+
+Saves the selected Page as an Instagram account connected via Facebook Login. The Page access token becomes the account's access token, so every Instagram call for it runs against the Facebook Graph host.
+
+One Instagram account per profile: if the profile already has an Instagram account, this replaces it, and picking a different Instagram identity purges the previous account's conversations, external posts and stats.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPISelectInstagramAccountRequest
+*/
+func (a *ConnectAPIService) SelectInstagramAccount(ctx context.Context) ConnectAPISelectInstagramAccountRequest {
+	return ConnectAPISelectInstagramAccountRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SelectInstagramAccount200Response
+func (a *ConnectAPIService) SelectInstagramAccountExecute(r ConnectAPISelectInstagramAccountRequest) (*SelectInstagramAccount200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SelectInstagramAccount200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.SelectInstagramAccount")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/instagram/select-account"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.selectInstagramAccountRequest == nil {
+		return localVarReturnValue, nil, reportError("selectInstagramAccountRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.selectInstagramAccountRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject1
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
