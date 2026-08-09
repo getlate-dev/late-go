@@ -648,8 +648,12 @@ func (r CommentsAPILikeInboxCommentRequest) Execute() (*LikeInboxComment200Respo
 /*
 LikeInboxComment Like comment
 
-Like or upvote a comment on a post. Supported platforms: Facebook, Twitter/X, Bluesky, Reddit.
-For Bluesky, the cid (content identifier) is required in the request body.
+Like or upvote a comment on a post. Supported platforms: Facebook, Twitter/X,
+Bluesky, Reddit, LinkedIn. For Bluesky, the cid (content identifier) is required
+in the request body. For LinkedIn, pass the composite comment URN returned by the
+comments endpoints as commentId; an optional reactionType picks the reaction
+(defaults to LIKE), and accounts connected before the social-feed scopes were
+requested get a 403 with code `linkedin_reconnect_required`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
@@ -732,6 +736,159 @@ func (a *CommentsAPIService) LikeInboxCommentExecute(r CommentsAPILikeInboxComme
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type CommentsAPILikePostRequest struct {
+	ctx                     context.Context
+	ApiService              *CommentsAPIService
+	postId                  string
+	likeInboxCommentRequest *LikeInboxCommentRequest
+}
+
+func (r CommentsAPILikePostRequest) LikeInboxCommentRequest(likeInboxCommentRequest LikeInboxCommentRequest) CommentsAPILikePostRequest {
+	r.likeInboxCommentRequest = &likeInboxCommentRequest
+	return r
+}
+
+func (r CommentsAPILikePostRequest) Execute() (*LikePost200Response, *http.Response, error) {
+	return r.ApiService.LikePostExecute(r)
+}
+
+/*
+LikePost Like post
+
+Like (or react to) a post as a connected account. Supported platforms: LinkedIn,
+Twitter/X, Facebook, YouTube, Bluesky. Instagram, Threads, TikTok and Pinterest
+expose no like endpoint in their APIs and return 400. Reddit returns 400 too,
+pointing at `POST /v1/accounts/{accountId}/reddit-vote`, which covers upvote,
+downvote and clear on both posts and comments.
+
+The account does not have to be the one that published the post, which is what
+makes executive engagement possible: pass an exec's `accountId` and the brand
+post's ID. `postId` accepts either a Zernio post ID or the platform's native post
+ID. A Zernio post ID resolves to the entry for `accountId`, falling back to the
+post's single entry on the same platform (two entries on that platform is a 400,
+so pass the native ID).
+
+LinkedIn requires the `w_member_social_feed` / `w_organization_social_feed`
+scopes, which are not retroactive: accounts connected before those were requested
+get a 403 with code `linkedin_reconnect_required` until the user reconnects the
+account. YouTube spends 50 quota units per call.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param postId Zernio post ID or the platform's native post ID
+	@return CommentsAPILikePostRequest
+*/
+func (a *CommentsAPIService) LikePost(ctx context.Context, postId string) CommentsAPILikePostRequest {
+	return CommentsAPILikePostRequest{
+		ApiService: a,
+		ctx:        ctx,
+		postId:     postId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return LikePost200Response
+func (a *CommentsAPIService) LikePostExecute(r CommentsAPILikePostRequest) (*LikePost200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LikePost200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommentsAPIService.LikePost")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/posts/{postId}/like"
+	localVarPath = strings.Replace(localVarPath, "{"+"postId"+"}", url.PathEscape(parameterValueToString(r.postId, "postId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.likeInboxCommentRequest == nil {
+		return localVarReturnValue, nil, reportError("likeInboxCommentRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.likeInboxCommentRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
@@ -1563,8 +1720,8 @@ func (r CommentsAPIUnlikeInboxCommentRequest) Execute() (*UnlikeInboxComment200R
 /*
 UnlikeInboxComment Unlike comment
 
-Remove a like from a comment. Supported platforms: Facebook, Twitter/X, Bluesky, Reddit.
-For Bluesky, the likeUri query parameter is required.
+Remove a like from a comment. Supported platforms: Facebook, Twitter/X, Bluesky,
+Reddit, LinkedIn. For Bluesky, the likeUri query parameter is required.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
@@ -1649,6 +1806,155 @@ func (a *CommentsAPIService) UnlikeInboxCommentExecute(r CommentsAPIUnlikeInboxC
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type CommentsAPIUnlikePostRequest struct {
+	ctx        context.Context
+	ApiService *CommentsAPIService
+	postId     string
+	accountId  *string
+	likeUri    *string
+}
+
+func (r CommentsAPIUnlikePostRequest) AccountId(accountId string) CommentsAPIUnlikePostRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// (Bluesky only) The like URI returned when liking
+func (r CommentsAPIUnlikePostRequest) LikeUri(likeUri string) CommentsAPIUnlikePostRequest {
+	r.likeUri = &likeUri
+	return r
+}
+
+func (r CommentsAPIUnlikePostRequest) Execute() (*UnlikePost200Response, *http.Response, error) {
+	return r.ApiService.UnlikePostExecute(r)
+}
+
+/*
+UnlikePost Unlike post
+
+Remove this account's like from a post. Supported platforms: LinkedIn, Twitter/X,
+Facebook, YouTube, Bluesky. On YouTube this clears the rating. For Bluesky,
+`likeUri` (returned when the post was liked) is required. Reddit uses
+`POST /v1/accounts/{accountId}/reddit-vote` with `direction: 0`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param postId Zernio post ID or the platform's native post ID
+	@return CommentsAPIUnlikePostRequest
+*/
+func (a *CommentsAPIService) UnlikePost(ctx context.Context, postId string) CommentsAPIUnlikePostRequest {
+	return CommentsAPIUnlikePostRequest{
+		ApiService: a,
+		ctx:        ctx,
+		postId:     postId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UnlikePost200Response
+func (a *CommentsAPIService) UnlikePostExecute(r CommentsAPIUnlikePostRequest) (*UnlikePost200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UnlikePost200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommentsAPIService.UnlikePost")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/posts/{postId}/like"
+	localVarPath = strings.Replace(localVarPath, "{"+"postId"+"}", url.PathEscape(parameterValueToString(r.postId, "postId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.likeUri != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "likeUri", r.likeUri, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response

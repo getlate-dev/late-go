@@ -24,6 +24,8 @@ var _ MappedNullable = &LikeInboxCommentRequest{}
 type LikeInboxCommentRequest struct {
 	// The social account ID
 	AccountId string `json:"accountId"`
+	// (LinkedIn only) Reaction to create. Defaults to LIKE; ignored on other platforms.
+	ReactionType *string `json:"reactionType,omitempty"`
 	// (Bluesky only) Content identifier for the comment
 	Cid *string `json:"cid,omitempty"`
 }
@@ -72,6 +74,38 @@ func (o *LikeInboxCommentRequest) SetAccountId(v string) {
 	o.AccountId = v
 }
 
+// GetReactionType returns the ReactionType field value if set, zero value otherwise.
+func (o *LikeInboxCommentRequest) GetReactionType() string {
+	if o == nil || IsNil(o.ReactionType) {
+		var ret string
+		return ret
+	}
+	return *o.ReactionType
+}
+
+// GetReactionTypeOk returns a tuple with the ReactionType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LikeInboxCommentRequest) GetReactionTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ReactionType) {
+		return nil, false
+	}
+	return o.ReactionType, true
+}
+
+// HasReactionType returns a boolean if a field has been set.
+func (o *LikeInboxCommentRequest) HasReactionType() bool {
+	if o != nil && !IsNil(o.ReactionType) {
+		return true
+	}
+
+	return false
+}
+
+// SetReactionType gets a reference to the given string and assigns it to the ReactionType field.
+func (o *LikeInboxCommentRequest) SetReactionType(v string) {
+	o.ReactionType = &v
+}
+
 // GetCid returns the Cid field value if set, zero value otherwise.
 func (o *LikeInboxCommentRequest) GetCid() string {
 	if o == nil || IsNil(o.Cid) {
@@ -115,6 +149,9 @@ func (o LikeInboxCommentRequest) MarshalJSON() ([]byte, error) {
 func (o LikeInboxCommentRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
+	if !IsNil(o.ReactionType) {
+		toSerialize["reactionType"] = o.ReactionType
+	}
 	if !IsNil(o.Cid) {
 		toSerialize["cid"] = o.Cid
 	}
