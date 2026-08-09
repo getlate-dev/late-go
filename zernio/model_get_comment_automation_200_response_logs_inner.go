@@ -26,6 +26,8 @@ type GetCommentAutomation200ResponseLogsInner struct {
 	CommenterId   *string `json:"commenterId,omitempty"`
 	CommenterName *string `json:"commenterName,omitempty"`
 	CommentText   *string `json:"commentText,omitempty"`
+	// Which door triggered this send. Absent on rows written before this field existed (all of those are comment-triggered).
+	Source *string `json:"source,omitempty"`
 	// DM outcome. 'pending' = the automation has a dmDelaySeconds and the response is queued but not sent yet. 'gated' = the follow-gate confirmation DM went out and we are waiting for the tap; it flips to 'sent' or 'skipped' when they tap.
 	Status *string `json:"status,omitempty"`
 	// How the audience rule resolved. Absent on automations without one.
@@ -219,6 +221,38 @@ func (o *GetCommentAutomation200ResponseLogsInner) HasCommentText() bool {
 // SetCommentText gets a reference to the given string and assigns it to the CommentText field.
 func (o *GetCommentAutomation200ResponseLogsInner) SetCommentText(v string) {
 	o.CommentText = &v
+}
+
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseLogsInner) GetSource() string {
+	if o == nil || IsNil(o.Source) {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) GetSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.Source) {
+		return nil, false
+	}
+	return o.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) HasSource() bool {
+	if o != nil && !IsNil(o.Source) {
+		return true
+	}
+
+	return false
+}
+
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *GetCommentAutomation200ResponseLogsInner) SetSource(v string) {
+	o.Source = &v
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -533,6 +567,9 @@ func (o GetCommentAutomation200ResponseLogsInner) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.CommentText) {
 		toSerialize["commentText"] = o.CommentText
+	}
+	if !IsNil(o.Source) {
+		toSerialize["source"] = o.Source
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status

@@ -44,6 +44,8 @@ type UpdateCommentAutomationRequest struct {
 	LinkTracking *bool `json:"linkTracking,omitempty"`
 	// Tag applied to a contact when they click a tracked link (requires linkTracking). Empty string clears it.
 	ClickTag *string `json:"clickTag,omitempty"`
+	// Also fire these keywords on a plain inbound DM. Enabling it requires the automation to end up with at least one keyword (this request's keywords if you send them, otherwise the stored ones) and is rejected on story_reply automations.
+	AlsoMatchInDms *bool `json:"alsoMatchInDms,omitempty"`
 	// Seconds to wait after the trigger before sending the DM. Send 0 to clear the delay and reply immediately.
 	DmDelaySeconds *int32 `json:"dmDelaySeconds,omitempty"`
 	// Seconds to wait before posting the public comment reply. Send 0 to clear it. The reply never goes out before the DM.
@@ -529,6 +531,38 @@ func (o *UpdateCommentAutomationRequest) SetClickTag(v string) {
 	o.ClickTag = &v
 }
 
+// GetAlsoMatchInDms returns the AlsoMatchInDms field value if set, zero value otherwise.
+func (o *UpdateCommentAutomationRequest) GetAlsoMatchInDms() bool {
+	if o == nil || IsNil(o.AlsoMatchInDms) {
+		var ret bool
+		return ret
+	}
+	return *o.AlsoMatchInDms
+}
+
+// GetAlsoMatchInDmsOk returns a tuple with the AlsoMatchInDms field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCommentAutomationRequest) GetAlsoMatchInDmsOk() (*bool, bool) {
+	if o == nil || IsNil(o.AlsoMatchInDms) {
+		return nil, false
+	}
+	return o.AlsoMatchInDms, true
+}
+
+// HasAlsoMatchInDms returns a boolean if a field has been set.
+func (o *UpdateCommentAutomationRequest) HasAlsoMatchInDms() bool {
+	if o != nil && !IsNil(o.AlsoMatchInDms) {
+		return true
+	}
+
+	return false
+}
+
+// SetAlsoMatchInDms gets a reference to the given bool and assigns it to the AlsoMatchInDms field.
+func (o *UpdateCommentAutomationRequest) SetAlsoMatchInDms(v bool) {
+	o.AlsoMatchInDms = &v
+}
+
 // GetDmDelaySeconds returns the DmDelaySeconds field value if set, zero value otherwise.
 func (o *UpdateCommentAutomationRequest) GetDmDelaySeconds() int32 {
 	if o == nil || IsNil(o.DmDelaySeconds) {
@@ -740,6 +774,9 @@ func (o UpdateCommentAutomationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.ClickTag) {
 		toSerialize["clickTag"] = o.ClickTag
+	}
+	if !IsNil(o.AlsoMatchInDms) {
+		toSerialize["alsoMatchInDms"] = o.AlsoMatchInDms
 	}
 	if !IsNil(o.DmDelaySeconds) {
 		toSerialize["dmDelaySeconds"] = o.DmDelaySeconds

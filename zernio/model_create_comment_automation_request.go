@@ -62,9 +62,11 @@ type CreateCommentAutomationRequest struct {
 	// Seconds to wait after the trigger before sending the DM. Omit or send 0 to reply immediately (the default). Max 86400 (24h). The trigger is still matched and deduplicated the moment the comment arrives, so a delay only moves when the response is sent.
 	DmDelaySeconds *int32 `json:"dmDelaySeconds,omitempty"`
 	// Seconds to wait before posting the public comment reply. Omit or send 0 to post it right after the DM (the default). The reply never goes out before the DM, so a value below dmDelaySeconds is raised to it. Ignored when trigger=story_reply, which has no public reply.
-	CommentReplyDelaySeconds *int32                       `json:"commentReplyDelaySeconds,omitempty"`
-	Audience                 *CommentAutomationAudience   `json:"audience,omitempty"`
-	FollowGate               *CommentAutomationFollowGate `json:"followGate,omitempty"`
+	CommentReplyDelaySeconds *int32 `json:"commentReplyDelaySeconds,omitempty"`
+	// Also fire these keywords on a plain inbound DM, so the automation answers people who message the keyword instead of commenting it. Requires at least one keyword (an empty keyword list means 'match anything', which would answer every inbound message) and is rejected on story_reply automations, which already trigger on DMs. Dedup is per door: a contact who already received the DM from their comment can still receive it from a DM.
+	AlsoMatchInDms *bool                        `json:"alsoMatchInDms,omitempty"`
+	Audience       *CommentAutomationAudience   `json:"audience,omitempty"`
+	FollowGate     *CommentAutomationFollowGate `json:"followGate,omitempty"`
 }
 
 type _CreateCommentAutomationRequest CreateCommentAutomationRequest
@@ -85,6 +87,8 @@ func NewCreateCommentAutomationRequest(profileId string, accountId string, name 
 	this.DmMessage = dmMessage
 	var linkTracking bool = true
 	this.LinkTracking = &linkTracking
+	var alsoMatchInDms bool = false
+	this.AlsoMatchInDms = &alsoMatchInDms
 	return &this
 }
 
@@ -99,6 +103,8 @@ func NewCreateCommentAutomationRequestWithDefaults() *CreateCommentAutomationReq
 	this.MatchMode = &matchMode
 	var linkTracking bool = true
 	this.LinkTracking = &linkTracking
+	var alsoMatchInDms bool = false
+	this.AlsoMatchInDms = &alsoMatchInDms
 	return &this
 }
 
@@ -753,6 +759,38 @@ func (o *CreateCommentAutomationRequest) SetCommentReplyDelaySeconds(v int32) {
 	o.CommentReplyDelaySeconds = &v
 }
 
+// GetAlsoMatchInDms returns the AlsoMatchInDms field value if set, zero value otherwise.
+func (o *CreateCommentAutomationRequest) GetAlsoMatchInDms() bool {
+	if o == nil || IsNil(o.AlsoMatchInDms) {
+		var ret bool
+		return ret
+	}
+	return *o.AlsoMatchInDms
+}
+
+// GetAlsoMatchInDmsOk returns a tuple with the AlsoMatchInDms field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomationRequest) GetAlsoMatchInDmsOk() (*bool, bool) {
+	if o == nil || IsNil(o.AlsoMatchInDms) {
+		return nil, false
+	}
+	return o.AlsoMatchInDms, true
+}
+
+// HasAlsoMatchInDms returns a boolean if a field has been set.
+func (o *CreateCommentAutomationRequest) HasAlsoMatchInDms() bool {
+	if o != nil && !IsNil(o.AlsoMatchInDms) {
+		return true
+	}
+
+	return false
+}
+
+// SetAlsoMatchInDms gets a reference to the given bool and assigns it to the AlsoMatchInDms field.
+func (o *CreateCommentAutomationRequest) SetAlsoMatchInDms(v bool) {
+	o.AlsoMatchInDms = &v
+}
+
 // GetAudience returns the Audience field value if set, zero value otherwise.
 func (o *CreateCommentAutomationRequest) GetAudience() CommentAutomationAudience {
 	if o == nil || IsNil(o.Audience) {
@@ -881,6 +919,9 @@ func (o CreateCommentAutomationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.CommentReplyDelaySeconds) {
 		toSerialize["commentReplyDelaySeconds"] = o.CommentReplyDelaySeconds
+	}
+	if !IsNil(o.AlsoMatchInDms) {
+		toSerialize["alsoMatchInDms"] = o.AlsoMatchInDms
 	}
 	if !IsNil(o.Audience) {
 		toSerialize["audience"] = o.Audience

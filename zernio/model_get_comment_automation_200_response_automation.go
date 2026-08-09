@@ -51,13 +51,15 @@ type GetCommentAutomation200ResponseAutomation struct {
 	// Seconds waited after the trigger before the DM is sent. Absent when the DM goes out immediately.
 	DmDelaySeconds *int32 `json:"dmDelaySeconds,omitempty"`
 	// Seconds waited before the public reply is posted. Absent when it follows the DM immediately.
-	CommentReplyDelaySeconds *int32                                             `json:"commentReplyDelaySeconds,omitempty"`
-	Audience                 *CommentAutomationAudience                         `json:"audience,omitempty"`
-	FollowGate               *CommentAutomationFollowGate                       `json:"followGate,omitempty"`
-	IsActive                 *bool                                              `json:"isActive,omitempty"`
-	Stats                    *CreateCommentAutomation200ResponseAutomationStats `json:"stats,omitempty"`
-	CreatedAt                *time.Time                                         `json:"createdAt,omitempty"`
-	UpdatedAt                *time.Time                                         `json:"updatedAt,omitempty"`
+	CommentReplyDelaySeconds *int32                       `json:"commentReplyDelaySeconds,omitempty"`
+	Audience                 *CommentAutomationAudience   `json:"audience,omitempty"`
+	FollowGate               *CommentAutomationFollowGate `json:"followGate,omitempty"`
+	// Whether these keywords also fire on a plain inbound DM.
+	AlsoMatchInDms *bool                                              `json:"alsoMatchInDms,omitempty"`
+	IsActive       *bool                                              `json:"isActive,omitempty"`
+	Stats          *CreateCommentAutomation200ResponseAutomationStats `json:"stats,omitempty"`
+	CreatedAt      *time.Time                                         `json:"createdAt,omitempty"`
+	UpdatedAt      *time.Time                                         `json:"updatedAt,omitempty"`
 }
 
 // NewGetCommentAutomation200ResponseAutomation instantiates a new GetCommentAutomation200ResponseAutomation object
@@ -856,6 +858,38 @@ func (o *GetCommentAutomation200ResponseAutomation) SetFollowGate(v CommentAutom
 	o.FollowGate = &v
 }
 
+// GetAlsoMatchInDms returns the AlsoMatchInDms field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseAutomation) GetAlsoMatchInDms() bool {
+	if o == nil || IsNil(o.AlsoMatchInDms) {
+		var ret bool
+		return ret
+	}
+	return *o.AlsoMatchInDms
+}
+
+// GetAlsoMatchInDmsOk returns a tuple with the AlsoMatchInDms field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseAutomation) GetAlsoMatchInDmsOk() (*bool, bool) {
+	if o == nil || IsNil(o.AlsoMatchInDms) {
+		return nil, false
+	}
+	return o.AlsoMatchInDms, true
+}
+
+// HasAlsoMatchInDms returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseAutomation) HasAlsoMatchInDms() bool {
+	if o != nil && !IsNil(o.AlsoMatchInDms) {
+		return true
+	}
+
+	return false
+}
+
+// SetAlsoMatchInDms gets a reference to the given bool and assigns it to the AlsoMatchInDms field.
+func (o *GetCommentAutomation200ResponseAutomation) SetAlsoMatchInDms(v bool) {
+	o.AlsoMatchInDms = &v
+}
+
 // GetIsActive returns the IsActive field value if set, zero value otherwise.
 func (o *GetCommentAutomation200ResponseAutomation) GetIsActive() bool {
 	if o == nil || IsNil(o.IsActive) {
@@ -1065,6 +1099,9 @@ func (o GetCommentAutomation200ResponseAutomation) ToMap() (map[string]interface
 	}
 	if !IsNil(o.FollowGate) {
 		toSerialize["followGate"] = o.FollowGate
+	}
+	if !IsNil(o.AlsoMatchInDms) {
+		toSerialize["alsoMatchInDms"] = o.AlsoMatchInDms
 	}
 	if !IsNil(o.IsActive) {
 		toSerialize["isActive"] = o.IsActive

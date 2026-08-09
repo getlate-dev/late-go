@@ -42,8 +42,10 @@ type UpdateCommentAutomation200ResponseAutomation struct {
 	CommentReplyVariations []string                     `json:"commentReplyVariations,omitempty"`
 	Audience               *CommentAutomationAudience   `json:"audience,omitempty"`
 	FollowGate             *CommentAutomationFollowGate `json:"followGate,omitempty"`
-	IsActive               *bool                        `json:"isActive,omitempty"`
-	UpdatedAt              *time.Time                   `json:"updatedAt,omitempty"`
+	// Whether these keywords also fire on a plain inbound DM.
+	AlsoMatchInDms *bool      `json:"alsoMatchInDms,omitempty"`
+	IsActive       *bool      `json:"isActive,omitempty"`
+	UpdatedAt      *time.Time `json:"updatedAt,omitempty"`
 }
 
 // NewUpdateCommentAutomation200ResponseAutomation instantiates a new UpdateCommentAutomation200ResponseAutomation object
@@ -522,6 +524,38 @@ func (o *UpdateCommentAutomation200ResponseAutomation) SetFollowGate(v CommentAu
 	o.FollowGate = &v
 }
 
+// GetAlsoMatchInDms returns the AlsoMatchInDms field value if set, zero value otherwise.
+func (o *UpdateCommentAutomation200ResponseAutomation) GetAlsoMatchInDms() bool {
+	if o == nil || IsNil(o.AlsoMatchInDms) {
+		var ret bool
+		return ret
+	}
+	return *o.AlsoMatchInDms
+}
+
+// GetAlsoMatchInDmsOk returns a tuple with the AlsoMatchInDms field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCommentAutomation200ResponseAutomation) GetAlsoMatchInDmsOk() (*bool, bool) {
+	if o == nil || IsNil(o.AlsoMatchInDms) {
+		return nil, false
+	}
+	return o.AlsoMatchInDms, true
+}
+
+// HasAlsoMatchInDms returns a boolean if a field has been set.
+func (o *UpdateCommentAutomation200ResponseAutomation) HasAlsoMatchInDms() bool {
+	if o != nil && !IsNil(o.AlsoMatchInDms) {
+		return true
+	}
+
+	return false
+}
+
+// SetAlsoMatchInDms gets a reference to the given bool and assigns it to the AlsoMatchInDms field.
+func (o *UpdateCommentAutomation200ResponseAutomation) SetAlsoMatchInDms(v bool) {
+	o.AlsoMatchInDms = &v
+}
+
 // GetIsActive returns the IsActive field value if set, zero value otherwise.
 func (o *UpdateCommentAutomation200ResponseAutomation) GetIsActive() bool {
 	if o == nil || IsNil(o.IsActive) {
@@ -637,6 +671,9 @@ func (o UpdateCommentAutomation200ResponseAutomation) ToMap() (map[string]interf
 	}
 	if !IsNil(o.FollowGate) {
 		toSerialize["followGate"] = o.FollowGate
+	}
+	if !IsNil(o.AlsoMatchInDms) {
+		toSerialize["alsoMatchInDms"] = o.AlsoMatchInDms
 	}
 	if !IsNil(o.IsActive) {
 		toSerialize["isActive"] = o.IsActive
