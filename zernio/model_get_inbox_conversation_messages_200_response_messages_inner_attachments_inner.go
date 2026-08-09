@@ -20,9 +20,12 @@ var _ MappedNullable = &GetInboxConversationMessages200ResponseMessagesInnerAtta
 
 // GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner struct for GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner
 type GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner struct {
-	Id         *string        `json:"id,omitempty"`
-	Type       *string        `json:"type,omitempty"`
-	Url        *string        `json:"url,omitempty"`
+	Id   *string `json:"id,omitempty"`
+	Type *string `json:"type,omitempty"`
+	// Direct media link. On Instagram and Facebook this is a signed Meta CDN url that EXPIRES: use it now, do not store it. Persist `refreshUrl` instead.
+	Url *string `json:"url,omitempty"`
+	// Instagram and Facebook only. Endpoint that resolves this attachment to a working url every time, re-minting it from Meta when the stored one has expired. Safe to store and render indefinitely.
+	RefreshUrl NullableString `json:"refreshUrl,omitempty"`
 	Filename   NullableString `json:"filename,omitempty"`
 	PreviewUrl NullableString `json:"previewUrl,omitempty"`
 }
@@ -140,6 +143,49 @@ func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) S
 	o.Url = &v
 }
 
+// GetRefreshUrl returns the RefreshUrl field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) GetRefreshUrl() string {
+	if o == nil || IsNil(o.RefreshUrl.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.RefreshUrl.Get()
+}
+
+// GetRefreshUrlOk returns a tuple with the RefreshUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) GetRefreshUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RefreshUrl.Get(), o.RefreshUrl.IsSet()
+}
+
+// HasRefreshUrl returns a boolean if a field has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) HasRefreshUrl() bool {
+	if o != nil && o.RefreshUrl.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRefreshUrl gets a reference to the given NullableString and assigns it to the RefreshUrl field.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) SetRefreshUrl(v string) {
+	o.RefreshUrl.Set(&v)
+}
+
+// SetRefreshUrlNil sets the value for RefreshUrl to be an explicit nil
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) SetRefreshUrlNil() {
+	o.RefreshUrl.Set(nil)
+}
+
+// UnsetRefreshUrl ensures that no value is present for RefreshUrl, not even an explicit nil
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) UnsetRefreshUrl() {
+	o.RefreshUrl.Unset()
+}
+
 // GetFilename returns the Filename field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) GetFilename() string {
 	if o == nil || IsNil(o.Filename.Get()) {
@@ -244,6 +290,9 @@ func (o GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) To
 	}
 	if !IsNil(o.Url) {
 		toSerialize["url"] = o.Url
+	}
+	if o.RefreshUrl.IsSet() {
+		toSerialize["refreshUrl"] = o.RefreshUrl.Get()
 	}
 	if o.Filename.IsSet() {
 		toSerialize["filename"] = o.Filename.Get()

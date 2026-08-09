@@ -903,6 +903,184 @@ func (a *MessagesAPIService) GetInboxConversationMessagesExecute(r MessagesAPIGe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type MessagesAPIGetMessageAttachmentRequest struct {
+	ctx            context.Context
+	ApiService     *MessagesAPIService
+	conversationId string
+	messageId      string
+	index          int32
+	accountId      *string
+	format         *string
+}
+
+// Social account ID
+func (r MessagesAPIGetMessageAttachmentRequest) AccountId(accountId string) MessagesAPIGetMessageAttachmentRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// &#x60;redirect&#x60; (default) answers 302 to the media; &#x60;json&#x60; returns the url in the body
+func (r MessagesAPIGetMessageAttachmentRequest) Format(format string) MessagesAPIGetMessageAttachmentRequest {
+	r.format = &format
+	return r
+}
+
+func (r MessagesAPIGetMessageAttachmentRequest) Execute() (*GetMessageAttachment200Response, *http.Response, error) {
+	return r.ApiService.GetMessageAttachmentExecute(r)
+}
+
+/*
+GetMessageAttachment Resolve message attachment
+
+Resolve one attachment on a message to a media url that works right now.
+
+Instagram and Facebook sign DM media urls per request and expire them, so
+the `url` on a message is a snapshot: it works when you read the message
+and stops working later. This endpoint checks the stored url and, when it
+has gone stale, re-mints the message's media from Meta and persists it
+before answering. The message id never expires, so this URL is the one to
+store — it is returned on each attachment as `refreshUrl`.
+
+By default it responds `302` to the live media url, so it can be used
+directly as an `<img src>` on a browser session. API-key integrators
+should pass `?format=json` and read `url` off the body, since a browser
+cannot attach an Authorization header to an image request.
+
+Only Instagram and Facebook media can be re-minted. On other platforms
+the stored url is returned as-is when it still resolves, and `404`
+otherwise.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param conversationId The conversation ID (Zernio id or platform conversation id)
+	@param messageId The message id as returned by the list-messages endpoint (the platform message id)
+	@param index Zero-based position of the attachment in the message's attachments array
+	@return MessagesAPIGetMessageAttachmentRequest
+*/
+func (a *MessagesAPIService) GetMessageAttachment(ctx context.Context, conversationId string, messageId string, index int32) MessagesAPIGetMessageAttachmentRequest {
+	return MessagesAPIGetMessageAttachmentRequest{
+		ApiService:     a,
+		ctx:            ctx,
+		conversationId: conversationId,
+		messageId:      messageId,
+		index:          index,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetMessageAttachment200Response
+func (a *MessagesAPIService) GetMessageAttachmentExecute(r MessagesAPIGetMessageAttachmentRequest) (*GetMessageAttachment200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetMessageAttachment200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagesAPIService.GetMessageAttachment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/conversations/{conversationId}/messages/{messageId}/attachments/{index}"
+	localVarPath = strings.Replace(localVarPath, "{"+"conversationId"+"}", url.PathEscape(parameterValueToString(r.conversationId, "conversationId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"messageId"+"}", url.PathEscape(parameterValueToString(r.messageId, "messageId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"index"+"}", url.PathEscape(parameterValueToString(r.index, "index")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.index < 0 {
+		return localVarReturnValue, nil, reportError("index must be greater than 0")
+	}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.format != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "format", r.format, "form", "")
+	} else {
+		var defaultValue string = "redirect"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "format", defaultValue, "form", "")
+		r.format = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type MessagesAPIListInboxConversationsRequest struct {
 	ctx        context.Context
 	ApiService *MessagesAPIService

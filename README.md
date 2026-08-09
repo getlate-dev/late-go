@@ -545,6 +545,7 @@ func main() {
 | `client.MessagesAPI.CreateInboxConversation(ctx)` | Create conversation |
 | `client.MessagesAPI.GetInboxConversation(ctx)` | Get conversation |
 | `client.MessagesAPI.GetInboxConversationMessages(ctx)` | List messages |
+| `client.MessagesAPI.GetMessageAttachment(ctx)` | Resolve message attachment |
 | `client.MessagesAPI.UpdateInboxConversation(ctx)` | Update conversation status |
 | `client.MessagesAPI.DeleteInboxMessage(ctx)` | Delete message |
 | `client.MessagesAPI.AddMessageReaction(ctx)` | Add reaction |
