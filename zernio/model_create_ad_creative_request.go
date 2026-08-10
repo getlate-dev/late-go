@@ -43,6 +43,8 @@ type CreateAdCreativeRequest struct {
 	UrlTags *string `json:"urlTags,omitempty"`
 	// Advantage+ creative enhancements: partial map of Meta creative feature keys (snake_case) to enroll status, forwarded as degrees_of_freedom_spec.creative_features_spec. Unspecified features default to OPT_OUT.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
+	// Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key — Meta rejects it there.
+	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
 }
 
 type _CreateAdCreativeRequest CreateAdCreativeRequest
@@ -417,6 +419,38 @@ func (o *CreateAdCreativeRequest) SetCreativeFeatures(v map[string]string) {
 	o.CreativeFeatures = v
 }
 
+// GetMultiAdvertiser returns the MultiAdvertiser field value if set, zero value otherwise.
+func (o *CreateAdCreativeRequest) GetMultiAdvertiser() string {
+	if o == nil || IsNil(o.MultiAdvertiser) {
+		var ret string
+		return ret
+	}
+	return *o.MultiAdvertiser
+}
+
+// GetMultiAdvertiserOk returns a tuple with the MultiAdvertiser field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCreativeRequest) GetMultiAdvertiserOk() (*string, bool) {
+	if o == nil || IsNil(o.MultiAdvertiser) {
+		return nil, false
+	}
+	return o.MultiAdvertiser, true
+}
+
+// HasMultiAdvertiser returns a boolean if a field has been set.
+func (o *CreateAdCreativeRequest) HasMultiAdvertiser() bool {
+	if o != nil && !IsNil(o.MultiAdvertiser) {
+		return true
+	}
+
+	return false
+}
+
+// SetMultiAdvertiser gets a reference to the given string and assigns it to the MultiAdvertiser field.
+func (o *CreateAdCreativeRequest) SetMultiAdvertiser(v string) {
+	o.MultiAdvertiser = &v
+}
+
 func (o CreateAdCreativeRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -452,6 +486,9 @@ func (o CreateAdCreativeRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CreativeFeatures) {
 		toSerialize["creativeFeatures"] = o.CreativeFeatures
+	}
+	if !IsNil(o.MultiAdvertiser) {
+		toSerialize["multiAdvertiser"] = o.MultiAdvertiser
 	}
 	return toSerialize, nil
 }

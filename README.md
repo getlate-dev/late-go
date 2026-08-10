@@ -253,9 +253,12 @@ func main() {
 | `client.AdAccountsAPI.ListAdLabels(ctx)` | Ad labels |
 | `client.AdAccountsAPI.ListAdStudies(ctx)` | A/B tests and lift studies |
 | `client.AdAccountsAPI.ListAdsBusinessCenters(ctx)` | List TikTok Business Centers |
+| `client.AdAccountsAPI.ListCustomConversions(ctx)` | List custom conversions |
 | `client.AdAccountsAPI.ListHighDemandPeriods(ctx)` | High demand periods / budget schedules |
 | `client.AdAccountsAPI.ListMetaBusinesses(ctx)` | Businesses list |
 | `client.AdAccountsAPI.ListValueRuleSets(ctx)` | List value rule sets |
+| `client.AdAccountsAPI.CreateCustomConversion(ctx)` | Create or reuse a custom conversion |
+| `client.AdAccountsAPI.CreateHighDemandPeriod(ctx)` | Schedule a budget increase |
 | `client.AdAccountsAPI.CreateValueRuleSet(ctx)` | Create a value rule set |
 | `client.AdAccountsAPI.GetAdAccountFinance(ctx)` | Ad account finances |
 | `client.AdAccountsAPI.GetAdComments(ctx)` | List comments on an ad |

@@ -45,6 +45,8 @@ type CreateStandaloneAdRequest struct {
 	RfPredictionId *string `json:"rfPredictionId,omitempty"`
 	// Meta only. Advantage+ creative enhancements: a partial map of Meta creative feature keys (snake_case, e.g. enhance_cta, image_brightness_and_contrast, text_optimizations) to enroll status, forwarded as degrees_of_freedom_spec.creative_features_spec. Meta validates the keys; unspecified features default to OPT_OUT. The legacy standard_enhancements bundle is deprecated by Meta and rejected.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
+	// Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key — Meta rejects it there.
+	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
 	// Meta only, single standalone shape only (no creatives[], adSetId, or RESERVED). Dry-run: each node runs Meta's execution_options validate_only and NOTHING is created or persisted. Children need real parents, so a fresh tree validates the campaign + creative (the ad set needs its campaign to exist — pass existingCampaignId to validate it too; the ad itself is never validatable pre-create). A Meta validation failure returns the 400 verbatim; success returns 200 with per-node results instead of an ad.
 	ValidateOnly *bool `json:"validateOnly,omitempty"`
 	// Budget in WHOLE currency units (USD: 50 = $50.00), NOT cents — Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Required on legacy + multi-creative shapes. Inherited on attach. OpenAI Ads requires a $1 minimum (its budget is lifetime-only, see budgetType).
@@ -597,6 +599,38 @@ func (o *CreateStandaloneAdRequest) HasCreativeFeatures() bool {
 // SetCreativeFeatures gets a reference to the given map[string]string and assigns it to the CreativeFeatures field.
 func (o *CreateStandaloneAdRequest) SetCreativeFeatures(v map[string]string) {
 	o.CreativeFeatures = v
+}
+
+// GetMultiAdvertiser returns the MultiAdvertiser field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetMultiAdvertiser() string {
+	if o == nil || IsNil(o.MultiAdvertiser) {
+		var ret string
+		return ret
+	}
+	return *o.MultiAdvertiser
+}
+
+// GetMultiAdvertiserOk returns a tuple with the MultiAdvertiser field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetMultiAdvertiserOk() (*string, bool) {
+	if o == nil || IsNil(o.MultiAdvertiser) {
+		return nil, false
+	}
+	return o.MultiAdvertiser, true
+}
+
+// HasMultiAdvertiser returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasMultiAdvertiser() bool {
+	if o != nil && !IsNil(o.MultiAdvertiser) {
+		return true
+	}
+
+	return false
+}
+
+// SetMultiAdvertiser gets a reference to the given string and assigns it to the MultiAdvertiser field.
+func (o *CreateStandaloneAdRequest) SetMultiAdvertiser(v string) {
+	o.MultiAdvertiser = &v
 }
 
 // GetValidateOnly returns the ValidateOnly field value if set, zero value otherwise.
@@ -2817,6 +2851,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CreativeFeatures) {
 		toSerialize["creativeFeatures"] = o.CreativeFeatures
+	}
+	if !IsNil(o.MultiAdvertiser) {
+		toSerialize["multiAdvertiser"] = o.MultiAdvertiser
 	}
 	if !IsNil(o.ValidateOnly) {
 		toSerialize["validateOnly"] = o.ValidateOnly

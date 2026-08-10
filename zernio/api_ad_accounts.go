@@ -23,6 +23,273 @@ import (
 // AdAccountsAPIService AdAccountsAPI service
 type AdAccountsAPIService service
 
+type AdAccountsAPICreateCustomConversionRequest struct {
+	ctx                           context.Context
+	ApiService                    *AdAccountsAPIService
+	accountId                     string
+	createCustomConversionRequest *CreateCustomConversionRequest
+}
+
+func (r AdAccountsAPICreateCustomConversionRequest) CreateCustomConversionRequest(createCustomConversionRequest CreateCustomConversionRequest) AdAccountsAPICreateCustomConversionRequest {
+	r.createCustomConversionRequest = &createCustomConversionRequest
+	return r
+}
+
+func (r AdAccountsAPICreateCustomConversionRequest) Execute() (*CustomConversionResult, *http.Response, error) {
+	return r.ApiService.CreateCustomConversionExecute(r)
+}
+
+/*
+CreateCustomConversion Create or reuse a custom conversion
+
+Provision the Meta custom conversion an ads flow optimises toward, and hand back the
+`customConversionId` for `promotedObject.customConversionId` on POST /v1/ads/create.
+Removes the manual "create it in Ads Manager first" step.
+
+**Reuse is ours, not Meta's.** Meta's create is not idempotent, so a retried request
+would otherwise mint a duplicate carrying none of the original's optimisation history.
+A non-archived conversion with the same `name` on the same `pixelId` is returned
+instead of created, with `reused: true` and a 200 rather than a 201.
+
+`rule` is forwarded verbatim in Meta's own grammar (e.g.
+`{"url": {"i_contains": "thank-you"}}`); Meta validates it and rejects a malformed one
+with "A conversion rule is required at creation time".
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId Meta ads SocialAccount id.
+	@return AdAccountsAPICreateCustomConversionRequest
+*/
+func (a *AdAccountsAPIService) CreateCustomConversion(ctx context.Context, accountId string) AdAccountsAPICreateCustomConversionRequest {
+	return AdAccountsAPICreateCustomConversionRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CustomConversionResult
+func (a *AdAccountsAPIService) CreateCustomConversionExecute(r AdAccountsAPICreateCustomConversionRequest) (*CustomConversionResult, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CustomConversionResult
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.CreateCustomConversion")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/custom-conversions"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createCustomConversionRequest == nil {
+		return localVarReturnValue, nil, reportError("createCustomConversionRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createCustomConversionRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAccountsAPICreateHighDemandPeriodRequest struct {
+	ctx                           context.Context
+	ApiService                    *AdAccountsAPIService
+	createHighDemandPeriodRequest *CreateHighDemandPeriodRequest
+}
+
+func (r AdAccountsAPICreateHighDemandPeriodRequest) CreateHighDemandPeriodRequest(createHighDemandPeriodRequest CreateHighDemandPeriodRequest) AdAccountsAPICreateHighDemandPeriodRequest {
+	r.createHighDemandPeriodRequest = &createHighDemandPeriodRequest
+	return r
+}
+
+func (r AdAccountsAPICreateHighDemandPeriodRequest) Execute() (*CreateHighDemandPeriod201Response, *http.Response, error) {
+	return r.ApiService.CreateHighDemandPeriodExecute(r)
+}
+
+/*
+CreateHighDemandPeriod Schedule a budget increase
+
+Pre-schedule a temporary budget increase (Black Friday, a launch, a sale) instead of
+editing the budget by hand on the day. Same target rule as the GET: exactly one of
+`campaignId` / `adSetId`.
+
+Two Meta constraints worth knowing before you call it. `timeStart` / `timeEnd` must
+fall on a 15-minute boundary, and a campaign cannot mix `ABSOLUTE` and `MULTIPLIER`
+across its schedules — the second type is rejected with "Can't mix your budget scaling
+selection". Window rules (must sit inside the campaign's run dates, minimum lead time,
+no overlap) are Meta's and its message is forwarded verbatim.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdAccountsAPICreateHighDemandPeriodRequest
+*/
+func (a *AdAccountsAPIService) CreateHighDemandPeriod(ctx context.Context) AdAccountsAPICreateHighDemandPeriodRequest {
+	return AdAccountsAPICreateHighDemandPeriodRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateHighDemandPeriod201Response
+func (a *AdAccountsAPIService) CreateHighDemandPeriodExecute(r AdAccountsAPICreateHighDemandPeriodRequest) (*CreateHighDemandPeriod201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateHighDemandPeriod201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.CreateHighDemandPeriod")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/high-demand-periods"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createHighDemandPeriodRequest == nil {
+		return localVarReturnValue, nil, reportError("createHighDemandPeriodRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createHighDemandPeriodRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdAccountsAPICreateValueRuleSetRequest struct {
 	ctx                       context.Context
 	ApiService                *AdAccountsAPIService
@@ -1820,6 +2087,132 @@ func (a *AdAccountsAPIService) ListAdsBusinessCentersExecute(r AdAccountsAPIList
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAccountsAPIListCustomConversionsRequest struct {
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   string
+	adAccountId *string
+}
+
+// Meta ad account id (act_&lt;n&gt;).
+func (r AdAccountsAPIListCustomConversionsRequest) AdAccountId(adAccountId string) AdAccountsAPIListCustomConversionsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdAccountsAPIListCustomConversionsRequest) Execute() (*ListCustomConversions200Response, *http.Response, error) {
+	return r.ApiService.ListCustomConversionsExecute(r)
+}
+
+/*
+ListCustomConversions List custom conversions
+
+The ad account's Meta custom conversions, including archived ones (`isArchived`).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId Meta ads SocialAccount id.
+	@return AdAccountsAPIListCustomConversionsRequest
+*/
+func (a *AdAccountsAPIService) ListCustomConversions(ctx context.Context, accountId string) AdAccountsAPIListCustomConversionsRequest {
+	return AdAccountsAPIListCustomConversionsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListCustomConversions200Response
+func (a *AdAccountsAPIService) ListCustomConversionsExecute(r AdAccountsAPIListCustomConversionsRequest) (*ListCustomConversions200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListCustomConversions200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.ListCustomConversions")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/custom-conversions"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
