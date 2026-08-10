@@ -22,9 +22,9 @@ var _ MappedNullable = &GetMediaPresignedUrl200Response{}
 type GetMediaPresignedUrl200Response struct {
 	// Presigned URL to PUT your file to (expires in 1 hour)
 	UploadUrl *string `json:"uploadUrl,omitempty"`
-	// Public URL where the file will be accessible after upload. Served from the temp/ prefix by default (expires 7 days after upload) or from media/ when permanent is true.
+	// Public URL where the file will be accessible after upload
 	PublicUrl *string `json:"publicUrl,omitempty"`
-	// Storage key/path of the file. Prefixed temp/ by default, media/ when permanent is true.
+	// Storage key/path of the file
 	Key *string `json:"key,omitempty"`
 	// Seconds until the presigned uploadUrl expires (always 3600)
 	ExpiresIn *int32 `json:"expiresIn,omitempty"`

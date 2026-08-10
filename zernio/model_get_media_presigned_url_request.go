@@ -28,8 +28,6 @@ type GetMediaPresignedUrlRequest struct {
 	ContentType string `json:"contentType"`
 	// Optional file size in bytes for pre-validation (max 5GB)
 	Size *int32 `json:"size,omitempty"`
-	// Write the file to permanent storage instead of temporary storage. Temporary files auto-delete 7 days after upload; permanent files never expire.
-	Permanent *bool `json:"permanent,omitempty"`
 }
 
 type _GetMediaPresignedUrlRequest GetMediaPresignedUrlRequest
@@ -42,8 +40,6 @@ func NewGetMediaPresignedUrlRequest(filename string, contentType string) *GetMed
 	this := GetMediaPresignedUrlRequest{}
 	this.Filename = filename
 	this.ContentType = contentType
-	var permanent bool = false
-	this.Permanent = &permanent
 	return &this
 }
 
@@ -52,8 +48,6 @@ func NewGetMediaPresignedUrlRequest(filename string, contentType string) *GetMed
 // but it doesn't guarantee that properties required by API are set
 func NewGetMediaPresignedUrlRequestWithDefaults() *GetMediaPresignedUrlRequest {
 	this := GetMediaPresignedUrlRequest{}
-	var permanent bool = false
-	this.Permanent = &permanent
 	return &this
 }
 
@@ -137,38 +131,6 @@ func (o *GetMediaPresignedUrlRequest) SetSize(v int32) {
 	o.Size = &v
 }
 
-// GetPermanent returns the Permanent field value if set, zero value otherwise.
-func (o *GetMediaPresignedUrlRequest) GetPermanent() bool {
-	if o == nil || IsNil(o.Permanent) {
-		var ret bool
-		return ret
-	}
-	return *o.Permanent
-}
-
-// GetPermanentOk returns a tuple with the Permanent field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GetMediaPresignedUrlRequest) GetPermanentOk() (*bool, bool) {
-	if o == nil || IsNil(o.Permanent) {
-		return nil, false
-	}
-	return o.Permanent, true
-}
-
-// HasPermanent returns a boolean if a field has been set.
-func (o *GetMediaPresignedUrlRequest) HasPermanent() bool {
-	if o != nil && !IsNil(o.Permanent) {
-		return true
-	}
-
-	return false
-}
-
-// SetPermanent gets a reference to the given bool and assigns it to the Permanent field.
-func (o *GetMediaPresignedUrlRequest) SetPermanent(v bool) {
-	o.Permanent = &v
-}
-
 func (o GetMediaPresignedUrlRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -183,9 +145,6 @@ func (o GetMediaPresignedUrlRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["contentType"] = o.ContentType
 	if !IsNil(o.Size) {
 		toSerialize["size"] = o.Size
-	}
-	if !IsNil(o.Permanent) {
-		toSerialize["permanent"] = o.Permanent
 	}
 	return toSerialize, nil
 }
