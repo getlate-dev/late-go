@@ -33,9 +33,11 @@ type ListBroadcastRecipients200ResponseRecipientsInner struct {
 	ErrorCode NullableInt32 `json:"errorCode,omitempty"`
 	// Plain-language translation of errorCode (e.g. for 131026, that the recipient has likely opted out of marketing messages). Null for unmapped codes; fall back to error.
 	ErrorExplanation NullableString `json:"errorExplanation,omitempty"`
-	SentAt           *time.Time     `json:"sentAt,omitempty"`
-	DeliveredAt      *time.Time     `json:"deliveredAt,omitempty"`
-	ReadAt           *time.Time     `json:"readAt,omitempty"`
+	// Meta trace id (fbtrace_id) for the failed send. Quote this when escalating to Meta Direct Support. Only populated for status=failed on Meta platforms.
+	ErrorTraceId NullableString `json:"errorTraceId,omitempty"`
+	SentAt       *time.Time     `json:"sentAt,omitempty"`
+	DeliveredAt  *time.Time     `json:"deliveredAt,omitempty"`
+	ReadAt       *time.Time     `json:"readAt,omitempty"`
 }
 
 // NewListBroadcastRecipients200ResponseRecipientsInner instantiates a new ListBroadcastRecipients200ResponseRecipientsInner object
@@ -397,6 +399,49 @@ func (o *ListBroadcastRecipients200ResponseRecipientsInner) UnsetErrorExplanatio
 	o.ErrorExplanation.Unset()
 }
 
+// GetErrorTraceId returns the ErrorTraceId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListBroadcastRecipients200ResponseRecipientsInner) GetErrorTraceId() string {
+	if o == nil || IsNil(o.ErrorTraceId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ErrorTraceId.Get()
+}
+
+// GetErrorTraceIdOk returns a tuple with the ErrorTraceId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListBroadcastRecipients200ResponseRecipientsInner) GetErrorTraceIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ErrorTraceId.Get(), o.ErrorTraceId.IsSet()
+}
+
+// HasErrorTraceId returns a boolean if a field has been set.
+func (o *ListBroadcastRecipients200ResponseRecipientsInner) HasErrorTraceId() bool {
+	if o != nil && o.ErrorTraceId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetErrorTraceId gets a reference to the given NullableString and assigns it to the ErrorTraceId field.
+func (o *ListBroadcastRecipients200ResponseRecipientsInner) SetErrorTraceId(v string) {
+	o.ErrorTraceId.Set(&v)
+}
+
+// SetErrorTraceIdNil sets the value for ErrorTraceId to be an explicit nil
+func (o *ListBroadcastRecipients200ResponseRecipientsInner) SetErrorTraceIdNil() {
+	o.ErrorTraceId.Set(nil)
+}
+
+// UnsetErrorTraceId ensures that no value is present for ErrorTraceId, not even an explicit nil
+func (o *ListBroadcastRecipients200ResponseRecipientsInner) UnsetErrorTraceId() {
+	o.ErrorTraceId.Unset()
+}
+
 // GetSentAt returns the SentAt field value if set, zero value otherwise.
 func (o *ListBroadcastRecipients200ResponseRecipientsInner) GetSentAt() time.Time {
 	if o == nil || IsNil(o.SentAt) {
@@ -532,6 +577,9 @@ func (o ListBroadcastRecipients200ResponseRecipientsInner) ToMap() (map[string]i
 	}
 	if o.ErrorExplanation.IsSet() {
 		toSerialize["errorExplanation"] = o.ErrorExplanation.Get()
+	}
+	if o.ErrorTraceId.IsSet() {
+		toSerialize["errorTraceId"] = o.ErrorTraceId.Get()
 	}
 	if !IsNil(o.SentAt) {
 		toSerialize["sentAt"] = o.SentAt
