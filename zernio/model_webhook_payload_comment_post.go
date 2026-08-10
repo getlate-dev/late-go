@@ -26,6 +26,12 @@ type WebhookPayloadCommentPost struct {
 	Id NullableString `json:"id"`
 	// Platform's post ID
 	PlatformPostId string `json:"platformPostId"`
+	// Post text, from our synced copy — no platform call is made on the comment path, so null when the post was never synced.
+	Content NullableString `json:"content"`
+	// Post thumbnail or first media item URL. Platform CDN URLs expire, fetch promptly.
+	ImageUrl NullableString `json:"imageUrl"`
+	// Public URL of the post. Null for posts published through Zernio that were never re-synced.
+	Permalink NullableString `json:"permalink"`
 }
 
 type _WebhookPayloadCommentPost WebhookPayloadCommentPost
@@ -34,10 +40,13 @@ type _WebhookPayloadCommentPost WebhookPayloadCommentPost
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadCommentPost(id NullableString, platformPostId string) *WebhookPayloadCommentPost {
+func NewWebhookPayloadCommentPost(id NullableString, platformPostId string, content NullableString, imageUrl NullableString, permalink NullableString) *WebhookPayloadCommentPost {
 	this := WebhookPayloadCommentPost{}
 	this.Id = id
 	this.PlatformPostId = platformPostId
+	this.Content = content
+	this.ImageUrl = imageUrl
+	this.Permalink = permalink
 	return &this
 }
 
@@ -99,6 +108,84 @@ func (o *WebhookPayloadCommentPost) SetPlatformPostId(v string) {
 	o.PlatformPostId = v
 }
 
+// GetContent returns the Content field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *WebhookPayloadCommentPost) GetContent() string {
+	if o == nil || o.Content.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Content.Get()
+}
+
+// GetContentOk returns a tuple with the Content field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadCommentPost) GetContentOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Content.Get(), o.Content.IsSet()
+}
+
+// SetContent sets field value
+func (o *WebhookPayloadCommentPost) SetContent(v string) {
+	o.Content.Set(&v)
+}
+
+// GetImageUrl returns the ImageUrl field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *WebhookPayloadCommentPost) GetImageUrl() string {
+	if o == nil || o.ImageUrl.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.ImageUrl.Get()
+}
+
+// GetImageUrlOk returns a tuple with the ImageUrl field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadCommentPost) GetImageUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ImageUrl.Get(), o.ImageUrl.IsSet()
+}
+
+// SetImageUrl sets field value
+func (o *WebhookPayloadCommentPost) SetImageUrl(v string) {
+	o.ImageUrl.Set(&v)
+}
+
+// GetPermalink returns the Permalink field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *WebhookPayloadCommentPost) GetPermalink() string {
+	if o == nil || o.Permalink.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Permalink.Get()
+}
+
+// GetPermalinkOk returns a tuple with the Permalink field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadCommentPost) GetPermalinkOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Permalink.Get(), o.Permalink.IsSet()
+}
+
+// SetPermalink sets field value
+func (o *WebhookPayloadCommentPost) SetPermalink(v string) {
+	o.Permalink.Set(&v)
+}
+
 func (o WebhookPayloadCommentPost) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -111,6 +198,9 @@ func (o WebhookPayloadCommentPost) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id.Get()
 	toSerialize["platformPostId"] = o.PlatformPostId
+	toSerialize["content"] = o.Content.Get()
+	toSerialize["imageUrl"] = o.ImageUrl.Get()
+	toSerialize["permalink"] = o.Permalink.Get()
 	return toSerialize, nil
 }
 
@@ -121,6 +211,9 @@ func (o *WebhookPayloadCommentPost) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"id",
 		"platformPostId",
+		"content",
+		"imageUrl",
+		"permalink",
 	}
 
 	allProperties := make(map[string]interface{})

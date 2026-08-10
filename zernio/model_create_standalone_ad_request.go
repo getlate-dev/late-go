@@ -153,18 +153,20 @@ type CreateStandaloneAdRequest struct {
 	AttributionSpec []CreateStandaloneAdRequestAttributionSpecInner `json:"attributionSpec,omitempty"`
 	// Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Applied on Meta, TikTok and Pinterest. Ignored on Google, LinkedIn and X.
 	Gender *string `json:"gender,omitempty"`
-	// Meta bid strategy applied to the ad set.
+	// Deprecated: send it inside `platformSpecificData` instead (Meta today; TikTok's nested shape is planned). The flat field keeps working during the deprecation window; sending both shapes returns a 400.  Meta bid strategy applied to the ad set.
+	// Deprecated
 	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
-	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`.
+	// Deprecated: send it inside `platformSpecificData` instead (Meta today; TikTok's nested shape is planned). The flat field keeps working during the deprecation window; sending both shapes returns a 400.  Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`.
+	// Deprecated
 	BidAmount *float32 `json:"bidAmount,omitempty"`
-	// Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as `bid_constraints.roas_average_floor` × 10000.
+	// Deprecated: send it inside `platformSpecificData` instead (Meta today; TikTok's nested shape is planned). The flat field keeps working during the deprecation window; sending both shapes returns a 400.  Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as `bid_constraints.roas_average_floor` × 10000.
+	// Deprecated
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 	// Meta only (facebook, instagram; other platforms return 400). Value rule set to attach to the new ad set, from `/v1/ads/value-rule-sets`. Attachment is driven by this id, so `valueRulesApplied` is optional alongside it.  Rejected with 400 in `adSetId` attach mode: that shape inherits the existing ad set's attachment, so the field would be silently ignored. Use `PUT /v1/ads/ad-sets/{adSetId}` there instead.  Ignored (stripped before the ad-set create) when `buyingType` is `RESERVED`: value rules only apply to auction ad sets on `LOWEST_COST_WITHOUT_CAP` or `COST_CAP`, and a Reach & Frequency reservation has no auction bid strategy.  Read back with `GET /v1/ads/ad-sets/{adSetId}?fields=value_rule_set_id`; the attachment is not mirrored onto Zernio's ad documents.
 	ValueRuleSetId *string `json:"valueRuleSetId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Meta only (facebook, instagram; other platforms return 400). Optional when attaching, and requires `valueRuleSetId`. `false` is REJECTED here with 400: a newly created ad set has nothing to detach, so detaching lives on `PUT /v1/ads/ad-sets/{adSetId}`.
-	ValueRulesApplied *bool `json:"valueRulesApplied,omitempty"`
-	// Platform-specific options. The platform is derived from `accountId`; sending options for a different platform returns a 400. LinkedIn (campaign bidding and delivery controls) is the only platform with options today.
-	PlatformSpecificData *LinkedInAdsPlatformData `json:"platformSpecificData,omitempty"`
+	ValueRulesApplied    *bool                                 `json:"valueRulesApplied,omitempty"`
+	PlatformSpecificData *BoostPostRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
 	// Legal entity that benefits from the ad. Required when targeting EU users (EU DSA, Article 26). Optional if the ad account has a default beneficiary: set it once via `PATCH /v1/ads/accounts` or in Meta Ads Manager, and Meta fills it in whenever the field is omitted.
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
@@ -2458,6 +2460,7 @@ func (o *CreateStandaloneAdRequest) SetGender(v string) {
 }
 
 // GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateStandaloneAdRequest) GetBidStrategy() BidStrategy {
 	if o == nil || IsNil(o.BidStrategy) {
 		var ret BidStrategy
@@ -2468,6 +2471,7 @@ func (o *CreateStandaloneAdRequest) GetBidStrategy() BidStrategy {
 
 // GetBidStrategyOk returns a tuple with the BidStrategy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateStandaloneAdRequest) GetBidStrategyOk() (*BidStrategy, bool) {
 	if o == nil || IsNil(o.BidStrategy) {
 		return nil, false
@@ -2485,11 +2489,13 @@ func (o *CreateStandaloneAdRequest) HasBidStrategy() bool {
 }
 
 // SetBidStrategy gets a reference to the given BidStrategy and assigns it to the BidStrategy field.
+// Deprecated
 func (o *CreateStandaloneAdRequest) SetBidStrategy(v BidStrategy) {
 	o.BidStrategy = &v
 }
 
 // GetBidAmount returns the BidAmount field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateStandaloneAdRequest) GetBidAmount() float32 {
 	if o == nil || IsNil(o.BidAmount) {
 		var ret float32
@@ -2500,6 +2506,7 @@ func (o *CreateStandaloneAdRequest) GetBidAmount() float32 {
 
 // GetBidAmountOk returns a tuple with the BidAmount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateStandaloneAdRequest) GetBidAmountOk() (*float32, bool) {
 	if o == nil || IsNil(o.BidAmount) {
 		return nil, false
@@ -2517,11 +2524,13 @@ func (o *CreateStandaloneAdRequest) HasBidAmount() bool {
 }
 
 // SetBidAmount gets a reference to the given float32 and assigns it to the BidAmount field.
+// Deprecated
 func (o *CreateStandaloneAdRequest) SetBidAmount(v float32) {
 	o.BidAmount = &v
 }
 
 // GetRoasAverageFloor returns the RoasAverageFloor field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateStandaloneAdRequest) GetRoasAverageFloor() float32 {
 	if o == nil || IsNil(o.RoasAverageFloor) {
 		var ret float32
@@ -2532,6 +2541,7 @@ func (o *CreateStandaloneAdRequest) GetRoasAverageFloor() float32 {
 
 // GetRoasAverageFloorOk returns a tuple with the RoasAverageFloor field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateStandaloneAdRequest) GetRoasAverageFloorOk() (*float32, bool) {
 	if o == nil || IsNil(o.RoasAverageFloor) {
 		return nil, false
@@ -2549,6 +2559,7 @@ func (o *CreateStandaloneAdRequest) HasRoasAverageFloor() bool {
 }
 
 // SetRoasAverageFloor gets a reference to the given float32 and assigns it to the RoasAverageFloor field.
+// Deprecated
 func (o *CreateStandaloneAdRequest) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
@@ -2618,9 +2629,9 @@ func (o *CreateStandaloneAdRequest) SetValueRulesApplied(v bool) {
 }
 
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetPlatformSpecificData() LinkedInAdsPlatformData {
+func (o *CreateStandaloneAdRequest) GetPlatformSpecificData() BoostPostRequestPlatformSpecificData {
 	if o == nil || IsNil(o.PlatformSpecificData) {
-		var ret LinkedInAdsPlatformData
+		var ret BoostPostRequestPlatformSpecificData
 		return ret
 	}
 	return *o.PlatformSpecificData
@@ -2628,7 +2639,7 @@ func (o *CreateStandaloneAdRequest) GetPlatformSpecificData() LinkedInAdsPlatfor
 
 // GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetPlatformSpecificDataOk() (*LinkedInAdsPlatformData, bool) {
+func (o *CreateStandaloneAdRequest) GetPlatformSpecificDataOk() (*BoostPostRequestPlatformSpecificData, bool) {
 	if o == nil || IsNil(o.PlatformSpecificData) {
 		return nil, false
 	}
@@ -2644,8 +2655,8 @@ func (o *CreateStandaloneAdRequest) HasPlatformSpecificData() bool {
 	return false
 }
 
-// SetPlatformSpecificData gets a reference to the given LinkedInAdsPlatformData and assigns it to the PlatformSpecificData field.
-func (o *CreateStandaloneAdRequest) SetPlatformSpecificData(v LinkedInAdsPlatformData) {
+// SetPlatformSpecificData gets a reference to the given BoostPostRequestPlatformSpecificData and assigns it to the PlatformSpecificData field.
+func (o *CreateStandaloneAdRequest) SetPlatformSpecificData(v BoostPostRequestPlatformSpecificData) {
 	o.PlatformSpecificData = &v
 }
 

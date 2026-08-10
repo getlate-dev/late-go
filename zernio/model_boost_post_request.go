@@ -45,15 +45,17 @@ type BoostPostRequest struct {
 	Targeting       *BoostPostRequestTargeting `json:"targeting,omitempty"`
 	// Meta only. A Meta-native targeting spec (e.g. `{ \"geo_locations\": { \"cities\": [{ \"key\": \"...\", \"radius\": 15, \"distance_unit\": \"kilometer\" }] } }`). Sent alone it is forwarded unchanged. Use for advanced fields the structured object does not expose (flexible_spec, excluded audiences, business places, user_os, wireless_carrier).  Can be combined with `targeting`: rawTargeting is the BASE layer and the built camelCase spec is merged on top, key by key (camelCase wins on collision). The merge goes one level deep inside `geo_locations` and `excluded_geo_locations` (built sub-keys win; raw-only sub-keys such as `location_types` survive). Array values (`flexible_spec`, ...) are replaced as a whole key, never element-merged.  When `rawTargeting` is present the `advantage_audience: 0` default that Zernio normally applies is no longer emitted, so it cannot clobber a `targeting_automation` sent in the raw spec. Meta requires `targeting_automation` on ad set creation, so include it in the raw spec, or send `targeting.advantage_audience` (0 or 1), which is merged over raw as `targeting_automation`.
 	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
-	// Meta bid strategy applied to the ad set. On TikTok, mapped to `bid_type` / `bid_price` / `deep_bid_type` automatically.
+	// Deprecated: send it inside `platformSpecificData` instead (Meta today; TikTok's nested shape is planned). The flat field keeps working during the deprecation window; sending both shapes returns a 400.  Meta bid strategy applied to the ad set. On TikTok, mapped to `bid_type` / `bid_price` / `deep_bid_type` automatically.
+	// Deprecated
 	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
-	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`. Backward-compat: providing `bidAmount` without `bidStrategy` is treated as `LOWEST_COST_WITH_BID_CAP`.
+	// Deprecated: send it inside `platformSpecificData` instead (Meta today; TikTok's nested shape is planned). The flat field keeps working during the deprecation window; sending both shapes returns a 400.  Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`. Backward-compat: providing `bidAmount` without `bidStrategy` is treated as `LOWEST_COST_WITH_BID_CAP`.
+	// Deprecated
 	BidAmount *float32 `json:"bidAmount,omitempty"`
-	// Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as `bid_constraints.roas_average_floor` × 10000 (Meta uses fixed-point integers).
-	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
-	// Platform-specific options. The platform is derived from `accountId`; sending options for a different platform returns a 400. LinkedIn (campaign bidding and delivery controls) is the only platform with options today.
-	PlatformSpecificData *LinkedInAdsPlatformData  `json:"platformSpecificData,omitempty"`
-	Tracking             *BoostPostRequestTracking `json:"tracking,omitempty"`
+	// Deprecated: send it inside `platformSpecificData` instead (Meta today; TikTok's nested shape is planned). The flat field keeps working during the deprecation window; sending both shapes returns a 400.  Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as `bid_constraints.roas_average_floor` × 10000 (Meta uses fixed-point integers).
+	// Deprecated
+	RoasAverageFloor     *float32                              `json:"roasAverageFloor,omitempty"`
+	PlatformSpecificData *BoostPostRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
+	Tracking             *BoostPostRequestTracking             `json:"tracking,omitempty"`
 	// Meta only. Required for housing, employment, credit, or political ads.
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// Meta (metaads) only. 2-letter ISO country codes the special ad category applies to. Requires specialAdCategories to be set (400 otherwise).
@@ -512,6 +514,7 @@ func (o *BoostPostRequest) SetRawTargeting(v map[string]interface{}) {
 }
 
 // GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
+// Deprecated
 func (o *BoostPostRequest) GetBidStrategy() BidStrategy {
 	if o == nil || IsNil(o.BidStrategy) {
 		var ret BidStrategy
@@ -522,6 +525,7 @@ func (o *BoostPostRequest) GetBidStrategy() BidStrategy {
 
 // GetBidStrategyOk returns a tuple with the BidStrategy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *BoostPostRequest) GetBidStrategyOk() (*BidStrategy, bool) {
 	if o == nil || IsNil(o.BidStrategy) {
 		return nil, false
@@ -539,11 +543,13 @@ func (o *BoostPostRequest) HasBidStrategy() bool {
 }
 
 // SetBidStrategy gets a reference to the given BidStrategy and assigns it to the BidStrategy field.
+// Deprecated
 func (o *BoostPostRequest) SetBidStrategy(v BidStrategy) {
 	o.BidStrategy = &v
 }
 
 // GetBidAmount returns the BidAmount field value if set, zero value otherwise.
+// Deprecated
 func (o *BoostPostRequest) GetBidAmount() float32 {
 	if o == nil || IsNil(o.BidAmount) {
 		var ret float32
@@ -554,6 +560,7 @@ func (o *BoostPostRequest) GetBidAmount() float32 {
 
 // GetBidAmountOk returns a tuple with the BidAmount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *BoostPostRequest) GetBidAmountOk() (*float32, bool) {
 	if o == nil || IsNil(o.BidAmount) {
 		return nil, false
@@ -571,11 +578,13 @@ func (o *BoostPostRequest) HasBidAmount() bool {
 }
 
 // SetBidAmount gets a reference to the given float32 and assigns it to the BidAmount field.
+// Deprecated
 func (o *BoostPostRequest) SetBidAmount(v float32) {
 	o.BidAmount = &v
 }
 
 // GetRoasAverageFloor returns the RoasAverageFloor field value if set, zero value otherwise.
+// Deprecated
 func (o *BoostPostRequest) GetRoasAverageFloor() float32 {
 	if o == nil || IsNil(o.RoasAverageFloor) {
 		var ret float32
@@ -586,6 +595,7 @@ func (o *BoostPostRequest) GetRoasAverageFloor() float32 {
 
 // GetRoasAverageFloorOk returns a tuple with the RoasAverageFloor field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *BoostPostRequest) GetRoasAverageFloorOk() (*float32, bool) {
 	if o == nil || IsNil(o.RoasAverageFloor) {
 		return nil, false
@@ -603,14 +613,15 @@ func (o *BoostPostRequest) HasRoasAverageFloor() bool {
 }
 
 // SetRoasAverageFloor gets a reference to the given float32 and assigns it to the RoasAverageFloor field.
+// Deprecated
 func (o *BoostPostRequest) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
 
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
-func (o *BoostPostRequest) GetPlatformSpecificData() LinkedInAdsPlatformData {
+func (o *BoostPostRequest) GetPlatformSpecificData() BoostPostRequestPlatformSpecificData {
 	if o == nil || IsNil(o.PlatformSpecificData) {
-		var ret LinkedInAdsPlatformData
+		var ret BoostPostRequestPlatformSpecificData
 		return ret
 	}
 	return *o.PlatformSpecificData
@@ -618,7 +629,7 @@ func (o *BoostPostRequest) GetPlatformSpecificData() LinkedInAdsPlatformData {
 
 // GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BoostPostRequest) GetPlatformSpecificDataOk() (*LinkedInAdsPlatformData, bool) {
+func (o *BoostPostRequest) GetPlatformSpecificDataOk() (*BoostPostRequestPlatformSpecificData, bool) {
 	if o == nil || IsNil(o.PlatformSpecificData) {
 		return nil, false
 	}
@@ -634,8 +645,8 @@ func (o *BoostPostRequest) HasPlatformSpecificData() bool {
 	return false
 }
 
-// SetPlatformSpecificData gets a reference to the given LinkedInAdsPlatformData and assigns it to the PlatformSpecificData field.
-func (o *BoostPostRequest) SetPlatformSpecificData(v LinkedInAdsPlatformData) {
+// SetPlatformSpecificData gets a reference to the given BoostPostRequestPlatformSpecificData and assigns it to the PlatformSpecificData field.
+func (o *BoostPostRequest) SetPlatformSpecificData(v BoostPostRequestPlatformSpecificData) {
 	o.PlatformSpecificData = &v
 }
 

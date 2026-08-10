@@ -21,10 +21,10 @@ var _ MappedNullable = &GenerateKeywordIdeas200Response{}
 // GenerateKeywordIdeas200Response struct for GenerateKeywordIdeas200Response
 type GenerateKeywordIdeas200Response struct {
 	// The customer the request ran against.
-	CustomerId             *string                                `json:"customerId,omitempty"`
-	Data                   []map[string]interface{}               `json:"data,omitempty"`
-	AggregateMetricResults map[string]interface{}                 `json:"aggregateMetricResults,omitempty"`
-	Paging                 *GenerateKeywordIdeas200ResponsePaging `json:"paging,omitempty"`
+	CustomerId             *string                             `json:"customerId,omitempty"`
+	Data                   []map[string]interface{}            `json:"data,omitempty"`
+	AggregateMetricResults map[string]interface{}              `json:"aggregateMetricResults,omitempty"`
+	Paging                 *GetAdsSearchTerms200ResponsePaging `json:"paging,omitempty"`
 }
 
 // NewGenerateKeywordIdeas200Response instantiates a new GenerateKeywordIdeas200Response object
@@ -142,9 +142,9 @@ func (o *GenerateKeywordIdeas200Response) SetAggregateMetricResults(v map[string
 }
 
 // GetPaging returns the Paging field value if set, zero value otherwise.
-func (o *GenerateKeywordIdeas200Response) GetPaging() GenerateKeywordIdeas200ResponsePaging {
+func (o *GenerateKeywordIdeas200Response) GetPaging() GetAdsSearchTerms200ResponsePaging {
 	if o == nil || IsNil(o.Paging) {
-		var ret GenerateKeywordIdeas200ResponsePaging
+		var ret GetAdsSearchTerms200ResponsePaging
 		return ret
 	}
 	return *o.Paging
@@ -152,7 +152,7 @@ func (o *GenerateKeywordIdeas200Response) GetPaging() GenerateKeywordIdeas200Res
 
 // GetPagingOk returns a tuple with the Paging field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenerateKeywordIdeas200Response) GetPagingOk() (*GenerateKeywordIdeas200ResponsePaging, bool) {
+func (o *GenerateKeywordIdeas200Response) GetPagingOk() (*GetAdsSearchTerms200ResponsePaging, bool) {
 	if o == nil || IsNil(o.Paging) {
 		return nil, false
 	}
@@ -168,8 +168,8 @@ func (o *GenerateKeywordIdeas200Response) HasPaging() bool {
 	return false
 }
 
-// SetPaging gets a reference to the given GenerateKeywordIdeas200ResponsePaging and assigns it to the Paging field.
-func (o *GenerateKeywordIdeas200Response) SetPaging(v GenerateKeywordIdeas200ResponsePaging) {
+// SetPaging gets a reference to the given GetAdsSearchTerms200ResponsePaging and assigns it to the Paging field.
+func (o *GenerateKeywordIdeas200Response) SetPaging(v GetAdsSearchTerms200ResponsePaging) {
 	o.Paging = &v
 }
 
