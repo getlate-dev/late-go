@@ -524,8 +524,10 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.InstagramAPI.ListInstagramStories(ctx)` | List active Instagram stories |
+| `client.InstagramAPI.GetInstagramAudio(ctx)` | Get Instagram audio metadata |
 | `client.InstagramAPI.GetInstagramPublishingLimit(ctx)` | Get Instagram publishing limit |
 | `client.InstagramAPI.GetInstagramStoryInsights(ctx)` | Get Instagram story insights |
+| `client.InstagramAPI.SearchInstagramAudio(ctx)` | Search Instagram audio |
 
 ### Lead Gen
 | Method | Description |

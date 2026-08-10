@@ -23,6 +23,141 @@ import (
 // InstagramAPIService InstagramAPI service
 type InstagramAPIService service
 
+type InstagramAPIGetInstagramAudioRequest struct {
+	ctx        context.Context
+	ApiService *InstagramAPIService
+	accountId  string
+	audioId    string
+}
+
+func (r InstagramAPIGetInstagramAudioRequest) Execute() (*GetInstagramAudio200Response, *http.Response, error) {
+	return r.ApiService.GetInstagramAudioExecute(r)
+}
+
+/*
+GetInstagramAudio Get Instagram audio metadata
+
+Fetch one audio asset's metadata by ID. Use it to re-validate a stored
+`audioId` before a scheduled Reel publishes, or to refresh the preview
+`downloadUrl` (Meta expires preview URLs after roughly 1.5 days).
+
+Same connection requirement as the search endpoint: Facebook-Login
+Instagram accounts only.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The ID of the Instagram account
+	@param audioId Instagram audio asset ID
+	@return InstagramAPIGetInstagramAudioRequest
+*/
+func (a *InstagramAPIService) GetInstagramAudio(ctx context.Context, accountId string, audioId string) InstagramAPIGetInstagramAudioRequest {
+	return InstagramAPIGetInstagramAudioRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+		audioId:    audioId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetInstagramAudio200Response
+func (a *InstagramAPIService) GetInstagramAudioExecute(r InstagramAPIGetInstagramAudioRequest) (*GetInstagramAudio200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetInstagramAudio200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstagramAPIService.GetInstagramAudio")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/instagram/audio/{audioId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"audioId"+"}", url.PathEscape(parameterValueToString(r.audioId, "audioId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type InstagramAPIGetInstagramPublishingLimitRequest struct {
 	ctx        context.Context
 	ApiService *InstagramAPIService
@@ -374,6 +509,165 @@ func (a *InstagramAPIService) ListInstagramStoriesExecute(r InstagramAPIListInst
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type InstagramAPISearchInstagramAudioRequest struct {
+	ctx        context.Context
+	ApiService *InstagramAPIService
+	accountId  string
+	audioType  *string
+	q          *string
+}
+
+// Catalog to search: licensed music or original sounds from Reels.
+func (r InstagramAPISearchInstagramAudioRequest) AudioType(audioType string) InstagramAPISearchInstagramAudioRequest {
+	r.audioType = &audioType
+	return r
+}
+
+// Search keywords. Omit to get the current trending list.
+func (r InstagramAPISearchInstagramAudioRequest) Q(q string) InstagramAPISearchInstagramAudioRequest {
+	r.q = &q
+	return r
+}
+
+func (r InstagramAPISearchInstagramAudioRequest) Execute() (*SearchInstagramAudio200Response, *http.Response, error) {
+	return r.ApiService.SearchInstagramAudioExecute(r)
+}
+
+/*
+SearchInstagramAudio Search Instagram audio
+
+Search Instagram's audio catalog (licensed music or original sounds),
+or list what is currently trending by omitting `q`. Returns up to ~30
+assets; Meta exposes no pagination on this edge.
+
+Pass the returned `audioId` as
+`platformSpecificData.audioConfiguration.audioId` when creating a Reel
+to publish it with that track.
+
+Requires an Instagram account connected via **Facebook Login**. Meta
+hosts this catalog on graph.facebook.com only, so accounts connected
+with classic Instagram Login receive a 400
+(`instagram_audio_requires_facebook_login`) and must be reconnected
+choosing the Facebook option.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The ID of the Instagram account
+	@return InstagramAPISearchInstagramAudioRequest
+*/
+func (a *InstagramAPIService) SearchInstagramAudio(ctx context.Context, accountId string) InstagramAPISearchInstagramAudioRequest {
+	return InstagramAPISearchInstagramAudioRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SearchInstagramAudio200Response
+func (a *InstagramAPIService) SearchInstagramAudioExecute(r InstagramAPISearchInstagramAudioRequest) (*SearchInstagramAudio200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SearchInstagramAudio200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstagramAPIService.SearchInstagramAudio")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/instagram/audio"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.audioType == nil {
+		return localVarReturnValue, nil, reportError("audioType is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "audioType", r.audioType, "form", "")
+	if r.q != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "q", r.q, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response

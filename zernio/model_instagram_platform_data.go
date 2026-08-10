@@ -31,8 +31,9 @@ type InstagramPlatformData struct {
 	TrialParams  *InstagramPlatformDataTrialParams `json:"trialParams,omitempty"`
 	// Tag Instagram users by username. The tag shape depends on the media: photos require x/y coordinates, Reels and videos take username only (coordinates are ignored), stories accept optional coordinates. For carousels, use mediaIndex to target specific slides (defaults to 0); video slides take username-only tags. Photo tags without valid coordinates are skipped.
 	UserTags []InstagramPlatformDataUserTagsInner `json:"userTags,omitempty"`
-	// Custom name for original audio in Reels. Replaces the default \"Original Audio\" label. Can only be set once.
-	AudioName *string `json:"audioName,omitempty"`
+	// Custom name for original audio in Reels. Replaces the default \"Original Audio\" label. Can only be set once. Unrelated to audioConfiguration, which attaches a catalog track.
+	AudioName          *string                                  `json:"audioName,omitempty"`
+	AudioConfiguration *InstagramPlatformDataAudioConfiguration `json:"audioConfiguration,omitempty"`
 	// Millisecond offset from video start for the Reel cover frame. Ignored when instagramThumbnail or reelCover is provided. Defaults to 0.
 	ThumbOffset *int32 `json:"thumbOffset,omitempty"`
 	// Custom cover image URL for Instagram Reels (JPG or PNG, publicly accessible). Overrides thumbOffset when provided. Also accepted as reelCover (alias).
@@ -292,6 +293,38 @@ func (o *InstagramPlatformData) SetAudioName(v string) {
 	o.AudioName = &v
 }
 
+// GetAudioConfiguration returns the AudioConfiguration field value if set, zero value otherwise.
+func (o *InstagramPlatformData) GetAudioConfiguration() InstagramPlatformDataAudioConfiguration {
+	if o == nil || IsNil(o.AudioConfiguration) {
+		var ret InstagramPlatformDataAudioConfiguration
+		return ret
+	}
+	return *o.AudioConfiguration
+}
+
+// GetAudioConfigurationOk returns a tuple with the AudioConfiguration field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstagramPlatformData) GetAudioConfigurationOk() (*InstagramPlatformDataAudioConfiguration, bool) {
+	if o == nil || IsNil(o.AudioConfiguration) {
+		return nil, false
+	}
+	return o.AudioConfiguration, true
+}
+
+// HasAudioConfiguration returns a boolean if a field has been set.
+func (o *InstagramPlatformData) HasAudioConfiguration() bool {
+	if o != nil && !IsNil(o.AudioConfiguration) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudioConfiguration gets a reference to the given InstagramPlatformDataAudioConfiguration and assigns it to the AudioConfiguration field.
+func (o *InstagramPlatformData) SetAudioConfiguration(v InstagramPlatformDataAudioConfiguration) {
+	o.AudioConfiguration = &v
+}
+
 // GetThumbOffset returns the ThumbOffset field value if set, zero value otherwise.
 func (o *InstagramPlatformData) GetThumbOffset() int32 {
 	if o == nil || IsNil(o.ThumbOffset) {
@@ -450,6 +483,9 @@ func (o InstagramPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AudioName) {
 		toSerialize["audioName"] = o.AudioName
+	}
+	if !IsNil(o.AudioConfiguration) {
+		toSerialize["audioConfiguration"] = o.AudioConfiguration
 	}
 	if !IsNil(o.ThumbOffset) {
 		toSerialize["thumbOffset"] = o.ThumbOffset
