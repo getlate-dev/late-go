@@ -141,8 +141,10 @@ type CreateStandaloneAdRequest struct {
 	AudienceId *string `json:"audienceId,omitempty"`
 	// Google only
 	CampaignType *string `json:"campaignType,omitempty"`
-	// Google Search only
+	// Google Search only. BROAD-match keywords on the new ad group (first 20).
 	Keywords []string `json:"keywords,omitempty"`
+	// Google Search only; other platforms return 400. BROAD-match negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
+	NegativeKeywords []string `json:"negativeKeywords,omitempty"`
 	// Google Search RSA only. Extra headlines.
 	AdditionalHeadlines []string `json:"additionalHeadlines,omitempty"`
 	// Google Search RSA only. Extra descriptions.
@@ -2299,6 +2301,38 @@ func (o *CreateStandaloneAdRequest) SetKeywords(v []string) {
 	o.Keywords = v
 }
 
+// GetNegativeKeywords returns the NegativeKeywords field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetNegativeKeywords() []string {
+	if o == nil || IsNil(o.NegativeKeywords) {
+		var ret []string
+		return ret
+	}
+	return o.NegativeKeywords
+}
+
+// GetNegativeKeywordsOk returns a tuple with the NegativeKeywords field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetNegativeKeywordsOk() ([]string, bool) {
+	if o == nil || IsNil(o.NegativeKeywords) {
+		return nil, false
+	}
+	return o.NegativeKeywords, true
+}
+
+// HasNegativeKeywords returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasNegativeKeywords() bool {
+	if o != nil && !IsNil(o.NegativeKeywords) {
+		return true
+	}
+
+	return false
+}
+
+// SetNegativeKeywords gets a reference to the given []string and assigns it to the NegativeKeywords field.
+func (o *CreateStandaloneAdRequest) SetNegativeKeywords(v []string) {
+	o.NegativeKeywords = v
+}
+
 // GetAdditionalHeadlines returns the AdditionalHeadlines field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetAdditionalHeadlines() []string {
 	if o == nil || IsNil(o.AdditionalHeadlines) {
@@ -3021,6 +3055,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Keywords) {
 		toSerialize["keywords"] = o.Keywords
+	}
+	if !IsNil(o.NegativeKeywords) {
+		toSerialize["negativeKeywords"] = o.NegativeKeywords
 	}
 	if !IsNil(o.AdditionalHeadlines) {
 		toSerialize["additionalHeadlines"] = o.AdditionalHeadlines

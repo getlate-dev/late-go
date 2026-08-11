@@ -18,11 +18,15 @@ import (
 // checks if the UpdateAdRequestTargeting type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdRequestTargeting{}
 
-// UpdateAdRequestTargeting Meta + TikTok only. Pinterest / X / LinkedIn / Google return 501.
+// UpdateAdRequestTargeting Meta + TikTok (demographics/interests) and Google (keyword edits only). Pinterest / X / LinkedIn return 501.
 type UpdateAdRequestTargeting struct {
-	AgeMin    *int32   `json:"ageMin,omitempty"`
-	AgeMax    *int32   `json:"ageMax,omitempty"`
-	Countries []string `json:"countries,omitempty"`
+	// Google only. The FULL new set of positive keywords for the ad group; live keywords not listed are removed. Entries are strings (BROAD) or { text, matchType } with matchType exact | phrase | broad. Mirrored to GET /v1/ads/keywords immediately.
+	Keywords []UpdateAdRequestTargetingKeywordsInner `json:"keywords,omitempty"`
+	// Google only. Same declarative contract as keywords, for the ad group's negative keywords.
+	NegativeKeywords []UpdateAdRequestTargetingKeywordsInner `json:"negativeKeywords,omitempty"`
+	AgeMin           *int32                                  `json:"ageMin,omitempty"`
+	AgeMax           *int32                                  `json:"ageMax,omitempty"`
+	Countries        []string                                `json:"countries,omitempty"`
 	// Interest objects from /v1/ads/interests. Each must include id and name.
 	Interests []UpdateAdRequestTargetingInterestsInner `json:"interests,omitempty"`
 	// Meta only. Omit to preserve the existing setting on update. 0 = disabled, 1 = enabled.
@@ -44,6 +48,70 @@ func NewUpdateAdRequestTargeting() *UpdateAdRequestTargeting {
 func NewUpdateAdRequestTargetingWithDefaults() *UpdateAdRequestTargeting {
 	this := UpdateAdRequestTargeting{}
 	return &this
+}
+
+// GetKeywords returns the Keywords field value if set, zero value otherwise.
+func (o *UpdateAdRequestTargeting) GetKeywords() []UpdateAdRequestTargetingKeywordsInner {
+	if o == nil || IsNil(o.Keywords) {
+		var ret []UpdateAdRequestTargetingKeywordsInner
+		return ret
+	}
+	return o.Keywords
+}
+
+// GetKeywordsOk returns a tuple with the Keywords field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestTargeting) GetKeywordsOk() ([]UpdateAdRequestTargetingKeywordsInner, bool) {
+	if o == nil || IsNil(o.Keywords) {
+		return nil, false
+	}
+	return o.Keywords, true
+}
+
+// HasKeywords returns a boolean if a field has been set.
+func (o *UpdateAdRequestTargeting) HasKeywords() bool {
+	if o != nil && !IsNil(o.Keywords) {
+		return true
+	}
+
+	return false
+}
+
+// SetKeywords gets a reference to the given []UpdateAdRequestTargetingKeywordsInner and assigns it to the Keywords field.
+func (o *UpdateAdRequestTargeting) SetKeywords(v []UpdateAdRequestTargetingKeywordsInner) {
+	o.Keywords = v
+}
+
+// GetNegativeKeywords returns the NegativeKeywords field value if set, zero value otherwise.
+func (o *UpdateAdRequestTargeting) GetNegativeKeywords() []UpdateAdRequestTargetingKeywordsInner {
+	if o == nil || IsNil(o.NegativeKeywords) {
+		var ret []UpdateAdRequestTargetingKeywordsInner
+		return ret
+	}
+	return o.NegativeKeywords
+}
+
+// GetNegativeKeywordsOk returns a tuple with the NegativeKeywords field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestTargeting) GetNegativeKeywordsOk() ([]UpdateAdRequestTargetingKeywordsInner, bool) {
+	if o == nil || IsNil(o.NegativeKeywords) {
+		return nil, false
+	}
+	return o.NegativeKeywords, true
+}
+
+// HasNegativeKeywords returns a boolean if a field has been set.
+func (o *UpdateAdRequestTargeting) HasNegativeKeywords() bool {
+	if o != nil && !IsNil(o.NegativeKeywords) {
+		return true
+	}
+
+	return false
+}
+
+// SetNegativeKeywords gets a reference to the given []UpdateAdRequestTargetingKeywordsInner and assigns it to the NegativeKeywords field.
+func (o *UpdateAdRequestTargeting) SetNegativeKeywords(v []UpdateAdRequestTargetingKeywordsInner) {
+	o.NegativeKeywords = v
 }
 
 // GetAgeMin returns the AgeMin field value if set, zero value otherwise.
@@ -216,6 +284,12 @@ func (o UpdateAdRequestTargeting) MarshalJSON() ([]byte, error) {
 
 func (o UpdateAdRequestTargeting) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Keywords) {
+		toSerialize["keywords"] = o.Keywords
+	}
+	if !IsNil(o.NegativeKeywords) {
+		toSerialize["negativeKeywords"] = o.NegativeKeywords
+	}
 	if !IsNil(o.AgeMin) {
 		toSerialize["ageMin"] = o.AgeMin
 	}
