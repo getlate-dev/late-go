@@ -45,25 +45,25 @@ type AdDailyMetrics struct {
 	PurchaseValue *float32 `json:"purchaseValue,omitempty"`
 	// Return on ad spend — derived as `purchaseValue / spend`. 0 when `spend` is 0. Equivalent to Meta's `purchase_roas` under default attribution. At ad-set and campaign levels this is recomputed from summed purchaseValue + spend (NOT averaged across children) so it's mathematically correct at every rollup level.
 	Roas *float32 `json:"roas,omitempty"`
-	// Meta video ads only (0 for non-video ads and other platforms), like all video* fields below. Number of times the video started playing (Meta `video_play_actions`), summed over the date range and across children at ad-set/campaign level.
+	// Number of times the video started playing, summed over the date range and across children at ad-set/campaign level. 0 for non-video ads. Sources: Meta `video_play_actions`, TikTok `video_play_actions`.
 	VideoPlayActions *int32 `json:"videoPlayActions,omitempty"`
-	// Views of at least 30 seconds (or to the end, for shorter videos). Meta `video_30_sec_watched_actions`.
+	// Views of at least 30 seconds (or to the end, for shorter videos). Sources: Meta `video_30_sec_watched_actions` (Meta only).
 	Video30SecWatchedActions *int32 `json:"video30SecWatchedActions,omitempty"`
-	// ThruPlays (watched to completion, or at least 15 seconds). Meta `video_thruplay_watched_actions`.
+	// ThruPlays (watched to completion, or at least 15 seconds). Sources: Meta `video_thruplay_watched_actions` (Meta only).
 	VideoThruplayWatchedActions *int32 `json:"videoThruplayWatchedActions,omitempty"`
-	// Views reaching 25% of the video's length. With the other percentile fields, powers hook/hold/drop-off analysis (e.g. hook rate = videoP25WatchedActions / videoPlayActions). Meta `video_p25_watched_actions`.
+	// Views reaching 25% of the video's length. With the other percentile fields, powers hook/hold/drop-off analysis (e.g. hook rate = videoP25WatchedActions / videoPlayActions). Sources: Meta `video_p25_watched_actions`, TikTok `video_views_p25`.
 	VideoP25WatchedActions *int32 `json:"videoP25WatchedActions,omitempty"`
-	// Views reaching 50% of the video's length. Meta `video_p50_watched_actions`.
+	// Views reaching 50% of the video's length. Sources: Meta `video_p50_watched_actions`, TikTok `video_views_p50`.
 	VideoP50WatchedActions *int32 `json:"videoP50WatchedActions,omitempty"`
-	// Views reaching 75% of the video's length. Meta `video_p75_watched_actions`.
+	// Views reaching 75% of the video's length. Sources: Meta `video_p75_watched_actions`, TikTok `video_views_p75`.
 	VideoP75WatchedActions *int32 `json:"videoP75WatchedActions,omitempty"`
-	// Views reaching 95% of the video's length. Meta `video_p95_watched_actions`.
+	// Views reaching 95% of the video's length. Sources: Meta `video_p95_watched_actions` (Meta only).
 	VideoP95WatchedActions *int32 `json:"videoP95WatchedActions,omitempty"`
-	// Views reaching 100% of the video's length. Meta `video_p100_watched_actions`.
+	// Views reaching 100% of the video's length. Sources: Meta `video_p100_watched_actions`, TikTok `video_views_p100`.
 	VideoP100WatchedActions *int32 `json:"videoP100WatchedActions,omitempty"`
-	// Average seconds watched per play (Meta `video_avg_time_watched_actions`). Aggregated over date ranges and across children as a play-weighted average (total watch time / total plays), never a plain average of averages.
+	// Average seconds watched per play. Aggregated over date ranges and across children as a play-weighted average (total watch time / total plays), never a plain average of averages. Sources: Meta `video_avg_time_watched_actions`, TikTok `average_video_play`.
 	VideoAvgTimeWatchedActions *float32 `json:"videoAvgTimeWatchedActions,omitempty"`
-	// Derived `spend / videoThruplayWatchedActions`, in ad-account native currency. Rounded to 4 decimals rather than the usual 2 because a ThruPlay routinely costs well under a cent. 0 when the ad has no ThruPlays.
+	// Derived `spend / videoThruplayWatchedActions`, in ad-account native currency. Rounded to 4 decimals rather than the usual 2 because a ThruPlay routinely costs well under a cent. 0 when the ad has no ThruPlays (ThruPlay is Meta-only).
 	CostPerThruplay     *float32            `json:"costPerThruplay,omitempty"`
 	Funnel              *AdFunnelCounts     `json:"funnel,omitempty"`
 	EngagementBreakdown *AdEngagementCounts `json:"engagementBreakdown,omitempty"`
