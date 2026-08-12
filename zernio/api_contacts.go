@@ -655,6 +655,7 @@ func (r ContactsAPIListContactsRequest) AccountId(accountId string) ContactsAPIL
 	return r
 }
 
+// Case-insensitive substring match on the contact name, email and company. Phone numbers and other platform identifiers are not matched: they live on the contact channel, not on the contact. To reach a contact from an inbox webhook, use the conversation.contactId it already carries.
 func (r ContactsAPIListContactsRequest) Search(search string) ContactsAPIListContactsRequest {
 	r.search = &search
 	return r
@@ -698,7 +699,7 @@ func (r ContactsAPIListContactsRequest) Execute() (*ListContacts200Response, *ht
 /*
 ListContacts List contacts
 
-List and search contacts for a profile. Supports filtering by tags, platform, subscription status, and full-text search.
+List and search contacts for a profile. Supports filtering by tags, platform, subscription status, and text search on name, email and company.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ContactsAPIListContactsRequest
