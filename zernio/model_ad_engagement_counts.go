@@ -18,17 +18,17 @@ import (
 // checks if the AdEngagementCounts type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdEngagementCounts{}
 
-// AdEngagementCounts The single `engagement` total split into the interactions behind it.  Note that `engagement` is not the sum of these: Meta's own `post_engagement` and `page_engagement` totals already contain the individual interactions, and all of them are counted into `engagement`. Use these fields when you need a specific interaction, and `engagement` only as the coarse total it has always been.  Meta-only; other platforms leave these at 0.
+// AdEngagementCounts The single `engagement` total split into the interactions behind it.  Note that `engagement` is not the sum of these: Meta's own `post_engagement` and `page_engagement` totals already contain the individual interactions, and all of them are counted into `engagement`. Use these fields when you need a specific interaction, and `engagement` only as the coarse total it has always been.  Populated for Meta and, since 2026-08, TikTok (`reactions` = paid likes, `comments`, `shares`; TikTok's `follow` count lives in `actions.follow`, not here). Other platforms leave these at 0. TikTok history note: paused TikTok ads are not re-synced, so campaigns that ended before the rollout keep 0s here.
 type AdEngagementCounts struct {
-	// Meta's own post-engagement total (`post_engagement`).
+	// Meta's own post-engagement total (`post_engagement`). Meta-only.
 	PostEngagement *int32 `json:"postEngagement,omitempty"`
-	// Meta's own page-engagement total (`page_engagement`).
+	// Meta's own page-engagement total (`page_engagement`). Meta-only.
 	PageEngagement *int32 `json:"pageEngagement,omitempty"`
-	// Reactions on the ad's post (`post_reaction`).
+	// Reactions on the ad's post (`post_reaction`). For TikTok these are its paid likes.
 	Reactions *int32 `json:"reactions,omitempty"`
 	// Comments on the ad's post.
 	Comments *int32 `json:"comments,omitempty"`
-	// Shares of the ad's post. Meta reports these under the action type literally named `post`.
+	// Shares of the ad's post. Meta reports these under the action type literally named `post`; TikTok under `share`.
 	Shares *int32 `json:"shares,omitempty"`
 	// Saves of the ad's post (`onsite_conversion.post_save`).
 	Saves *int32 `json:"saves,omitempty"`
