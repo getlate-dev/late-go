@@ -27,10 +27,17 @@ type AdCampaignsAPIBoostPostRequest struct {
 	ctx              context.Context
 	ApiService       *AdCampaignsAPIService
 	boostPostRequest *BoostPostRequest
+	idempotencyKey   *string
 }
 
 func (r AdCampaignsAPIBoostPostRequest) BoostPostRequest(boostPostRequest BoostPostRequest) AdCampaignsAPIBoostPostRequest {
 	r.boostPostRequest = &boostPostRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+func (r AdCampaignsAPIBoostPostRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIBoostPostRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -53,6 +60,16 @@ without `adSetId`.
 
 `instagramAccountId`, `destinationType` and `adSetId` are Meta-only and
 return 400 on other platforms.
+
+**Retries.** Boosts are NOT idempotent and can take minutes when Meta requires re-hosting an
+Instagram video, so do not retry on client timeout. Send an
+Idempotency-Key header to make retries safe: same key and body replays
+the original 201, and distinct keys always create distinct ads.
+Without the header, an identical request is treated as a retry: while
+one is in flight it returns 409, and within 10 minutes of a completed
+boost it returns the already-created ad instead of creating another.
+To intentionally duplicate an ad, send distinct Idempotency-Keys (or
+vary the body, e.g. the name).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIBoostPostRequest
@@ -105,6 +122,9 @@ func (a *AdCampaignsAPIService) BoostPostExecute(r AdCampaignsAPIBoostPostReques
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.boostPostRequest
