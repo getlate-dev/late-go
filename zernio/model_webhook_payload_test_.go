@@ -27,7 +27,8 @@ type WebhookPayloadTest struct {
 	Id    string `json:"id"`
 	Event string `json:"event"`
 	// Human-readable test message
-	Message   string    `json:"message"`
+	Message string `json:"message"`
+	// UTC time at which Zernio generated this test event (set once when the payload is built). Test fires are sent synchronously as a single attempt; a later redelivery of this event keeps the original value.
 	Timestamp time.Time `json:"timestamp"`
 }
 

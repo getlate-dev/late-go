@@ -24,11 +24,12 @@ var _ MappedNullable = &WebhookPayloadReviewUpdated{}
 // WebhookPayloadReviewUpdated Webhook payload for the review.updated event. Fired when the reviewer edits their text or rating, or when a reply is added (via the API or directly on the platform). Same shape as review.new. When a reply is present, review.hasReply is true and review.reply is populated.
 type WebhookPayloadReviewUpdated struct {
 	// Stable webhook event ID
-	Id        string                       `json:"id"`
-	Event     string                       `json:"event"`
-	Review    ReviewWebhookReview          `json:"review"`
-	Account   WebhookPayloadCommentAccount `json:"account"`
-	Timestamp time.Time                    `json:"timestamp"`
+	Id      string                       `json:"id"`
+	Event   string                       `json:"event"`
+	Review  ReviewWebhookReview          `json:"review"`
+	Account WebhookPayloadCommentAccount `json:"account"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type _WebhookPayloadReviewUpdated WebhookPayloadReviewUpdated

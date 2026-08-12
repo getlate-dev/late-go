@@ -24,12 +24,13 @@ var _ MappedNullable = &WebhookPayloadPostPlatform{}
 // WebhookPayloadPostPlatform Webhook payload for the per-platform terminal events `post.platform.published` and `post.platform.failed`, for `post.platform.deleted` (same shape, fired when Zernio's background sync detects that a platform target published through Zernio was later deleted on the platform; poll-driven ~hourly, not real-time), and for `post.tiktok.url_resolved` (same shape, fired when a published TikTok post's public URL is backfilled). Terminal events fire once per platform target inside a post as that platform reaches a terminal state (published or permanent failure). The `post` envelope mirrors the shape of `WebhookPayloadPost` so consumers can reuse rendering logic; the `platform` block identifies which specific platform transitioned; the `account` block identifies the connected social account behind that platform-write.
 type WebhookPayloadPostPlatform struct {
 	// Stable webhook event ID.
-	Id        string                             `json:"id"`
-	Event     string                             `json:"event"`
-	Post      WebhookPayloadPostPost             `json:"post"`
-	Platform  WebhookPayloadPostPlatformPlatform `json:"platform"`
-	Account   WebhookPayloadPostPlatformAccount  `json:"account"`
-	Timestamp time.Time                          `json:"timestamp"`
+	Id       string                             `json:"id"`
+	Event    string                             `json:"event"`
+	Post     WebhookPayloadPostPost             `json:"post"`
+	Platform WebhookPayloadPostPlatformPlatform `json:"platform"`
+	Account  WebhookPayloadPostPlatformAccount  `json:"account"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type _WebhookPayloadPostPlatform WebhookPayloadPostPlatform

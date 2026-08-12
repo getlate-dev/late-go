@@ -30,7 +30,7 @@ type WebhookPayloadAdStatusChanged struct {
 	AdObject WebhookPayloadAdStatusChangedAdObject `json:"adObject"`
 	Status   WebhookPayloadAdStatusChangedStatus   `json:"status"`
 	Error    *WebhookPayloadAdStatusChangedError   `json:"error,omitempty"`
-	// ISO-8601 timestamp the webhook was produced.
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
 	Timestamp time.Time `json:"timestamp"`
 }
 

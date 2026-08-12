@@ -21,8 +21,9 @@ var _ MappedNullable = &OnWhatsAppNumberActionRequiredRequest{}
 
 // OnWhatsAppNumberActionRequiredRequest struct for OnWhatsAppNumberActionRequiredRequest
 type OnWhatsAppNumberActionRequiredRequest struct {
-	Id        *string                                 `json:"id,omitempty"`
-	Event     *string                                 `json:"event,omitempty"`
+	Id    *string `json:"id,omitempty"`
+	Event *string `json:"event,omitempty"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
 	Timestamp *time.Time                              `json:"timestamp,omitempty"`
 	Reason    *string                                 `json:"reason,omitempty"`
 	Number    *OnWhatsAppNumberActivatedRequestNumber `json:"number,omitempty"`

@@ -24,11 +24,12 @@ var _ MappedNullable = &WebhookPayloadExternalPost{}
 // WebhookPayloadExternalPost Webhook payload for post.external.created / post.external.updated / post.external.deleted. Fired by Zernio's background sync when it detects a natively-authored post (e.g. a Google Business Profile localPost created in the Google UI), NOT a post published through Zernio. Poll-driven (~hourly), not real-time. On post.external.deleted, post.deletedAt is populated.
 type WebhookPayloadExternalPost struct {
 	// Stable webhook event ID
-	Id        string                       `json:"id"`
-	Event     string                       `json:"event"`
-	Post      ExternalPostWebhookPost      `json:"post"`
-	Account   WebhookPayloadCommentAccount `json:"account"`
-	Timestamp time.Time                    `json:"timestamp"`
+	Id      string                       `json:"id"`
+	Event   string                       `json:"event"`
+	Post    ExternalPostWebhookPost      `json:"post"`
+	Account WebhookPayloadCommentAccount `json:"account"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type _WebhookPayloadExternalPost WebhookPayloadExternalPost

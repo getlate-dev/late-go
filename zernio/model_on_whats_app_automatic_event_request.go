@@ -21,8 +21,9 @@ var _ MappedNullable = &OnWhatsAppAutomaticEventRequest{}
 
 // OnWhatsAppAutomaticEventRequest struct for OnWhatsAppAutomaticEventRequest
 type OnWhatsAppAutomaticEventRequest struct {
-	Id        *string    `json:"id,omitempty"`
-	Event     *string    `json:"event,omitempty"`
+	Id    *string `json:"id,omitempty"`
+	Event *string `json:"event,omitempty"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
 	Timestamp *time.Time `json:"timestamp,omitempty"`
 	// SocialAccount id of the WhatsApp number whose conversation was flagged.
 	AccountId *string `json:"accountId,omitempty"`

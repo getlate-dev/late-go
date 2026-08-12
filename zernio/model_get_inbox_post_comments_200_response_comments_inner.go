@@ -46,7 +46,7 @@ type GetInboxPostComments200ResponseCommentsInner struct {
 	LikeUri NullableString `json:"likeUri,omitempty"`
 	// Bluesky content identifier
 	Cid NullableString `json:"cid,omitempty"`
-	// Parent comment ID for nested replies
+	// ID of the parent comment. Present on entries inside replies[] for Facebook, Instagram and X/Twitter. On X/Twitter it is also present on top-level entries, where it holds the ID of the post replied to. Omitted entirely (key absent, not null) on top-level Facebook and Instagram entries and on every other platform, which express the parent relationship only through replies[] nesting.
 	ParentId NullableString `json:"parentId,omitempty"`
 	// Bluesky root post URI
 	RootUri NullableString `json:"rootUri,omitempty"`

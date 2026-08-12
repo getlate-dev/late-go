@@ -24,11 +24,12 @@ var _ MappedNullable = &WebhookPayloadReviewNew{}
 // WebhookPayloadReviewNew Webhook payload for the review.new event (new review posted on a connected account).
 type WebhookPayloadReviewNew struct {
 	// Stable webhook event ID
-	Id        string                       `json:"id"`
-	Event     string                       `json:"event"`
-	Review    ReviewWebhookReview          `json:"review"`
-	Account   WebhookPayloadCommentAccount `json:"account"`
-	Timestamp time.Time                    `json:"timestamp"`
+	Id      string                       `json:"id"`
+	Event   string                       `json:"event"`
+	Review  ReviewWebhookReview          `json:"review"`
+	Account WebhookPayloadCommentAccount `json:"account"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type _WebhookPayloadReviewNew WebhookPayloadReviewNew

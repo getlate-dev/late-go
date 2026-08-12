@@ -23,11 +23,12 @@ var _ MappedNullable = &WebhookPayloadCallEnded{}
 
 // WebhookPayloadCallEnded Webhook payload for the `call.ended` event. Fires on call hangup with the duration and a zero-markup billing breakdown.
 type WebhookPayloadCallEnded struct {
-	Id        string                      `json:"id"`
-	Event     string                      `json:"event"`
-	Call      WebhookPayloadCallEndedCall `json:"call"`
-	Account   InboxWebhookAccount         `json:"account"`
-	Timestamp time.Time                   `json:"timestamp"`
+	Id      string                      `json:"id"`
+	Event   string                      `json:"event"`
+	Call    WebhookPayloadCallEndedCall `json:"call"`
+	Account InboxWebhookAccount         `json:"account"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type _WebhookPayloadCallEnded WebhookPayloadCallEnded

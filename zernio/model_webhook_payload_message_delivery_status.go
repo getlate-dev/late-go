@@ -31,7 +31,8 @@ type WebhookPayloadMessageDeliveryStatus struct {
 	Error        *WebhookPayloadMessageDeliveryStatusError `json:"error,omitempty"`
 	Conversation InboxWebhookConversation                  `json:"conversation"`
 	Account      InboxWebhookAccount                       `json:"account"`
-	Timestamp    time.Time                                 `json:"timestamp"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type _WebhookPayloadMessageDeliveryStatus WebhookPayloadMessageDeliveryStatus

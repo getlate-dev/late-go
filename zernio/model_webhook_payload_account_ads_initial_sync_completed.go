@@ -24,11 +24,12 @@ var _ MappedNullable = &WebhookPayloadAccountAdsInitialSyncCompleted{}
 // WebhookPayloadAccountAdsInitialSyncCompleted Webhook payload for `account.ads.initial_sync_completed` events. Fired once per ads-enabled account when the initial discovery + 90-day ad backfill finishes (whether it succeeded fully, partially, or failed).
 type WebhookPayloadAccountAdsInitialSyncCompleted struct {
 	// Stable webhook event ID
-	Id        string                                              `json:"id"`
-	Event     string                                              `json:"event"`
-	Account   WebhookPayloadAccountAdsInitialSyncCompletedAccount `json:"account"`
-	Sync      WebhookPayloadAccountAdsInitialSyncCompletedSync    `json:"sync"`
-	Timestamp time.Time                                           `json:"timestamp"`
+	Id      string                                              `json:"id"`
+	Event   string                                              `json:"event"`
+	Account WebhookPayloadAccountAdsInitialSyncCompletedAccount `json:"account"`
+	Sync    WebhookPayloadAccountAdsInitialSyncCompletedSync    `json:"sync"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type _WebhookPayloadAccountAdsInitialSyncCompleted WebhookPayloadAccountAdsInitialSyncCompleted

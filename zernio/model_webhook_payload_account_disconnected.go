@@ -24,10 +24,11 @@ var _ MappedNullable = &WebhookPayloadAccountDisconnected{}
 // WebhookPayloadAccountDisconnected Webhook payload for account disconnected events
 type WebhookPayloadAccountDisconnected struct {
 	// Stable webhook event ID
-	Id        string                                   `json:"id"`
-	Event     string                                   `json:"event"`
-	Account   WebhookPayloadAccountDisconnectedAccount `json:"account"`
-	Timestamp time.Time                                `json:"timestamp"`
+	Id      string                                   `json:"id"`
+	Event   string                                   `json:"event"`
+	Account WebhookPayloadAccountDisconnectedAccount `json:"account"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type _WebhookPayloadAccountDisconnected WebhookPayloadAccountDisconnected

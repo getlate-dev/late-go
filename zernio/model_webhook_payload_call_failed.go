@@ -23,11 +23,12 @@ var _ MappedNullable = &WebhookPayloadCallFailed{}
 
 // WebhookPayloadCallFailed Webhook payload for the `call.failed` event. Fired when a call setup or in-progress call fails.
 type WebhookPayloadCallFailed struct {
-	Id        string                       `json:"id"`
-	Event     string                       `json:"event"`
-	Call      WebhookPayloadCallFailedCall `json:"call"`
-	Account   InboxWebhookAccount          `json:"account"`
-	Timestamp time.Time                    `json:"timestamp"`
+	Id      string                       `json:"id"`
+	Event   string                       `json:"event"`
+	Call    WebhookPayloadCallFailedCall `json:"call"`
+	Account InboxWebhookAccount          `json:"account"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type _WebhookPayloadCallFailed WebhookPayloadCallFailed

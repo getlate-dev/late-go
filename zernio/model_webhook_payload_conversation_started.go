@@ -30,6 +30,7 @@ type WebhookPayloadConversationStarted struct {
 	Account      InboxWebhookAccount                           `json:"account"`
 	// When the conversation document was created.
 	StartedAt time.Time `json:"startedAt"`
+	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
 	Timestamp time.Time `json:"timestamp"`
 }
 
