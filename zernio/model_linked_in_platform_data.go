@@ -18,7 +18,7 @@ import (
 // checks if the LinkedInPlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &LinkedInPlatformData{}
 
-// LinkedInPlatformData Up to 20 images, no multi-video. Single PDF supported (max 100MB). Link previews auto-generated when no media attached. Use organizationUrn for multi-org posting. Geo-restriction only works for organization pages (not personal profiles) and requires the targeted audience to exceed 300 followers.
+// LinkedInPlatformData Up to 20 images, no multi-video. Single PDF supported (max 100MB). Link previews auto-generated when no media attached. Use organizationUrn for multi-org posting. Geo-restriction only works for organization pages (not personal profiles) and requires the targeted audience to exceed 300 followers. Polls are supported via the poll object: 2-4 options, cannot be combined with media or reshareUrl, cannot be edited after publishing, and API-created polls are non-sponsored only.
 type LinkedInPlatformData struct {
 	// Title displayed on LinkedIn document (PDF/carousel) posts. Required by LinkedIn for document posts. If omitted, falls back to the media item title, then the filename.
 	DocumentTitle *string `json:"documentTitle,omitempty"`
@@ -29,8 +29,9 @@ type LinkedInPlatformData struct {
 	// Set to true to disable automatic link previews for URLs in the post content (default is false)
 	DisableLinkPreview *bool `json:"disableLinkPreview,omitempty"`
 	// LinkedIn post link to repost (use the post's \"Copy link to post\" action), or a urn:li:share / urn:li:ugcPost / urn:li:groupPost URN. The published post becomes a quote-reshare: your content is shown as the commentary and the original post is embedded underneath (LinkedIn's \"repost with your thoughts\"). Mutually exclusive with media. Works on personal profiles and organization pages.
-	ReshareUrl     *string         `json:"reshareUrl,omitempty"`
-	GeoRestriction *GeoRestriction `json:"geoRestriction,omitempty"`
+	ReshareUrl     *string                   `json:"reshareUrl,omitempty"`
+	GeoRestriction *GeoRestriction           `json:"geoRestriction,omitempty"`
+	Poll           *LinkedInPlatformDataPoll `json:"poll,omitempty"`
 }
 
 // NewLinkedInPlatformData instantiates a new LinkedInPlatformData object
@@ -242,6 +243,38 @@ func (o *LinkedInPlatformData) SetGeoRestriction(v GeoRestriction) {
 	o.GeoRestriction = &v
 }
 
+// GetPoll returns the Poll field value if set, zero value otherwise.
+func (o *LinkedInPlatformData) GetPoll() LinkedInPlatformDataPoll {
+	if o == nil || IsNil(o.Poll) {
+		var ret LinkedInPlatformDataPoll
+		return ret
+	}
+	return *o.Poll
+}
+
+// GetPollOk returns a tuple with the Poll field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInPlatformData) GetPollOk() (*LinkedInPlatformDataPoll, bool) {
+	if o == nil || IsNil(o.Poll) {
+		return nil, false
+	}
+	return o.Poll, true
+}
+
+// HasPoll returns a boolean if a field has been set.
+func (o *LinkedInPlatformData) HasPoll() bool {
+	if o != nil && !IsNil(o.Poll) {
+		return true
+	}
+
+	return false
+}
+
+// SetPoll gets a reference to the given LinkedInPlatformDataPoll and assigns it to the Poll field.
+func (o *LinkedInPlatformData) SetPoll(v LinkedInPlatformDataPoll) {
+	o.Poll = &v
+}
+
 func (o LinkedInPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -269,6 +302,9 @@ func (o LinkedInPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.GeoRestriction) {
 		toSerialize["geoRestriction"] = o.GeoRestriction
+	}
+	if !IsNil(o.Poll) {
+		toSerialize["poll"] = o.Poll
 	}
 	return toSerialize, nil
 }
