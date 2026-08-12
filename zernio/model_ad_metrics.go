@@ -45,6 +45,20 @@ type AdMetrics struct {
 	PurchaseValue *float32 `json:"purchaseValue,omitempty"`
 	// Return on ad spend — derived as `purchaseValue / spend`. 0 when `spend` is 0. Equivalent to Meta's `purchase_roas` under default attribution. At ad-set and campaign levels this is recomputed from summed purchaseValue + spend (NOT averaged across children) so it's mathematically correct at every rollup level.
 	Roas *float32 `json:"roas,omitempty"`
+	// Derived `spend / actions[type]` for every action type with a non-zero count, in ad-account native currency. Same keys as `actions`. Rounded to 4 decimals because cheap actions cost well under a cent. Recomputed from summed spend + counts at every rollup level. Empty object when spend is 0 or no actions are reported.
+	CostPerAction map[string]float32 `json:"costPerAction,omitempty"`
+	// Clicks leading off Meta's surfaces to the advertiser's destination. Meta-only; other platforms report 0.
+	OutboundClicks *int32 `json:"outboundClicks,omitempty"`
+	// Derived `outboundClicks / impressions * 100`, recomputed from sums at every rollup level.
+	OutboundClicksCtr *float32 `json:"outboundClicksCtr,omitempty"`
+	// In-session link clicks. Differs from the attributed `link_click` count in `actions`/`engagementBreakdown.linkClicks`, which uses the attribution window. Meta-only.
+	InlineLinkClicks *int32 `json:"inlineLinkClicks,omitempty"`
+	// Derived `inlineLinkClicks / impressions * 100`, recomputed from sums at every rollup level.
+	InlineLinkClickCtr *float32 `json:"inlineLinkClickCtr,omitempty"`
+	// People who clicked at least once. NOT additive: summed across days/children it overcounts people who clicked on multiple days or ads, so treat rollups as an upper bound (same caveat as `reach`). Meta-only.
+	UniqueClicks *int32 `json:"uniqueClicks,omitempty"`
+	// Derived `uniqueClicks / impressions * 100` (NOT Meta's reach-based unique_ctr). Inherits the non-additivity caveat of `uniqueClicks`.
+	UniqueCtr *float32 `json:"uniqueCtr,omitempty"`
 	// Number of times the video started playing, summed over the date range and across children at ad-set/campaign level. 0 for non-video ads. Sources: Meta `video_play_actions`, TikTok `video_play_actions`.
 	VideoPlayActions *int32 `json:"videoPlayActions,omitempty"`
 	// Views of at least 30 seconds (or to the end, for shorter videos). Sources: Meta `video_30_sec_watched_actions` (Meta only).
@@ -536,6 +550,230 @@ func (o *AdMetrics) SetRoas(v float32) {
 	o.Roas = &v
 }
 
+// GetCostPerAction returns the CostPerAction field value if set, zero value otherwise.
+func (o *AdMetrics) GetCostPerAction() map[string]float32 {
+	if o == nil || IsNil(o.CostPerAction) {
+		var ret map[string]float32
+		return ret
+	}
+	return o.CostPerAction
+}
+
+// GetCostPerActionOk returns a tuple with the CostPerAction field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetCostPerActionOk() (map[string]float32, bool) {
+	if o == nil || IsNil(o.CostPerAction) {
+		return map[string]float32{}, false
+	}
+	return o.CostPerAction, true
+}
+
+// HasCostPerAction returns a boolean if a field has been set.
+func (o *AdMetrics) HasCostPerAction() bool {
+	if o != nil && !IsNil(o.CostPerAction) {
+		return true
+	}
+
+	return false
+}
+
+// SetCostPerAction gets a reference to the given map[string]float32 and assigns it to the CostPerAction field.
+func (o *AdMetrics) SetCostPerAction(v map[string]float32) {
+	o.CostPerAction = v
+}
+
+// GetOutboundClicks returns the OutboundClicks field value if set, zero value otherwise.
+func (o *AdMetrics) GetOutboundClicks() int32 {
+	if o == nil || IsNil(o.OutboundClicks) {
+		var ret int32
+		return ret
+	}
+	return *o.OutboundClicks
+}
+
+// GetOutboundClicksOk returns a tuple with the OutboundClicks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetOutboundClicksOk() (*int32, bool) {
+	if o == nil || IsNil(o.OutboundClicks) {
+		return nil, false
+	}
+	return o.OutboundClicks, true
+}
+
+// HasOutboundClicks returns a boolean if a field has been set.
+func (o *AdMetrics) HasOutboundClicks() bool {
+	if o != nil && !IsNil(o.OutboundClicks) {
+		return true
+	}
+
+	return false
+}
+
+// SetOutboundClicks gets a reference to the given int32 and assigns it to the OutboundClicks field.
+func (o *AdMetrics) SetOutboundClicks(v int32) {
+	o.OutboundClicks = &v
+}
+
+// GetOutboundClicksCtr returns the OutboundClicksCtr field value if set, zero value otherwise.
+func (o *AdMetrics) GetOutboundClicksCtr() float32 {
+	if o == nil || IsNil(o.OutboundClicksCtr) {
+		var ret float32
+		return ret
+	}
+	return *o.OutboundClicksCtr
+}
+
+// GetOutboundClicksCtrOk returns a tuple with the OutboundClicksCtr field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetOutboundClicksCtrOk() (*float32, bool) {
+	if o == nil || IsNil(o.OutboundClicksCtr) {
+		return nil, false
+	}
+	return o.OutboundClicksCtr, true
+}
+
+// HasOutboundClicksCtr returns a boolean if a field has been set.
+func (o *AdMetrics) HasOutboundClicksCtr() bool {
+	if o != nil && !IsNil(o.OutboundClicksCtr) {
+		return true
+	}
+
+	return false
+}
+
+// SetOutboundClicksCtr gets a reference to the given float32 and assigns it to the OutboundClicksCtr field.
+func (o *AdMetrics) SetOutboundClicksCtr(v float32) {
+	o.OutboundClicksCtr = &v
+}
+
+// GetInlineLinkClicks returns the InlineLinkClicks field value if set, zero value otherwise.
+func (o *AdMetrics) GetInlineLinkClicks() int32 {
+	if o == nil || IsNil(o.InlineLinkClicks) {
+		var ret int32
+		return ret
+	}
+	return *o.InlineLinkClicks
+}
+
+// GetInlineLinkClicksOk returns a tuple with the InlineLinkClicks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetInlineLinkClicksOk() (*int32, bool) {
+	if o == nil || IsNil(o.InlineLinkClicks) {
+		return nil, false
+	}
+	return o.InlineLinkClicks, true
+}
+
+// HasInlineLinkClicks returns a boolean if a field has been set.
+func (o *AdMetrics) HasInlineLinkClicks() bool {
+	if o != nil && !IsNil(o.InlineLinkClicks) {
+		return true
+	}
+
+	return false
+}
+
+// SetInlineLinkClicks gets a reference to the given int32 and assigns it to the InlineLinkClicks field.
+func (o *AdMetrics) SetInlineLinkClicks(v int32) {
+	o.InlineLinkClicks = &v
+}
+
+// GetInlineLinkClickCtr returns the InlineLinkClickCtr field value if set, zero value otherwise.
+func (o *AdMetrics) GetInlineLinkClickCtr() float32 {
+	if o == nil || IsNil(o.InlineLinkClickCtr) {
+		var ret float32
+		return ret
+	}
+	return *o.InlineLinkClickCtr
+}
+
+// GetInlineLinkClickCtrOk returns a tuple with the InlineLinkClickCtr field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetInlineLinkClickCtrOk() (*float32, bool) {
+	if o == nil || IsNil(o.InlineLinkClickCtr) {
+		return nil, false
+	}
+	return o.InlineLinkClickCtr, true
+}
+
+// HasInlineLinkClickCtr returns a boolean if a field has been set.
+func (o *AdMetrics) HasInlineLinkClickCtr() bool {
+	if o != nil && !IsNil(o.InlineLinkClickCtr) {
+		return true
+	}
+
+	return false
+}
+
+// SetInlineLinkClickCtr gets a reference to the given float32 and assigns it to the InlineLinkClickCtr field.
+func (o *AdMetrics) SetInlineLinkClickCtr(v float32) {
+	o.InlineLinkClickCtr = &v
+}
+
+// GetUniqueClicks returns the UniqueClicks field value if set, zero value otherwise.
+func (o *AdMetrics) GetUniqueClicks() int32 {
+	if o == nil || IsNil(o.UniqueClicks) {
+		var ret int32
+		return ret
+	}
+	return *o.UniqueClicks
+}
+
+// GetUniqueClicksOk returns a tuple with the UniqueClicks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetUniqueClicksOk() (*int32, bool) {
+	if o == nil || IsNil(o.UniqueClicks) {
+		return nil, false
+	}
+	return o.UniqueClicks, true
+}
+
+// HasUniqueClicks returns a boolean if a field has been set.
+func (o *AdMetrics) HasUniqueClicks() bool {
+	if o != nil && !IsNil(o.UniqueClicks) {
+		return true
+	}
+
+	return false
+}
+
+// SetUniqueClicks gets a reference to the given int32 and assigns it to the UniqueClicks field.
+func (o *AdMetrics) SetUniqueClicks(v int32) {
+	o.UniqueClicks = &v
+}
+
+// GetUniqueCtr returns the UniqueCtr field value if set, zero value otherwise.
+func (o *AdMetrics) GetUniqueCtr() float32 {
+	if o == nil || IsNil(o.UniqueCtr) {
+		var ret float32
+		return ret
+	}
+	return *o.UniqueCtr
+}
+
+// GetUniqueCtrOk returns a tuple with the UniqueCtr field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetUniqueCtrOk() (*float32, bool) {
+	if o == nil || IsNil(o.UniqueCtr) {
+		return nil, false
+	}
+	return o.UniqueCtr, true
+}
+
+// HasUniqueCtr returns a boolean if a field has been set.
+func (o *AdMetrics) HasUniqueCtr() bool {
+	if o != nil && !IsNil(o.UniqueCtr) {
+		return true
+	}
+
+	return false
+}
+
+// SetUniqueCtr gets a reference to the given float32 and assigns it to the UniqueCtr field.
+func (o *AdMetrics) SetUniqueCtr(v float32) {
+	o.UniqueCtr = &v
+}
+
 // GetVideoPlayActions returns the VideoPlayActions field value if set, zero value otherwise.
 func (o *AdMetrics) GetVideoPlayActions() int32 {
 	if o == nil || IsNil(o.VideoPlayActions) {
@@ -1003,6 +1241,27 @@ func (o AdMetrics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Roas) {
 		toSerialize["roas"] = o.Roas
+	}
+	if !IsNil(o.CostPerAction) {
+		toSerialize["costPerAction"] = o.CostPerAction
+	}
+	if !IsNil(o.OutboundClicks) {
+		toSerialize["outboundClicks"] = o.OutboundClicks
+	}
+	if !IsNil(o.OutboundClicksCtr) {
+		toSerialize["outboundClicksCtr"] = o.OutboundClicksCtr
+	}
+	if !IsNil(o.InlineLinkClicks) {
+		toSerialize["inlineLinkClicks"] = o.InlineLinkClicks
+	}
+	if !IsNil(o.InlineLinkClickCtr) {
+		toSerialize["inlineLinkClickCtr"] = o.InlineLinkClickCtr
+	}
+	if !IsNil(o.UniqueClicks) {
+		toSerialize["uniqueClicks"] = o.UniqueClicks
+	}
+	if !IsNil(o.UniqueCtr) {
+		toSerialize["uniqueCtr"] = o.UniqueCtr
 	}
 	if !IsNil(o.VideoPlayActions) {
 		toSerialize["videoPlayActions"] = o.VideoPlayActions

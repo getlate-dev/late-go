@@ -36,7 +36,7 @@ type AdEngagementCounts struct {
 	PageLikes *int32 `json:"pageLikes,omitempty"`
 	// 3-second video views (`video_view`). For completion-based counts use `videoThruplayWatchedActions`.
 	VideoViews *int32 `json:"videoViews,omitempty"`
-	// Attributed link clicks (`link_click`). This is the attribution-window count, which differs from the in-session `inline_link_clicks` reported by `GET /v1/ads/{adId}/analytics`.
+	// Attributed link clicks (`link_click`). This is the attribution-window count, which differs from the in-session count in the sibling `inlineLinkClicks` field.
 	LinkClicks *int32 `json:"linkClicks,omitempty"`
 }
 
