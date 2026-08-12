@@ -33,8 +33,6 @@ type ExternalPostSummary struct {
 	PublishedAt *time.Time `json:"publishedAt,omitempty"`
 	// Media type (e.g. image, video, carousel)
 	MediaType *string `json:"mediaType,omitempty"`
-	// Primary media URL
-	MediaUrl *string `json:"mediaUrl,omitempty"`
 	// Thumbnail URL
 	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
 	// Per-item media (for carousels / multi-media posts)
@@ -251,38 +249,6 @@ func (o *ExternalPostSummary) SetMediaType(v string) {
 	o.MediaType = &v
 }
 
-// GetMediaUrl returns the MediaUrl field value if set, zero value otherwise.
-func (o *ExternalPostSummary) GetMediaUrl() string {
-	if o == nil || IsNil(o.MediaUrl) {
-		var ret string
-		return ret
-	}
-	return *o.MediaUrl
-}
-
-// GetMediaUrlOk returns a tuple with the MediaUrl field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ExternalPostSummary) GetMediaUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.MediaUrl) {
-		return nil, false
-	}
-	return o.MediaUrl, true
-}
-
-// HasMediaUrl returns a boolean if a field has been set.
-func (o *ExternalPostSummary) HasMediaUrl() bool {
-	if o != nil && !IsNil(o.MediaUrl) {
-		return true
-	}
-
-	return false
-}
-
-// SetMediaUrl gets a reference to the given string and assigns it to the MediaUrl field.
-func (o *ExternalPostSummary) SetMediaUrl(v string) {
-	o.MediaUrl = &v
-}
-
 // GetThumbnailUrl returns the ThumbnailUrl field value if set, zero value otherwise.
 func (o *ExternalPostSummary) GetThumbnailUrl() string {
 	if o == nil || IsNil(o.ThumbnailUrl) {
@@ -406,9 +372,6 @@ func (o ExternalPostSummary) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MediaType) {
 		toSerialize["mediaType"] = o.MediaType
-	}
-	if !IsNil(o.MediaUrl) {
-		toSerialize["mediaUrl"] = o.MediaUrl
 	}
 	if !IsNil(o.ThumbnailUrl) {
 		toSerialize["thumbnailUrl"] = o.ThumbnailUrl
