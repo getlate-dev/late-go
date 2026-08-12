@@ -324,6 +324,8 @@ func main() {
 ### Ad Insights
 | Method | Description |
 |--------|-------------|
+| `client.AdInsightsAPI.ListLocalServicesLeadConversations(ctx)` | Conversations of a Local Services lead |
+| `client.AdInsightsAPI.ListLocalServicesLeads(ctx)` | Google Local Services Ads leads |
 | `client.AdInsightsAPI.CreateAdInsightsReport(ctx)` | Submit an async insights report run |
 | `client.AdInsightsAPI.GetAdAnalytics(ctx)` | Get ad analytics |
 | `client.AdInsightsAPI.GetAdInsightsReport(ctx)` | Poll an async insights report run |

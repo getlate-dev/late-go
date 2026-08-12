@@ -1095,6 +1095,374 @@ func (a *AdInsightsAPIService) GetCampaignAnalyticsExecute(r AdInsightsAPIGetCam
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdInsightsAPIListLocalServicesLeadConversationsRequest struct {
+	ctx        context.Context
+	ApiService *AdInsightsAPIService
+	leadId     string
+	accountId  *string
+	customerId *string
+	pageToken  *string
+}
+
+// Google ads SocialAccount id.
+func (r AdInsightsAPIListLocalServicesLeadConversationsRequest) AccountId(accountId string) AdInsightsAPIListLocalServicesLeadConversationsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Numeric Google Ads customer id (no dashes). Defaults to the account&#39;s connected customer.
+func (r AdInsightsAPIListLocalServicesLeadConversationsRequest) CustomerId(customerId string) AdInsightsAPIListLocalServicesLeadConversationsRequest {
+	r.customerId = &customerId
+	return r
+}
+
+// Cursor from paging.nextPageToken of the previous page.
+func (r AdInsightsAPIListLocalServicesLeadConversationsRequest) PageToken(pageToken string) AdInsightsAPIListLocalServicesLeadConversationsRequest {
+	r.pageToken = &pageToken
+	return r
+}
+
+func (r AdInsightsAPIListLocalServicesLeadConversationsRequest) Execute() (*ListLocalServicesLeadConversations200Response, *http.Response, error) {
+	return r.ApiService.ListLocalServicesLeadConversationsExecute(r)
+}
+
+/*
+ListLocalServicesLeadConversations Conversations of a Local Services lead
+
+Conversation entries of one Local Services lead: phone calls (duration,
+recording URL) and messages (text, attachment URLs), oldest first. Read
+live from `local_services_lead_conversation`, always scoped to a single
+lead. Call-recording URLs require read access on the Google Ads account.
+Draws on the shared Google Ads operations budget.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param leadId Numeric lead id from /v1/ads/local-services/leads.
+	@return AdInsightsAPIListLocalServicesLeadConversationsRequest
+*/
+func (a *AdInsightsAPIService) ListLocalServicesLeadConversations(ctx context.Context, leadId string) AdInsightsAPIListLocalServicesLeadConversationsRequest {
+	return AdInsightsAPIListLocalServicesLeadConversationsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		leadId:     leadId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListLocalServicesLeadConversations200Response
+func (a *AdInsightsAPIService) ListLocalServicesLeadConversationsExecute(r AdInsightsAPIListLocalServicesLeadConversationsRequest) (*ListLocalServicesLeadConversations200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListLocalServicesLeadConversations200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdInsightsAPIService.ListLocalServicesLeadConversations")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/local-services/leads/{leadId}/conversations"
+	localVarPath = strings.Replace(localVarPath, "{"+"leadId"+"}", url.PathEscape(parameterValueToString(r.leadId, "leadId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	if r.pageToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageToken", r.pageToken, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdInsightsAPIListLocalServicesLeadsRequest struct {
+	ctx         context.Context
+	ApiService  *AdInsightsAPIService
+	accountId   *string
+	customerId  *string
+	fromDate    *string
+	toDate      *string
+	leadType    *string
+	leadStatus  *string
+	chargedOnly *bool
+	pageToken   *string
+}
+
+// Google ads SocialAccount id.
+func (r AdInsightsAPIListLocalServicesLeadsRequest) AccountId(accountId string) AdInsightsAPIListLocalServicesLeadsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Numeric Google Ads customer id (no dashes). Defaults to the account&#39;s connected customer.
+func (r AdInsightsAPIListLocalServicesLeadsRequest) CustomerId(customerId string) AdInsightsAPIListLocalServicesLeadsRequest {
+	r.customerId = &customerId
+	return r
+}
+
+// Leads created at/after this day.
+func (r AdInsightsAPIListLocalServicesLeadsRequest) FromDate(fromDate string) AdInsightsAPIListLocalServicesLeadsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// Leads created at/before this day.
+func (r AdInsightsAPIListLocalServicesLeadsRequest) ToDate(toDate string) AdInsightsAPIListLocalServicesLeadsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+func (r AdInsightsAPIListLocalServicesLeadsRequest) LeadType(leadType string) AdInsightsAPIListLocalServicesLeadsRequest {
+	r.leadType = &leadType
+	return r
+}
+
+// Google LocalServicesLeadStatus enum value (e.g. NEW, BOOKED, WIPED_OUT).
+func (r AdInsightsAPIListLocalServicesLeadsRequest) LeadStatus(leadStatus string) AdInsightsAPIListLocalServicesLeadsRequest {
+	r.leadStatus = &leadStatus
+	return r
+}
+
+// true &#x3D; only leads Google charged for.
+func (r AdInsightsAPIListLocalServicesLeadsRequest) ChargedOnly(chargedOnly bool) AdInsightsAPIListLocalServicesLeadsRequest {
+	r.chargedOnly = &chargedOnly
+	return r
+}
+
+// Cursor from paging.nextPageToken of the previous page.
+func (r AdInsightsAPIListLocalServicesLeadsRequest) PageToken(pageToken string) AdInsightsAPIListLocalServicesLeadsRequest {
+	r.pageToken = &pageToken
+	return r
+}
+
+func (r AdInsightsAPIListLocalServicesLeadsRequest) Execute() (*ListLocalServicesLeads200Response, *http.Response, error) {
+	return r.ApiService.ListLocalServicesLeadsExecute(r)
+}
+
+/*
+ListLocalServicesLeads Google Local Services Ads leads
+
+Leads generated by Local Services Ads (phone calls, messages, bookings),
+read live from Google's `local_services_lead` resource, newest first.
+No persistence: Google is the source of truth and lead/credit statuses
+keep changing server-side. Google never returns healthcare-category
+leads, and `WIPED_OUT` leads arrive with contact erased (`contact` is
+null). Draws on the shared Google Ads operations budget.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdInsightsAPIListLocalServicesLeadsRequest
+*/
+func (a *AdInsightsAPIService) ListLocalServicesLeads(ctx context.Context) AdInsightsAPIListLocalServicesLeadsRequest {
+	return AdInsightsAPIListLocalServicesLeadsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListLocalServicesLeads200Response
+func (a *AdInsightsAPIService) ListLocalServicesLeadsExecute(r AdInsightsAPIListLocalServicesLeadsRequest) (*ListLocalServicesLeads200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListLocalServicesLeads200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdInsightsAPIService.ListLocalServicesLeads")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/local-services/leads"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
+	if r.leadType != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "leadType", r.leadType, "form", "")
+	}
+	if r.leadStatus != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "leadStatus", r.leadStatus, "form", "")
+	}
+	if r.chargedOnly != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "chargedOnly", r.chargedOnly, "form", "")
+	}
+	if r.pageToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageToken", r.pageToken, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdInsightsAPIQueryAdInsightsRequest struct {
 	ctx                          context.Context
 	ApiService                   *AdInsightsAPIService
