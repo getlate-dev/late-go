@@ -1560,6 +1560,8 @@ type AdCampaignsAPIGetAdTreeRequest struct {
 	campaignId    *string
 	fromDate      *string
 	toDate        *string
+	hasDelivery   *bool
+	minSpend      *float32
 	sort          *string
 	timeIncrement *int32
 	dailyLevel    *string
@@ -1624,7 +1626,7 @@ func (r AdCampaignsAPIGetAdTreeRequest) CampaignId(campaignId string) AdCampaign
 	return r
 }
 
-// Start of the METRICS date range (YYYY-MM-DD). Affects only the spend/impression numbers overlaid on each node, NOT which campaigns are returned. Defaults to 90 days ago.
+// Start of the METRICS date range (YYYY-MM-DD). On its own it affects only the spend/impression numbers overlaid on each node, not which campaigns are returned — pass &#x60;hasDelivery&#x60; or &#x60;minSpend&#x60; to also filter the campaign set to this window. Defaults to 90 days ago.
 func (r AdCampaignsAPIGetAdTreeRequest) FromDate(fromDate string) AdCampaignsAPIGetAdTreeRequest {
 	r.fromDate = &fromDate
 	return r
@@ -1633,6 +1635,18 @@ func (r AdCampaignsAPIGetAdTreeRequest) FromDate(fromDate string) AdCampaignsAPI
 // End of metrics date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
 func (r AdCampaignsAPIGetAdTreeRequest) ToDate(toDate string) AdCampaignsAPIGetAdTreeRequest {
 	r.toDate = &toDate
+	return r
+}
+
+// Return only campaigns that delivered between &#x60;fromDate&#x60; and &#x60;toDate&#x60; — spend above zero, or impressions served at zero spend. Unlike &#x60;status&#x60;, which reads a campaign&#39;s CURRENT state, this filters on what happened inside the window, so a campaign that spent then and is paused today is still returned. Filters the campaign set itself, so &#x60;pagination.total&#x60; counts only matching campaigns.
+func (r AdCampaignsAPIGetAdTreeRequest) HasDelivery(hasDelivery bool) AdCampaignsAPIGetAdTreeRequest {
+	r.hasDelivery = &hasDelivery
+	return r
+}
+
+// Return only campaigns whose spend between &#x60;fromDate&#x60; and &#x60;toDate&#x60; reaches this amount. Expressed in each campaign&#39;s OWN currency (the &#x60;currency&#x60; field on the campaign node): spend is stored per ad account in its native currency and one response can span several. Implies &#x60;hasDelivery&#x60;; &#x60;minSpend&#x3D;0&#x60; applies no filter.
+func (r AdCampaignsAPIGetAdTreeRequest) MinSpend(minSpend float32) AdCampaignsAPIGetAdTreeRequest {
+	r.minSpend = &minSpend
 	return r
 }
 
@@ -1758,6 +1772,12 @@ func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeReques
 	}
 	if r.toDate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
+	if r.hasDelivery != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "hasDelivery", r.hasDelivery, "form", "")
+	}
+	if r.minSpend != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "minSpend", r.minSpend, "form", "")
 	}
 	if r.sort != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "sort", r.sort, "form", "")
@@ -2041,6 +2061,8 @@ type AdCampaignsAPIListAdCampaignsRequest struct {
 	profileId    *string
 	fromDate     *string
 	toDate       *string
+	hasDelivery  *bool
+	minSpend     *float32
 }
 
 // Meta only. Campaign reads aggregate over ad documents, so a campaign with ZERO ads is normally invisible here — the state the two-step create (campaign, then ads via &#x60;existingCampaignId&#x60;) leaves behind whenever Meta rejects the ad step. Set true to list those too, with &#x60;adCount: 0&#x60; and zeroed metrics. Requires &#x60;accountId&#x60; and &#x60;adAccountId&#x60;, since an empty campaign has no ad row to resolve a token or ad account from.
@@ -2110,6 +2132,18 @@ func (r AdCampaignsAPIListAdCampaignsRequest) FromDate(fromDate string) AdCampai
 // End of metrics date range (YYYY-MM-DD, inclusive). Defaults to today. Max 730-day range.
 func (r AdCampaignsAPIListAdCampaignsRequest) ToDate(toDate string) AdCampaignsAPIListAdCampaignsRequest {
 	r.toDate = &toDate
+	return r
+}
+
+// Return only campaigns that delivered between &#x60;fromDate&#x60; and &#x60;toDate&#x60; — spend above zero, or impressions served at zero spend. Unlike &#x60;status&#x60;, which reads a campaign&#39;s CURRENT state, this filters on what happened inside the window. Filters the campaign set itself, so &#x60;pagination.total&#x60; counts only matching campaigns. Mirrors the same filter on /v1/ads/tree.
+func (r AdCampaignsAPIListAdCampaignsRequest) HasDelivery(hasDelivery bool) AdCampaignsAPIListAdCampaignsRequest {
+	r.hasDelivery = &hasDelivery
+	return r
+}
+
+// Return only campaigns whose spend between &#x60;fromDate&#x60; and &#x60;toDate&#x60; reaches this amount, in each campaign&#39;s OWN currency (the &#x60;currency&#x60; field on the campaign). Implies &#x60;hasDelivery&#x60;; &#x60;minSpend&#x3D;0&#x60; applies no filter. Mirrors the same filter on /v1/ads/tree.
+func (r AdCampaignsAPIListAdCampaignsRequest) MinSpend(minSpend float32) AdCampaignsAPIListAdCampaignsRequest {
+	r.minSpend = &minSpend
 	return r
 }
 
@@ -2203,6 +2237,12 @@ func (a *AdCampaignsAPIService) ListAdCampaignsExecute(r AdCampaignsAPIListAdCam
 	}
 	if r.toDate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
+	if r.hasDelivery != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "hasDelivery", r.hasDelivery, "form", "")
+	}
+	if r.minSpend != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "minSpend", r.minSpend, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
