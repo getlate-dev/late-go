@@ -1634,7 +1634,7 @@ func (r AdCampaignsAPIGetAdTreeRequest) DailyLevel(dailyLevel string) AdCampaign
 	return r
 }
 
-func (r AdCampaignsAPIGetAdTreeRequest) Execute() (*GetAdTree200Response, *http.Response, error) {
+func (r AdCampaignsAPIGetAdTreeRequest) Execute() (*AdTreeResponse, *http.Response, error) {
 	return r.ApiService.GetAdTreeExecute(r)
 }
 
@@ -1671,13 +1671,13 @@ func (a *AdCampaignsAPIService) GetAdTree(ctx context.Context) AdCampaignsAPIGet
 
 // Execute executes the request
 //
-//	@return GetAdTree200Response
-func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeRequest) (*GetAdTree200Response, *http.Response, error) {
+//	@return AdTreeResponse
+func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeRequest) (*AdTreeResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetAdTree200Response
+		localVarReturnValue *AdTreeResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.GetAdTree")
@@ -1861,7 +1861,7 @@ func (r AdCampaignsAPIGetAdsTimelineRequest) Platform(platform string) AdCampaig
 	return r
 }
 
-func (r AdCampaignsAPIGetAdsTimelineRequest) Execute() (*GetAdsTimeline200Response, *http.Response, error) {
+func (r AdCampaignsAPIGetAdsTimelineRequest) Execute() (*AdsTimelineResponse, *http.Response, error) {
 	return r.ApiService.GetAdsTimelineExecute(r)
 }
 
@@ -1894,13 +1894,13 @@ func (a *AdCampaignsAPIService) GetAdsTimeline(ctx context.Context) AdCampaignsA
 
 // Execute executes the request
 //
-//	@return GetAdsTimeline200Response
-func (a *AdCampaignsAPIService) GetAdsTimelineExecute(r AdCampaignsAPIGetAdsTimelineRequest) (*GetAdsTimeline200Response, *http.Response, error) {
+//	@return AdsTimelineResponse
+func (a *AdCampaignsAPIService) GetAdsTimelineExecute(r AdCampaignsAPIGetAdsTimelineRequest) (*AdsTimelineResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetAdsTimeline200Response
+		localVarReturnValue *AdsTimelineResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.GetAdsTimeline")
@@ -2614,7 +2614,7 @@ func (r AdCampaignsAPIListAdsRequest) ToDate(toDate string) AdCampaignsAPIListAd
 	return r
 }
 
-func (r AdCampaignsAPIListAdsRequest) Execute() (*ListAds200Response, *http.Response, error) {
+func (r AdCampaignsAPIListAdsRequest) Execute() (*AdsListResponse, *http.Response, error) {
 	return r.ApiService.ListAdsExecute(r)
 }
 
@@ -2643,13 +2643,13 @@ func (a *AdCampaignsAPIService) ListAds(ctx context.Context) AdCampaignsAPIListA
 
 // Execute executes the request
 //
-//	@return ListAds200Response
-func (a *AdCampaignsAPIService) ListAdsExecute(r AdCampaignsAPIListAdsRequest) (*ListAds200Response, *http.Response, error) {
+//	@return AdsListResponse
+func (a *AdCampaignsAPIService) ListAdsExecute(r AdCampaignsAPIListAdsRequest) (*AdsListResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ListAds200Response
+		localVarReturnValue *AdsListResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ListAds")

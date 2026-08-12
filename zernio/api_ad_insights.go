@@ -425,7 +425,7 @@ func (r AdInsightsAPIGetAdAnalyticsRequest) Breakdowns(breakdowns string) AdInsi
 	return r
 }
 
-func (r AdInsightsAPIGetAdAnalyticsRequest) Execute() (*GetAdAnalytics200Response, *http.Response, error) {
+func (r AdInsightsAPIGetAdAnalyticsRequest) Execute() (*AdAnalyticsResponse, *http.Response, error) {
 	return r.ApiService.GetAdAnalyticsExecute(r)
 }
 
@@ -450,13 +450,13 @@ func (a *AdInsightsAPIService) GetAdAnalytics(ctx context.Context, adId string) 
 
 // Execute executes the request
 //
-//	@return GetAdAnalytics200Response
-func (a *AdInsightsAPIService) GetAdAnalyticsExecute(r AdInsightsAPIGetAdAnalyticsRequest) (*GetAdAnalytics200Response, *http.Response, error) {
+//	@return AdAnalyticsResponse
+func (a *AdInsightsAPIService) GetAdAnalyticsExecute(r AdInsightsAPIGetAdAnalyticsRequest) (*AdAnalyticsResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetAdAnalytics200Response
+		localVarReturnValue *AdAnalyticsResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdInsightsAPIService.GetAdAnalytics")
@@ -947,7 +947,7 @@ func (r AdInsightsAPIGetCampaignAnalyticsRequest) Breakdowns(breakdowns string) 
 	return r
 }
 
-func (r AdInsightsAPIGetCampaignAnalyticsRequest) Execute() (*GetCampaignAnalytics200Response, *http.Response, error) {
+func (r AdInsightsAPIGetCampaignAnalyticsRequest) Execute() (*CampaignAnalyticsResponse, *http.Response, error) {
 	return r.ApiService.GetCampaignAnalyticsExecute(r)
 }
 
@@ -976,13 +976,13 @@ func (a *AdInsightsAPIService) GetCampaignAnalytics(ctx context.Context, campaig
 
 // Execute executes the request
 //
-//	@return GetCampaignAnalytics200Response
-func (a *AdInsightsAPIService) GetCampaignAnalyticsExecute(r AdInsightsAPIGetCampaignAnalyticsRequest) (*GetCampaignAnalytics200Response, *http.Response, error) {
+//	@return CampaignAnalyticsResponse
+func (a *AdInsightsAPIService) GetCampaignAnalyticsExecute(r AdInsightsAPIGetCampaignAnalyticsRequest) (*CampaignAnalyticsResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetCampaignAnalytics200Response
+		localVarReturnValue *CampaignAnalyticsResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdInsightsAPIService.GetCampaignAnalytics")
