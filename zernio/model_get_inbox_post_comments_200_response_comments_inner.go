@@ -26,14 +26,17 @@ type GetInboxPostComments200ResponseCommentsInner struct {
 	CreatedTime *time.Time                                        `json:"createdTime,omitempty"`
 	From        *GetInboxPostComments200ResponseCommentsInnerFrom `json:"from,omitempty"`
 	LikeCount   *int32                                            `json:"likeCount,omitempty"`
-	ReplyCount  *int32                                            `json:"replyCount,omitempty"`
+	// The platform's own reply count, which includes hidden and deleted replies. Can exceed replies[].length even when repliesHasMore is false or absent.
+	ReplyCount *int32 `json:"replyCount,omitempty"`
 	// The platform this comment is from
 	Platform *string `json:"platform,omitempty"`
 	// Direct link to the comment on the platform (if available)
-	Url       NullableString           `json:"url,omitempty"`
-	Replies   []map[string]interface{} `json:"replies,omitempty"`
-	CanReply  *bool                    `json:"canReply,omitempty"`
-	CanDelete *bool                    `json:"canDelete,omitempty"`
+	Url     NullableString           `json:"url,omitempty"`
+	Replies []map[string]interface{} `json:"replies,omitempty"`
+	// Facebook only. True when replies[] (capped at 10) does not hold the comment's full reply thread; fetch the rest by passing the comment id as postId to GET /v1/inbox/comments/{postId}. Absent (not false) on every other platform, including Instagram, which has no equivalent signal.
+	RepliesHasMore *bool `json:"repliesHasMore,omitempty"`
+	CanReply       *bool `json:"canReply,omitempty"`
+	CanDelete      *bool `json:"canDelete,omitempty"`
 	// Whether this comment can be hidden (Facebook, Instagram, Threads)
 	CanHide *bool `json:"canHide,omitempty"`
 	// Whether this comment can be liked (Facebook, Twitter/X, Bluesky, Reddit)
@@ -368,6 +371,38 @@ func (o *GetInboxPostComments200ResponseCommentsInner) HasReplies() bool {
 // SetReplies gets a reference to the given []map[string]interface{} and assigns it to the Replies field.
 func (o *GetInboxPostComments200ResponseCommentsInner) SetReplies(v []map[string]interface{}) {
 	o.Replies = v
+}
+
+// GetRepliesHasMore returns the RepliesHasMore field value if set, zero value otherwise.
+func (o *GetInboxPostComments200ResponseCommentsInner) GetRepliesHasMore() bool {
+	if o == nil || IsNil(o.RepliesHasMore) {
+		var ret bool
+		return ret
+	}
+	return *o.RepliesHasMore
+}
+
+// GetRepliesHasMoreOk returns a tuple with the RepliesHasMore field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxPostComments200ResponseCommentsInner) GetRepliesHasMoreOk() (*bool, bool) {
+	if o == nil || IsNil(o.RepliesHasMore) {
+		return nil, false
+	}
+	return o.RepliesHasMore, true
+}
+
+// HasRepliesHasMore returns a boolean if a field has been set.
+func (o *GetInboxPostComments200ResponseCommentsInner) HasRepliesHasMore() bool {
+	if o != nil && !IsNil(o.RepliesHasMore) {
+		return true
+	}
+
+	return false
+}
+
+// SetRepliesHasMore gets a reference to the given bool and assigns it to the RepliesHasMore field.
+func (o *GetInboxPostComments200ResponseCommentsInner) SetRepliesHasMore(v bool) {
+	o.RepliesHasMore = &v
 }
 
 // GetCanReply returns the CanReply field value if set, zero value otherwise.
@@ -813,6 +848,9 @@ func (o GetInboxPostComments200ResponseCommentsInner) ToMap() (map[string]interf
 	}
 	if !IsNil(o.Replies) {
 		toSerialize["replies"] = o.Replies
+	}
+	if !IsNil(o.RepliesHasMore) {
+		toSerialize["repliesHasMore"] = o.RepliesHasMore
 	}
 	if !IsNil(o.CanReply) {
 		toSerialize["canReply"] = o.CanReply

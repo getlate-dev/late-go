@@ -345,7 +345,7 @@ func (r CommentsAPIGetInboxPostCommentsRequest) Limit(limit int32) CommentsAPIGe
 	return r
 }
 
-// Pagination cursor
+// Pagination cursor, returned by a previous call as &#x60;pagination.cursor&#x60;. This is the platform&#39;s own opaque paging value passed through verbatim: never construct, decode or validate it client-side.
 func (r CommentsAPIGetInboxPostCommentsRequest) Cursor(cursor string) CommentsAPIGetInboxPostCommentsRequest {
 	r.cursor = &cursor
 	return r
@@ -366,8 +366,12 @@ GetInboxPostComments Get post comments
 
 Fetch comments for a specific post. Requires accountId query parameter.
 
+On Facebook and Instagram, passing a COMMENT id as `postId` is also supported and
+returns that comment's replies instead of the post's top-level comments. This is not
+available on YouTube, where `postId` must be a video id.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param postId Zernio post ID or platform-specific post ID. Zernio IDs are auto-resolved. LinkedIn third-party posts accept full activity URN or numeric ID.
+	@param postId Zernio post ID or platform-specific post ID. Zernio IDs are auto-resolved. LinkedIn third-party posts accept full activity URN or numeric ID. On Facebook and Instagram, a comment ID is also accepted here and returns that comment's replies.
 	@return CommentsAPIGetInboxPostCommentsRequest
 */
 func (a *CommentsAPIService) GetInboxPostComments(ctx context.Context, postId string) CommentsAPIGetInboxPostCommentsRequest {
@@ -1004,8 +1008,18 @@ the Marketing API token (Facebook side) or the connected Instagram account's tok
 (Instagram side); a row whose count can't be read is omitted.
 
 Pagination walks each account's platform listing. Following `nextCursor` reaches past
-the first page on Facebook and Instagram only, since they are the platforms that
-support a server-side date window; on the others the listing stops at its first page.
+the first page on Facebook, Instagram, Threads, LinkedIn and YouTube, since they are
+the platforms that support a server-side date window; on the others the listing stops
+at its first page. Cursor pagination is only coherent for the default sort
+(`sortBy=date`, `sortOrder=desc`): with `sortOrder=asc`, or with `sortBy=comments`,
+the cursor filter does not match the sort order and the second page is unreliable.
+
+`nextCursor` is opaque: pass it back verbatim, never construct or parse it, its
+composition may change without notice. Because each page re-queries a live window,
+results can still shift between requests, so dedupe by `id` on the client.
+
+`commentCount` semantics differ by platform: YouTube's includes replies, Facebook's counts
+top-level comments only.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommentsAPIListInboxCommentsRequest
