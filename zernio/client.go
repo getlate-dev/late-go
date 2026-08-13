@@ -71,6 +71,8 @@ type APIClient struct {
 
 	AnalyticsAPI *AnalyticsAPIService
 
+	BlogsAPI *BlogsAPIService
+
 	BroadcastsAPI *BroadcastsAPIService
 
 	CallsAPI *CallsAPIService
@@ -205,6 +207,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.AdInsightsAPI = (*AdInsightsAPIService)(&c.common)
 	c.AdTargetingAPI = (*AdTargetingAPIService)(&c.common)
 	c.AnalyticsAPI = (*AnalyticsAPIService)(&c.common)
+	c.BlogsAPI = (*BlogsAPIService)(&c.common)
 	c.BroadcastsAPI = (*BroadcastsAPIService)(&c.common)
 	c.CallsAPI = (*CallsAPIService)(&c.common)
 	c.CommentAutomationsAPI = (*CommentAutomationsAPIService)(&c.common)

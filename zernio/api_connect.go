@@ -1308,6 +1308,7 @@ type ConnectAPIGetConnectUrlRequest struct {
 	redirectUrl *string
 	headless    *bool
 	loginMethod *string
+	onboarding  *string
 }
 
 // Your Zernio profile ID (get from /v1/profiles). For WhatsApp, a Zernio-provisioned number can only be connected on the profile it was provisioned to; connecting from any other profile is rejected with a 409.
@@ -1331,6 +1332,12 @@ func (r ConnectAPIGetConnectUrlRequest) Headless(headless bool) ConnectAPIGetCon
 // Instagram only. Which of the two Instagram connection methods to use. Ignored for every other platform.  &#x60;instagram_login&#x60; (the default, and what you get if you omit this): the Instagram Login dialog. The user authorizes their Instagram professional account directly, no Facebook Page required.  &#x60;facebook_login&#x60;: the Facebook Login dialog, i.e. \&quot;Instagram API with Facebook Login\&quot;. The user authorizes a Facebook Page that has a linked Instagram professional account, and every API call for that account then runs through the Page. Use this when the customer manages Instagram through a Page and expects the Facebook consent screen. Because the user has to pick which Page to connect, the callback continues at the account-selection step, &#x60;/v1/connect/instagram/select-account&#x60;.  &#x60;facebook_login&#x60; supports &#x60;headless&#x3D;true&#x60; like the other selection platforms: the callback redirects to your &#x60;redirect_url&#x60; with &#x60;profileId&#x60;, &#x60;tempToken&#x60;, &#x60;platform&#x3D;instagram&#x60;, &#x60;step&#x3D;select_account&#x60; and &#x60;connect_token&#x60;, which you pass into the select-account endpoints to finish. The default &#x60;instagram_login&#x60; has no selection step, so it connects the account directly.
 func (r ConnectAPIGetConnectUrlRequest) LoginMethod(loginMethod string) ConnectAPIGetConnectUrlRequest {
 	r.loginMethod = &loginMethod
+	return r
+}
+
+// WhatsApp only. Ignored for every other platform. Controls which screen Meta&#39;s Embedded Signup popup shows.  If omitted, the connection defaults to coexistence (same as &#x60;business_app&#x60; below), preserving existing behavior for numbers already on the WhatsApp Business app.  &#x60;api&#x60;: standard Embedded Signup, showing Meta&#39;s WABA/number picker. Use this to connect a phone number already on Cloud API elsewhere.  &#x60;business_app&#x60;: coexistence, i.e. &#39;Connect existing WhatsApp Business app&#39; (a number shared between Cloud API and the consumer WhatsApp Business app).
+func (r ConnectAPIGetConnectUrlRequest) Onboarding(onboarding string) ConnectAPIGetConnectUrlRequest {
+	r.onboarding = &onboarding
 	return r
 }
 
@@ -1399,6 +1406,9 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 		var defaultValue string = "instagram_login"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "loginMethod", defaultValue, "form", "")
 		r.loginMethod = &defaultValue
+	}
+	if r.onboarding != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "onboarding", r.onboarding, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2336,6 +2346,169 @@ func (a *ConnectAPIService) GetRedditSubredditsExecute(r ConnectAPIGetRedditSubr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIGetShopifyConnectUrlRequest struct {
+	ctx         context.Context
+	ApiService  *ConnectAPIService
+	profileId   *string
+	shop        *string
+	redirectUrl *string
+}
+
+// Your Zernio profile ID (get from /v1/profiles).
+func (r ConnectAPIGetShopifyConnectUrlRequest) ProfileId(profileId string) ConnectAPIGetShopifyConnectUrlRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// The myshopify.com store domain to connect, e.g. &#x60;your-store.myshopify.com&#x60; (the bare &#x60;your-store&#x60; prefix is accepted too).
+func (r ConnectAPIGetShopifyConnectUrlRequest) Shop(shop string) ConnectAPIGetShopifyConnectUrlRequest {
+	r.shop = &shop
+	return r
+}
+
+// Your custom redirect URL after connection completes. Accepts an http(s) URL, a custom app scheme for mobile deeplinks (e.g. myapp://callback), or a relative path. On failure an &#x60;error&#x60; query param is appended.
+func (r ConnectAPIGetShopifyConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetShopifyConnectUrlRequest {
+	r.redirectUrl = &redirectUrl
+	return r
+}
+
+func (r ConnectAPIGetShopifyConnectUrlRequest) Execute() (*GetConnectUrl200Response, *http.Response, error) {
+	return r.ApiService.GetShopifyConnectUrlExecute(r)
+}
+
+/*
+GetShopifyConnectUrl Get Shopify OAuth connect URL
+
+Initiate the Shopify OAuth flow for a store. Shopify is a connect-only
+platform: the connected account does not publish social posts, it powers
+the Blogs API (`/v1/accounts/{accountId}/blogs`). Returns an `authUrl`
+to redirect the merchant to; after they approve the install, Shopify
+redirects their browser to Zernio's callback, the account is created on
+the profile (platform `shopify`), and the browser is redirected to
+`redirect_url` (or the Zernio dashboard when omitted). Requested scopes
+are `read_content` and `write_content` (content only; no customer or
+order data). Connecting the same profile to a store again refreshes the
+stored token in place.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIGetShopifyConnectUrlRequest
+*/
+func (a *ConnectAPIService) GetShopifyConnectUrl(ctx context.Context) ConnectAPIGetShopifyConnectUrlRequest {
+	return ConnectAPIGetShopifyConnectUrlRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetConnectUrl200Response
+func (a *ConnectAPIService) GetShopifyConnectUrlExecute(r ConnectAPIGetShopifyConnectUrlRequest) (*GetConnectUrl200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetConnectUrl200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetShopifyConnectUrl")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/shopify"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.profileId == nil {
+		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
+	}
+	if r.shop == nil {
+		return localVarReturnValue, nil, reportError("shop is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "shop", r.shop, "form", "")
+	if r.redirectUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject1
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

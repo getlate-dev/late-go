@@ -199,6 +199,7 @@ func main() {
 | `client.ConnectAPI.GetPinterestBoards(ctx)` | List Pinterest boards |
 | `client.ConnectAPI.GetRedditFlairs(ctx)` | List subreddit flairs |
 | `client.ConnectAPI.GetRedditSubreddits(ctx)` | List Reddit subreddits |
+| `client.ConnectAPI.GetShopifyConnectUrl(ctx)` | Get Shopify OAuth connect URL |
 | `client.ConnectAPI.GetSubredditRules(ctx)` | Get subreddit rules |
 | `client.ConnectAPI.GetTelegramConnectStatus(ctx)` | Generate Telegram code |
 | `client.ConnectAPI.GetYoutubePlaylists(ctx)` | List YouTube playlists |
@@ -343,6 +344,20 @@ func main() {
 | `client.AdTargetingAPI.EstimateAdReach(ctx)` | Estimate audience reach |
 | `client.AdTargetingAPI.SearchAdInterests(ctx)` | Search targeting interests |
 | `client.AdTargetingAPI.SearchAdTargeting(ctx)` | Search targeting options |
+
+### Blogs
+| Method | Description |
+|--------|-------------|
+| `client.BlogsAPI.ListBlogArticles(ctx)` | List blog articles |
+| `client.BlogsAPI.ListBlogs(ctx)` | List blogs |
+| `client.BlogsAPI.CreateBlog(ctx)` | Create a blog |
+| `client.BlogsAPI.CreateBlogArticle(ctx)` | Create a blog article |
+| `client.BlogsAPI.GetBlog(ctx)` | Get a blog |
+| `client.BlogsAPI.GetBlogArticle(ctx)` | Get a blog article |
+| `client.BlogsAPI.UpdateBlog(ctx)` | Update a blog |
+| `client.BlogsAPI.UpdateBlogArticle(ctx)` | Update a blog article |
+| `client.BlogsAPI.DeleteBlog(ctx)` | Delete a blog |
+| `client.BlogsAPI.DeleteBlogArticle(ctx)` | Delete a blog article |
 
 ### Broadcasts
 | Method | Description |

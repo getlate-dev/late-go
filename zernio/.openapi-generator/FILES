@@ -11,6 +11,7 @@ api_ad_insights.go
 api_ad_targeting.go
 api_analytics.go
 api_api_keys.go
+api_blogs.go
 api_broadcasts.go
 api_calls.go
 api_comment_automations.go
@@ -142,6 +143,9 @@ model_block_whats_app_users_200_response.go
 model_block_whats_app_users_200_response_blocked_inner.go
 model_block_whats_app_users_200_response_failed_inner.go
 model_block_whats_app_users_request.go
+model_blog.go
+model_blog_article.go
+model_blog_article_image.go
 model_bluesky_platform_data.go
 model_bookmark_post_200_response.go
 model_boost_post_request.go
@@ -226,6 +230,12 @@ model_create_ad_insights_report_request_filtering_inner.go
 model_create_ad_insights_report_request_time_increment.go
 model_create_api_key_201_response.go
 model_create_api_key_request.go
+model_create_blog_201_response.go
+model_create_blog_article_201_response.go
+model_create_blog_article_request.go
+model_create_blog_article_request_image.go
+model_create_blog_article_request_seo.go
+model_create_blog_request.go
 model_create_broadcast_200_response.go
 model_create_broadcast_200_response_broadcast.go
 model_create_broadcast_request.go
@@ -850,6 +860,8 @@ model_list_ad_keywords_200_response_keywords_inner.go
 model_list_ads_202_response.go
 model_list_ads_business_centers_200_response.go
 model_list_api_keys_200_response.go
+model_list_blog_articles_200_response.go
+model_list_blogs_200_response.go
 model_list_broadcast_recipients_200_response.go
 model_list_broadcast_recipients_200_response_recipients_inner.go
 model_list_broadcasts_200_response.go
@@ -1340,6 +1352,8 @@ model_update_ad_status_request.go
 model_update_ad_tracking_tags_request.go
 model_update_ad_tracking_tags_request_creative.go
 model_update_ad_tracking_tags_request_url_tags_inner.go
+model_update_blog_article_request.go
+model_update_blog_request.go
 model_update_broadcast_200_response.go
 model_update_broadcast_200_response_broadcast.go
 model_update_broadcast_request.go
