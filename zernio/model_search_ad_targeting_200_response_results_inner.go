@@ -26,7 +26,7 @@ type SearchAdTargeting200ResponseResultsInner struct {
 	Id string `json:"id"`
 	// Human-readable label.
 	Name string `json:"name"`
-	// What the result is (e.g. city, region, country, zip, metro, interest, behavior, income).
+	// What the result is (e.g. city, region, country, zip, metro, location, interest, behavior, income).
 	Type string `json:"type"`
 	// Optional breadcrumb of parent labels (e.g. ['United States', 'California', 'Los Angeles']). Disambiguates same-named results.
 	Path []string `json:"path,omitempty"`
