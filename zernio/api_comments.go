@@ -37,6 +37,7 @@ func (r CommentsAPIDeleteInboxCommentRequest) AccountId(accountId string) Commen
 	return r
 }
 
+// For LinkedIn, accepts either the numeric comment ID or the composite comment URN returned by the comments listing (e.g. urn:li:comment:(threadUrn,id))
 func (r CommentsAPIDeleteInboxCommentRequest) CommentId(commentId string) CommentsAPIDeleteInboxCommentRequest {
 	r.commentId = &commentId
 	return r
