@@ -29,6 +29,8 @@ type WorkflowNode struct {
 	// Type-specific settings. All string fields support `{{variable}}` interpolation against the run's variable bag (resolved at execution time).  **trigger**: `{ triggerType: inbound_message|api_call|whatsapp_event, keywords:[string], matchType: any|contains|exact|regex, onlyFirstMessage:boolean, eventType: message_sent|message_delivered|message_read|message_failed|reaction }`. Default `triggerType` is `inbound_message` for legacy nodes. `eventType` is only honored when `triggerType` is `whatsapp_event` (WhatsApp-only).  **send_message**: `{ messageType: text|template|media|interactive, text, template:{name,language,variableMapping}, media:{mediaType:image|video|audio|document, url,caption}, interactive }`. `template` and `interactive` are WhatsApp-only. `interactive.type` is inferred from the payload shape when omitted; payloads with neither `type` nor an inferable shape are rejected.  **wait_for_reply**: `{ timeoutMinutes:int (max 43200), saveAs:string }`. Resume via the `'reply'` edge on inbound, or `'timeout'` edge after `timeoutMinutes` of silence.  **condition**: `{ rules:[{ id, variable, operator: equals|not_equals|contains|not_contains|starts_with|ends_with|exists|not_exists|matches, value }] }`. First matching rule takes its `id` as the sourceHandle; otherwise `'default'`.  **set_variable**: `{ assignments:[{ name, value }] }`. Run-scoped (lives only for this execution; use `set_field` for persistent values).  **delay**: `{ delayMinutes:int (max 43200) }`. Suspends the run, resumes via timer.  **webhook**: `{ url, method: GET|POST|PUT|PATCH|DELETE, headers, bodyTemplate, saveAs }`. SSRF-guarded (private/loopback/metadata IPs rejected). Response saved as `{ status, ok, body }` to `vars[saveAs]`. Edge: `'success'` on 2xx, `'error'` otherwise.  **ai**: `{ provider: anthropic|openai|google|mistral|groq|openrouter, model, preset: smart|tools|cheap, systemPrompt, userPromptTemplate, saveAs, temperature, maxTokens, outputType: text|json, tools:[{ name, description, parameters }] }`. Set `provider` + `model` for BYOK (uses your stored API key); omit `provider` for the legacy Telnyx path. Edges: `'success'`, `'tool:<name>'` (model picked a tool), `'error'`.  **handoff**: `{ note, assignTo }`. Terminates the run as `exited`, flags the conversation for a human operator.  **start_call**: `{ to, forwardTo, requirePermissionFirst, recordingEnabled, saveAs }`. WhatsApp-only. `forwardTo` can be `tel:+E164`, `sip:user@host`, or `wss://…` (AI voice agent). Edges: `'success'`, `'permission_required'`, `'failed'`.  **a_b_split**: `{ percentage: number 0-100 (default 50) }`. Random branch picker. Edges: `'a'` (with probability `percentage/100`), `'b'`.  **set_field**: `{ field, value }`. Persistent custom field on the Contact (vs `set_variable` which is run-scoped). Field name is sanitized to `[A-Za-z0-9_]`. No-op on `api_call` runs (no contact).  **enroll_sequence**: `{ sequenceId, saveAs }`. Enrolls the run's contact into a Sequence. Edges: `'success'`, `'error'`.  **add_tag** / **remove_tag**: `{ tag }`. Push or pull a tag on the Contact. No-op on `api_call` runs.  **end**: no config. Terminates the run as `completed`.
 	Config   map[string]interface{} `json:"config,omitempty"`
 	Position *WorkflowNodePosition  `json:"position,omitempty"`
+	// Optional display name shown on the builder canvas and inspector, falling back to the node type when absent. The nodes array is replaced wholesale on update, so it must be resent to be kept.
+	Label *string `json:"label,omitempty"`
 }
 
 type _WorkflowNode WorkflowNode
@@ -164,6 +166,38 @@ func (o *WorkflowNode) SetPosition(v WorkflowNodePosition) {
 	o.Position = &v
 }
 
+// GetLabel returns the Label field value if set, zero value otherwise.
+func (o *WorkflowNode) GetLabel() string {
+	if o == nil || IsNil(o.Label) {
+		var ret string
+		return ret
+	}
+	return *o.Label
+}
+
+// GetLabelOk returns a tuple with the Label field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WorkflowNode) GetLabelOk() (*string, bool) {
+	if o == nil || IsNil(o.Label) {
+		return nil, false
+	}
+	return o.Label, true
+}
+
+// HasLabel returns a boolean if a field has been set.
+func (o *WorkflowNode) HasLabel() bool {
+	if o != nil && !IsNil(o.Label) {
+		return true
+	}
+
+	return false
+}
+
+// SetLabel gets a reference to the given string and assigns it to the Label field.
+func (o *WorkflowNode) SetLabel(v string) {
+	o.Label = &v
+}
+
 func (o WorkflowNode) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -181,6 +215,9 @@ func (o WorkflowNode) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Position) {
 		toSerialize["position"] = o.Position
+	}
+	if !IsNil(o.Label) {
+		toSerialize["label"] = o.Label
 	}
 	return toSerialize, nil
 }
