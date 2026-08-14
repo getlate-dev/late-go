@@ -4810,6 +4810,111 @@ func (a *WebhookEventsAPIService) OnWhatsAppNumberVerificationRequiredExecute(r 
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnWhatsAppTemplateCategoryUpdatedRequest struct {
+	ctx                                           context.Context
+	ApiService                                    *WebhookEventsAPIService
+	webhookPayloadWhatsAppTemplateCategoryUpdated *WebhookPayloadWhatsAppTemplateCategoryUpdated
+}
+
+func (r WebhookEventsAPIOnWhatsAppTemplateCategoryUpdatedRequest) WebhookPayloadWhatsAppTemplateCategoryUpdated(webhookPayloadWhatsAppTemplateCategoryUpdated WebhookPayloadWhatsAppTemplateCategoryUpdated) WebhookEventsAPIOnWhatsAppTemplateCategoryUpdatedRequest {
+	r.webhookPayloadWhatsAppTemplateCategoryUpdated = &webhookPayloadWhatsAppTemplateCategoryUpdated
+	return r
+}
+
+func (r WebhookEventsAPIOnWhatsAppTemplateCategoryUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnWhatsAppTemplateCategoryUpdatedExecute(r)
+}
+
+/*
+OnWhatsAppTemplateCategoryUpdated WhatsApp template category updated event
+
+Fired when Meta reclassifies a WhatsApp Business template's category
+after approval. Forwarded from Meta's `template_category_update`
+webhook field on the WhatsApp Business Account. Category drives
+Meta's per-conversation tariff and whether the template is subject
+to the recipient's marketing opt-out. `template.changeType` is
+`scheduled` (24h advance notice) or `applied`; `template.category`
+is always the category right now.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnWhatsAppTemplateCategoryUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnWhatsAppTemplateCategoryUpdated(ctx context.Context) WebhookEventsAPIOnWhatsAppTemplateCategoryUpdatedRequest {
+	return WebhookEventsAPIOnWhatsAppTemplateCategoryUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnWhatsAppTemplateCategoryUpdatedExecute(r WebhookEventsAPIOnWhatsAppTemplateCategoryUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnWhatsAppTemplateCategoryUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/whatsapp.template.category_updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadWhatsAppTemplateCategoryUpdated == nil {
+		return nil, reportError("webhookPayloadWhatsAppTemplateCategoryUpdated is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadWhatsAppTemplateCategoryUpdated
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnWhatsAppTemplateStatusUpdatedRequest struct {
 	ctx                                         context.Context
 	ApiService                                  *WebhookEventsAPIService
