@@ -20,12 +20,14 @@ var _ MappedNullable = &SubmitPhoneNumberKycRequestAddress{}
 
 // SubmitPhoneNumberKycRequestAddress struct for SubmitPhoneNumberKycRequestAddress
 type SubmitPhoneNumberKycRequestAddress struct {
-	RequirementId      *string `json:"requirementId,omitempty"`
-	CountryCode        *string `json:"country_code,omitempty"`
-	BusinessName       *string `json:"business_name,omitempty"`
-	FirstName          *string `json:"first_name,omitempty"`
-	LastName           *string `json:"last_name,omitempty"`
-	StreetAddress      *string `json:"street_address,omitempty"`
+	RequirementId *string `json:"requirementId,omitempty"`
+	CountryCode   *string `json:"country_code,omitempty"`
+	BusinessName  *string `json:"business_name,omitempty"`
+	FirstName     *string `json:"first_name,omitempty"`
+	LastName      *string `json:"last_name,omitempty"`
+	StreetAddress *string `json:"street_address,omitempty"`
+	// Address complement: apartment, suite, unit, or the quadra/lote used in some countries. Optional. Does not substitute for a building number on street_address.
+	ExtendedAddress    *string `json:"extended_address,omitempty"`
 	Locality           *string `json:"locality,omitempty"`
 	AdministrativeArea *string `json:"administrative_area,omitempty"`
 	PostalCode         *string `json:"postal_code,omitempty"`
@@ -240,6 +242,38 @@ func (o *SubmitPhoneNumberKycRequestAddress) SetStreetAddress(v string) {
 	o.StreetAddress = &v
 }
 
+// GetExtendedAddress returns the ExtendedAddress field value if set, zero value otherwise.
+func (o *SubmitPhoneNumberKycRequestAddress) GetExtendedAddress() string {
+	if o == nil || IsNil(o.ExtendedAddress) {
+		var ret string
+		return ret
+	}
+	return *o.ExtendedAddress
+}
+
+// GetExtendedAddressOk returns a tuple with the ExtendedAddress field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitPhoneNumberKycRequestAddress) GetExtendedAddressOk() (*string, bool) {
+	if o == nil || IsNil(o.ExtendedAddress) {
+		return nil, false
+	}
+	return o.ExtendedAddress, true
+}
+
+// HasExtendedAddress returns a boolean if a field has been set.
+func (o *SubmitPhoneNumberKycRequestAddress) HasExtendedAddress() bool {
+	if o != nil && !IsNil(o.ExtendedAddress) {
+		return true
+	}
+
+	return false
+}
+
+// SetExtendedAddress gets a reference to the given string and assigns it to the ExtendedAddress field.
+func (o *SubmitPhoneNumberKycRequestAddress) SetExtendedAddress(v string) {
+	o.ExtendedAddress = &v
+}
+
 // GetLocality returns the Locality field value if set, zero value otherwise.
 func (o *SubmitPhoneNumberKycRequestAddress) GetLocality() string {
 	if o == nil || IsNil(o.Locality) {
@@ -363,6 +397,9 @@ func (o SubmitPhoneNumberKycRequestAddress) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.StreetAddress) {
 		toSerialize["street_address"] = o.StreetAddress
+	}
+	if !IsNil(o.ExtendedAddress) {
+		toSerialize["extended_address"] = o.ExtendedAddress
 	}
 	if !IsNil(o.Locality) {
 		toSerialize["locality"] = o.Locality

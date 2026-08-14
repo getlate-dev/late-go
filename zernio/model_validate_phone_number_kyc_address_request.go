@@ -25,6 +25,8 @@ type ValidatePhoneNumberKycAddressRequest struct {
 	// ISO 3166-1 alpha-2 country code.
 	Country       string `json:"country"`
 	StreetAddress string `json:"street_address"`
+	// Address complement: apartment, suite, unit, or the quadra/lote used in some countries. Optional. Does not substitute for a building number on street_address.
+	ExtendedAddress *string `json:"extended_address,omitempty"`
 	// City / town.
 	Locality string `json:"locality"`
 	// State / province / region. When omitted, the pre-check is skipped (the final submit still validates).
@@ -101,6 +103,38 @@ func (o *ValidatePhoneNumberKycAddressRequest) GetStreetAddressOk() (*string, bo
 // SetStreetAddress sets field value
 func (o *ValidatePhoneNumberKycAddressRequest) SetStreetAddress(v string) {
 	o.StreetAddress = v
+}
+
+// GetExtendedAddress returns the ExtendedAddress field value if set, zero value otherwise.
+func (o *ValidatePhoneNumberKycAddressRequest) GetExtendedAddress() string {
+	if o == nil || IsNil(o.ExtendedAddress) {
+		var ret string
+		return ret
+	}
+	return *o.ExtendedAddress
+}
+
+// GetExtendedAddressOk returns a tuple with the ExtendedAddress field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ValidatePhoneNumberKycAddressRequest) GetExtendedAddressOk() (*string, bool) {
+	if o == nil || IsNil(o.ExtendedAddress) {
+		return nil, false
+	}
+	return o.ExtendedAddress, true
+}
+
+// HasExtendedAddress returns a boolean if a field has been set.
+func (o *ValidatePhoneNumberKycAddressRequest) HasExtendedAddress() bool {
+	if o != nil && !IsNil(o.ExtendedAddress) {
+		return true
+	}
+
+	return false
+}
+
+// SetExtendedAddress gets a reference to the given string and assigns it to the ExtendedAddress field.
+func (o *ValidatePhoneNumberKycAddressRequest) SetExtendedAddress(v string) {
+	o.ExtendedAddress = &v
 }
 
 // GetLocality returns the Locality field value
@@ -195,6 +229,9 @@ func (o ValidatePhoneNumberKycAddressRequest) ToMap() (map[string]interface{}, e
 	toSerialize := map[string]interface{}{}
 	toSerialize["country"] = o.Country
 	toSerialize["street_address"] = o.StreetAddress
+	if !IsNil(o.ExtendedAddress) {
+		toSerialize["extended_address"] = o.ExtendedAddress
+	}
 	toSerialize["locality"] = o.Locality
 	if !IsNil(o.AdministrativeArea) {
 		toSerialize["administrative_area"] = o.AdministrativeArea
