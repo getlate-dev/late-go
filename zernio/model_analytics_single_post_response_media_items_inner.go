@@ -21,12 +21,16 @@ var _ MappedNullable = &AnalyticsSinglePostResponseMediaItemsInner{}
 // AnalyticsSinglePostResponseMediaItemsInner struct for AnalyticsSinglePostResponseMediaItemsInner
 type AnalyticsSinglePostResponseMediaItemsInner struct {
 	Type *string `json:"type,omitempty"`
-	// Direct URL to the media
-	Url *string `json:"url,omitempty"`
-	// Thumbnail URL (same as url for images)
-	Thumbnail *string `json:"thumbnail,omitempty"`
+	// 'Direct URL to the media file. Null when the platform withholds it: check mediaStatus before downloading. Instagram omits the video file for Reels it flags as containing copyrighted material (its docs name audio as the usual cause), so type stays \"video\" while the file is permanently unreachable.'
+	Url NullableString `json:"url,omitempty"`
+	// Thumbnail URL (same as url for images). Still present when url is null.
+	Thumbnail NullableString `json:"thumbnail,omitempty"`
 	// Accessibility alt text set on the media, when present.
 	AltText *string `json:"altText,omitempty"`
+	// Present only when the media file could not be retrieved. Absent means the file is available at url.
+	MediaStatus *string `json:"mediaStatus,omitempty"`
+	// Why the file is missing. platform_withheld means the platform declined to return it and retrying will not help.
+	UnavailableReason *string `json:"unavailableReason,omitempty"`
 }
 
 // NewAnalyticsSinglePostResponseMediaItemsInner instantiates a new AnalyticsSinglePostResponseMediaItemsInner object
@@ -78,68 +82,90 @@ func (o *AnalyticsSinglePostResponseMediaItemsInner) SetType(v string) {
 	o.Type = &v
 }
 
-// GetUrl returns the Url field value if set, zero value otherwise.
+// GetUrl returns the Url field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AnalyticsSinglePostResponseMediaItemsInner) GetUrl() string {
-	if o == nil || IsNil(o.Url) {
+	if o == nil || IsNil(o.Url.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Url
+	return *o.Url.Get()
 }
 
 // GetUrlOk returns a tuple with the Url field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AnalyticsSinglePostResponseMediaItemsInner) GetUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.Url) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Url, true
+	return o.Url.Get(), o.Url.IsSet()
 }
 
 // HasUrl returns a boolean if a field has been set.
 func (o *AnalyticsSinglePostResponseMediaItemsInner) HasUrl() bool {
-	if o != nil && !IsNil(o.Url) {
+	if o != nil && o.Url.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetUrl gets a reference to the given string and assigns it to the Url field.
+// SetUrl gets a reference to the given NullableString and assigns it to the Url field.
 func (o *AnalyticsSinglePostResponseMediaItemsInner) SetUrl(v string) {
-	o.Url = &v
+	o.Url.Set(&v)
 }
 
-// GetThumbnail returns the Thumbnail field value if set, zero value otherwise.
+// SetUrlNil sets the value for Url to be an explicit nil
+func (o *AnalyticsSinglePostResponseMediaItemsInner) SetUrlNil() {
+	o.Url.Set(nil)
+}
+
+// UnsetUrl ensures that no value is present for Url, not even an explicit nil
+func (o *AnalyticsSinglePostResponseMediaItemsInner) UnsetUrl() {
+	o.Url.Unset()
+}
+
+// GetThumbnail returns the Thumbnail field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AnalyticsSinglePostResponseMediaItemsInner) GetThumbnail() string {
-	if o == nil || IsNil(o.Thumbnail) {
+	if o == nil || IsNil(o.Thumbnail.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Thumbnail
+	return *o.Thumbnail.Get()
 }
 
 // GetThumbnailOk returns a tuple with the Thumbnail field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AnalyticsSinglePostResponseMediaItemsInner) GetThumbnailOk() (*string, bool) {
-	if o == nil || IsNil(o.Thumbnail) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Thumbnail, true
+	return o.Thumbnail.Get(), o.Thumbnail.IsSet()
 }
 
 // HasThumbnail returns a boolean if a field has been set.
 func (o *AnalyticsSinglePostResponseMediaItemsInner) HasThumbnail() bool {
-	if o != nil && !IsNil(o.Thumbnail) {
+	if o != nil && o.Thumbnail.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetThumbnail gets a reference to the given string and assigns it to the Thumbnail field.
+// SetThumbnail gets a reference to the given NullableString and assigns it to the Thumbnail field.
 func (o *AnalyticsSinglePostResponseMediaItemsInner) SetThumbnail(v string) {
-	o.Thumbnail = &v
+	o.Thumbnail.Set(&v)
+}
+
+// SetThumbnailNil sets the value for Thumbnail to be an explicit nil
+func (o *AnalyticsSinglePostResponseMediaItemsInner) SetThumbnailNil() {
+	o.Thumbnail.Set(nil)
+}
+
+// UnsetThumbnail ensures that no value is present for Thumbnail, not even an explicit nil
+func (o *AnalyticsSinglePostResponseMediaItemsInner) UnsetThumbnail() {
+	o.Thumbnail.Unset()
 }
 
 // GetAltText returns the AltText field value if set, zero value otherwise.
@@ -174,6 +200,70 @@ func (o *AnalyticsSinglePostResponseMediaItemsInner) SetAltText(v string) {
 	o.AltText = &v
 }
 
+// GetMediaStatus returns the MediaStatus field value if set, zero value otherwise.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) GetMediaStatus() string {
+	if o == nil || IsNil(o.MediaStatus) {
+		var ret string
+		return ret
+	}
+	return *o.MediaStatus
+}
+
+// GetMediaStatusOk returns a tuple with the MediaStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) GetMediaStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.MediaStatus) {
+		return nil, false
+	}
+	return o.MediaStatus, true
+}
+
+// HasMediaStatus returns a boolean if a field has been set.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) HasMediaStatus() bool {
+	if o != nil && !IsNil(o.MediaStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetMediaStatus gets a reference to the given string and assigns it to the MediaStatus field.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) SetMediaStatus(v string) {
+	o.MediaStatus = &v
+}
+
+// GetUnavailableReason returns the UnavailableReason field value if set, zero value otherwise.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) GetUnavailableReason() string {
+	if o == nil || IsNil(o.UnavailableReason) {
+		var ret string
+		return ret
+	}
+	return *o.UnavailableReason
+}
+
+// GetUnavailableReasonOk returns a tuple with the UnavailableReason field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) GetUnavailableReasonOk() (*string, bool) {
+	if o == nil || IsNil(o.UnavailableReason) {
+		return nil, false
+	}
+	return o.UnavailableReason, true
+}
+
+// HasUnavailableReason returns a boolean if a field has been set.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) HasUnavailableReason() bool {
+	if o != nil && !IsNil(o.UnavailableReason) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnavailableReason gets a reference to the given string and assigns it to the UnavailableReason field.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) SetUnavailableReason(v string) {
+	o.UnavailableReason = &v
+}
+
 func (o AnalyticsSinglePostResponseMediaItemsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -187,14 +277,20 @@ func (o AnalyticsSinglePostResponseMediaItemsInner) ToMap() (map[string]interfac
 	if !IsNil(o.Type) {
 		toSerialize["type"] = o.Type
 	}
-	if !IsNil(o.Url) {
-		toSerialize["url"] = o.Url
+	if o.Url.IsSet() {
+		toSerialize["url"] = o.Url.Get()
 	}
-	if !IsNil(o.Thumbnail) {
-		toSerialize["thumbnail"] = o.Thumbnail
+	if o.Thumbnail.IsSet() {
+		toSerialize["thumbnail"] = o.Thumbnail.Get()
 	}
 	if !IsNil(o.AltText) {
 		toSerialize["altText"] = o.AltText
+	}
+	if !IsNil(o.MediaStatus) {
+		toSerialize["mediaStatus"] = o.MediaStatus
+	}
+	if !IsNil(o.UnavailableReason) {
+		toSerialize["unavailableReason"] = o.UnavailableReason
 	}
 	return toSerialize, nil
 }

@@ -37,7 +37,7 @@ type AnalyticsListResponsePostsInner struct {
 	ThumbnailUrl    *string             `json:"thumbnailUrl,omitempty"`
 	MediaType       *string             `json:"mediaType,omitempty"`
 	// All media items for this post. Carousel posts contain one entry per slide.
-	MediaItems []AnalyticsSinglePostResponseMediaItemsInner `json:"mediaItems,omitempty"`
+	MediaItems []AnalyticsListResponsePostsInnerMediaItemsInner `json:"mediaItems,omitempty"`
 }
 
 // NewAnalyticsListResponsePostsInner instantiates a new AnalyticsListResponsePostsInner object
@@ -528,9 +528,9 @@ func (o *AnalyticsListResponsePostsInner) SetMediaType(v string) {
 }
 
 // GetMediaItems returns the MediaItems field value if set, zero value otherwise.
-func (o *AnalyticsListResponsePostsInner) GetMediaItems() []AnalyticsSinglePostResponseMediaItemsInner {
+func (o *AnalyticsListResponsePostsInner) GetMediaItems() []AnalyticsListResponsePostsInnerMediaItemsInner {
 	if o == nil || IsNil(o.MediaItems) {
-		var ret []AnalyticsSinglePostResponseMediaItemsInner
+		var ret []AnalyticsListResponsePostsInnerMediaItemsInner
 		return ret
 	}
 	return o.MediaItems
@@ -538,7 +538,7 @@ func (o *AnalyticsListResponsePostsInner) GetMediaItems() []AnalyticsSinglePostR
 
 // GetMediaItemsOk returns a tuple with the MediaItems field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AnalyticsListResponsePostsInner) GetMediaItemsOk() ([]AnalyticsSinglePostResponseMediaItemsInner, bool) {
+func (o *AnalyticsListResponsePostsInner) GetMediaItemsOk() ([]AnalyticsListResponsePostsInnerMediaItemsInner, bool) {
 	if o == nil || IsNil(o.MediaItems) {
 		return nil, false
 	}
@@ -554,8 +554,8 @@ func (o *AnalyticsListResponsePostsInner) HasMediaItems() bool {
 	return false
 }
 
-// SetMediaItems gets a reference to the given []AnalyticsSinglePostResponseMediaItemsInner and assigns it to the MediaItems field.
-func (o *AnalyticsListResponsePostsInner) SetMediaItems(v []AnalyticsSinglePostResponseMediaItemsInner) {
+// SetMediaItems gets a reference to the given []AnalyticsListResponsePostsInnerMediaItemsInner and assigns it to the MediaItems field.
+func (o *AnalyticsListResponsePostsInner) SetMediaItems(v []AnalyticsListResponsePostsInnerMediaItemsInner) {
 	o.MediaItems = v
 }
 

@@ -20,11 +20,17 @@ import (
 // checks if the ExternalPostMediaItem type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ExternalPostMediaItem{}
 
-// ExternalPostMediaItem A media item on a native (external/synced) post, as carried by post.external.* webhook payloads. Distinct from the richer MediaItem used for Zernio-authored posts: external items are always already-published (url required) and limited to image or video. Kept as a separate schema so the generated SDK model does not collide with MediaItem.
+// ExternalPostMediaItem A media item on a native (external/synced) post, as carried by post.external.* webhook payloads. Distinct from the richer MediaItem used for Zernio-authored posts: external items are always already-published and limited to image or video. Kept as a separate schema so the generated SDK model does not collide with MediaItem.
 type ExternalPostMediaItem struct {
-	Type      string  `json:"type"`
-	Url       string  `json:"url"`
+	Type string `json:"type"`
+	// 'Direct URL to the media file. Null when the platform withholds it: check mediaStatus before downloading. Instagram omits the video file for Reels it flags as containing copyrighted material (its docs name audio as the usual cause), so type stays \"video\" while the file is permanently unreachable.'
+	Url NullableString `json:"url"`
+	// Cover image. Still present when url is null.
 	Thumbnail *string `json:"thumbnail,omitempty"`
+	// Present only when the media file could not be retrieved. Absent means the file is available at url.
+	MediaStatus *string `json:"mediaStatus,omitempty"`
+	// Why the file is missing. platform_withheld means the platform declined to return it and retrying will not help.
+	UnavailableReason *string `json:"unavailableReason,omitempty"`
 }
 
 type _ExternalPostMediaItem ExternalPostMediaItem
@@ -33,7 +39,7 @@ type _ExternalPostMediaItem ExternalPostMediaItem
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewExternalPostMediaItem(type_ string, url string) *ExternalPostMediaItem {
+func NewExternalPostMediaItem(type_ string, url NullableString) *ExternalPostMediaItem {
 	this := ExternalPostMediaItem{}
 	this.Type = type_
 	this.Url = url
@@ -73,27 +79,29 @@ func (o *ExternalPostMediaItem) SetType(v string) {
 }
 
 // GetUrl returns the Url field value
+// If the value is explicit nil, the zero value for string will be returned
 func (o *ExternalPostMediaItem) GetUrl() string {
-	if o == nil {
+	if o == nil || o.Url.Get() == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Url
+	return *o.Url.Get()
 }
 
 // GetUrlOk returns a tuple with the Url field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ExternalPostMediaItem) GetUrlOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Url, true
+	return o.Url.Get(), o.Url.IsSet()
 }
 
 // SetUrl sets field value
 func (o *ExternalPostMediaItem) SetUrl(v string) {
-	o.Url = v
+	o.Url.Set(&v)
 }
 
 // GetThumbnail returns the Thumbnail field value if set, zero value otherwise.
@@ -128,6 +136,70 @@ func (o *ExternalPostMediaItem) SetThumbnail(v string) {
 	o.Thumbnail = &v
 }
 
+// GetMediaStatus returns the MediaStatus field value if set, zero value otherwise.
+func (o *ExternalPostMediaItem) GetMediaStatus() string {
+	if o == nil || IsNil(o.MediaStatus) {
+		var ret string
+		return ret
+	}
+	return *o.MediaStatus
+}
+
+// GetMediaStatusOk returns a tuple with the MediaStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostMediaItem) GetMediaStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.MediaStatus) {
+		return nil, false
+	}
+	return o.MediaStatus, true
+}
+
+// HasMediaStatus returns a boolean if a field has been set.
+func (o *ExternalPostMediaItem) HasMediaStatus() bool {
+	if o != nil && !IsNil(o.MediaStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetMediaStatus gets a reference to the given string and assigns it to the MediaStatus field.
+func (o *ExternalPostMediaItem) SetMediaStatus(v string) {
+	o.MediaStatus = &v
+}
+
+// GetUnavailableReason returns the UnavailableReason field value if set, zero value otherwise.
+func (o *ExternalPostMediaItem) GetUnavailableReason() string {
+	if o == nil || IsNil(o.UnavailableReason) {
+		var ret string
+		return ret
+	}
+	return *o.UnavailableReason
+}
+
+// GetUnavailableReasonOk returns a tuple with the UnavailableReason field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostMediaItem) GetUnavailableReasonOk() (*string, bool) {
+	if o == nil || IsNil(o.UnavailableReason) {
+		return nil, false
+	}
+	return o.UnavailableReason, true
+}
+
+// HasUnavailableReason returns a boolean if a field has been set.
+func (o *ExternalPostMediaItem) HasUnavailableReason() bool {
+	if o != nil && !IsNil(o.UnavailableReason) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnavailableReason gets a reference to the given string and assigns it to the UnavailableReason field.
+func (o *ExternalPostMediaItem) SetUnavailableReason(v string) {
+	o.UnavailableReason = &v
+}
+
 func (o ExternalPostMediaItem) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -139,9 +211,15 @@ func (o ExternalPostMediaItem) MarshalJSON() ([]byte, error) {
 func (o ExternalPostMediaItem) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["type"] = o.Type
-	toSerialize["url"] = o.Url
+	toSerialize["url"] = o.Url.Get()
 	if !IsNil(o.Thumbnail) {
 		toSerialize["thumbnail"] = o.Thumbnail
+	}
+	if !IsNil(o.MediaStatus) {
+		toSerialize["mediaStatus"] = o.MediaStatus
+	}
+	if !IsNil(o.UnavailableReason) {
+		toSerialize["unavailableReason"] = o.UnavailableReason
 	}
 	return toSerialize, nil
 }
