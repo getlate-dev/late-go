@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadMessageDeliveryStatus type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageDeliveryStatus{}
 
-// WebhookPayloadMessageDeliveryStatus Shared payload for message.delivered, message.read, and message.failed events. Fires when the platform reports a new delivery state for an outgoing message.  Platform support:   * message.delivered — WhatsApp, Facebook Messenger.   * message.read      — WhatsApp, Facebook Messenger, Instagram.   * message.failed    — WhatsApp only (other platforms don't expose     per-message failure via webhook).
+// WebhookPayloadMessageDeliveryStatus Shared payload for message.delivered, message.read, and message.failed events. Fires when the platform reports a new delivery state for an outgoing message.  Platform support:   * message.delivered: WhatsApp, Facebook Messenger, SMS.   * message.read: WhatsApp, Facebook Messenger, Instagram. Not SMS     (carriers report delivery, never read).   * message.failed: WhatsApp and SMS (other platforms don't expose     per-message failure via webhook). On SMS, `error.code` is the     carrier's numeric code and `error.message` its reason.
 type WebhookPayloadMessageDeliveryStatus struct {
 	Id      string              `json:"id"`
 	Event   string              `json:"event"`
