@@ -44,7 +44,7 @@ type CreateMessagingAdRequest struct {
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	// Required unless `adSetId` is set.
 	BudgetType *string `json:"budgetType,omitempty"`
-	// ISO 4217 currency code matching the ad account's currency (e.g. `USD`). Optional; Meta infers from the ad account when omitted.
+	// ISO 4217 currency code matching the ad account's currency (e.g. `USD`). Optional: Zernio resolves it from the ad account when omitted. The value selects the minor-unit exponent Zernio converts budget/bid amounts by before calling Meta (most currencies are cents; zero-decimal currencies like JPY/KRW are sent as-is).
 	Currency *string `json:"currency,omitempty"`
 	// ISO 8601 datetime. Required when `budgetType` is `lifetime`.
 	EndDate *time.Time `json:"endDate,omitempty"`
