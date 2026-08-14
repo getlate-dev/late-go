@@ -3284,6 +3284,114 @@ func (a *WebhookEventsAPIService) OnReactionReceivedExecute(r WebhookEventsAPIOn
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnReferralReceivedRequest struct {
+	ctx                    context.Context
+	ApiService             *WebhookEventsAPIService
+	webhookPayloadReferral *WebhookPayloadReferral
+}
+
+func (r WebhookEventsAPIOnReferralReceivedRequest) WebhookPayloadReferral(webhookPayloadReferral WebhookPayloadReferral) WebhookEventsAPIOnReferralReceivedRequest {
+	r.webhookPayloadReferral = &webhookPayloadReferral
+	return r
+}
+
+func (r WebhookEventsAPIOnReferralReceivedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnReferralReceivedExecute(r)
+}
+
+/*
+OnReferralReceived Referral received event
+
+Fired when someone opens an EXISTING Instagram or Messenger thread
+through an attributable entry point - an ig.me / m.me link with a
+`ref` parameter, or (Messenger) a returning Click-to-Message ad click -
+which Meta delivers as a standalone referral with no message attached.
+A referral that rides an inbound message (first message of a thread,
+icebreaker taps, returning ad clicks on Instagram) arrives on
+`message.received` under `metadata.referral` instead; the two never
+fire for the same click. The first referral captured on a conversation
+is also persisted on it (see `metadata` on `GET
+/v1/inbox/conversations`). Requires the Inbox add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnReferralReceivedRequest
+*/
+func (a *WebhookEventsAPIService) OnReferralReceived(ctx context.Context) WebhookEventsAPIOnReferralReceivedRequest {
+	return WebhookEventsAPIOnReferralReceivedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnReferralReceivedExecute(r WebhookEventsAPIOnReferralReceivedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnReferralReceived")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/referral.received"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadReferral == nil {
+		return nil, reportError("webhookPayloadReferral is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadReferral
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnReviewNewRequest struct {
 	ctx                     context.Context
 	ApiService              *WebhookEventsAPIService

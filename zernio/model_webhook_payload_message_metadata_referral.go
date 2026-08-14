@@ -18,7 +18,7 @@ import (
 // checks if the WebhookPayloadMessageMetadataReferral type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageMetadataReferral{}
 
-// WebhookPayloadMessageMetadataReferral Ad-click attribution forwarded verbatim from Meta. Populated only on the FIRST inbound message after the click; absent on subsequent messages of the same conversation.  The populated subset identifies the source platform:   - `ctwa_clid` and `source_*` fields: WhatsApp CTWA     (Click-to-WhatsApp). Attribution window is 7 days from click.     Forward to Meta Conversions API for Business Messaging replay.   - `ad_id` and `ads_context_data`: Facebook Messenger CTM     (Click-to-Message) or Instagram CTD (Click-to-Direct). Use     `ad_id` to attribute the conversation to a specific ad.
+// WebhookPayloadMessageMetadataReferral Click attribution forwarded verbatim from Meta. Populated only on the FIRST inbound message after the click; absent on subsequent messages of the same conversation. On Instagram and Messenger a RETURNING click also attaches it to the first message that follows, so read it on every `message.received` for per-click attribution; a click that opens an existing thread WITHOUT a message arrives as the separate `referral.received` event.  The populated subset identifies the source:   - `ctwa_clid` and `source_*` fields: WhatsApp CTWA     (Click-to-WhatsApp). Attribution window is 7 days from click.     Forward to Meta Conversions API for Business Messaging replay.   - `ad_id` and `ads_context_data`: Facebook Messenger CTM     (Click-to-Message) or Instagram CTD (Click-to-Direct). Use     `ad_id` to attribute the conversation to a specific ad.   - `ref` without `ad_id`: an ig.me / m.me link carrying a     `?ref=` parameter (`source` is `SHORTLINK`, `SHORTLINKS` or     `IGME-SOURCE-LINK` depending on surface - treat it as     opaque). Instagram delivers ig.me refs on new threads only     when the account has at least one Ice Breaker configured     (`PUT /v1/accounts/{accountId}/instagram-ice-breakers`).
 type WebhookPayloadMessageMetadataReferral struct {
 	// Meta's GCLID-equivalent click identifier.
 	CtwaClid     *string `json:"ctwa_clid,omitempty"`
@@ -33,13 +33,15 @@ type WebhookPayloadMessageMetadataReferral struct {
 	ThumbnailUrl *string `json:"thumbnail_url,omitempty"`
 	// Facebook Messenger CTM / Instagram CTD only. The Meta ad ID the user clicked to start the conversation.
 	AdId *string `json:"ad_id,omitempty"`
-	// Optional `ref` parameter passed through from the Meta ad creative. Facebook Messenger CTM / Instagram CTD only.
+	// The `ref` parameter passed through from the Meta ad creative or from an ig.me / m.me link. Instagram / Facebook Messenger only.
 	Ref *string `json:"ref,omitempty"`
-	// Meta-supplied source identifier (e.g. `ADS`). Facebook Messenger CTM / Instagram CTD only.
+	// Meta-supplied source identifier (`ADS` for ad clicks; `SHORTLINK`, `SHORTLINKS` or `IGME-SOURCE-LINK` for ref links). Instagram / Facebook Messenger only.
 	Source *string `json:"source,omitempty"`
-	// Meta-supplied referral type (e.g. `OPEN_THREAD`). Facebook Messenger CTM / Instagram CTD only.
-	Type           *string                                              `json:"type,omitempty"`
-	AdsContextData *WebhookPayloadMessageMetadataReferralAdsContextData `json:"ads_context_data,omitempty"`
+	// Meta-supplied referral type (e.g. `OPEN_THREAD`). Instagram / Facebook Messenger only.
+	Type *string `json:"type,omitempty"`
+	// URI of the originating site, when Meta supplies one (m.me links opened from the web). Facebook Messenger only.
+	RefererUri     *string                                       `json:"referer_uri,omitempty"`
+	AdsContextData *WebhookPayloadReferralReferralAdsContextData `json:"ads_context_data,omitempty"`
 }
 
 // NewWebhookPayloadMessageMetadataReferral instantiates a new WebhookPayloadMessageMetadataReferral object
@@ -507,10 +509,42 @@ func (o *WebhookPayloadMessageMetadataReferral) SetType(v string) {
 	o.Type = &v
 }
 
+// GetRefererUri returns the RefererUri field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadataReferral) GetRefererUri() string {
+	if o == nil || IsNil(o.RefererUri) {
+		var ret string
+		return ret
+	}
+	return *o.RefererUri
+}
+
+// GetRefererUriOk returns a tuple with the RefererUri field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadataReferral) GetRefererUriOk() (*string, bool) {
+	if o == nil || IsNil(o.RefererUri) {
+		return nil, false
+	}
+	return o.RefererUri, true
+}
+
+// HasRefererUri returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadataReferral) HasRefererUri() bool {
+	if o != nil && !IsNil(o.RefererUri) {
+		return true
+	}
+
+	return false
+}
+
+// SetRefererUri gets a reference to the given string and assigns it to the RefererUri field.
+func (o *WebhookPayloadMessageMetadataReferral) SetRefererUri(v string) {
+	o.RefererUri = &v
+}
+
 // GetAdsContextData returns the AdsContextData field value if set, zero value otherwise.
-func (o *WebhookPayloadMessageMetadataReferral) GetAdsContextData() WebhookPayloadMessageMetadataReferralAdsContextData {
+func (o *WebhookPayloadMessageMetadataReferral) GetAdsContextData() WebhookPayloadReferralReferralAdsContextData {
 	if o == nil || IsNil(o.AdsContextData) {
-		var ret WebhookPayloadMessageMetadataReferralAdsContextData
+		var ret WebhookPayloadReferralReferralAdsContextData
 		return ret
 	}
 	return *o.AdsContextData
@@ -518,7 +552,7 @@ func (o *WebhookPayloadMessageMetadataReferral) GetAdsContextData() WebhookPaylo
 
 // GetAdsContextDataOk returns a tuple with the AdsContextData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadMessageMetadataReferral) GetAdsContextDataOk() (*WebhookPayloadMessageMetadataReferralAdsContextData, bool) {
+func (o *WebhookPayloadMessageMetadataReferral) GetAdsContextDataOk() (*WebhookPayloadReferralReferralAdsContextData, bool) {
 	if o == nil || IsNil(o.AdsContextData) {
 		return nil, false
 	}
@@ -534,8 +568,8 @@ func (o *WebhookPayloadMessageMetadataReferral) HasAdsContextData() bool {
 	return false
 }
 
-// SetAdsContextData gets a reference to the given WebhookPayloadMessageMetadataReferralAdsContextData and assigns it to the AdsContextData field.
-func (o *WebhookPayloadMessageMetadataReferral) SetAdsContextData(v WebhookPayloadMessageMetadataReferralAdsContextData) {
+// SetAdsContextData gets a reference to the given WebhookPayloadReferralReferralAdsContextData and assigns it to the AdsContextData field.
+func (o *WebhookPayloadMessageMetadataReferral) SetAdsContextData(v WebhookPayloadReferralReferralAdsContextData) {
 	o.AdsContextData = &v
 }
 
@@ -590,6 +624,9 @@ func (o WebhookPayloadMessageMetadataReferral) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.Type) {
 		toSerialize["type"] = o.Type
+	}
+	if !IsNil(o.RefererUri) {
+		toSerialize["referer_uri"] = o.RefererUri
 	}
 	if !IsNil(o.AdsContextData) {
 		toSerialize["ads_context_data"] = o.AdsContextData
