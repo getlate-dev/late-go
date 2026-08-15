@@ -1592,7 +1592,7 @@ func (r MessagesAPISearchInboxConversationsRequest) Limit(limit int32) MessagesA
 	return r
 }
 
-// Pagination cursor for next page
+// Opaque pagination cursor. Pass back pagination.nextCursor verbatim; do not construct one.
 func (r MessagesAPISearchInboxConversationsRequest) Cursor(cursor string) MessagesAPISearchInboxConversationsRequest {
 	r.cursor = &cursor
 	return r
