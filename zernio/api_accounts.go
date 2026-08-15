@@ -163,6 +163,13 @@ GetAccountHealth Check account health
 
 Returns detailed health info for a specific account including token status, permissions, and recommendations.
 
+For WhatsApp accounts the response also includes `platformConnection`, a live probe of the
+Meta link behind the channel (the same read as `GET /v1/whatsapp/number-info`). The OAuth
+token can be perfectly valid while Meta refuses to serve the phone-number object (for
+example after a phone-side coexistence disconnect), so `tokenStatus` alone is not a
+liveness signal for WhatsApp. When the Meta link is dead, `platformConnection.status` is
+`disconnected` and the overall `status` is `error`.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The account ID to check
 	@return AccountsAPIGetAccountHealthRequest
@@ -236,6 +243,17 @@ func (a *AccountsAPIService) GetAccountHealthExecute(r AccountsAPIGetAccountHeal
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response

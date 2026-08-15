@@ -31,7 +31,8 @@ type GetAccountHealth200Response struct {
 	// List of issues found
 	Issues []string `json:"issues,omitempty"`
 	// Actionable recommendations to fix issues
-	Recommendations []string `json:"recommendations,omitempty"`
+	Recommendations    []string                                       `json:"recommendations,omitempty"`
+	PlatformConnection *GetAccountHealth200ResponsePlatformConnection `json:"platformConnection,omitempty"`
 }
 
 // NewGetAccountHealth200Response instantiates a new GetAccountHealth200Response object
@@ -339,6 +340,38 @@ func (o *GetAccountHealth200Response) SetRecommendations(v []string) {
 	o.Recommendations = v
 }
 
+// GetPlatformConnection returns the PlatformConnection field value if set, zero value otherwise.
+func (o *GetAccountHealth200Response) GetPlatformConnection() GetAccountHealth200ResponsePlatformConnection {
+	if o == nil || IsNil(o.PlatformConnection) {
+		var ret GetAccountHealth200ResponsePlatformConnection
+		return ret
+	}
+	return *o.PlatformConnection
+}
+
+// GetPlatformConnectionOk returns a tuple with the PlatformConnection field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200Response) GetPlatformConnectionOk() (*GetAccountHealth200ResponsePlatformConnection, bool) {
+	if o == nil || IsNil(o.PlatformConnection) {
+		return nil, false
+	}
+	return o.PlatformConnection, true
+}
+
+// HasPlatformConnection returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasPlatformConnection() bool {
+	if o != nil && !IsNil(o.PlatformConnection) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformConnection gets a reference to the given GetAccountHealth200ResponsePlatformConnection and assigns it to the PlatformConnection field.
+func (o *GetAccountHealth200Response) SetPlatformConnection(v GetAccountHealth200ResponsePlatformConnection) {
+	o.PlatformConnection = &v
+}
+
 func (o GetAccountHealth200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -375,6 +408,9 @@ func (o GetAccountHealth200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Recommendations) {
 		toSerialize["recommendations"] = o.Recommendations
+	}
+	if !IsNil(o.PlatformConnection) {
+		toSerialize["platformConnection"] = o.PlatformConnection
 	}
 	return toSerialize, nil
 }
