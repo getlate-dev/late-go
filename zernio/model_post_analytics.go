@@ -26,7 +26,7 @@ type PostAnalytics struct {
 	Likes       *int32 `json:"likes,omitempty"`
 	Comments    *int32 `json:"comments,omitempty"`
 	Shares      *int32 `json:"shares,omitempty"`
-	// Number of saves/bookmarks (Instagram, Pinterest)
+	// Number of saves/bookmarks (Instagram, Pinterest, X/Twitter)
 	Saves  *int32 `json:"saves,omitempty"`
 	Clicks *int32 `json:"clicks,omitempty"`
 	Views  *int32 `json:"views,omitempty"`
