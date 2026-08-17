@@ -28,6 +28,8 @@ type AdCreative struct {
 	VideoId NullableString `json:"videoId,omitempty"`
 	// Public Facebook watch URL for VIDEO-type ads (https://www.facebook.com/watch/?v={videoId}). Null for non-video ads.
 	VideoUrl NullableString `json:"videoUrl,omitempty"`
+	// Meta ad creative id backing this ad. Reusable via existingCreativeId on POST /v1/ads/create.
+	CreativeId NullableString `json:"creativeId,omitempty"`
 	// Meta creative object_type (e.g. SHARE, VIDEO, PRIVACY_CHECK_FAIL, POST_DELETED). Use this to render state-aware previews — when Meta moderation strips image/video fields, only thumbnailUrl at 64x64 is available.
 	ObjectType *string `json:"objectType,omitempty"`
 	// Meta creative `object_story_id` (the SHARE reference). Frequently absent — Meta omits it for SHARE creatives. Use effectiveObjectStoryId instead.
@@ -237,6 +239,49 @@ func (o *AdCreative) SetVideoUrlNil() {
 // UnsetVideoUrl ensures that no value is present for VideoUrl, not even an explicit nil
 func (o *AdCreative) UnsetVideoUrl() {
 	o.VideoUrl.Unset()
+}
+
+// GetCreativeId returns the CreativeId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdCreative) GetCreativeId() string {
+	if o == nil || IsNil(o.CreativeId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CreativeId.Get()
+}
+
+// GetCreativeIdOk returns a tuple with the CreativeId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdCreative) GetCreativeIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CreativeId.Get(), o.CreativeId.IsSet()
+}
+
+// HasCreativeId returns a boolean if a field has been set.
+func (o *AdCreative) HasCreativeId() bool {
+	if o != nil && o.CreativeId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCreativeId gets a reference to the given NullableString and assigns it to the CreativeId field.
+func (o *AdCreative) SetCreativeId(v string) {
+	o.CreativeId.Set(&v)
+}
+
+// SetCreativeIdNil sets the value for CreativeId to be an explicit nil
+func (o *AdCreative) SetCreativeIdNil() {
+	o.CreativeId.Set(nil)
+}
+
+// UnsetCreativeId ensures that no value is present for CreativeId, not even an explicit nil
+func (o *AdCreative) UnsetCreativeId() {
+	o.CreativeId.Unset()
 }
 
 // GetObjectType returns the ObjectType field value if set, zero value otherwise.
@@ -881,6 +926,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if o.VideoUrl.IsSet() {
 		toSerialize["videoUrl"] = o.VideoUrl.Get()
+	}
+	if o.CreativeId.IsSet() {
+		toSerialize["creativeId"] = o.CreativeId.Get()
 	}
 	if !IsNil(o.ObjectType) {
 		toSerialize["objectType"] = o.ObjectType

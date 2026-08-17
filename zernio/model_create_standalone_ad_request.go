@@ -55,6 +55,8 @@ type CreateStandaloneAdRequest struct {
 	BudgetType *string `json:"budgetType,omitempty"`
 	// Meta and TikTok. Publish state of the created entities. Omitted or ACTIVE publishes live (default, back-compat); PAUSED creates them paused so you can review before they spend. On Meta the pause is held on the campaign this call creates, leaving the ad set and ad switched on, so a single PUT /v1/ads/campaigns/{campaignId}/status with `active` brings the whole thing live. It is held at every level instead when the pause cannot rely on the campaign: `existingCampaignId` (that campaign may be running and is never touched) or `campaignStatus: ACTIVE`. On TikTok the whole campaign > ad group > ad hierarchy stays paused.
 	Status *string `json:"status,omitempty"`
+	// Meta only. Overrides `status` for the campaign level alone, so you can create a live campaign whose ad set and ad stay paused, or the reverse. Omitted, it follows `status`.
+	CampaignStatus *string `json:"campaignStatus,omitempty"`
 	// Meta only. Where the budget lives, which selects the Meta budget model:   - `adset` (default): ABO (Ad-set Budget Optimization). The budget is set on the     ad set. This is the back-compatible behaviour — omit this field to keep it.   - `campaign`: CBO (Campaign Budget Optimization / Advantage Campaign Budget). The     budget AND `bidStrategy` are set on the CAMPAIGN, and Meta distributes spend     across ad sets automatically. Meta requires the budget at exactly one level, never both. Non-Meta platforms ignore this field. Ignored on the attach shape (`adSetId`), which inherits the existing budget.
 	BudgetLevel *string `json:"budgetLevel,omitempty"`
 	// ISO 4217 currency code matching the ad account's currency (e.g. `USD`). Meta only. Optional: Zernio resolves it from the ad account when omitted. The value selects the minor-unit exponent Zernio converts budget/bid amounts by before calling Meta (most currencies are cents; zero-decimal currencies like JPY/KRW are sent as-is).
@@ -766,6 +768,38 @@ func (o *CreateStandaloneAdRequest) HasStatus() bool {
 // SetStatus gets a reference to the given string and assigns it to the Status field.
 func (o *CreateStandaloneAdRequest) SetStatus(v string) {
 	o.Status = &v
+}
+
+// GetCampaignStatus returns the CampaignStatus field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetCampaignStatus() string {
+	if o == nil || IsNil(o.CampaignStatus) {
+		var ret string
+		return ret
+	}
+	return *o.CampaignStatus
+}
+
+// GetCampaignStatusOk returns a tuple with the CampaignStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetCampaignStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.CampaignStatus) {
+		return nil, false
+	}
+	return o.CampaignStatus, true
+}
+
+// HasCampaignStatus returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasCampaignStatus() bool {
+	if o != nil && !IsNil(o.CampaignStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignStatus gets a reference to the given string and assigns it to the CampaignStatus field.
+func (o *CreateStandaloneAdRequest) SetCampaignStatus(v string) {
+	o.CampaignStatus = &v
 }
 
 // GetBudgetLevel returns the BudgetLevel field value if set, zero value otherwise.
@@ -2946,6 +2980,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.CampaignStatus) {
+		toSerialize["campaignStatus"] = o.CampaignStatus
 	}
 	if !IsNil(o.BudgetLevel) {
 		toSerialize["budgetLevel"] = o.BudgetLevel
