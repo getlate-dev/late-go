@@ -21,15 +21,16 @@ var _ MappedNullable = &ExternalPostSummaryAnalytics{}
 
 // ExternalPostSummaryAnalytics Engagement + insights for the post. `likes` and `comments` are available immediately after an on-demand sync (they come from the platform listing). `reach`, `impressions`, `views` depend on the platform's insights, which carry their own delay (e.g. ~24h on Instagram) and read 0 until the platform makes them available.
 type ExternalPostSummaryAnalytics struct {
-	Likes          *int32   `json:"likes,omitempty"`
-	Comments       *int32   `json:"comments,omitempty"`
-	Shares         *int32   `json:"shares,omitempty"`
-	Saves          *int32   `json:"saves,omitempty"`
-	Sends          *int32   `json:"sends,omitempty"`
-	Clicks         *int32   `json:"clicks,omitempty"`
-	Views          *int32   `json:"views,omitempty"`
-	Reach          *int32   `json:"reach,omitempty"`
-	Impressions    *int32   `json:"impressions,omitempty"`
+	Likes       *int32 `json:"likes,omitempty"`
+	Comments    *int32 `json:"comments,omitempty"`
+	Shares      *int32 `json:"shares,omitempty"`
+	Saves       *int32 `json:"saves,omitempty"`
+	Sends       *int32 `json:"sends,omitempty"`
+	Clicks      *int32 `json:"clicks,omitempty"`
+	Views       *int32 `json:"views,omitempty"`
+	Reach       *int32 `json:"reach,omitempty"`
+	Impressions *int32 `json:"impressions,omitempty"`
+	// Percentage, rounded to 2 decimals. Same definition as PostAnalytics.engagementRate: (likes + comments + shares + saves) / (impressions or reach or views) * 100, where the denominator is the first of the three that is non-zero. Clicks and follows are never counted.
 	EngagementRate *float32 `json:"engagementRate,omitempty"`
 	// When these metrics were last refreshed
 	LastUpdated *time.Time `json:"lastUpdated,omitempty"`
