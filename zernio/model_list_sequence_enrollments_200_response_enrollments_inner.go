@@ -21,18 +21,18 @@ var _ MappedNullable = &ListSequenceEnrollments200ResponseEnrollmentsInner{}
 
 // ListSequenceEnrollments200ResponseEnrollmentsInner struct for ListSequenceEnrollments200ResponseEnrollmentsInner
 type ListSequenceEnrollments200ResponseEnrollmentsInner struct {
-	Id                 *string    `json:"id,omitempty"`
-	ContactId          *string    `json:"contactId,omitempty"`
-	ChannelId          *string    `json:"channelId,omitempty"`
-	PlatformIdentifier *string    `json:"platformIdentifier,omitempty"`
-	ContactName        *string    `json:"contactName,omitempty"`
-	CurrentStepIndex   *int32     `json:"currentStepIndex,omitempty"`
-	Status             *string    `json:"status,omitempty"`
-	ExitReason         *string    `json:"exitReason,omitempty"`
-	NextStepAt         *time.Time `json:"nextStepAt,omitempty"`
-	StepsSent          *int32     `json:"stepsSent,omitempty"`
-	LastStepSentAt     *time.Time `json:"lastStepSentAt,omitempty"`
-	CreatedAt          *time.Time `json:"createdAt,omitempty"`
+	Id                 *string        `json:"id,omitempty"`
+	ContactId          *string        `json:"contactId,omitempty"`
+	ChannelId          *string        `json:"channelId,omitempty"`
+	PlatformIdentifier *string        `json:"platformIdentifier,omitempty"`
+	ContactName        *string        `json:"contactName,omitempty"`
+	CurrentStepIndex   *int32         `json:"currentStepIndex,omitempty"`
+	Status             *string        `json:"status,omitempty"`
+	ExitReason         NullableString `json:"exitReason,omitempty"`
+	NextStepAt         NullableTime   `json:"nextStepAt,omitempty"`
+	StepsSent          *int32         `json:"stepsSent,omitempty"`
+	LastStepSentAt     NullableTime   `json:"lastStepSentAt,omitempty"`
+	CreatedAt          *time.Time     `json:"createdAt,omitempty"`
 }
 
 // NewListSequenceEnrollments200ResponseEnrollmentsInner instantiates a new ListSequenceEnrollments200ResponseEnrollmentsInner object
@@ -276,68 +276,90 @@ func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetStatus(v string)
 	o.Status = &v
 }
 
-// GetExitReason returns the ExitReason field value if set, zero value otherwise.
+// GetExitReason returns the ExitReason field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) GetExitReason() string {
-	if o == nil || IsNil(o.ExitReason) {
+	if o == nil || IsNil(o.ExitReason.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.ExitReason
+	return *o.ExitReason.Get()
 }
 
 // GetExitReasonOk returns a tuple with the ExitReason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) GetExitReasonOk() (*string, bool) {
-	if o == nil || IsNil(o.ExitReason) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ExitReason, true
+	return o.ExitReason.Get(), o.ExitReason.IsSet()
 }
 
 // HasExitReason returns a boolean if a field has been set.
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) HasExitReason() bool {
-	if o != nil && !IsNil(o.ExitReason) {
+	if o != nil && o.ExitReason.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetExitReason gets a reference to the given string and assigns it to the ExitReason field.
+// SetExitReason gets a reference to the given NullableString and assigns it to the ExitReason field.
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetExitReason(v string) {
-	o.ExitReason = &v
+	o.ExitReason.Set(&v)
 }
 
-// GetNextStepAt returns the NextStepAt field value if set, zero value otherwise.
+// SetExitReasonNil sets the value for ExitReason to be an explicit nil
+func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetExitReasonNil() {
+	o.ExitReason.Set(nil)
+}
+
+// UnsetExitReason ensures that no value is present for ExitReason, not even an explicit nil
+func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) UnsetExitReason() {
+	o.ExitReason.Unset()
+}
+
+// GetNextStepAt returns the NextStepAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) GetNextStepAt() time.Time {
-	if o == nil || IsNil(o.NextStepAt) {
+	if o == nil || IsNil(o.NextStepAt.Get()) {
 		var ret time.Time
 		return ret
 	}
-	return *o.NextStepAt
+	return *o.NextStepAt.Get()
 }
 
 // GetNextStepAtOk returns a tuple with the NextStepAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) GetNextStepAtOk() (*time.Time, bool) {
-	if o == nil || IsNil(o.NextStepAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.NextStepAt, true
+	return o.NextStepAt.Get(), o.NextStepAt.IsSet()
 }
 
 // HasNextStepAt returns a boolean if a field has been set.
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) HasNextStepAt() bool {
-	if o != nil && !IsNil(o.NextStepAt) {
+	if o != nil && o.NextStepAt.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetNextStepAt gets a reference to the given time.Time and assigns it to the NextStepAt field.
+// SetNextStepAt gets a reference to the given NullableTime and assigns it to the NextStepAt field.
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetNextStepAt(v time.Time) {
-	o.NextStepAt = &v
+	o.NextStepAt.Set(&v)
+}
+
+// SetNextStepAtNil sets the value for NextStepAt to be an explicit nil
+func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetNextStepAtNil() {
+	o.NextStepAt.Set(nil)
+}
+
+// UnsetNextStepAt ensures that no value is present for NextStepAt, not even an explicit nil
+func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) UnsetNextStepAt() {
+	o.NextStepAt.Unset()
 }
 
 // GetStepsSent returns the StepsSent field value if set, zero value otherwise.
@@ -372,36 +394,47 @@ func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetStepsSent(v int3
 	o.StepsSent = &v
 }
 
-// GetLastStepSentAt returns the LastStepSentAt field value if set, zero value otherwise.
+// GetLastStepSentAt returns the LastStepSentAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) GetLastStepSentAt() time.Time {
-	if o == nil || IsNil(o.LastStepSentAt) {
+	if o == nil || IsNil(o.LastStepSentAt.Get()) {
 		var ret time.Time
 		return ret
 	}
-	return *o.LastStepSentAt
+	return *o.LastStepSentAt.Get()
 }
 
 // GetLastStepSentAtOk returns a tuple with the LastStepSentAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) GetLastStepSentAtOk() (*time.Time, bool) {
-	if o == nil || IsNil(o.LastStepSentAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.LastStepSentAt, true
+	return o.LastStepSentAt.Get(), o.LastStepSentAt.IsSet()
 }
 
 // HasLastStepSentAt returns a boolean if a field has been set.
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) HasLastStepSentAt() bool {
-	if o != nil && !IsNil(o.LastStepSentAt) {
+	if o != nil && o.LastStepSentAt.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLastStepSentAt gets a reference to the given time.Time and assigns it to the LastStepSentAt field.
+// SetLastStepSentAt gets a reference to the given NullableTime and assigns it to the LastStepSentAt field.
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetLastStepSentAt(v time.Time) {
-	o.LastStepSentAt = &v
+	o.LastStepSentAt.Set(&v)
+}
+
+// SetLastStepSentAtNil sets the value for LastStepSentAt to be an explicit nil
+func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetLastStepSentAtNil() {
+	o.LastStepSentAt.Set(nil)
+}
+
+// UnsetLastStepSentAt ensures that no value is present for LastStepSentAt, not even an explicit nil
+func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) UnsetLastStepSentAt() {
+	o.LastStepSentAt.Unset()
 }
 
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
@@ -467,17 +500,17 @@ func (o ListSequenceEnrollments200ResponseEnrollmentsInner) ToMap() (map[string]
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
 	}
-	if !IsNil(o.ExitReason) {
-		toSerialize["exitReason"] = o.ExitReason
+	if o.ExitReason.IsSet() {
+		toSerialize["exitReason"] = o.ExitReason.Get()
 	}
-	if !IsNil(o.NextStepAt) {
-		toSerialize["nextStepAt"] = o.NextStepAt
+	if o.NextStepAt.IsSet() {
+		toSerialize["nextStepAt"] = o.NextStepAt.Get()
 	}
 	if !IsNil(o.StepsSent) {
 		toSerialize["stepsSent"] = o.StepsSent
 	}
-	if !IsNil(o.LastStepSentAt) {
-		toSerialize["lastStepSentAt"] = o.LastStepSentAt
+	if o.LastStepSentAt.IsSet() {
+		toSerialize["lastStepSentAt"] = o.LastStepSentAt.Get()
 	}
 	if !IsNil(o.CreatedAt) {
 		toSerialize["createdAt"] = o.CreatedAt

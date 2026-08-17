@@ -21,14 +21,14 @@ var _ MappedNullable = &ListBroadcastRecipients200ResponseRecipientsInner{}
 
 // ListBroadcastRecipients200ResponseRecipientsInner struct for ListBroadcastRecipients200ResponseRecipientsInner
 type ListBroadcastRecipients200ResponseRecipientsInner struct {
-	Id                 *string `json:"id,omitempty"`
-	ContactId          *string `json:"contactId,omitempty"`
-	ChannelId          *string `json:"channelId,omitempty"`
-	PlatformIdentifier *string `json:"platformIdentifier,omitempty"`
-	ContactName        *string `json:"contactName,omitempty"`
-	Status             *string `json:"status,omitempty"`
-	MessageId          *string `json:"messageId,omitempty"`
-	Error              *string `json:"error,omitempty"`
+	Id                 *string        `json:"id,omitempty"`
+	ContactId          *string        `json:"contactId,omitempty"`
+	ChannelId          *string        `json:"channelId,omitempty"`
+	PlatformIdentifier *string        `json:"platformIdentifier,omitempty"`
+	ContactName        NullableString `json:"contactName,omitempty"`
+	Status             *string        `json:"status,omitempty"`
+	MessageId          *string        `json:"messageId,omitempty"`
+	Error              *string        `json:"error,omitempty"`
 	// Meta WhatsApp error code (e.g. 131049 for antispam, 131021 for invalid phone, 131026 for re-engagement required). Only populated for status=failed.
 	ErrorCode NullableInt32 `json:"errorCode,omitempty"`
 	// Plain-language translation of errorCode (e.g. for 131026, that the recipient has likely opted out of marketing messages). Null for unmapped codes; fall back to error.
@@ -185,36 +185,47 @@ func (o *ListBroadcastRecipients200ResponseRecipientsInner) SetPlatformIdentifie
 	o.PlatformIdentifier = &v
 }
 
-// GetContactName returns the ContactName field value if set, zero value otherwise.
+// GetContactName returns the ContactName field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListBroadcastRecipients200ResponseRecipientsInner) GetContactName() string {
-	if o == nil || IsNil(o.ContactName) {
+	if o == nil || IsNil(o.ContactName.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.ContactName
+	return *o.ContactName.Get()
 }
 
 // GetContactNameOk returns a tuple with the ContactName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListBroadcastRecipients200ResponseRecipientsInner) GetContactNameOk() (*string, bool) {
-	if o == nil || IsNil(o.ContactName) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ContactName, true
+	return o.ContactName.Get(), o.ContactName.IsSet()
 }
 
 // HasContactName returns a boolean if a field has been set.
 func (o *ListBroadcastRecipients200ResponseRecipientsInner) HasContactName() bool {
-	if o != nil && !IsNil(o.ContactName) {
+	if o != nil && o.ContactName.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetContactName gets a reference to the given string and assigns it to the ContactName field.
+// SetContactName gets a reference to the given NullableString and assigns it to the ContactName field.
 func (o *ListBroadcastRecipients200ResponseRecipientsInner) SetContactName(v string) {
-	o.ContactName = &v
+	o.ContactName.Set(&v)
+}
+
+// SetContactNameNil sets the value for ContactName to be an explicit nil
+func (o *ListBroadcastRecipients200ResponseRecipientsInner) SetContactNameNil() {
+	o.ContactName.Set(nil)
+}
+
+// UnsetContactName ensures that no value is present for ContactName, not even an explicit nil
+func (o *ListBroadcastRecipients200ResponseRecipientsInner) UnsetContactName() {
+	o.ContactName.Unset()
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -560,8 +571,8 @@ func (o ListBroadcastRecipients200ResponseRecipientsInner) ToMap() (map[string]i
 	if !IsNil(o.PlatformIdentifier) {
 		toSerialize["platformIdentifier"] = o.PlatformIdentifier
 	}
-	if !IsNil(o.ContactName) {
-		toSerialize["contactName"] = o.ContactName
+	if o.ContactName.IsSet() {
+		toSerialize["contactName"] = o.ContactName.Get()
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
