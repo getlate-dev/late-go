@@ -20,11 +20,18 @@ var _ MappedNullable = &UpdateAdSet200Response{}
 
 // UpdateAdSet200Response struct for UpdateAdSet200Response
 type UpdateAdSet200Response struct {
-	Budget               *AdBudget              `json:"budget,omitempty"`
-	BudgetLevel          *string                `json:"budgetLevel,omitempty"`
-	Status               *string                `json:"status,omitempty"`
-	StatusUpdated        *int32                 `json:"statusUpdated,omitempty"`
-	StatusSkipped        *int32                 `json:"statusSkipped,omitempty"`
+	Budget      *AdBudget `json:"budget,omitempty"`
+	BudgetLevel *string   `json:"budgetLevel,omitempty"`
+	// The status written to the ad set. Absent when nothing was written (see statusMessage).
+	Status *string `json:"status,omitempty"`
+	// Number of ads whose own stored status changed alongside the ad set switch
+	StatusUpdated *int32 `json:"statusUpdated,omitempty"`
+	// Number of ads whose own status was left as it was
+	StatusSkipped *int32 `json:"statusSkipped,omitempty"`
+	// Why each group of ads was skipped
+	StatusSkippedReasons []string `json:"statusSkippedReasons,omitempty"`
+	// Present only where the platform has no ad-set switch and no child ad was actionable; `status` is then absent because nothing was written
+	StatusMessage        *string                `json:"statusMessage,omitempty"`
 	BidStrategy          *BidStrategy           `json:"bidStrategy,omitempty"`
 	BidAmount            NullableFloat32        `json:"bidAmount,omitempty"`
 	RoasAverageFloor     NullableFloat32        `json:"roasAverageFloor,omitempty"`
@@ -208,6 +215,70 @@ func (o *UpdateAdSet200Response) SetStatusSkipped(v int32) {
 	o.StatusSkipped = &v
 }
 
+// GetStatusSkippedReasons returns the StatusSkippedReasons field value if set, zero value otherwise.
+func (o *UpdateAdSet200Response) GetStatusSkippedReasons() []string {
+	if o == nil || IsNil(o.StatusSkippedReasons) {
+		var ret []string
+		return ret
+	}
+	return o.StatusSkippedReasons
+}
+
+// GetStatusSkippedReasonsOk returns a tuple with the StatusSkippedReasons field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSet200Response) GetStatusSkippedReasonsOk() ([]string, bool) {
+	if o == nil || IsNil(o.StatusSkippedReasons) {
+		return nil, false
+	}
+	return o.StatusSkippedReasons, true
+}
+
+// HasStatusSkippedReasons returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasStatusSkippedReasons() bool {
+	if o != nil && !IsNil(o.StatusSkippedReasons) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatusSkippedReasons gets a reference to the given []string and assigns it to the StatusSkippedReasons field.
+func (o *UpdateAdSet200Response) SetStatusSkippedReasons(v []string) {
+	o.StatusSkippedReasons = v
+}
+
+// GetStatusMessage returns the StatusMessage field value if set, zero value otherwise.
+func (o *UpdateAdSet200Response) GetStatusMessage() string {
+	if o == nil || IsNil(o.StatusMessage) {
+		var ret string
+		return ret
+	}
+	return *o.StatusMessage
+}
+
+// GetStatusMessageOk returns a tuple with the StatusMessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSet200Response) GetStatusMessageOk() (*string, bool) {
+	if o == nil || IsNil(o.StatusMessage) {
+		return nil, false
+	}
+	return o.StatusMessage, true
+}
+
+// HasStatusMessage returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasStatusMessage() bool {
+	if o != nil && !IsNil(o.StatusMessage) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatusMessage gets a reference to the given string and assigns it to the StatusMessage field.
+func (o *UpdateAdSet200Response) SetStatusMessage(v string) {
+	o.StatusMessage = &v
+}
+
 // GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
 func (o *UpdateAdSet200Response) GetBidStrategy() BidStrategy {
 	if o == nil || IsNil(o.BidStrategy) {
@@ -382,6 +453,12 @@ func (o UpdateAdSet200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.StatusSkipped) {
 		toSerialize["statusSkipped"] = o.StatusSkipped
+	}
+	if !IsNil(o.StatusSkippedReasons) {
+		toSerialize["statusSkippedReasons"] = o.StatusSkippedReasons
+	}
+	if !IsNil(o.StatusMessage) {
+		toSerialize["statusMessage"] = o.StatusMessage
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy

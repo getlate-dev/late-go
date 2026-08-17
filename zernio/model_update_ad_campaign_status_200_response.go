@@ -20,13 +20,14 @@ var _ MappedNullable = &UpdateAdCampaignStatus200Response{}
 
 // UpdateAdCampaignStatus200Response struct for UpdateAdCampaignStatus200Response
 type UpdateAdCampaignStatus200Response struct {
-	// Number of ads updated
+	// The status written to the campaign
+	Status *string `json:"status,omitempty"`
+	// Number of ads whose own stored status changed too. 0 is normal on a resume whose ads are all awaiting the platform.
 	Updated *int32 `json:"updated,omitempty"`
-	// Number of ads skipped
-	Skipped        *int32   `json:"skipped,omitempty"`
+	// Number of ads whose own status was left as it was
+	Skipped *int32 `json:"skipped,omitempty"`
+	// Why each group of ads was skipped
 	SkippedReasons []string `json:"skippedReasons,omitempty"`
-	// Human-readable summary (present when no ads were actionable)
-	Message *string `json:"message,omitempty"`
 }
 
 // NewUpdateAdCampaignStatus200Response instantiates a new UpdateAdCampaignStatus200Response object
@@ -44,6 +45,38 @@ func NewUpdateAdCampaignStatus200Response() *UpdateAdCampaignStatus200Response {
 func NewUpdateAdCampaignStatus200ResponseWithDefaults() *UpdateAdCampaignStatus200Response {
 	this := UpdateAdCampaignStatus200Response{}
 	return &this
+}
+
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *UpdateAdCampaignStatus200Response) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaignStatus200Response) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *UpdateAdCampaignStatus200Response) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *UpdateAdCampaignStatus200Response) SetStatus(v string) {
+	o.Status = &v
 }
 
 // GetUpdated returns the Updated field value if set, zero value otherwise.
@@ -142,38 +175,6 @@ func (o *UpdateAdCampaignStatus200Response) SetSkippedReasons(v []string) {
 	o.SkippedReasons = v
 }
 
-// GetMessage returns the Message field value if set, zero value otherwise.
-func (o *UpdateAdCampaignStatus200Response) GetMessage() string {
-	if o == nil || IsNil(o.Message) {
-		var ret string
-		return ret
-	}
-	return *o.Message
-}
-
-// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpdateAdCampaignStatus200Response) GetMessageOk() (*string, bool) {
-	if o == nil || IsNil(o.Message) {
-		return nil, false
-	}
-	return o.Message, true
-}
-
-// HasMessage returns a boolean if a field has been set.
-func (o *UpdateAdCampaignStatus200Response) HasMessage() bool {
-	if o != nil && !IsNil(o.Message) {
-		return true
-	}
-
-	return false
-}
-
-// SetMessage gets a reference to the given string and assigns it to the Message field.
-func (o *UpdateAdCampaignStatus200Response) SetMessage(v string) {
-	o.Message = &v
-}
-
 func (o UpdateAdCampaignStatus200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -184,6 +185,9 @@ func (o UpdateAdCampaignStatus200Response) MarshalJSON() ([]byte, error) {
 
 func (o UpdateAdCampaignStatus200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
 	if !IsNil(o.Updated) {
 		toSerialize["updated"] = o.Updated
 	}
@@ -192,9 +196,6 @@ func (o UpdateAdCampaignStatus200Response) ToMap() (map[string]interface{}, erro
 	}
 	if !IsNil(o.SkippedReasons) {
 		toSerialize["skippedReasons"] = o.SkippedReasons
-	}
-	if !IsNil(o.Message) {
-		toSerialize["message"] = o.Message
 	}
 	return toSerialize, nil
 }

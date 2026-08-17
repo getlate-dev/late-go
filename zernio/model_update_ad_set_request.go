@@ -24,7 +24,7 @@ var _ MappedNullable = &UpdateAdSetRequest{}
 type UpdateAdSetRequest struct {
 	Platform string                    `json:"platform"`
 	Budget   *UpdateAdSetRequestBudget `json:"budget,omitempty"`
-	// Omit if not toggling delivery state
+	// Writes the ad set's own on/off switch (Meta: `configured_status`) on Meta and LinkedIn, whatever delivery status its ads report. Omit if not toggling delivery state.
 	Status *string `json:"status,omitempty"`
 	// Rename the ad set (Meta only; other platforms return 501). At least one of budget/status/bidStrategy/name is required.
 	Name *string `json:"name,omitempty"`
