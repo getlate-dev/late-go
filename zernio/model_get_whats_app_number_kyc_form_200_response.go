@@ -24,6 +24,8 @@ type GetWhatsAppNumberKycForm200Response struct {
 	NumberType *string                                          `json:"numberType,omitempty"`
 	Fields     []GetWhatsAppNumberKycForm200ResponseFieldsInner `json:"fields,omitempty"`
 	Reusable   *GetPhoneNumberKycForm200ResponseReusable        `json:"reusable,omitempty"`
+	// true when this account already has a number for this country in regulatory review (status pending_regulatory). Scope is the whole account across all profiles, and the country only (any number type), so it is not a per-end-client signal on a multi-tenant setup. Informational only: it never blocks a submission, and several same-country numbers may sit in review at once. For a per-end-client view, call GET /v1/phone-numbers with `profileId` and `status=pending_regulatory`; that view also lists numbers declined in the last 30 days.
+	PendingReview *bool `json:"pendingReview,omitempty"`
 }
 
 // NewGetWhatsAppNumberKycForm200Response instantiates a new GetWhatsAppNumberKycForm200Response object
@@ -171,6 +173,38 @@ func (o *GetWhatsAppNumberKycForm200Response) SetReusable(v GetPhoneNumberKycFor
 	o.Reusable = &v
 }
 
+// GetPendingReview returns the PendingReview field value if set, zero value otherwise.
+func (o *GetWhatsAppNumberKycForm200Response) GetPendingReview() bool {
+	if o == nil || IsNil(o.PendingReview) {
+		var ret bool
+		return ret
+	}
+	return *o.PendingReview
+}
+
+// GetPendingReviewOk returns a tuple with the PendingReview field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetWhatsAppNumberKycForm200Response) GetPendingReviewOk() (*bool, bool) {
+	if o == nil || IsNil(o.PendingReview) {
+		return nil, false
+	}
+	return o.PendingReview, true
+}
+
+// HasPendingReview returns a boolean if a field has been set.
+func (o *GetWhatsAppNumberKycForm200Response) HasPendingReview() bool {
+	if o != nil && !IsNil(o.PendingReview) {
+		return true
+	}
+
+	return false
+}
+
+// SetPendingReview gets a reference to the given bool and assigns it to the PendingReview field.
+func (o *GetWhatsAppNumberKycForm200Response) SetPendingReview(v bool) {
+	o.PendingReview = &v
+}
+
 func (o GetWhatsAppNumberKycForm200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -192,6 +226,9 @@ func (o GetWhatsAppNumberKycForm200Response) ToMap() (map[string]interface{}, er
 	}
 	if !IsNil(o.Reusable) {
 		toSerialize["reusable"] = o.Reusable
+	}
+	if !IsNil(o.PendingReview) {
+		toSerialize["pendingReview"] = o.PendingReview
 	}
 	return toSerialize, nil
 }

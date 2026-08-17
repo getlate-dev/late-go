@@ -18,8 +18,10 @@ import (
 // checks if the BlueskyPlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &BlueskyPlatformData{}
 
-// BlueskyPlatformData Bluesky post settings. Supports text posts with up to 4 images or a single video. threadItems creates a reply chain (Bluesky thread). Images exceeding 1MB are automatically compressed. Alt text supported via mediaItem properties.
+// BlueskyPlatformData Bluesky post settings. Supports text posts with up to 4 images or a single video. threadItems creates a reply chain (Bluesky thread). Images exceeding 1MB are automatically compressed. Alt text supported via mediaItem properties. Use langs to tag post language for feed-generator filtering.
 type BlueskyPlatformData struct {
+	// Language(s) of the post text as 1-3 BCP-47 codes (e.g. \"pt\", \"en-US\"), written to the post record's langs field. Bluesky feed generators filter on this field, so posts without it never appear in language-scoped feeds. Can only be set at creation (Bluesky has no post editing). When threadItems is used, every item in the thread carries the same langs. When omitted, the account's default (set via PATCH /v1/accounts/{accountId}/bluesky-settings) applies; with no default either, the field is absent from the record.
+	Langs []string `json:"langs,omitempty"`
 	// Complete sequence of posts in a Bluesky thread. The first item becomes the root post, subsequent items are chained as replies. When threadItems is provided, the top-level content field is used only for display and search purposes, it is NOT published. You must include your first post as threadItems[0].
 	ThreadItems []TwitterPlatformDataThreadItemsInner `json:"threadItems,omitempty"`
 }
@@ -39,6 +41,38 @@ func NewBlueskyPlatformData() *BlueskyPlatformData {
 func NewBlueskyPlatformDataWithDefaults() *BlueskyPlatformData {
 	this := BlueskyPlatformData{}
 	return &this
+}
+
+// GetLangs returns the Langs field value if set, zero value otherwise.
+func (o *BlueskyPlatformData) GetLangs() []string {
+	if o == nil || IsNil(o.Langs) {
+		var ret []string
+		return ret
+	}
+	return o.Langs
+}
+
+// GetLangsOk returns a tuple with the Langs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BlueskyPlatformData) GetLangsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Langs) {
+		return nil, false
+	}
+	return o.Langs, true
+}
+
+// HasLangs returns a boolean if a field has been set.
+func (o *BlueskyPlatformData) HasLangs() bool {
+	if o != nil && !IsNil(o.Langs) {
+		return true
+	}
+
+	return false
+}
+
+// SetLangs gets a reference to the given []string and assigns it to the Langs field.
+func (o *BlueskyPlatformData) SetLangs(v []string) {
+	o.Langs = v
 }
 
 // GetThreadItems returns the ThreadItems field value if set, zero value otherwise.
@@ -83,6 +117,9 @@ func (o BlueskyPlatformData) MarshalJSON() ([]byte, error) {
 
 func (o BlueskyPlatformData) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Langs) {
+		toSerialize["langs"] = o.Langs
+	}
 	if !IsNil(o.ThreadItems) {
 		toSerialize["threadItems"] = o.ThreadItems
 	}

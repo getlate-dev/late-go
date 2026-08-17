@@ -21,17 +21,21 @@ var _ MappedNullable = &WebhookPayloadCallEndedCall{}
 
 // WebhookPayloadCallEndedCall struct for WebhookPayloadCallEndedCall
 type WebhookPayloadCallEndedCall struct {
-	Id                 *string                             `json:"id,omitempty"`
-	MetaCallId         NullableString                      `json:"metaCallId,omitempty"`
-	AccountId          *string                             `json:"accountId,omitempty"`
-	PhoneNumberId      *string                             `json:"phoneNumberId,omitempty"`
-	Direction          *string                             `json:"direction,omitempty"`
-	From               *string                             `json:"from,omitempty"`
-	To                 *string                             `json:"to,omitempty"`
-	StartedAt          *time.Time                          `json:"startedAt,omitempty"`
-	EndedAt            *time.Time                          `json:"endedAt,omitempty"`
-	DurationSeconds    *int32                              `json:"durationSeconds,omitempty"`
-	EndReason          *string                             `json:"endReason,omitempty"`
+	Id              *string        `json:"id,omitempty"`
+	MetaCallId      NullableString `json:"metaCallId,omitempty"`
+	AccountId       *string        `json:"accountId,omitempty"`
+	PhoneNumberId   *string        `json:"phoneNumberId,omitempty"`
+	Direction       *string        `json:"direction,omitempty"`
+	From            *string        `json:"from,omitempty"`
+	To              *string        `json:"to,omitempty"`
+	StartedAt       *time.Time     `json:"startedAt,omitempty"`
+	EndedAt         *time.Time     `json:"endedAt,omitempty"`
+	DurationSeconds *int32         `json:"durationSeconds,omitempty"`
+	EndReason       *string        `json:"endReason,omitempty"`
+	// Raw carrier hangup cause behind endReason (e.g. normal_clearing, call_rejected, not_found). Null when the carrier reported none.
+	HangupCause NullableString `json:"hangupCause,omitempty"`
+	// SIP response code that ended the call when SIP-signalled (e.g. '403', '486', '603'). endReason collapses all three to 'rejected', so this is what separates a refused destination from a busy line. Null on non-SIP legs.
+	SipHangupCause     NullableString                      `json:"sipHangupCause,omitempty"`
 	RecordingUrl       *string                             `json:"recordingUrl,omitempty"`
 	RecordingExpiresAt *time.Time                          `json:"recordingExpiresAt,omitempty"`
 	Billing            *WebhookPayloadCallEndedCallBilling `json:"billing,omitempty"`
@@ -417,6 +421,92 @@ func (o *WebhookPayloadCallEndedCall) SetEndReason(v string) {
 	o.EndReason = &v
 }
 
+// GetHangupCause returns the HangupCause field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadCallEndedCall) GetHangupCause() string {
+	if o == nil || IsNil(o.HangupCause.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.HangupCause.Get()
+}
+
+// GetHangupCauseOk returns a tuple with the HangupCause field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadCallEndedCall) GetHangupCauseOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.HangupCause.Get(), o.HangupCause.IsSet()
+}
+
+// HasHangupCause returns a boolean if a field has been set.
+func (o *WebhookPayloadCallEndedCall) HasHangupCause() bool {
+	if o != nil && o.HangupCause.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetHangupCause gets a reference to the given NullableString and assigns it to the HangupCause field.
+func (o *WebhookPayloadCallEndedCall) SetHangupCause(v string) {
+	o.HangupCause.Set(&v)
+}
+
+// SetHangupCauseNil sets the value for HangupCause to be an explicit nil
+func (o *WebhookPayloadCallEndedCall) SetHangupCauseNil() {
+	o.HangupCause.Set(nil)
+}
+
+// UnsetHangupCause ensures that no value is present for HangupCause, not even an explicit nil
+func (o *WebhookPayloadCallEndedCall) UnsetHangupCause() {
+	o.HangupCause.Unset()
+}
+
+// GetSipHangupCause returns the SipHangupCause field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadCallEndedCall) GetSipHangupCause() string {
+	if o == nil || IsNil(o.SipHangupCause.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SipHangupCause.Get()
+}
+
+// GetSipHangupCauseOk returns a tuple with the SipHangupCause field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadCallEndedCall) GetSipHangupCauseOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SipHangupCause.Get(), o.SipHangupCause.IsSet()
+}
+
+// HasSipHangupCause returns a boolean if a field has been set.
+func (o *WebhookPayloadCallEndedCall) HasSipHangupCause() bool {
+	if o != nil && o.SipHangupCause.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSipHangupCause gets a reference to the given NullableString and assigns it to the SipHangupCause field.
+func (o *WebhookPayloadCallEndedCall) SetSipHangupCause(v string) {
+	o.SipHangupCause.Set(&v)
+}
+
+// SetSipHangupCauseNil sets the value for SipHangupCause to be an explicit nil
+func (o *WebhookPayloadCallEndedCall) SetSipHangupCauseNil() {
+	o.SipHangupCause.Set(nil)
+}
+
+// UnsetSipHangupCause ensures that no value is present for SipHangupCause, not even an explicit nil
+func (o *WebhookPayloadCallEndedCall) UnsetSipHangupCause() {
+	o.SipHangupCause.Unset()
+}
+
 // GetRecordingUrl returns the RecordingUrl field value if set, zero value otherwise.
 func (o *WebhookPayloadCallEndedCall) GetRecordingUrl() string {
 	if o == nil || IsNil(o.RecordingUrl) {
@@ -555,6 +645,12 @@ func (o WebhookPayloadCallEndedCall) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.EndReason) {
 		toSerialize["endReason"] = o.EndReason
+	}
+	if o.HangupCause.IsSet() {
+		toSerialize["hangupCause"] = o.HangupCause.Get()
+	}
+	if o.SipHangupCause.IsSet() {
+		toSerialize["sipHangupCause"] = o.SipHangupCause.Get()
 	}
 	if !IsNil(o.RecordingUrl) {
 		toSerialize["recordingUrl"] = o.RecordingUrl
