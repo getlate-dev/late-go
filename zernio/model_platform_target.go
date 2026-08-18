@@ -46,7 +46,7 @@ type PlatformTarget struct {
 	TrialGraduationStrategy *string `json:"trialGraduationStrategy,omitempty"`
 	// Human-readable error message when status is failed. Contains platform-specific error details explaining why the publish failed.
 	ErrorMessage *string `json:"errorMessage,omitempty"`
-	// Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), system_error (Zernio infra), unknown
+	// Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), platform_rate_limit (platform throttling, retried automatically), quota_exhausted (shared daily API quota empty, resumes at the platform's reset), system_error (Zernio infra), unknown
 	ErrorCategory *string `json:"errorCategory,omitempty"`
 	// Who caused the error: user (fix content/reconnect), platform (outage/API change), system (Zernio issue, rare)
 	ErrorSource *string `json:"errorSource,omitempty"`
