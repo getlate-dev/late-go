@@ -36,6 +36,8 @@ type CreateInboxConversationRequest struct {
 	TemplateName *string `json:"templateName,omitempty"`
 	// WhatsApp only (Meta Direct Send). Combined with message and without templateName, starts the conversation with a business-initiated UTILITY message and no pre-approved template; Meta matches or auto-creates a template asynchronously. The WhatsApp Business Account must be eligible for Direct Send, otherwise the send fails with an error telling you to use an approved message template instead. Cannot be combined with templateName (templates are already categorized at creation). Utility messages only; marketing content is not allowed under this category. Accepted on the JSON body only, not on multipart requests.
 	Category *string `json:"category,omitempty"`
+	// WhatsApp only. Set false to send the Direct Send (category: 'utility') text message without a link-preview thumbnail for the first URL in the text. Defaults to true, which is how every WhatsApp text has been sent to date. Does not apply to template sends. Accepted on the JSON body only, not on multipart requests.
+	LinkPreview *bool `json:"linkPreview,omitempty"`
 	// WhatsApp only. Template language code (e.g. en_US).
 	TemplateLanguage *string `json:"templateLanguage,omitempty"`
 	// WhatsApp only. Template variable values as one flat array, in the order the variables appear across the whole template: text-header variables first, then body variables, then one value per dynamic URL button (in button order). Works with positional placeholders ({{1}}, {{2}}, ...) and with named placeholders ({{name}}, {{company}} - how Meta Business Manager creates templates), where values fill the named slots in order of appearance. Example - a body with {{1}}, {{2}} plus a URL button https://example.com/{{1}} takes three values: [body1, body2, buttonSuffix]. Media headers (image, video, document) are filled automatically from the approved template and take no value here (use headerMedia to override the header asset per send).
@@ -54,6 +56,8 @@ func NewCreateInboxConversationRequest(accountId string) *CreateInboxConversatio
 	this.AccountId = accountId
 	var skipDmCheck bool = false
 	this.SkipDmCheck = &skipDmCheck
+	var linkPreview bool = true
+	this.LinkPreview = &linkPreview
 	return &this
 }
 
@@ -64,6 +68,8 @@ func NewCreateInboxConversationRequestWithDefaults() *CreateInboxConversationReq
 	this := CreateInboxConversationRequest{}
 	var skipDmCheck bool = false
 	this.SkipDmCheck = &skipDmCheck
+	var linkPreview bool = true
+	this.LinkPreview = &linkPreview
 	return &this
 }
 
@@ -283,6 +289,38 @@ func (o *CreateInboxConversationRequest) SetCategory(v string) {
 	o.Category = &v
 }
 
+// GetLinkPreview returns the LinkPreview field value if set, zero value otherwise.
+func (o *CreateInboxConversationRequest) GetLinkPreview() bool {
+	if o == nil || IsNil(o.LinkPreview) {
+		var ret bool
+		return ret
+	}
+	return *o.LinkPreview
+}
+
+// GetLinkPreviewOk returns a tuple with the LinkPreview field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInboxConversationRequest) GetLinkPreviewOk() (*bool, bool) {
+	if o == nil || IsNil(o.LinkPreview) {
+		return nil, false
+	}
+	return o.LinkPreview, true
+}
+
+// HasLinkPreview returns a boolean if a field has been set.
+func (o *CreateInboxConversationRequest) HasLinkPreview() bool {
+	if o != nil && !IsNil(o.LinkPreview) {
+		return true
+	}
+
+	return false
+}
+
+// SetLinkPreview gets a reference to the given bool and assigns it to the LinkPreview field.
+func (o *CreateInboxConversationRequest) SetLinkPreview(v bool) {
+	o.LinkPreview = &v
+}
+
 // GetTemplateLanguage returns the TemplateLanguage field value if set, zero value otherwise.
 func (o *CreateInboxConversationRequest) GetTemplateLanguage() string {
 	if o == nil || IsNil(o.TemplateLanguage) {
@@ -407,6 +445,9 @@ func (o CreateInboxConversationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.Category) {
 		toSerialize["category"] = o.Category
+	}
+	if !IsNil(o.LinkPreview) {
+		toSerialize["linkPreview"] = o.LinkPreview
 	}
 	if !IsNil(o.TemplateLanguage) {
 		toSerialize["templateLanguage"] = o.TemplateLanguage

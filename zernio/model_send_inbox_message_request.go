@@ -30,6 +30,8 @@ type SendInboxMessageRequest struct {
 	AttachmentUrl *string `json:"attachmentUrl,omitempty"`
 	// WhatsApp only (Meta Direct Send). Sends this message as a business-initiated UTILITY message without an approved template, for example outside the 24-hour customer service window; Meta matches or auto-creates a template asynchronously. The WhatsApp Business Account must be eligible for Direct Send, otherwise the send fails with an error telling you to use an approved message template instead. Supported only for text messages (link preview ok) and interactive messages (reply buttons, CTA URL buttons, voice-call button, header of text/image/video/document). Cannot be combined with template, attachments, location, or contacts. Utility messages only; marketing content is not allowed under this category. Accepted on the JSON body only, not on multipart requests.
 	Category *string `json:"category,omitempty"`
+	// WhatsApp only. Set false to send the message without a link-preview thumbnail for the first URL in the text. Defaults to true, which is how every WhatsApp text has been sent to date. Ignored on other platforms. Accepted on the JSON body only, not on multipart requests.
+	LinkPreview *bool `json:"linkPreview,omitempty"`
 	// Type of attachment. Defaults to file if not specified.
 	AttachmentType *string `json:"attachmentType,omitempty"`
 	// WhatsApp only. Display name for a document sent via attachmentUrl with attachmentType: file (e.g. \"Report.pdf\"). Maps to the recipient's file name; without it WhatsApp derives the name from the URL and shows \"Untitled\". Ignored for image/video/audio and for binary uploads (which use the uploaded file's name).
@@ -63,6 +65,8 @@ type _SendInboxMessageRequest SendInboxMessageRequest
 func NewSendInboxMessageRequest(accountId string) *SendInboxMessageRequest {
 	this := SendInboxMessageRequest{}
 	this.AccountId = accountId
+	var linkPreview bool = true
+	this.LinkPreview = &linkPreview
 	return &this
 }
 
@@ -71,6 +75,8 @@ func NewSendInboxMessageRequest(accountId string) *SendInboxMessageRequest {
 // but it doesn't guarantee that properties required by API are set
 func NewSendInboxMessageRequestWithDefaults() *SendInboxMessageRequest {
 	this := SendInboxMessageRequest{}
+	var linkPreview bool = true
+	this.LinkPreview = &linkPreview
 	return &this
 }
 
@@ -192,6 +198,38 @@ func (o *SendInboxMessageRequest) HasCategory() bool {
 // SetCategory gets a reference to the given string and assigns it to the Category field.
 func (o *SendInboxMessageRequest) SetCategory(v string) {
 	o.Category = &v
+}
+
+// GetLinkPreview returns the LinkPreview field value if set, zero value otherwise.
+func (o *SendInboxMessageRequest) GetLinkPreview() bool {
+	if o == nil || IsNil(o.LinkPreview) {
+		var ret bool
+		return ret
+	}
+	return *o.LinkPreview
+}
+
+// GetLinkPreviewOk returns a tuple with the LinkPreview field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequest) GetLinkPreviewOk() (*bool, bool) {
+	if o == nil || IsNil(o.LinkPreview) {
+		return nil, false
+	}
+	return o.LinkPreview, true
+}
+
+// HasLinkPreview returns a boolean if a field has been set.
+func (o *SendInboxMessageRequest) HasLinkPreview() bool {
+	if o != nil && !IsNil(o.LinkPreview) {
+		return true
+	}
+
+	return false
+}
+
+// SetLinkPreview gets a reference to the given bool and assigns it to the LinkPreview field.
+func (o *SendInboxMessageRequest) SetLinkPreview(v bool) {
+	o.LinkPreview = &v
 }
 
 // GetAttachmentType returns the AttachmentType field value if set, zero value otherwise.
@@ -629,6 +667,9 @@ func (o SendInboxMessageRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Category) {
 		toSerialize["category"] = o.Category
+	}
+	if !IsNil(o.LinkPreview) {
+		toSerialize["linkPreview"] = o.LinkPreview
 	}
 	if !IsNil(o.AttachmentType) {
 		toSerialize["attachmentType"] = o.AttachmentType
