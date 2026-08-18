@@ -51,6 +51,8 @@ type WebhookPayloadMessageMetadata struct {
 	IsStoryMention *bool                                     `json:"isStoryMention,omitempty"`
 	Referral       *WebhookPayloadMessageMetadataReferral    `json:"referral,omitempty"`
 	Unsupported    *WebhookPayloadMessageMetadataUnsupported `json:"unsupported,omitempty"`
+	// Instagram / Facebook Messenger only. Set when the message carries nothing an integrator can render (a `template` attachment with no text and no parseable content, or Meta's own `is_unsupported` flag). Sibling of `unsupported` above (WhatsApp only, carries Meta's error code/title/details): this field has no error envelope, just the boolean. Absence means \"not flagged\", never \"checked and renderable\".
+	NoRenderableContent *bool `json:"noRenderableContent,omitempty"`
 }
 
 // NewWebhookPayloadMessageMetadata instantiates a new WebhookPayloadMessageMetadata object
@@ -646,6 +648,38 @@ func (o *WebhookPayloadMessageMetadata) SetUnsupported(v WebhookPayloadMessageMe
 	o.Unsupported = &v
 }
 
+// GetNoRenderableContent returns the NoRenderableContent field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetNoRenderableContent() bool {
+	if o == nil || IsNil(o.NoRenderableContent) {
+		var ret bool
+		return ret
+	}
+	return *o.NoRenderableContent
+}
+
+// GetNoRenderableContentOk returns a tuple with the NoRenderableContent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetNoRenderableContentOk() (*bool, bool) {
+	if o == nil || IsNil(o.NoRenderableContent) {
+		return nil, false
+	}
+	return o.NoRenderableContent, true
+}
+
+// HasNoRenderableContent returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasNoRenderableContent() bool {
+	if o != nil && !IsNil(o.NoRenderableContent) {
+		return true
+	}
+
+	return false
+}
+
+// SetNoRenderableContent gets a reference to the given bool and assigns it to the NoRenderableContent field.
+func (o *WebhookPayloadMessageMetadata) SetNoRenderableContent(v bool) {
+	o.NoRenderableContent = &v
+}
+
 func (o WebhookPayloadMessageMetadata) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -709,6 +743,9 @@ func (o WebhookPayloadMessageMetadata) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Unsupported) {
 		toSerialize["unsupported"] = o.Unsupported
+	}
+	if !IsNil(o.NoRenderableContent) {
+		toSerialize["noRenderableContent"] = o.NoRenderableContent
 	}
 	return toSerialize, nil
 }
