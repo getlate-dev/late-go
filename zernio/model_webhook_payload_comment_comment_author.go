@@ -23,10 +23,12 @@ var _ MappedNullable = &WebhookPayloadCommentCommentAuthor{}
 // WebhookPayloadCommentCommentAuthor struct for WebhookPayloadCommentCommentAuthor
 type WebhookPayloadCommentCommentAuthor struct {
 	// Author's platform ID
-	Id               string                                              `json:"id"`
-	Username         *string                                             `json:"username,omitempty"`
-	Name             *string                                             `json:"name,omitempty"`
-	Picture          NullableString                                      `json:"picture,omitempty"`
+	Id       string         `json:"id"`
+	Username *string        `json:"username,omitempty"`
+	Name     *string        `json:"name,omitempty"`
+	Picture  NullableString `json:"picture,omitempty"`
+	// True when this comment was authored by the connected account itself (Meta re-delivers the account's own replies as comments events). Populated on the Instagram and Facebook realtime webhooks only; absent means not evaluated, never \"not the account\".
+	IsOwnAccount     *bool                                               `json:"isOwnAccount,omitempty"`
 	InstagramProfile *WebhookPayloadCommentCommentAuthorInstagramProfile `json:"instagramProfile,omitempty"`
 }
 
@@ -181,6 +183,38 @@ func (o *WebhookPayloadCommentCommentAuthor) UnsetPicture() {
 	o.Picture.Unset()
 }
 
+// GetIsOwnAccount returns the IsOwnAccount field value if set, zero value otherwise.
+func (o *WebhookPayloadCommentCommentAuthor) GetIsOwnAccount() bool {
+	if o == nil || IsNil(o.IsOwnAccount) {
+		var ret bool
+		return ret
+	}
+	return *o.IsOwnAccount
+}
+
+// GetIsOwnAccountOk returns a tuple with the IsOwnAccount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCommentCommentAuthor) GetIsOwnAccountOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsOwnAccount) {
+		return nil, false
+	}
+	return o.IsOwnAccount, true
+}
+
+// HasIsOwnAccount returns a boolean if a field has been set.
+func (o *WebhookPayloadCommentCommentAuthor) HasIsOwnAccount() bool {
+	if o != nil && !IsNil(o.IsOwnAccount) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsOwnAccount gets a reference to the given bool and assigns it to the IsOwnAccount field.
+func (o *WebhookPayloadCommentCommentAuthor) SetIsOwnAccount(v bool) {
+	o.IsOwnAccount = &v
+}
+
 // GetInstagramProfile returns the InstagramProfile field value if set, zero value otherwise.
 func (o *WebhookPayloadCommentCommentAuthor) GetInstagramProfile() WebhookPayloadCommentCommentAuthorInstagramProfile {
 	if o == nil || IsNil(o.InstagramProfile) {
@@ -232,6 +266,9 @@ func (o WebhookPayloadCommentCommentAuthor) ToMap() (map[string]interface{}, err
 	}
 	if o.Picture.IsSet() {
 		toSerialize["picture"] = o.Picture.Get()
+	}
+	if !IsNil(o.IsOwnAccount) {
+		toSerialize["isOwnAccount"] = o.IsOwnAccount
 	}
 	if !IsNil(o.InstagramProfile) {
 		toSerialize["instagramProfile"] = o.InstagramProfile
