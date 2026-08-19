@@ -26,9 +26,9 @@ type YouTubeVideoRetentionResponseRetentionCurveInner struct {
 	AudienceWatchRatio *float32 `json:"audienceWatchRatio,omitempty"`
 	// Retention vs videos of similar length (0 = worst, 0.5 = median, 1 = best)
 	RelativeRetentionPerformance *float32 `json:"relativeRetentionPerformance,omitempty"`
-	// Viewers who started watching in this segment
+	// Viewers who started watching in this segment. 0 when YouTube has no segment-level data for the video.
 	StartedWatching *int32 `json:"startedWatching,omitempty"`
-	// Viewers who stopped watching in this segment
+	// Viewers who stopped watching in this segment. 0 when YouTube has no segment-level data for the video.
 	StoppedWatching *int32 `json:"stoppedWatching,omitempty"`
 	// Total views of this segment, including rewatches
 	TotalSegmentImpressions *int32 `json:"totalSegmentImpressions,omitempty"`
