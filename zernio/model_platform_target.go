@@ -34,8 +34,8 @@ type PlatformTarget struct {
 	Status *string `json:"status,omitempty"`
 	// The native post ID on the platform (populated after successful publish)
 	PlatformPostId *string `json:"platformPostId,omitempty"`
-	// Public URL of the published post. Included in the response for immediate posts; for scheduled posts, fetch via GET /v1/posts/{postId} after publish time.
-	PlatformPostUrl *string `json:"platformPostUrl,omitempty"`
+	// Public URL of the published post. Included in the response for immediate posts; for scheduled posts, fetch via GET /v1/posts/{postId} after publish time. Empty when the platform confirmed the publish without returning an id a permalink can be built from (TikTok returns a publish id for some uploads); the TikTok reconcile cron backfills it later.
+	PlatformPostUrl NullableString `json:"platformPostUrl,omitempty"`
 	// Timestamp when the post was published to this platform
 	PublishedAt *time.Time `json:"publishedAt,omitempty"`
 	// Set when a post that was successfully published later disappears from the platform (deleted on-platform or taken down by the platform). status stays \"published\" (it reflects the publish outcome); poll this field to detect post-publish removals. Absent while the post is live, and cleared if the post reappears. Detection runs with the analytics sync, so expect up to a few hours of lag.
@@ -325,36 +325,47 @@ func (o *PlatformTarget) SetPlatformPostId(v string) {
 	o.PlatformPostId = &v
 }
 
-// GetPlatformPostUrl returns the PlatformPostUrl field value if set, zero value otherwise.
+// GetPlatformPostUrl returns the PlatformPostUrl field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PlatformTarget) GetPlatformPostUrl() string {
-	if o == nil || IsNil(o.PlatformPostUrl) {
+	if o == nil || IsNil(o.PlatformPostUrl.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.PlatformPostUrl
+	return *o.PlatformPostUrl.Get()
 }
 
 // GetPlatformPostUrlOk returns a tuple with the PlatformPostUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PlatformTarget) GetPlatformPostUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.PlatformPostUrl) {
+	if o == nil {
 		return nil, false
 	}
-	return o.PlatformPostUrl, true
+	return o.PlatformPostUrl.Get(), o.PlatformPostUrl.IsSet()
 }
 
 // HasPlatformPostUrl returns a boolean if a field has been set.
 func (o *PlatformTarget) HasPlatformPostUrl() bool {
-	if o != nil && !IsNil(o.PlatformPostUrl) {
+	if o != nil && o.PlatformPostUrl.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPlatformPostUrl gets a reference to the given string and assigns it to the PlatformPostUrl field.
+// SetPlatformPostUrl gets a reference to the given NullableString and assigns it to the PlatformPostUrl field.
 func (o *PlatformTarget) SetPlatformPostUrl(v string) {
-	o.PlatformPostUrl = &v
+	o.PlatformPostUrl.Set(&v)
+}
+
+// SetPlatformPostUrlNil sets the value for PlatformPostUrl to be an explicit nil
+func (o *PlatformTarget) SetPlatformPostUrlNil() {
+	o.PlatformPostUrl.Set(nil)
+}
+
+// UnsetPlatformPostUrl ensures that no value is present for PlatformPostUrl, not even an explicit nil
+func (o *PlatformTarget) UnsetPlatformPostUrl() {
+	o.PlatformPostUrl.Unset()
 }
 
 // GetPublishedAt returns the PublishedAt field value if set, zero value otherwise.
@@ -626,8 +637,8 @@ func (o PlatformTarget) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.PlatformPostId) {
 		toSerialize["platformPostId"] = o.PlatformPostId
 	}
-	if !IsNil(o.PlatformPostUrl) {
-		toSerialize["platformPostUrl"] = o.PlatformPostUrl
+	if o.PlatformPostUrl.IsSet() {
+		toSerialize["platformPostUrl"] = o.PlatformPostUrl.Get()
 	}
 	if !IsNil(o.PublishedAt) {
 		toSerialize["publishedAt"] = o.PublishedAt
