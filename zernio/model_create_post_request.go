@@ -22,7 +22,7 @@ var _ MappedNullable = &CreatePostRequest{}
 // CreatePostRequest struct for CreatePostRequest
 type CreatePostRequest struct {
 	Title *string `json:"title,omitempty"`
-	// Post caption/text. Optional when media is attached, all platforms have customContent, or every platform entry is a LinkedIn plain repost (platformSpecificData.reshareUrl with no text). Required for text-only posts.
+	// Post caption/text. Optional when media is attached, all platforms have customContent, every platform entry is an X Article (platformSpecificData.article), or every platform entry is a LinkedIn plain repost (platformSpecificData.reshareUrl with no text). Required for other text-only posts.
 	Content    *string     `json:"content,omitempty"`
 	MediaItems []MediaItem `json:"mediaItems,omitempty"`
 	// Target platforms and accounts for this post. Required for non-draft posts (returns 400 if empty). Drafts can omit platforms.

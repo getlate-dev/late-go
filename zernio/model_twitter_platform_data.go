@@ -18,8 +18,9 @@ import (
 // checks if the TwitterPlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &TwitterPlatformData{}
 
-// TwitterPlatformData X (Twitter) geo-restriction applies at the media level. Media in geo-restricted tweets will be hidden for users outside the specified countries; the tweet text itself remains visible globally. Requires media to be attached (ignored for text-only tweets).
+// TwitterPlatformData X-specific post options. The article field creates a long-form X Article and is mutually exclusive with tweet media and tweet-only options. Geo-restriction applies at the media level: media is hidden outside the specified countries while tweet text remains visible.
 type TwitterPlatformData struct {
+	Article *XArticle `json:"article,omitempty"`
 	// ID of an existing tweet to reply to. The published tweet will appear as a reply in that tweet's thread. For threads, only the first tweet replies to the target; subsequent tweets chain normally. X only permits replying to your own posts or posts you are mentioned in; replying to an arbitrary other account's post is rejected by X.
 	ReplyToTweetId *string `json:"replyToTweetId,omitempty"`
 	// ID (or full status URL) of an existing tweet to quote-repost. The published tweet becomes a quote tweet of the target. Mutually exclusive with media and poll. X only permits quoting your own posts or posts you are mentioned in / part of the conversation thread of; quoting an arbitrary other account's post is rejected by X. Billed at the standard create rate ($0.015), unlike pasting a tweet URL into the text which is billed at the URL rate ($0.20). For threads, applies to the first tweet only.
@@ -66,6 +67,38 @@ func NewTwitterPlatformDataWithDefaults() *TwitterPlatformData {
 	var madeWithAi bool = false
 	this.MadeWithAi = &madeWithAi
 	return &this
+}
+
+// GetArticle returns the Article field value if set, zero value otherwise.
+func (o *TwitterPlatformData) GetArticle() XArticle {
+	if o == nil || IsNil(o.Article) {
+		var ret XArticle
+		return ret
+	}
+	return *o.Article
+}
+
+// GetArticleOk returns a tuple with the Article field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TwitterPlatformData) GetArticleOk() (*XArticle, bool) {
+	if o == nil || IsNil(o.Article) {
+		return nil, false
+	}
+	return o.Article, true
+}
+
+// HasArticle returns a boolean if a field has been set.
+func (o *TwitterPlatformData) HasArticle() bool {
+	if o != nil && !IsNil(o.Article) {
+		return true
+	}
+
+	return false
+}
+
+// SetArticle gets a reference to the given XArticle and assigns it to the Article field.
+func (o *TwitterPlatformData) SetArticle(v XArticle) {
+	o.Article = &v
 }
 
 // GetReplyToTweetId returns the ReplyToTweetId field value if set, zero value otherwise.
@@ -398,6 +431,9 @@ func (o TwitterPlatformData) MarshalJSON() ([]byte, error) {
 
 func (o TwitterPlatformData) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Article) {
+		toSerialize["article"] = o.Article
+	}
 	if !IsNil(o.ReplyToTweetId) {
 		toSerialize["replyToTweetId"] = o.ReplyToTweetId
 	}
