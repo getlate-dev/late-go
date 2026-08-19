@@ -22,18 +22,19 @@ var _ MappedNullable = &ListLeads200ResponseLeadsInner{}
 type ListLeads200ResponseLeadsInner struct {
 	// Zernio lead id.
 	Id *string `json:"id,omitempty"`
-	// Meta lead id.
-	LeadgenId  *string        `json:"leadgenId,omitempty"`
-	FormId     *string        `json:"formId,omitempty"`
-	FormName   NullableString `json:"formName,omitempty"`
-	AccountId  *string        `json:"accountId,omitempty"`
-	AdId       NullableString `json:"adId,omitempty"`
-	AdsetId    NullableString `json:"adsetId,omitempty"`
+	// Meta lead id. On LinkedIn, the leadFormResponse id.
+	LeadgenId *string        `json:"leadgenId,omitempty"`
+	FormId    *string        `json:"formId,omitempty"`
+	FormName  NullableString `json:"formName,omitempty"`
+	AccountId *string        `json:"accountId,omitempty"`
+	AdId      NullableString `json:"adId,omitempty"`
+	AdsetId   NullableString `json:"adsetId,omitempty"`
+	// On LinkedIn, this is the LinkedIn Campaign id, which corresponds to platformAdSetId on GET /v1/ads (LinkedIn's Campaign Group is Zernio's campaign).
 	CampaignId NullableString `json:"campaignId,omitempty"`
 	IsOrganic  *bool          `json:"isOrganic,omitempty"`
 	// ISO 8601.
 	CreatedTime NullableString `json:"createdTime,omitempty"`
-	// Question key → answer.
+	// Question key → answer. On LinkedIn, the key is the lowercased predefinedField, else the question name, else the numeric questionId; multiple-choice values are option labels (unlike Meta, which returns the option key).
 	Fields map[string]string `json:"fields,omitempty"`
 	// Raw Meta field_data.
 	FieldData []map[string]interface{} `json:"fieldData,omitempty"`
