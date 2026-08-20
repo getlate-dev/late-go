@@ -27,7 +27,7 @@ type ExternalPostMediaItem struct {
 	Url NullableString `json:"url"`
 	// Cover image. Still present when url is null.
 	Thumbnail *string `json:"thumbnail,omitempty"`
-	// 'Present only when the media file could not be retrieved (url is null or, for LinkedIn videos, a cover image standing in for the file). Absent means the file is available at url.'
+	// unavailable means the media file could not be retrieved (url is null or, for LinkedIn videos, a cover image standing in for the file). available or absent means the file is available at url (older synced items omit the field).
 	MediaStatus *string `json:"mediaStatus,omitempty"`
 	// Why the file is missing. platform_withheld means the platform declined to return it and retrying will not help.
 	UnavailableReason *string `json:"unavailableReason,omitempty"`

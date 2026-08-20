@@ -27,7 +27,7 @@ type AnalyticsSinglePostResponseMediaItemsInner struct {
 	Thumbnail NullableString `json:"thumbnail,omitempty"`
 	// Accessibility alt text set on the media, when present.
 	AltText *string `json:"altText,omitempty"`
-	// Present only when the media file could not be retrieved. Absent means the file is available at url.
+	// unavailable means the media file could not be retrieved (url is null or, for LinkedIn videos, a cover image standing in for the file). available or absent means the file is available at url (older synced items omit the field).
 	MediaStatus *string `json:"mediaStatus,omitempty"`
 	// Why the file is missing. platform_withheld means the platform declined to return it and retrying will not help.
 	UnavailableReason *string `json:"unavailableReason,omitempty"`
