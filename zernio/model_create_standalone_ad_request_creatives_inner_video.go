@@ -20,7 +20,7 @@ import (
 // checks if the CreateStandaloneAdRequestCreativesInnerVideo type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreateStandaloneAdRequestCreativesInnerVideo{}
 
-// CreateStandaloneAdRequestCreativesInnerVideo Video creative for this entry. Mutually exclusive with `imageUrl`. thumbnailUrl is optional — when omitted, the poster is auto-generated from Meta's preferred video thumbnail.
+// CreateStandaloneAdRequestCreativesInnerVideo Video creative for this entry. Mutually exclusive with `imageUrl`. thumbnailUrl is optional: when omitted, the poster is auto-generated from Meta's preferred video thumbnail, and the request fails with a 502 platform_error (reason: video_thumbnail_unavailable) if Meta produces no candidate.
 type CreateStandaloneAdRequestCreativesInnerVideo struct {
 	Url          string  `json:"url"`
 	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
