@@ -22,6 +22,8 @@ var _ MappedNullable = &BillingSnapshotPlan{}
 type BillingSnapshotPlan struct {
 	Name         *string `json:"name,omitempty"`
 	IsUsageBased *bool   `json:"isUsageBased,omitempty"`
+	// True when the key belongs to an account with an active paid billing relationship (Stripe subscription, Metronome enrollment, or Shopify-managed billing).
+	IsPaid *bool `json:"isPaid,omitempty"`
 }
 
 // NewBillingSnapshotPlan instantiates a new BillingSnapshotPlan object
@@ -105,6 +107,38 @@ func (o *BillingSnapshotPlan) SetIsUsageBased(v bool) {
 	o.IsUsageBased = &v
 }
 
+// GetIsPaid returns the IsPaid field value if set, zero value otherwise.
+func (o *BillingSnapshotPlan) GetIsPaid() bool {
+	if o == nil || IsNil(o.IsPaid) {
+		var ret bool
+		return ret
+	}
+	return *o.IsPaid
+}
+
+// GetIsPaidOk returns a tuple with the IsPaid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BillingSnapshotPlan) GetIsPaidOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsPaid) {
+		return nil, false
+	}
+	return o.IsPaid, true
+}
+
+// HasIsPaid returns a boolean if a field has been set.
+func (o *BillingSnapshotPlan) HasIsPaid() bool {
+	if o != nil && !IsNil(o.IsPaid) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsPaid gets a reference to the given bool and assigns it to the IsPaid field.
+func (o *BillingSnapshotPlan) SetIsPaid(v bool) {
+	o.IsPaid = &v
+}
+
 func (o BillingSnapshotPlan) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +154,9 @@ func (o BillingSnapshotPlan) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IsUsageBased) {
 		toSerialize["isUsageBased"] = o.IsUsageBased
+	}
+	if !IsNil(o.IsPaid) {
+		toSerialize["isPaid"] = o.IsPaid
 	}
 	return toSerialize, nil
 }

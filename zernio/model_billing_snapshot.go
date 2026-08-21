@@ -20,13 +20,15 @@ var _ MappedNullable = &BillingSnapshot{}
 
 // BillingSnapshot Account billing state — plan, cycle, balance, spend caps, and payment / access status. Returned by `GET /v1/billing`.
 type BillingSnapshot struct {
-	BillingSystem *string                 `json:"billingSystem,omitempty"`
-	Plan          *BillingSnapshotPlan    `json:"plan,omitempty"`
-	Period        *BillingSnapshotPeriod  `json:"period,omitempty"`
-	Balance       *BillingSnapshotBalance `json:"balance,omitempty"`
-	Caps          *BillingSnapshotCaps    `json:"caps,omitempty"`
-	Status        *BillingSnapshotStatus  `json:"status,omitempty"`
-	Legacy        *BillingSnapshotLegacy  `json:"legacy,omitempty"`
+	BillingSystem *string              `json:"billingSystem,omitempty"`
+	Plan          *BillingSnapshotPlan `json:"plan,omitempty"`
+	// myshopify.com domain owning the subscription; present only when billingSystem is shopify.
+	ShopifyShopDomain NullableString          `json:"shopifyShopDomain,omitempty"`
+	Period            *BillingSnapshotPeriod  `json:"period,omitempty"`
+	Balance           *BillingSnapshotBalance `json:"balance,omitempty"`
+	Caps              *BillingSnapshotCaps    `json:"caps,omitempty"`
+	Status            *BillingSnapshotStatus  `json:"status,omitempty"`
+	Legacy            *BillingSnapshotLegacy  `json:"legacy,omitempty"`
 }
 
 // NewBillingSnapshot instantiates a new BillingSnapshot object
@@ -108,6 +110,49 @@ func (o *BillingSnapshot) HasPlan() bool {
 // SetPlan gets a reference to the given BillingSnapshotPlan and assigns it to the Plan field.
 func (o *BillingSnapshot) SetPlan(v BillingSnapshotPlan) {
 	o.Plan = &v
+}
+
+// GetShopifyShopDomain returns the ShopifyShopDomain field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BillingSnapshot) GetShopifyShopDomain() string {
+	if o == nil || IsNil(o.ShopifyShopDomain.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ShopifyShopDomain.Get()
+}
+
+// GetShopifyShopDomainOk returns a tuple with the ShopifyShopDomain field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BillingSnapshot) GetShopifyShopDomainOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ShopifyShopDomain.Get(), o.ShopifyShopDomain.IsSet()
+}
+
+// HasShopifyShopDomain returns a boolean if a field has been set.
+func (o *BillingSnapshot) HasShopifyShopDomain() bool {
+	if o != nil && o.ShopifyShopDomain.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetShopifyShopDomain gets a reference to the given NullableString and assigns it to the ShopifyShopDomain field.
+func (o *BillingSnapshot) SetShopifyShopDomain(v string) {
+	o.ShopifyShopDomain.Set(&v)
+}
+
+// SetShopifyShopDomainNil sets the value for ShopifyShopDomain to be an explicit nil
+func (o *BillingSnapshot) SetShopifyShopDomainNil() {
+	o.ShopifyShopDomain.Set(nil)
+}
+
+// UnsetShopifyShopDomain ensures that no value is present for ShopifyShopDomain, not even an explicit nil
+func (o *BillingSnapshot) UnsetShopifyShopDomain() {
+	o.ShopifyShopDomain.Unset()
 }
 
 // GetPeriod returns the Period field value if set, zero value otherwise.
@@ -285,6 +330,9 @@ func (o BillingSnapshot) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Plan) {
 		toSerialize["plan"] = o.Plan
+	}
+	if o.ShopifyShopDomain.IsSet() {
+		toSerialize["shopifyShopDomain"] = o.ShopifyShopDomain.Get()
 	}
 	if !IsNil(o.Period) {
 		toSerialize["period"] = o.Period
