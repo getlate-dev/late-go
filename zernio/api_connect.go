@@ -1053,6 +1053,147 @@ func (a *ConnectAPIService) ConnectOpenAIAdsCredentialsExecute(r ConnectAPIConne
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIConnectShopifyWithTokenRequest struct {
+	ctx                            context.Context
+	ApiService                     *ConnectAPIService
+	connectShopifyWithTokenRequest *ConnectShopifyWithTokenRequest
+}
+
+func (r ConnectAPIConnectShopifyWithTokenRequest) ConnectShopifyWithTokenRequest(connectShopifyWithTokenRequest ConnectShopifyWithTokenRequest) ConnectAPIConnectShopifyWithTokenRequest {
+	r.connectShopifyWithTokenRequest = &connectShopifyWithTokenRequest
+	return r
+}
+
+func (r ConnectAPIConnectShopifyWithTokenRequest) Execute() (*ConnectShopifyWithToken200Response, *http.Response, error) {
+	return r.ApiService.ConnectShopifyWithTokenExecute(r)
+}
+
+/*
+ConnectShopifyWithToken Connect a Shopify store with a custom-app Admin token
+
+Token-paste alternative to the OAuth flow: connect a store using the
+Admin API access token of a custom app the merchant created in their
+own Shopify admin (Settings → Apps and sales channels → Develop apps,
+with the `read_content`/`write_content` scopes). Use this when the
+one-click OAuth connect is unavailable or when your users prefer not
+to install a third-party app on their store. The token is validated
+against the store before anything is saved; custom-app tokens do not
+expire. Connecting the same profile to a store again replaces the
+stored token in place.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectShopifyWithTokenRequest
+*/
+func (a *ConnectAPIService) ConnectShopifyWithToken(ctx context.Context) ConnectAPIConnectShopifyWithTokenRequest {
+	return ConnectAPIConnectShopifyWithTokenRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectShopifyWithToken200Response
+func (a *ConnectAPIService) ConnectShopifyWithTokenExecute(r ConnectAPIConnectShopifyWithTokenRequest) (*ConnectShopifyWithToken200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectShopifyWithToken200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectShopifyWithToken")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/shopify/token"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectShopifyWithTokenRequest == nil {
+		return localVarReturnValue, nil, reportError("connectShopifyWithTokenRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectShopifyWithTokenRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject1
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIConnectWhatsAppCredentialsRequest struct {
 	ctx                               context.Context
 	ApiService                        *ConnectAPIService
