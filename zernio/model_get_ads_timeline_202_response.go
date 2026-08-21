@@ -22,6 +22,7 @@ var _ MappedNullable = &GetAdsTimeline202Response{}
 
 // GetAdsTimeline202Response struct for GetAdsTimeline202Response
 type GetAdsTimeline202Response struct {
+	// Always true on this response. Part of the requested range is still being backfilled; retry until the request returns 200.
 	BackfillPending bool                           `json:"backfillPending"`
 	Rows            []AdsTimelineResponseRowsInner `json:"rows,omitempty"`
 }

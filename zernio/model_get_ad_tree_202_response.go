@@ -22,9 +22,10 @@ var _ MappedNullable = &GetAdTree202Response{}
 
 // GetAdTree202Response struct for GetAdTree202Response
 type GetAdTree202Response struct {
-	Campaigns       []AdTreeCampaign `json:"campaigns,omitempty"`
-	Pagination      *Pagination      `json:"pagination,omitempty"`
-	BackfillPending bool             `json:"backfillPending"`
+	Campaigns  []AdTreeCampaign `json:"campaigns,omitempty"`
+	Pagination *Pagination      `json:"pagination,omitempty"`
+	// Always true on this response. Part of the requested range is still being backfilled; retry until the request returns 200.
+	BackfillPending bool `json:"backfillPending"`
 }
 
 type _GetAdTree202Response GetAdTree202Response

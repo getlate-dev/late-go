@@ -22,6 +22,7 @@ var _ MappedNullable = &GetAdAnalytics202Response{}
 
 // GetAdAnalytics202Response struct for GetAdAnalytics202Response
 type GetAdAnalytics202Response struct {
+	// Always true on this response. Part of the requested range is still being backfilled; retry until the request returns 200.
 	BackfillPending bool                                `json:"backfillPending"`
 	Ad              *AdAnalyticsResponseAd              `json:"ad,omitempty"`
 	Analytics       *CampaignAnalyticsResponseAnalytics `json:"analytics,omitempty"`
