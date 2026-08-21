@@ -26,6 +26,8 @@ type ListPhoneNumbers200ResponseConnectedInner struct {
 	DisplayName NullableString `json:"displayName,omitempty"`
 	ProfileId   NullableString `json:"profileId,omitempty"`
 	ConnectedAt NullableTime   `json:"connectedAt,omitempty"`
+	// Whether WhatsApp Business Calling is enabled on this number.
+	CallingEnabled *bool `json:"callingEnabled,omitempty"`
 }
 
 // NewListPhoneNumbers200ResponseConnectedInner instantiates a new ListPhoneNumbers200ResponseConnectedInner object
@@ -249,6 +251,38 @@ func (o *ListPhoneNumbers200ResponseConnectedInner) UnsetConnectedAt() {
 	o.ConnectedAt.Unset()
 }
 
+// GetCallingEnabled returns the CallingEnabled field value if set, zero value otherwise.
+func (o *ListPhoneNumbers200ResponseConnectedInner) GetCallingEnabled() bool {
+	if o == nil || IsNil(o.CallingEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.CallingEnabled
+}
+
+// GetCallingEnabledOk returns a tuple with the CallingEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListPhoneNumbers200ResponseConnectedInner) GetCallingEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.CallingEnabled) {
+		return nil, false
+	}
+	return o.CallingEnabled, true
+}
+
+// HasCallingEnabled returns a boolean if a field has been set.
+func (o *ListPhoneNumbers200ResponseConnectedInner) HasCallingEnabled() bool {
+	if o != nil && !IsNil(o.CallingEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallingEnabled gets a reference to the given bool and assigns it to the CallingEnabled field.
+func (o *ListPhoneNumbers200ResponseConnectedInner) SetCallingEnabled(v bool) {
+	o.CallingEnabled = &v
+}
+
 func (o ListPhoneNumbers200ResponseConnectedInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -273,6 +307,9 @@ func (o ListPhoneNumbers200ResponseConnectedInner) ToMap() (map[string]interface
 	}
 	if o.ConnectedAt.IsSet() {
 		toSerialize["connectedAt"] = o.ConnectedAt.Get()
+	}
+	if !IsNil(o.CallingEnabled) {
+		toSerialize["callingEnabled"] = o.CallingEnabled
 	}
 	return toSerialize, nil
 }

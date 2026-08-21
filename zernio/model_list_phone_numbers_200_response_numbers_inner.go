@@ -43,7 +43,9 @@ type ListPhoneNumbers200ResponseNumbersInner struct {
 	EndUserLastName       NullableString `json:"endUserLastName,omitempty"`
 	// Reviewer rejection reason when status is regulatory_declined.
 	RegulatoryDeclineReason NullableString `json:"regulatoryDeclineReason,omitempty"`
-	CreatedAt               *time.Time     `json:"createdAt,omitempty"`
+	// Whether WhatsApp Business Calling is enabled on this number (manage via /v1/whatsapp/phone-numbers/{id}/calling).
+	CallingEnabled *bool      `json:"callingEnabled,omitempty"`
+	CreatedAt      *time.Time `json:"createdAt,omitempty"`
 }
 
 // NewListPhoneNumbers200ResponseNumbersInner instantiates a new ListPhoneNumbers200ResponseNumbersInner object
@@ -641,6 +643,38 @@ func (o *ListPhoneNumbers200ResponseNumbersInner) UnsetRegulatoryDeclineReason()
 	o.RegulatoryDeclineReason.Unset()
 }
 
+// GetCallingEnabled returns the CallingEnabled field value if set, zero value otherwise.
+func (o *ListPhoneNumbers200ResponseNumbersInner) GetCallingEnabled() bool {
+	if o == nil || IsNil(o.CallingEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.CallingEnabled
+}
+
+// GetCallingEnabledOk returns a tuple with the CallingEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListPhoneNumbers200ResponseNumbersInner) GetCallingEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.CallingEnabled) {
+		return nil, false
+	}
+	return o.CallingEnabled, true
+}
+
+// HasCallingEnabled returns a boolean if a field has been set.
+func (o *ListPhoneNumbers200ResponseNumbersInner) HasCallingEnabled() bool {
+	if o != nil && !IsNil(o.CallingEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallingEnabled gets a reference to the given bool and assigns it to the CallingEnabled field.
+func (o *ListPhoneNumbers200ResponseNumbersInner) SetCallingEnabled(v bool) {
+	o.CallingEnabled = &v
+}
+
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
 func (o *ListPhoneNumbers200ResponseNumbersInner) GetCreatedAt() time.Time {
 	if o == nil || IsNil(o.CreatedAt) {
@@ -730,6 +764,9 @@ func (o ListPhoneNumbers200ResponseNumbersInner) ToMap() (map[string]interface{}
 	}
 	if o.RegulatoryDeclineReason.IsSet() {
 		toSerialize["regulatoryDeclineReason"] = o.RegulatoryDeclineReason.Get()
+	}
+	if !IsNil(o.CallingEnabled) {
+		toSerialize["callingEnabled"] = o.CallingEnabled
 	}
 	if !IsNil(o.CreatedAt) {
 		toSerialize["createdAt"] = o.CreatedAt
