@@ -26,6 +26,8 @@ type EditPostRequest struct {
 	Platform string `json:"platform"`
 	// The new post text content
 	Content string `json:"content"`
+	// Which account's copy of the post to edit when the post was published to several accounts on the same platform; defaults to the first.
+	AccountId *string `json:"accountId,omitempty"`
 }
 
 type _EditPostRequest EditPostRequest
@@ -97,6 +99,38 @@ func (o *EditPostRequest) SetContent(v string) {
 	o.Content = v
 }
 
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *EditPostRequest) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EditPostRequest) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *EditPostRequest) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *EditPostRequest) SetAccountId(v string) {
+	o.AccountId = &v
+}
+
 func (o EditPostRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -109,6 +143,9 @@ func (o EditPostRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["platform"] = o.Platform
 	toSerialize["content"] = o.Content
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
+	}
 	return toSerialize, nil
 }
 

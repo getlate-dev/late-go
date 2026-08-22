@@ -21,7 +21,7 @@ var _ MappedNullable = &EditPost200Response{}
 // EditPost200Response struct for EditPost200Response
 type EditPost200Response struct {
 	Success *bool `json:"success,omitempty"`
-	// The platform post ID after the edit. X assigns a new ID; Discord, Facebook, and Reddit return the original ID unchanged.
+	// The platform post ID after the edit. X assigns a new ID; every other platform returns the original ID unchanged.
 	Id *string `json:"id,omitempty"`
 	// URL of the edited post
 	Url     *string `json:"url,omitempty"`
