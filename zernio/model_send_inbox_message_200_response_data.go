@@ -13,7 +13,6 @@ package zernio
 
 import (
 	"encoding/json"
-	"time"
 )
 
 // checks if the SendInboxMessage200ResponseData type satisfies the MappedNullable interface at compile time
@@ -21,14 +20,12 @@ var _ MappedNullable = &SendInboxMessage200ResponseData{}
 
 // SendInboxMessage200ResponseData struct for SendInboxMessage200ResponseData
 type SendInboxMessage200ResponseData struct {
-	// ID of the sent message (not returned for Reddit)
+	// Platform id of the sent message (not returned for Reddit). For WhatsApp this is the raw Meta wamid, the same id delivered as message.platformMessageId on webhooks and delivery-status updates, and the value to pass as replyTo to quote-reply.
 	MessageId *string `json:"messageId,omitempty"`
-	// Twitter conversation ID
-	ConversationId NullableString `json:"conversationId,omitempty"`
-	// Bluesky sent timestamp
-	SentAt NullableTime `json:"sentAt,omitempty"`
-	// Success message (Reddit only)
-	Message NullableString `json:"message,omitempty"`
+	// Zernio conversation id, echoed so the thread can be read back or replied to. It equals the id the list-conversations endpoint returns for Telegram, WhatsApp, SMS and Slack; for Facebook, Instagram, Bluesky and Reddit that endpoint returns the platform thread id instead, so do not correlate the two by equality. For X (Twitter), when the request addressed the conversation by its Twitter dm_conversation_id, that platform id is echoed back instead. Omitted when the send succeeded but the conversation could not be resolved to a stored record.
+	ConversationId *string `json:"conversationId,omitempty"`
+	// Echo of the sent attachment with its resolved public URL, when one is available (Facebook, Instagram, Telegram, WhatsApp).
+	Attachments []SendInboxMessage200ResponseDataAttachmentsInner `json:"attachments,omitempty"`
 }
 
 // NewSendInboxMessage200ResponseData instantiates a new SendInboxMessage200ResponseData object
@@ -80,133 +77,68 @@ func (o *SendInboxMessage200ResponseData) SetMessageId(v string) {
 	o.MessageId = &v
 }
 
-// GetConversationId returns the ConversationId field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetConversationId returns the ConversationId field value if set, zero value otherwise.
 func (o *SendInboxMessage200ResponseData) GetConversationId() string {
-	if o == nil || IsNil(o.ConversationId.Get()) {
+	if o == nil || IsNil(o.ConversationId) {
 		var ret string
 		return ret
 	}
-	return *o.ConversationId.Get()
+	return *o.ConversationId
 }
 
 // GetConversationIdOk returns a tuple with the ConversationId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SendInboxMessage200ResponseData) GetConversationIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.ConversationId) {
 		return nil, false
 	}
-	return o.ConversationId.Get(), o.ConversationId.IsSet()
+	return o.ConversationId, true
 }
 
 // HasConversationId returns a boolean if a field has been set.
 func (o *SendInboxMessage200ResponseData) HasConversationId() bool {
-	if o != nil && o.ConversationId.IsSet() {
+	if o != nil && !IsNil(o.ConversationId) {
 		return true
 	}
 
 	return false
 }
 
-// SetConversationId gets a reference to the given NullableString and assigns it to the ConversationId field.
+// SetConversationId gets a reference to the given string and assigns it to the ConversationId field.
 func (o *SendInboxMessage200ResponseData) SetConversationId(v string) {
-	o.ConversationId.Set(&v)
+	o.ConversationId = &v
 }
 
-// SetConversationIdNil sets the value for ConversationId to be an explicit nil
-func (o *SendInboxMessage200ResponseData) SetConversationIdNil() {
-	o.ConversationId.Set(nil)
-}
-
-// UnsetConversationId ensures that no value is present for ConversationId, not even an explicit nil
-func (o *SendInboxMessage200ResponseData) UnsetConversationId() {
-	o.ConversationId.Unset()
-}
-
-// GetSentAt returns the SentAt field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SendInboxMessage200ResponseData) GetSentAt() time.Time {
-	if o == nil || IsNil(o.SentAt.Get()) {
-		var ret time.Time
+// GetAttachments returns the Attachments field value if set, zero value otherwise.
+func (o *SendInboxMessage200ResponseData) GetAttachments() []SendInboxMessage200ResponseDataAttachmentsInner {
+	if o == nil || IsNil(o.Attachments) {
+		var ret []SendInboxMessage200ResponseDataAttachmentsInner
 		return ret
 	}
-	return *o.SentAt.Get()
+	return o.Attachments
 }
 
-// GetSentAtOk returns a tuple with the SentAt field value if set, nil otherwise
+// GetAttachmentsOk returns a tuple with the Attachments field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SendInboxMessage200ResponseData) GetSentAtOk() (*time.Time, bool) {
-	if o == nil {
+func (o *SendInboxMessage200ResponseData) GetAttachmentsOk() ([]SendInboxMessage200ResponseDataAttachmentsInner, bool) {
+	if o == nil || IsNil(o.Attachments) {
 		return nil, false
 	}
-	return o.SentAt.Get(), o.SentAt.IsSet()
+	return o.Attachments, true
 }
 
-// HasSentAt returns a boolean if a field has been set.
-func (o *SendInboxMessage200ResponseData) HasSentAt() bool {
-	if o != nil && o.SentAt.IsSet() {
+// HasAttachments returns a boolean if a field has been set.
+func (o *SendInboxMessage200ResponseData) HasAttachments() bool {
+	if o != nil && !IsNil(o.Attachments) {
 		return true
 	}
 
 	return false
 }
 
-// SetSentAt gets a reference to the given NullableTime and assigns it to the SentAt field.
-func (o *SendInboxMessage200ResponseData) SetSentAt(v time.Time) {
-	o.SentAt.Set(&v)
-}
-
-// SetSentAtNil sets the value for SentAt to be an explicit nil
-func (o *SendInboxMessage200ResponseData) SetSentAtNil() {
-	o.SentAt.Set(nil)
-}
-
-// UnsetSentAt ensures that no value is present for SentAt, not even an explicit nil
-func (o *SendInboxMessage200ResponseData) UnsetSentAt() {
-	o.SentAt.Unset()
-}
-
-// GetMessage returns the Message field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SendInboxMessage200ResponseData) GetMessage() string {
-	if o == nil || IsNil(o.Message.Get()) {
-		var ret string
-		return ret
-	}
-	return *o.Message.Get()
-}
-
-// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SendInboxMessage200ResponseData) GetMessageOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Message.Get(), o.Message.IsSet()
-}
-
-// HasMessage returns a boolean if a field has been set.
-func (o *SendInboxMessage200ResponseData) HasMessage() bool {
-	if o != nil && o.Message.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMessage gets a reference to the given NullableString and assigns it to the Message field.
-func (o *SendInboxMessage200ResponseData) SetMessage(v string) {
-	o.Message.Set(&v)
-}
-
-// SetMessageNil sets the value for Message to be an explicit nil
-func (o *SendInboxMessage200ResponseData) SetMessageNil() {
-	o.Message.Set(nil)
-}
-
-// UnsetMessage ensures that no value is present for Message, not even an explicit nil
-func (o *SendInboxMessage200ResponseData) UnsetMessage() {
-	o.Message.Unset()
+// SetAttachments gets a reference to the given []SendInboxMessage200ResponseDataAttachmentsInner and assigns it to the Attachments field.
+func (o *SendInboxMessage200ResponseData) SetAttachments(v []SendInboxMessage200ResponseDataAttachmentsInner) {
+	o.Attachments = v
 }
 
 func (o SendInboxMessage200ResponseData) MarshalJSON() ([]byte, error) {
@@ -222,14 +154,11 @@ func (o SendInboxMessage200ResponseData) ToMap() (map[string]interface{}, error)
 	if !IsNil(o.MessageId) {
 		toSerialize["messageId"] = o.MessageId
 	}
-	if o.ConversationId.IsSet() {
-		toSerialize["conversationId"] = o.ConversationId.Get()
+	if !IsNil(o.ConversationId) {
+		toSerialize["conversationId"] = o.ConversationId
 	}
-	if o.SentAt.IsSet() {
-		toSerialize["sentAt"] = o.SentAt.Get()
-	}
-	if o.Message.IsSet() {
-		toSerialize["message"] = o.Message.Get()
+	if !IsNil(o.Attachments) {
+		toSerialize["attachments"] = o.Attachments
 	}
 	return toSerialize, nil
 }
