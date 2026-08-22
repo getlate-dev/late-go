@@ -1286,6 +1286,194 @@ func (a *AdCreativesAPIService) ListAdImagesExecute(r AdCreativesAPIListAdImages
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCreativesAPIListAdVideosRequest struct {
+	ctx         context.Context
+	ApiService  *AdCreativesAPIService
+	accountId   *string
+	adAccountId *string
+	fields      *string
+	limit       *int32
+	after       *string
+}
+
+// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+func (r AdCreativesAPIListAdVideosRequest) AccountId(accountId string) AdCreativesAPIListAdVideosRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account id (act_&lt;n&gt;).
+func (r AdCreativesAPIListAdVideosRequest) AdAccountId(adAccountId string) AdCreativesAPIListAdVideosRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Comma-separated Graph field override (supports nested {} projections).
+func (r AdCreativesAPIListAdVideosRequest) Fields(fields string) AdCreativesAPIListAdVideosRequest {
+	r.fields = &fields
+	return r
+}
+
+// Rows per page
+func (r AdCreativesAPIListAdVideosRequest) Limit(limit int32) AdCreativesAPIListAdVideosRequest {
+	r.limit = &limit
+	return r
+}
+
+// Cursor from paging.after of the previous page.
+func (r AdCreativesAPIListAdVideosRequest) After(after string) AdCreativesAPIListAdVideosRequest {
+	r.after = &after
+	return r
+}
+
+func (r AdCreativesAPIListAdVideosRequest) Execute() (*GetAdsActivityLog200Response, *http.Response, error) {
+	return r.ApiService.ListAdVideosExecute(r)
+}
+
+/*
+ListAdVideos Ad video library
+
+Lists the ad account's video library (Meta's `/act_X/advideos`), rows returned verbatim.
+The default projection covers id, title, status, poster frames and length; `fields` is a
+raw-passthrough override. Any `id` here is reusable as `video.id` on the create
+endpoints, so N ads that differ only in copy share one upload.
+
+This is the only way to reach a video uploaded OUTSIDE Zernio (Ads Manager, another
+tool); videos we uploaded also come back as `creative.videoId` on GET /v1/ads.
+
+Meta transcodes asynchronously, so a row is only usable once `status.video_status`
+reads `ready`. There is no upload operation here: upload by URL inline via `video.url`
+on POST /v1/ads/create.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdCreativesAPIListAdVideosRequest
+*/
+func (a *AdCreativesAPIService) ListAdVideos(ctx context.Context) AdCreativesAPIListAdVideosRequest {
+	return AdCreativesAPIListAdVideosRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdsActivityLog200Response
+func (a *AdCreativesAPIService) ListAdVideosExecute(r AdCreativesAPIListAdVideosRequest) (*GetAdsActivityLog200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdsActivityLog200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCreativesAPIService.ListAdVideos")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/videos"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	if r.fields != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fields", r.fields, "form", "")
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 25
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.after != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "after", r.after, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCreativesAPIUpdateAdCreativeRequest struct {
 	ctx                     context.Context
 	ApiService              *AdCreativesAPIService

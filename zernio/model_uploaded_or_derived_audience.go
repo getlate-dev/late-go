@@ -56,7 +56,9 @@ type UploadedOrDerivedAudience struct {
 	Country *string `json:"country,omitempty"`
 	// Required for lookalike audiences
 	Ratio *float32 `json:"ratio,omitempty"`
-	// Optional raw Meta rule, forwarded verbatim: pixel event rule for website audiences, or the engagement rule for meta_engagement (overrides the built rule, e.g. for event/canvas/lead-form sources).
+	// website only. Narrows the audience from all visitors to visitors of URLs containing this substring. Ignored when `rule` is supplied.
+	UrlContains *string `json:"urlContains,omitempty"`
+	// Optional raw Meta rule, replacing the one we build. Omit it for all visitors of `pixelId`, or use `urlContains` for the common page-match case.  For `website` this is Meta's Flexible Audience Rule and is VALIDATED before we call Meta: every entry in `inclusions.rules` (and `exclusions.rules`) must carry `event_sources`, `retention_seconds` AND `filter`. Meta rejects a rule missing any of the three with code 100 / subcode 1713098 (\"Invalid rule JSON format\"), so a bad shape is a 400 here instead. The pre-2018 flat shapes (`{url: ...}`, `{event: ...}`) are not accepted by Meta at all (subcode 1870029).  Example, visitors of /checkout in the last 30 days: `{\"inclusions\":{\"operator\":\"or\",\"rules\":[{\"event_sources\":[{\"id\":\"<pixelId>\",\"type\":\"pixel\"}],\"retention_seconds\":2592000,\"filter\":{\"operator\":\"and\",\"filters\":[{\"field\":\"url\",\"operator\":\"i_contains\",\"value\":\"/checkout\"}]}}]}}`  Note Meta DERIVES `retention_days` from `retention_seconds` and stores `event_sources[].id` as a number, so a rule read back will not be byte-identical to the one you sent.  For `meta_engagement` the rule is forwarded verbatim and NOT validated: that type has two dialects (the `video` source uses a legacy flat array), so no single schema covers both.
 	Rule map[string]interface{} `json:"rule,omitempty"`
 	// Data source declaration for GDPR compliance (customer_list only)
 	CustomerFileSource *string `json:"customerFileSource,omitempty"`
@@ -661,6 +663,38 @@ func (o *UploadedOrDerivedAudience) SetRatio(v float32) {
 	o.Ratio = &v
 }
 
+// GetUrlContains returns the UrlContains field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetUrlContains() string {
+	if o == nil || IsNil(o.UrlContains) {
+		var ret string
+		return ret
+	}
+	return *o.UrlContains
+}
+
+// GetUrlContainsOk returns a tuple with the UrlContains field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetUrlContainsOk() (*string, bool) {
+	if o == nil || IsNil(o.UrlContains) {
+		return nil, false
+	}
+	return o.UrlContains, true
+}
+
+// HasUrlContains returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasUrlContains() bool {
+	if o != nil && !IsNil(o.UrlContains) {
+		return true
+	}
+
+	return false
+}
+
+// SetUrlContains gets a reference to the given string and assigns it to the UrlContains field.
+func (o *UploadedOrDerivedAudience) SetUrlContains(v string) {
+	o.UrlContains = &v
+}
+
 // GetRule returns the Rule field value if set, zero value otherwise.
 func (o *UploadedOrDerivedAudience) GetRule() map[string]interface{} {
 	if o == nil || IsNil(o.Rule) {
@@ -783,6 +817,9 @@ func (o UploadedOrDerivedAudience) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Ratio) {
 		toSerialize["ratio"] = o.Ratio
+	}
+	if !IsNil(o.UrlContains) {
+		toSerialize["urlContains"] = o.UrlContains
 	}
 	if !IsNil(o.Rule) {
 		toSerialize["rule"] = o.Rule
