@@ -22,6 +22,8 @@ var _ MappedNullable = &ListWhatsAppAccountEvents200ResponseEventsInner{}
 // ListWhatsAppAccountEvents200ResponseEventsInner struct for ListWhatsAppAccountEvents200ResponseEventsInner
 type ListWhatsAppAccountEvents200ResponseEventsInner struct {
 	Id *string `json:"id,omitempty"`
+	// WhatsApp social account the event belongs to
+	AccountId *string `json:"accountId,omitempty"`
 	// Event kind, e.g. template_approved, template_rejected, account_restricted, account_disconnected
 	Type      *string        `json:"type,omitempty"`
 	Severity  *string        `json:"severity,omitempty"`
@@ -77,6 +79,38 @@ func (o *ListWhatsAppAccountEvents200ResponseEventsInner) HasId() bool {
 // SetId gets a reference to the given string and assigns it to the Id field.
 func (o *ListWhatsAppAccountEvents200ResponseEventsInner) SetId(v string) {
 	o.Id = &v
+}
+
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *ListWhatsAppAccountEvents200ResponseEventsInner) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListWhatsAppAccountEvents200ResponseEventsInner) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *ListWhatsAppAccountEvents200ResponseEventsInner) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *ListWhatsAppAccountEvents200ResponseEventsInner) SetAccountId(v string) {
+	o.AccountId = &v
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
@@ -262,6 +296,9 @@ func (o ListWhatsAppAccountEvents200ResponseEventsInner) ToMap() (map[string]int
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
+	}
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
 	}
 	if !IsNil(o.Type) {
 		toSerialize["type"] = o.Type

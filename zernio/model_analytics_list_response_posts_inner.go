@@ -38,6 +38,14 @@ type AnalyticsListResponsePostsInner struct {
 	MediaType       *string             `json:"mediaType,omitempty"`
 	// All media items for this post. Carousel posts contain one entry per slide.
 	MediaItems []AnalyticsListResponsePostsInnerMediaItemsInner `json:"mediaItems,omitempty"`
+	// Instagram only: the platform media product type (e.g. FEED, REELS, STORY, AD). Absent when the platform did not report it.
+	MediaProductType *string `json:"mediaProductType,omitempty"`
+	// Instagram only: whether Instagram labeled the media as AI-generated. Absent when the platform did not report it.
+	IsAiGenerated *bool `json:"isAiGenerated,omitempty"`
+	// Instagram reels only: whether the reel is also shared to the main feed. Absent when the platform did not report it.
+	IsSharedToFeed *bool `json:"isSharedToFeed,omitempty"`
+	// Instagram only: audio type of the media (MUSIC or ORIGINAL_SOUND). Absent when the platform did not report it.
+	MediaAudioType *string `json:"mediaAudioType,omitempty"`
 }
 
 // NewAnalyticsListResponsePostsInner instantiates a new AnalyticsListResponsePostsInner object
@@ -559,6 +567,134 @@ func (o *AnalyticsListResponsePostsInner) SetMediaItems(v []AnalyticsListRespons
 	o.MediaItems = v
 }
 
+// GetMediaProductType returns the MediaProductType field value if set, zero value otherwise.
+func (o *AnalyticsListResponsePostsInner) GetMediaProductType() string {
+	if o == nil || IsNil(o.MediaProductType) {
+		var ret string
+		return ret
+	}
+	return *o.MediaProductType
+}
+
+// GetMediaProductTypeOk returns a tuple with the MediaProductType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsListResponsePostsInner) GetMediaProductTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MediaProductType) {
+		return nil, false
+	}
+	return o.MediaProductType, true
+}
+
+// HasMediaProductType returns a boolean if a field has been set.
+func (o *AnalyticsListResponsePostsInner) HasMediaProductType() bool {
+	if o != nil && !IsNil(o.MediaProductType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMediaProductType gets a reference to the given string and assigns it to the MediaProductType field.
+func (o *AnalyticsListResponsePostsInner) SetMediaProductType(v string) {
+	o.MediaProductType = &v
+}
+
+// GetIsAiGenerated returns the IsAiGenerated field value if set, zero value otherwise.
+func (o *AnalyticsListResponsePostsInner) GetIsAiGenerated() bool {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		var ret bool
+		return ret
+	}
+	return *o.IsAiGenerated
+}
+
+// GetIsAiGeneratedOk returns a tuple with the IsAiGenerated field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsListResponsePostsInner) GetIsAiGeneratedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		return nil, false
+	}
+	return o.IsAiGenerated, true
+}
+
+// HasIsAiGenerated returns a boolean if a field has been set.
+func (o *AnalyticsListResponsePostsInner) HasIsAiGenerated() bool {
+	if o != nil && !IsNil(o.IsAiGenerated) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAiGenerated gets a reference to the given bool and assigns it to the IsAiGenerated field.
+func (o *AnalyticsListResponsePostsInner) SetIsAiGenerated(v bool) {
+	o.IsAiGenerated = &v
+}
+
+// GetIsSharedToFeed returns the IsSharedToFeed field value if set, zero value otherwise.
+func (o *AnalyticsListResponsePostsInner) GetIsSharedToFeed() bool {
+	if o == nil || IsNil(o.IsSharedToFeed) {
+		var ret bool
+		return ret
+	}
+	return *o.IsSharedToFeed
+}
+
+// GetIsSharedToFeedOk returns a tuple with the IsSharedToFeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsListResponsePostsInner) GetIsSharedToFeedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsSharedToFeed) {
+		return nil, false
+	}
+	return o.IsSharedToFeed, true
+}
+
+// HasIsSharedToFeed returns a boolean if a field has been set.
+func (o *AnalyticsListResponsePostsInner) HasIsSharedToFeed() bool {
+	if o != nil && !IsNil(o.IsSharedToFeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsSharedToFeed gets a reference to the given bool and assigns it to the IsSharedToFeed field.
+func (o *AnalyticsListResponsePostsInner) SetIsSharedToFeed(v bool) {
+	o.IsSharedToFeed = &v
+}
+
+// GetMediaAudioType returns the MediaAudioType field value if set, zero value otherwise.
+func (o *AnalyticsListResponsePostsInner) GetMediaAudioType() string {
+	if o == nil || IsNil(o.MediaAudioType) {
+		var ret string
+		return ret
+	}
+	return *o.MediaAudioType
+}
+
+// GetMediaAudioTypeOk returns a tuple with the MediaAudioType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsListResponsePostsInner) GetMediaAudioTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MediaAudioType) {
+		return nil, false
+	}
+	return o.MediaAudioType, true
+}
+
+// HasMediaAudioType returns a boolean if a field has been set.
+func (o *AnalyticsListResponsePostsInner) HasMediaAudioType() bool {
+	if o != nil && !IsNil(o.MediaAudioType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMediaAudioType gets a reference to the given string and assigns it to the MediaAudioType field.
+func (o *AnalyticsListResponsePostsInner) SetMediaAudioType(v string) {
+	o.MediaAudioType = &v
+}
+
 func (o AnalyticsListResponsePostsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -613,6 +749,18 @@ func (o AnalyticsListResponsePostsInner) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.MediaItems) {
 		toSerialize["mediaItems"] = o.MediaItems
+	}
+	if !IsNil(o.MediaProductType) {
+		toSerialize["mediaProductType"] = o.MediaProductType
+	}
+	if !IsNil(o.IsAiGenerated) {
+		toSerialize["isAiGenerated"] = o.IsAiGenerated
+	}
+	if !IsNil(o.IsSharedToFeed) {
+		toSerialize["isSharedToFeed"] = o.IsSharedToFeed
+	}
+	if !IsNil(o.MediaAudioType) {
+		toSerialize["mediaAudioType"] = o.MediaAudioType
 	}
 	return toSerialize, nil
 }

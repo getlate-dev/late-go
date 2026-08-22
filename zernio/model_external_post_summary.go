@@ -36,8 +36,16 @@ type ExternalPostSummary struct {
 	// Thumbnail URL
 	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
 	// Per-item media (for carousels / multi-media posts)
-	MediaItems []map[string]interface{}      `json:"mediaItems,omitempty"`
-	Analytics  *ExternalPostSummaryAnalytics `json:"analytics,omitempty"`
+	MediaItems []map[string]interface{} `json:"mediaItems,omitempty"`
+	// Instagram only: the platform media product type (e.g. FEED, REELS, STORY, AD). Absent when the platform did not report it.
+	MediaProductType *string `json:"mediaProductType,omitempty"`
+	// Instagram only: whether Instagram labeled the media as AI-generated. Absent when the platform did not report it.
+	IsAiGenerated *bool `json:"isAiGenerated,omitempty"`
+	// Instagram reels only: whether the reel is also shared to the main feed. Absent when the platform did not report it.
+	IsSharedToFeed *bool `json:"isSharedToFeed,omitempty"`
+	// Instagram only: audio type of the media (MUSIC or ORIGINAL_SOUND). Absent when the platform did not report it.
+	MediaAudioType *string                       `json:"mediaAudioType,omitempty"`
+	Analytics      *ExternalPostSummaryAnalytics `json:"analytics,omitempty"`
 }
 
 // NewExternalPostSummary instantiates a new ExternalPostSummary object
@@ -313,6 +321,134 @@ func (o *ExternalPostSummary) SetMediaItems(v []map[string]interface{}) {
 	o.MediaItems = v
 }
 
+// GetMediaProductType returns the MediaProductType field value if set, zero value otherwise.
+func (o *ExternalPostSummary) GetMediaProductType() string {
+	if o == nil || IsNil(o.MediaProductType) {
+		var ret string
+		return ret
+	}
+	return *o.MediaProductType
+}
+
+// GetMediaProductTypeOk returns a tuple with the MediaProductType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostSummary) GetMediaProductTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MediaProductType) {
+		return nil, false
+	}
+	return o.MediaProductType, true
+}
+
+// HasMediaProductType returns a boolean if a field has been set.
+func (o *ExternalPostSummary) HasMediaProductType() bool {
+	if o != nil && !IsNil(o.MediaProductType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMediaProductType gets a reference to the given string and assigns it to the MediaProductType field.
+func (o *ExternalPostSummary) SetMediaProductType(v string) {
+	o.MediaProductType = &v
+}
+
+// GetIsAiGenerated returns the IsAiGenerated field value if set, zero value otherwise.
+func (o *ExternalPostSummary) GetIsAiGenerated() bool {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		var ret bool
+		return ret
+	}
+	return *o.IsAiGenerated
+}
+
+// GetIsAiGeneratedOk returns a tuple with the IsAiGenerated field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostSummary) GetIsAiGeneratedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		return nil, false
+	}
+	return o.IsAiGenerated, true
+}
+
+// HasIsAiGenerated returns a boolean if a field has been set.
+func (o *ExternalPostSummary) HasIsAiGenerated() bool {
+	if o != nil && !IsNil(o.IsAiGenerated) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAiGenerated gets a reference to the given bool and assigns it to the IsAiGenerated field.
+func (o *ExternalPostSummary) SetIsAiGenerated(v bool) {
+	o.IsAiGenerated = &v
+}
+
+// GetIsSharedToFeed returns the IsSharedToFeed field value if set, zero value otherwise.
+func (o *ExternalPostSummary) GetIsSharedToFeed() bool {
+	if o == nil || IsNil(o.IsSharedToFeed) {
+		var ret bool
+		return ret
+	}
+	return *o.IsSharedToFeed
+}
+
+// GetIsSharedToFeedOk returns a tuple with the IsSharedToFeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostSummary) GetIsSharedToFeedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsSharedToFeed) {
+		return nil, false
+	}
+	return o.IsSharedToFeed, true
+}
+
+// HasIsSharedToFeed returns a boolean if a field has been set.
+func (o *ExternalPostSummary) HasIsSharedToFeed() bool {
+	if o != nil && !IsNil(o.IsSharedToFeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsSharedToFeed gets a reference to the given bool and assigns it to the IsSharedToFeed field.
+func (o *ExternalPostSummary) SetIsSharedToFeed(v bool) {
+	o.IsSharedToFeed = &v
+}
+
+// GetMediaAudioType returns the MediaAudioType field value if set, zero value otherwise.
+func (o *ExternalPostSummary) GetMediaAudioType() string {
+	if o == nil || IsNil(o.MediaAudioType) {
+		var ret string
+		return ret
+	}
+	return *o.MediaAudioType
+}
+
+// GetMediaAudioTypeOk returns a tuple with the MediaAudioType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostSummary) GetMediaAudioTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MediaAudioType) {
+		return nil, false
+	}
+	return o.MediaAudioType, true
+}
+
+// HasMediaAudioType returns a boolean if a field has been set.
+func (o *ExternalPostSummary) HasMediaAudioType() bool {
+	if o != nil && !IsNil(o.MediaAudioType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMediaAudioType gets a reference to the given string and assigns it to the MediaAudioType field.
+func (o *ExternalPostSummary) SetMediaAudioType(v string) {
+	o.MediaAudioType = &v
+}
+
 // GetAnalytics returns the Analytics field value if set, zero value otherwise.
 func (o *ExternalPostSummary) GetAnalytics() ExternalPostSummaryAnalytics {
 	if o == nil || IsNil(o.Analytics) {
@@ -378,6 +514,18 @@ func (o ExternalPostSummary) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MediaItems) {
 		toSerialize["mediaItems"] = o.MediaItems
+	}
+	if !IsNil(o.MediaProductType) {
+		toSerialize["mediaProductType"] = o.MediaProductType
+	}
+	if !IsNil(o.IsAiGenerated) {
+		toSerialize["isAiGenerated"] = o.IsAiGenerated
+	}
+	if !IsNil(o.IsSharedToFeed) {
+		toSerialize["isSharedToFeed"] = o.IsSharedToFeed
+	}
+	if !IsNil(o.MediaAudioType) {
+		toSerialize["mediaAudioType"] = o.MediaAudioType
 	}
 	if !IsNil(o.Analytics) {
 		toSerialize["analytics"] = o.Analytics

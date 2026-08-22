@@ -38,6 +38,14 @@ type ExternalPostWebhookPost struct {
 	MediaItems   []ExternalPostMediaItem `json:"mediaItems"`
 	ThumbnailUrl NullableString          `json:"thumbnailUrl"`
 	PublishedAt  time.Time               `json:"publishedAt"`
+	// Instagram only: the platform media product type (e.g. FEED, REELS, STORY, AD). Absent when the platform did not report it.
+	MediaProductType *string `json:"mediaProductType,omitempty"`
+	// Instagram only: whether Instagram labeled the media as AI-generated. Absent when the platform did not report it.
+	IsAiGenerated *bool `json:"isAiGenerated,omitempty"`
+	// Instagram reels only: whether the reel is also shared to the main feed. Absent when the platform did not report it.
+	IsSharedToFeed *bool `json:"isSharedToFeed,omitempty"`
+	// Instagram only: audio type of the media (MUSIC or ORIGINAL_SOUND). Absent when the platform did not report it.
+	MediaAudioType *string `json:"mediaAudioType,omitempty"`
 	// Always \"external\" — distinguishes these from Zernio-originated post.* events.
 	Source string `json:"source"`
 	// Detection time of deletion. Present on post.external.deleted; null/absent otherwise.
@@ -293,6 +301,134 @@ func (o *ExternalPostWebhookPost) SetPublishedAt(v time.Time) {
 	o.PublishedAt = v
 }
 
+// GetMediaProductType returns the MediaProductType field value if set, zero value otherwise.
+func (o *ExternalPostWebhookPost) GetMediaProductType() string {
+	if o == nil || IsNil(o.MediaProductType) {
+		var ret string
+		return ret
+	}
+	return *o.MediaProductType
+}
+
+// GetMediaProductTypeOk returns a tuple with the MediaProductType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostWebhookPost) GetMediaProductTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MediaProductType) {
+		return nil, false
+	}
+	return o.MediaProductType, true
+}
+
+// HasMediaProductType returns a boolean if a field has been set.
+func (o *ExternalPostWebhookPost) HasMediaProductType() bool {
+	if o != nil && !IsNil(o.MediaProductType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMediaProductType gets a reference to the given string and assigns it to the MediaProductType field.
+func (o *ExternalPostWebhookPost) SetMediaProductType(v string) {
+	o.MediaProductType = &v
+}
+
+// GetIsAiGenerated returns the IsAiGenerated field value if set, zero value otherwise.
+func (o *ExternalPostWebhookPost) GetIsAiGenerated() bool {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		var ret bool
+		return ret
+	}
+	return *o.IsAiGenerated
+}
+
+// GetIsAiGeneratedOk returns a tuple with the IsAiGenerated field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostWebhookPost) GetIsAiGeneratedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		return nil, false
+	}
+	return o.IsAiGenerated, true
+}
+
+// HasIsAiGenerated returns a boolean if a field has been set.
+func (o *ExternalPostWebhookPost) HasIsAiGenerated() bool {
+	if o != nil && !IsNil(o.IsAiGenerated) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAiGenerated gets a reference to the given bool and assigns it to the IsAiGenerated field.
+func (o *ExternalPostWebhookPost) SetIsAiGenerated(v bool) {
+	o.IsAiGenerated = &v
+}
+
+// GetIsSharedToFeed returns the IsSharedToFeed field value if set, zero value otherwise.
+func (o *ExternalPostWebhookPost) GetIsSharedToFeed() bool {
+	if o == nil || IsNil(o.IsSharedToFeed) {
+		var ret bool
+		return ret
+	}
+	return *o.IsSharedToFeed
+}
+
+// GetIsSharedToFeedOk returns a tuple with the IsSharedToFeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostWebhookPost) GetIsSharedToFeedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsSharedToFeed) {
+		return nil, false
+	}
+	return o.IsSharedToFeed, true
+}
+
+// HasIsSharedToFeed returns a boolean if a field has been set.
+func (o *ExternalPostWebhookPost) HasIsSharedToFeed() bool {
+	if o != nil && !IsNil(o.IsSharedToFeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsSharedToFeed gets a reference to the given bool and assigns it to the IsSharedToFeed field.
+func (o *ExternalPostWebhookPost) SetIsSharedToFeed(v bool) {
+	o.IsSharedToFeed = &v
+}
+
+// GetMediaAudioType returns the MediaAudioType field value if set, zero value otherwise.
+func (o *ExternalPostWebhookPost) GetMediaAudioType() string {
+	if o == nil || IsNil(o.MediaAudioType) {
+		var ret string
+		return ret
+	}
+	return *o.MediaAudioType
+}
+
+// GetMediaAudioTypeOk returns a tuple with the MediaAudioType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostWebhookPost) GetMediaAudioTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MediaAudioType) {
+		return nil, false
+	}
+	return o.MediaAudioType, true
+}
+
+// HasMediaAudioType returns a boolean if a field has been set.
+func (o *ExternalPostWebhookPost) HasMediaAudioType() bool {
+	if o != nil && !IsNil(o.MediaAudioType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMediaAudioType gets a reference to the given string and assigns it to the MediaAudioType field.
+func (o *ExternalPostWebhookPost) SetMediaAudioType(v string) {
+	o.MediaAudioType = &v
+}
+
 // GetSource returns the Source field value
 func (o *ExternalPostWebhookPost) GetSource() string {
 	if o == nil {
@@ -379,6 +515,18 @@ func (o ExternalPostWebhookPost) ToMap() (map[string]interface{}, error) {
 	toSerialize["mediaItems"] = o.MediaItems
 	toSerialize["thumbnailUrl"] = o.ThumbnailUrl.Get()
 	toSerialize["publishedAt"] = o.PublishedAt
+	if !IsNil(o.MediaProductType) {
+		toSerialize["mediaProductType"] = o.MediaProductType
+	}
+	if !IsNil(o.IsAiGenerated) {
+		toSerialize["isAiGenerated"] = o.IsAiGenerated
+	}
+	if !IsNil(o.IsSharedToFeed) {
+		toSerialize["isSharedToFeed"] = o.IsSharedToFeed
+	}
+	if !IsNil(o.MediaAudioType) {
+		toSerialize["mediaAudioType"] = o.MediaAudioType
+	}
 	toSerialize["source"] = o.Source
 	if o.DeletedAt.IsSet() {
 		toSerialize["deletedAt"] = o.DeletedAt.Get()
