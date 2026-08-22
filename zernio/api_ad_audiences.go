@@ -46,6 +46,9 @@ Upload user data to a customer_list audience. Data is SHA256-hashed server-side 
 Email is used on every platform; phone is used on Meta only (other platforms ignore it). On TikTok and Pinterest,
 the first upload also provisions the audience (deferred create). LinkedIn uploads are full-replace. Max 10,000 users per request.
 
+customer_list only. A LinkedIn `company_list` audience takes company rows, not people: send those to
+`POST /v1/ads/audiences/{audienceId}/companies`. This endpoint 422s for every other audience type.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param audienceId
 	@return AdAudiencesAPIAddUsersToAdAudienceRequest
@@ -181,11 +184,21 @@ func (r AdAudiencesAPICreateAdAudienceRequest) Execute() (*CreateAdAudience201Re
 CreateAdAudience Create custom audience
 
 Create a custom audience. `customer_list` is supported on Meta, Google, X, LinkedIn, TikTok, and Pinterest;
-`website` and `lookalike` are Meta-only. `saved_targeting` stores a reusable TargetingSpec (no member upload,
-no adAccountId) that you reference later via `savedTargetingId` on `POST /v1/ads/create`. Upload-backed audiences
-are created empty, add members via `POST /v1/ads/audiences/{audienceId}/users`. On TikTok and Pinterest the
-audience is provisioned lazily on the first member upload (until then its status is `pending`). Create is not
-idempotent, never auto-retry.
+`website` and `lookalike` are Meta-only; `company_list`, `engagement` and `website_retargeting` are LinkedIn-only.
+`saved_targeting` stores a reusable TargetingSpec (no member upload, no adAccountId) that you reference later via
+`savedTargetingId` on `POST /v1/ads/create`.
+
+How the audience gets filled depends on the type:
+
+  - `customer_list` is created empty. Add members with `POST /v1/ads/audiences/{audienceId}/users`.
+    On TikTok and Pinterest the audience is provisioned lazily on that first upload (until then its status is `pending`).
+  - `company_list` is filled AT CREATION from the `companies` array below, which is required. To change the list
+    afterwards send the new full list to `POST /v1/ads/audiences/{audienceId}/companies` (a replace, not a merge).
+    The `/users` endpoint rejects these audiences with a 422.
+  - `website`, `website_retargeting`, `engagement`, `meta_engagement` and `lookalike` fill themselves from the pixel,
+    engagement source or seed audience you point them at. They take no member upload at all.
+
+Create is not idempotent, never auto-retry.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAudiencesAPICreateAdAudienceRequest
@@ -666,6 +679,157 @@ func (a *AdAudiencesAPIService) ListAdAudiencesExecute(r AdAudiencesAPIListAdAud
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAudiencesAPIReplaceAdAudienceCompaniesRequest struct {
+	ctx                               context.Context
+	ApiService                        *AdAudiencesAPIService
+	audienceId                        string
+	replaceAdAudienceCompaniesRequest *ReplaceAdAudienceCompaniesRequest
+}
+
+func (r AdAudiencesAPIReplaceAdAudienceCompaniesRequest) ReplaceAdAudienceCompaniesRequest(replaceAdAudienceCompaniesRequest ReplaceAdAudienceCompaniesRequest) AdAudiencesAPIReplaceAdAudienceCompaniesRequest {
+	r.replaceAdAudienceCompaniesRequest = &replaceAdAudienceCompaniesRequest
+	return r
+}
+
+func (r AdAudiencesAPIReplaceAdAudienceCompaniesRequest) Execute() (*ReplaceAdAudienceCompanies200Response, *http.Response, error) {
+	return r.ApiService.ReplaceAdAudienceCompaniesExecute(r)
+}
+
+/*
+ReplaceAdAudienceCompanies Replace audience companies
+
+Upload the company rows of a LinkedIn `company_list` audience (account-based marketing).
+LinkedIn-only, every other platform returns 422.
+
+A LinkedIn audience segment holds exactly one uploaded list, so the list you send here REPLACES the
+segment's list instead of being appended to it: always send the full set of companies. LinkedIn returns
+only the identifier of the uploaded file, never its rows, so the merge cannot be done for you, keep the
+source list on your side. LinkedIn does not document how quickly companies dropped from the list stop
+being targeted, so treat removals as eventual rather than immediate.
+Rows are plain text (not hashed), matched against LinkedIn's own company graph. Matching is asynchronous:
+LinkedIn takes up to 48h for a new audience and up to 24h for a later update, and the audience stays
+`processing` meanwhile. LinkedIn recommends at least 1,000 companies for a usable match rate, and caps a
+list at 300,000.
+
+The initial list is sent with `companies` on `POST /v1/ads/audiences`; this endpoint is for every
+change after that.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param audienceId
+	@return AdAudiencesAPIReplaceAdAudienceCompaniesRequest
+*/
+func (a *AdAudiencesAPIService) ReplaceAdAudienceCompanies(ctx context.Context, audienceId string) AdAudiencesAPIReplaceAdAudienceCompaniesRequest {
+	return AdAudiencesAPIReplaceAdAudienceCompaniesRequest{
+		ApiService: a,
+		ctx:        ctx,
+		audienceId: audienceId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReplaceAdAudienceCompanies200Response
+func (a *AdAudiencesAPIService) ReplaceAdAudienceCompaniesExecute(r AdAudiencesAPIReplaceAdAudienceCompaniesRequest) (*ReplaceAdAudienceCompanies200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReplaceAdAudienceCompanies200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAudiencesAPIService.ReplaceAdAudienceCompanies")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/audiences/{audienceId}/companies"
+	localVarPath = strings.Replace(localVarPath, "{"+"audienceId"+"}", url.PathEscape(parameterValueToString(r.audienceId, "audienceId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.replaceAdAudienceCompaniesRequest == nil {
+		return localVarReturnValue, nil, reportError("replaceAdAudienceCompaniesRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.replaceAdAudienceCompaniesRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

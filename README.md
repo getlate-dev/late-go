@@ -283,6 +283,7 @@ func main() {
 | `client.AdAudiencesAPI.UpdateAdAudience(ctx)` | Update an audience |
 | `client.AdAudiencesAPI.DeleteAdAudience(ctx)` | Delete custom audience |
 | `client.AdAudiencesAPI.AddUsersToAdAudience(ctx)` | Add users to audience |
+| `client.AdAudiencesAPI.ReplaceAdAudienceCompanies(ctx)` | Replace audience companies |
 
 ### Ad Campaigns
 | Method | Description |
