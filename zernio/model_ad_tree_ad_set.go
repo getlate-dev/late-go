@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the AdTreeAdSet type satisfies the MappedNullable interface at compile time
@@ -23,11 +24,13 @@ type AdTreeAdSet struct {
 	PlatformAdSetId *string `json:"platformAdSetId,omitempty"`
 	AdSetName       *string `json:"adSetName,omitempty"`
 	// Derived from child ad statuses
-	Status      *AdStatus  `json:"status,omitempty"`
-	AdCount     *int32     `json:"adCount,omitempty"`
-	Budget      *AdBudget  `json:"budget,omitempty"`
-	AdSetBudget *AdBudget  `json:"adSetBudget,omitempty"`
-	Metrics     *AdMetrics `json:"metrics,omitempty"`
+	Status *AdStatus `json:"status,omitempty"`
+	// Earliest `platformCreatedAt` (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed) across this ad set's ads. Not the ad set's own creation time on the platform — a proxy usable for sorting.
+	CreatedTime NullableTime `json:"createdTime,omitempty"`
+	AdCount     *int32       `json:"adCount,omitempty"`
+	Budget      *AdBudget    `json:"budget,omitempty"`
+	AdSetBudget *AdBudget    `json:"adSetBudget,omitempty"`
+	Metrics     *AdMetrics   `json:"metrics,omitempty"`
 	// What the delivery system optimizes for. Meta ad set optimization goal (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION), or on LinkedIn the campaign's effective optimizationTargetType (NONE means manual bidding). See the `optimizationGoal` field on `Ad` for the full value spaces.
 	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
 	// Bid strategy for this ad set (overrides campaign level when set). Meta and TikTok only; LinkedIn uses `costType` instead.
@@ -158,6 +161,49 @@ func (o *AdTreeAdSet) HasStatus() bool {
 // SetStatus gets a reference to the given AdStatus and assigns it to the Status field.
 func (o *AdTreeAdSet) SetStatus(v AdStatus) {
 	o.Status = &v
+}
+
+// GetCreatedTime returns the CreatedTime field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdTreeAdSet) GetCreatedTime() time.Time {
+	if o == nil || IsNil(o.CreatedTime.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CreatedTime.Get()
+}
+
+// GetCreatedTimeOk returns a tuple with the CreatedTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdTreeAdSet) GetCreatedTimeOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CreatedTime.Get(), o.CreatedTime.IsSet()
+}
+
+// HasCreatedTime returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasCreatedTime() bool {
+	if o != nil && o.CreatedTime.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCreatedTime gets a reference to the given NullableTime and assigns it to the CreatedTime field.
+func (o *AdTreeAdSet) SetCreatedTime(v time.Time) {
+	o.CreatedTime.Set(&v)
+}
+
+// SetCreatedTimeNil sets the value for CreatedTime to be an explicit nil
+func (o *AdTreeAdSet) SetCreatedTimeNil() {
+	o.CreatedTime.Set(nil)
+}
+
+// UnsetCreatedTime ensures that no value is present for CreatedTime, not even an explicit nil
+func (o *AdTreeAdSet) UnsetCreatedTime() {
+	o.CreatedTime.Unset()
 }
 
 // GetAdCount returns the AdCount field value if set, zero value otherwise.
@@ -649,6 +695,9 @@ func (o AdTreeAdSet) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if o.CreatedTime.IsSet() {
+		toSerialize["createdTime"] = o.CreatedTime.Get()
 	}
 	if !IsNil(o.AdCount) {
 		toSerialize["adCount"] = o.AdCount

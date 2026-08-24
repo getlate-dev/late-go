@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the AdTreeCampaign type satisfies the MappedNullable interface at compile time
@@ -23,6 +24,8 @@ type AdTreeCampaign struct {
 	PlatformCampaignId *string `json:"platformCampaignId,omitempty"`
 	Platform           *string `json:"platform,omitempty"`
 	CampaignName       *string `json:"campaignName,omitempty"`
+	// Earliest `platformCreatedAt` (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed) across every ad in the campaign. Not the platform campaign's own creation time (Meta's `Campaign.created_time` etc. is not synced) — a campaign created empty and populated later will show its first ad's time, not the campaign's. Usable for sorting \"most recently created\" without the numeric-campaign-id heuristic. Same source as `AdTreeAdSet.createdTime` and `Ad.platformCreatedAt`; mirrors `AdCampaign.earliestAd`.
+	CreatedTime NullableTime `json:"createdTime,omitempty"`
 	// Delivery status derived from child ad statuses. Distinct from `reviewStatus`, which reflects the platform-side review state.
 	Status *AdStatus `json:"status,omitempty"`
 	// Platform-side review state of the campaign. Independent of the children-derived delivery `status`: a campaign can have ads already active (status=active) while the campaign itself is still being reviewed by the platform (reviewStatus=in_review). For Meta, derived from `effective_status` + `issues_info` on the Campaign, plus ad-level PENDING_REVIEW rollup.
@@ -180,6 +183,49 @@ func (o *AdTreeCampaign) HasCampaignName() bool {
 // SetCampaignName gets a reference to the given string and assigns it to the CampaignName field.
 func (o *AdTreeCampaign) SetCampaignName(v string) {
 	o.CampaignName = &v
+}
+
+// GetCreatedTime returns the CreatedTime field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdTreeCampaign) GetCreatedTime() time.Time {
+	if o == nil || IsNil(o.CreatedTime.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CreatedTime.Get()
+}
+
+// GetCreatedTimeOk returns a tuple with the CreatedTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdTreeCampaign) GetCreatedTimeOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CreatedTime.Get(), o.CreatedTime.IsSet()
+}
+
+// HasCreatedTime returns a boolean if a field has been set.
+func (o *AdTreeCampaign) HasCreatedTime() bool {
+	if o != nil && o.CreatedTime.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCreatedTime gets a reference to the given NullableTime and assigns it to the CreatedTime field.
+func (o *AdTreeCampaign) SetCreatedTime(v time.Time) {
+	o.CreatedTime.Set(&v)
+}
+
+// SetCreatedTimeNil sets the value for CreatedTime to be an explicit nil
+func (o *AdTreeCampaign) SetCreatedTimeNil() {
+	o.CreatedTime.Set(nil)
+}
+
+// UnsetCreatedTime ensures that no value is present for CreatedTime, not even an explicit nil
+func (o *AdTreeCampaign) UnsetCreatedTime() {
+	o.CreatedTime.Unset()
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -1111,6 +1157,9 @@ func (o AdTreeCampaign) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CampaignName) {
 		toSerialize["campaignName"] = o.CampaignName
+	}
+	if o.CreatedTime.IsSet() {
+		toSerialize["createdTime"] = o.CreatedTime.Get()
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
