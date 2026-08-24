@@ -91,6 +91,7 @@ model_ad_status.go
 model_ad_tree_ad_set.go
 model_ad_tree_ad_set_promoted_object.go
 model_ad_tree_campaign.go
+model_ad_tree_campaign_optimization_goal.go
 model_ad_tree_response.go
 model_add_broadcast_recipients_200_response.go
 model_add_broadcast_recipients_request.go

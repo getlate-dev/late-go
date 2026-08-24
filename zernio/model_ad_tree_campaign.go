@@ -51,9 +51,8 @@ type AdTreeCampaign struct {
 	// Google-only. Raw campaign.advertising_channel_type (SEARCH, PERFORMANCE_MAX, LOCAL_SERVICES, VIDEO, DEMAND_GEN, DISPLAY, SHOPPING, ...). Serving surface, distinct from platformObjective (advertiser intent). Null/absent for non-Google platforms.
 	AdvertisingChannelType NullableString `json:"advertisingChannelType,omitempty"`
 	// Raw Meta campaign objective (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC)
-	PlatformObjective NullableString `json:"platformObjective,omitempty"`
-	// Optimization goal shared across ad sets, or comma-separated values when ad sets differ. Meta: e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION. LinkedIn: the campaign optimizationTargetType (e.g. MAX_CLICK, MAX_IMPRESSION, NONE); `NONE` with a manual costType is a campaign LinkedIn will not deliver.
-	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
+	PlatformObjective NullableString                  `json:"platformObjective,omitempty"`
+	OptimizationGoal  *AdTreeCampaignOptimizationGoal `json:"optimizationGoal,omitempty"`
 	// Campaign-level bid strategy. Ad sets inherit this unless they override.
 	BidStrategy NullableBidStrategy `json:"bidStrategy,omitempty"`
 	// Representative bid for the campaign, bubbled up from the top-spending ad set (whole currency units). Meta: populated when the ad-set bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. LinkedIn: the campaign unitCost, which has no bidStrategy gate and where 0 is a real, delivery-stopping value rather than unset.
@@ -837,47 +836,36 @@ func (o *AdTreeCampaign) UnsetPlatformObjective() {
 	o.PlatformObjective.Unset()
 }
 
-// GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *AdTreeCampaign) GetOptimizationGoal() string {
-	if o == nil || IsNil(o.OptimizationGoal.Get()) {
-		var ret string
+// GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise.
+func (o *AdTreeCampaign) GetOptimizationGoal() AdTreeCampaignOptimizationGoal {
+	if o == nil || IsNil(o.OptimizationGoal) {
+		var ret AdTreeCampaignOptimizationGoal
 		return ret
 	}
-	return *o.OptimizationGoal.Get()
+	return *o.OptimizationGoal
 }
 
 // GetOptimizationGoalOk returns a tuple with the OptimizationGoal field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *AdTreeCampaign) GetOptimizationGoalOk() (*string, bool) {
-	if o == nil {
+func (o *AdTreeCampaign) GetOptimizationGoalOk() (*AdTreeCampaignOptimizationGoal, bool) {
+	if o == nil || IsNil(o.OptimizationGoal) {
 		return nil, false
 	}
-	return o.OptimizationGoal.Get(), o.OptimizationGoal.IsSet()
+	return o.OptimizationGoal, true
 }
 
 // HasOptimizationGoal returns a boolean if a field has been set.
 func (o *AdTreeCampaign) HasOptimizationGoal() bool {
-	if o != nil && o.OptimizationGoal.IsSet() {
+	if o != nil && !IsNil(o.OptimizationGoal) {
 		return true
 	}
 
 	return false
 }
 
-// SetOptimizationGoal gets a reference to the given NullableString and assigns it to the OptimizationGoal field.
-func (o *AdTreeCampaign) SetOptimizationGoal(v string) {
-	o.OptimizationGoal.Set(&v)
-}
-
-// SetOptimizationGoalNil sets the value for OptimizationGoal to be an explicit nil
-func (o *AdTreeCampaign) SetOptimizationGoalNil() {
-	o.OptimizationGoal.Set(nil)
-}
-
-// UnsetOptimizationGoal ensures that no value is present for OptimizationGoal, not even an explicit nil
-func (o *AdTreeCampaign) UnsetOptimizationGoal() {
-	o.OptimizationGoal.Unset()
+// SetOptimizationGoal gets a reference to the given AdTreeCampaignOptimizationGoal and assigns it to the OptimizationGoal field.
+func (o *AdTreeCampaign) SetOptimizationGoal(v AdTreeCampaignOptimizationGoal) {
+	o.OptimizationGoal = &v
 }
 
 // GetBidStrategy returns the BidStrategy field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1178,8 +1166,8 @@ func (o AdTreeCampaign) ToMap() (map[string]interface{}, error) {
 	if o.PlatformObjective.IsSet() {
 		toSerialize["platformObjective"] = o.PlatformObjective.Get()
 	}
-	if o.OptimizationGoal.IsSet() {
-		toSerialize["optimizationGoal"] = o.OptimizationGoal.Get()
+	if !IsNil(o.OptimizationGoal) {
+		toSerialize["optimizationGoal"] = o.OptimizationGoal
 	}
 	if o.BidStrategy.IsSet() {
 		toSerialize["bidStrategy"] = o.BidStrategy.Get()
