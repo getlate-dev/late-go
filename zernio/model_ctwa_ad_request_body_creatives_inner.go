@@ -26,8 +26,8 @@ type CtwaAdRequestBodyCreativesInner struct {
 	// Primary text shown above the image / video.
 	Body string `json:"body"`
 	// Image asset. Mutually exclusive with this entry's `video`. Required if `video` is not supplied.
-	ImageUrl *string                 `json:"imageUrl,omitempty"`
-	Video    *CtwaAdRequestBodyVideo `json:"video,omitempty"`
+	ImageUrl *string                         `json:"imageUrl,omitempty"`
+	Video    *CreateStandaloneAdRequestVideo `json:"video,omitempty"`
 }
 
 type _CtwaAdRequestBodyCreativesInner CtwaAdRequestBodyCreativesInner
@@ -132,9 +132,9 @@ func (o *CtwaAdRequestBodyCreativesInner) SetImageUrl(v string) {
 }
 
 // GetVideo returns the Video field value if set, zero value otherwise.
-func (o *CtwaAdRequestBodyCreativesInner) GetVideo() CtwaAdRequestBodyVideo {
+func (o *CtwaAdRequestBodyCreativesInner) GetVideo() CreateStandaloneAdRequestVideo {
 	if o == nil || IsNil(o.Video) {
-		var ret CtwaAdRequestBodyVideo
+		var ret CreateStandaloneAdRequestVideo
 		return ret
 	}
 	return *o.Video
@@ -142,7 +142,7 @@ func (o *CtwaAdRequestBodyCreativesInner) GetVideo() CtwaAdRequestBodyVideo {
 
 // GetVideoOk returns a tuple with the Video field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CtwaAdRequestBodyCreativesInner) GetVideoOk() (*CtwaAdRequestBodyVideo, bool) {
+func (o *CtwaAdRequestBodyCreativesInner) GetVideoOk() (*CreateStandaloneAdRequestVideo, bool) {
 	if o == nil || IsNil(o.Video) {
 		return nil, false
 	}
@@ -158,8 +158,8 @@ func (o *CtwaAdRequestBodyCreativesInner) HasVideo() bool {
 	return false
 }
 
-// SetVideo gets a reference to the given CtwaAdRequestBodyVideo and assigns it to the Video field.
-func (o *CtwaAdRequestBodyCreativesInner) SetVideo(v CtwaAdRequestBodyVideo) {
+// SetVideo gets a reference to the given CreateStandaloneAdRequestVideo and assigns it to the Video field.
+func (o *CtwaAdRequestBodyCreativesInner) SetVideo(v CreateStandaloneAdRequestVideo) {
 	o.Video = &v
 }
 

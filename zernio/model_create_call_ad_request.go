@@ -34,11 +34,11 @@ type CreateCallAdRequest struct {
 	// Primary text shown above the image / video. Single-creative shape only. Mutually exclusive with `creatives[]`.
 	Body *string `json:"body,omitempty"`
 	// Image asset for single-creative shape. Mutually exclusive with `video` and with `creatives[]`. Required on the single-creative shape if `video` is not supplied.
-	ImageUrl *string                 `json:"imageUrl,omitempty"`
-	Video    *CtwaAdRequestBodyVideo `json:"video,omitempty"`
+	ImageUrl *string                         `json:"imageUrl,omitempty"`
+	Video    *CreateStandaloneAdRequestVideo `json:"video,omitempty"`
 	// Multi-creative shape: N CTWA ads under one campaign + one ad set, sharing budget and targeting. Mutually exclusive with the top-level single-creative fields (`headline` / `body` / `imageUrl` / `video`). Each entry must supply its own headline, body, and exactly one of `imageUrl` / `video`.
 	Creatives []CtwaAdRequestBodyCreativesInner `json:"creatives,omitempty"`
-	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `endDate`, `objective`, `countries`, `interests` and `audienceId` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
+	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `endDate`, `objective`, `countries`, `interests`, `audienceId` and `campaignStatus` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
 	AdSetId *string `json:"adSetId,omitempty"`
 	// Budget amount in the ad account's currency major units (e.g. dollars for USD, not cents). Must be > 0. Required unless `adSetId` is set, where the ad set owns it.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
@@ -70,6 +70,10 @@ type CreateCallAdRequest struct {
 	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
 	// Defaults to `OUTCOME_ENGAGEMENT`. `OUTCOME_SALES` and `OUTCOME_LEADS` require additional account configuration (Dataset linked to the WABA for sales) and may be rejected by Meta if missing.
 	Objective *string `json:"objective,omitempty"`
+	// Ad-level status. Defaults to `ACTIVE`. `PAUSED` skips activating the newly created ad(s) after Meta accepts them.
+	Status *string `json:"status,omitempty"`
+	// Campaign-level status, same semantics as `POST /v1/ads/create`. Defaults to `ACTIVE`. `PAUSED` holds activation at the campaign so it never spends before the advertiser reviews it, while the ad set and ad still switch on (one resume call brings the whole hierarchy live). Only meaningful when a new campaign is being created; rejected with a 400 alongside `adSetId` (the attach shape reuses an existing campaign).
+	CampaignStatus *string `json:"campaignStatus,omitempty"`
 	// Meta bid strategy applied to the shared ad set. Defaults to `LOWEST_COST_WITHOUT_CAP` (auto-bid) when omitted. `LOWEST_COST_WITH_BID_CAP` and `COST_CAP` require `bidAmount`. `LOWEST_COST_WITH_MIN_ROAS` requires `roasAverageFloor`. CTWA's `optimization_goal` is fixed to `CONVERSATIONS`, but the bid strategy is independent.
 	BidStrategy *string `json:"bidStrategy,omitempty"`
 	// Whole currency units (e.g. `5` = $5.00 on a USD account). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`; rejected otherwise.
@@ -279,9 +283,9 @@ func (o *CreateCallAdRequest) SetImageUrl(v string) {
 }
 
 // GetVideo returns the Video field value if set, zero value otherwise.
-func (o *CreateCallAdRequest) GetVideo() CtwaAdRequestBodyVideo {
+func (o *CreateCallAdRequest) GetVideo() CreateStandaloneAdRequestVideo {
 	if o == nil || IsNil(o.Video) {
-		var ret CtwaAdRequestBodyVideo
+		var ret CreateStandaloneAdRequestVideo
 		return ret
 	}
 	return *o.Video
@@ -289,7 +293,7 @@ func (o *CreateCallAdRequest) GetVideo() CtwaAdRequestBodyVideo {
 
 // GetVideoOk returns a tuple with the Video field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateCallAdRequest) GetVideoOk() (*CtwaAdRequestBodyVideo, bool) {
+func (o *CreateCallAdRequest) GetVideoOk() (*CreateStandaloneAdRequestVideo, bool) {
 	if o == nil || IsNil(o.Video) {
 		return nil, false
 	}
@@ -305,8 +309,8 @@ func (o *CreateCallAdRequest) HasVideo() bool {
 	return false
 }
 
-// SetVideo gets a reference to the given CtwaAdRequestBodyVideo and assigns it to the Video field.
-func (o *CreateCallAdRequest) SetVideo(v CtwaAdRequestBodyVideo) {
+// SetVideo gets a reference to the given CreateStandaloneAdRequestVideo and assigns it to the Video field.
+func (o *CreateCallAdRequest) SetVideo(v CreateStandaloneAdRequestVideo) {
 	o.Video = &v
 }
 
@@ -918,6 +922,70 @@ func (o *CreateCallAdRequest) SetObjective(v string) {
 	o.Objective = &v
 }
 
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *CreateCallAdRequest) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCallAdRequest) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *CreateCallAdRequest) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *CreateCallAdRequest) SetStatus(v string) {
+	o.Status = &v
+}
+
+// GetCampaignStatus returns the CampaignStatus field value if set, zero value otherwise.
+func (o *CreateCallAdRequest) GetCampaignStatus() string {
+	if o == nil || IsNil(o.CampaignStatus) {
+		var ret string
+		return ret
+	}
+	return *o.CampaignStatus
+}
+
+// GetCampaignStatusOk returns a tuple with the CampaignStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCallAdRequest) GetCampaignStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.CampaignStatus) {
+		return nil, false
+	}
+	return o.CampaignStatus, true
+}
+
+// HasCampaignStatus returns a boolean if a field has been set.
+func (o *CreateCallAdRequest) HasCampaignStatus() bool {
+	if o != nil && !IsNil(o.CampaignStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignStatus gets a reference to the given string and assigns it to the CampaignStatus field.
+func (o *CreateCallAdRequest) SetCampaignStatus(v string) {
+	o.CampaignStatus = &v
+}
+
 // GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
 func (o *CreateCallAdRequest) GetBidStrategy() string {
 	if o == nil || IsNil(o.BidStrategy) {
@@ -1207,6 +1275,12 @@ func (o CreateCallAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Objective) {
 		toSerialize["objective"] = o.Objective
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.CampaignStatus) {
+		toSerialize["campaignStatus"] = o.CampaignStatus
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy
