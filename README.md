@@ -324,8 +324,10 @@ func main() {
 | `client.AdCreativesAPI.GetAdPreviews(ctx)` | Render previews of an existing ad |
 | `client.AdCreativesAPI.UpdateAdCreative(ctx)` | Rename a creative |
 | `client.AdCreativesAPI.DeleteAdCreative(ctx)` | Delete a creative |
+| `client.AdCreativesAPI.DeleteAdVideo(ctx)` | Delete an ad video |
 | `client.AdCreativesAPI.GenerateAdPreviews(ctx)` | Render pre-create ad previews |
 | `client.AdCreativesAPI.UploadAdImage(ctx)` | Upload an ad image from base64 |
+| `client.AdCreativesAPI.UploadAdVideo(ctx)` | Upload an ad video |
 
 ### Ad Insights
 | Method | Description |

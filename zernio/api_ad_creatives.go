@@ -276,6 +276,159 @@ func (a *AdCreativesAPIService) DeleteAdCreativeExecute(r AdCreativesAPIDeleteAd
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCreativesAPIDeleteAdVideoRequest struct {
+	ctx         context.Context
+	ApiService  *AdCreativesAPIService
+	videoId     string
+	accountId   *string
+	adAccountId *string
+}
+
+// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+func (r AdCreativesAPIDeleteAdVideoRequest) AccountId(accountId string) AdCreativesAPIDeleteAdVideoRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account id (act_&lt;n&gt;) that owns the video.
+func (r AdCreativesAPIDeleteAdVideoRequest) AdAccountId(adAccountId string) AdCreativesAPIDeleteAdVideoRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdCreativesAPIDeleteAdVideoRequest) Execute() (*DeleteAdVideo200Response, *http.Response, error) {
+	return r.ApiService.DeleteAdVideoExecute(r)
+}
+
+/*
+DeleteAdVideo Delete an ad video
+
+Removes a video from the ad account's video library. Meta's canonical
+`DELETE /{video_id}` fails with code 10 / subcode 1363055 for videos uploaded via
+`/act_X/advideos` even with `ads_management`; this endpoint uses the working
+account-scoped shape `DELETE /act_X/advideos?video_id=<id>` and returns Meta's
+`{success: true}` verbatim. Deleting a video that lives in a different ad account,
+or that Meta has already removed, returns Meta's error verbatim as a 4xx.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param videoId Meta ad video id (numeric).
+	@return AdCreativesAPIDeleteAdVideoRequest
+*/
+func (a *AdCreativesAPIService) DeleteAdVideo(ctx context.Context, videoId string) AdCreativesAPIDeleteAdVideoRequest {
+	return AdCreativesAPIDeleteAdVideoRequest{
+		ApiService: a,
+		ctx:        ctx,
+		videoId:    videoId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return DeleteAdVideo200Response
+func (a *AdCreativesAPIService) DeleteAdVideoExecute(r AdCreativesAPIDeleteAdVideoRequest) (*DeleteAdVideo200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeleteAdVideo200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCreativesAPIService.DeleteAdVideo")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/videos/{videoId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"videoId"+"}", url.PathEscape(parameterValueToString(r.videoId, "videoId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCreativesAPIGenerateAdPreviewsRequest struct {
 	ctx                       context.Context
 	ApiService                *AdCreativesAPIService
@@ -1342,7 +1495,7 @@ This is the only way to reach a video uploaded OUTSIDE Zernio (Ads Manager, anot
 tool); videos we uploaded also come back as `creative.videoId` on GET /v1/ads.
 
 Meta transcodes asynchronously, so a row is only usable once `status.video_status`
-reads `ready`. There is no upload operation here: upload by URL inline via `video.url`
+reads `ready`. Upload a new video via POST /v1/ads/videos, or inline via `video.url`
 on POST /v1/ads/create.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1679,6 +1832,139 @@ func (a *AdCreativesAPIService) UploadAdImageExecute(r AdCreativesAPIUploadAdIma
 	}
 	// body params
 	localVarPostBody = r.uploadAdImageRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCreativesAPIUploadAdVideoRequest struct {
+	ctx                  context.Context
+	ApiService           *AdCreativesAPIService
+	uploadAdVideoRequest *UploadAdVideoRequest
+}
+
+func (r AdCreativesAPIUploadAdVideoRequest) UploadAdVideoRequest(uploadAdVideoRequest UploadAdVideoRequest) AdCreativesAPIUploadAdVideoRequest {
+	r.uploadAdVideoRequest = &uploadAdVideoRequest
+	return r
+}
+
+func (r AdCreativesAPIUploadAdVideoRequest) Execute() (*UploadAdVideo201Response, *http.Response, error) {
+	return r.ApiService.UploadAdVideoExecute(r)
+}
+
+/*
+UploadAdVideo Upload an ad video
+
+Standalone ad-video upload (parallel to POST /v1/ads/images), so a video creative can
+be rendered via POST /v1/ads/preview or attached via `video.id` on POST /v1/ads/create
+before an ad exists.
+
+Accepts either an https `videoUrl` we download server-side (SSRF-guarded) or raw
+`videoBase64` bytes; exactly one is required. `videoBase64` is capped by Vercel's body
+limit — around 4.5 MB payload in practice, so larger videos must come via `videoUrl`.
+
+Returns the Meta `video.id` (reusable wherever `video.id` is accepted) plus Meta's
+auto-generated poster URL when available. The endpoint waits until Meta reports the
+video ready (chunked upload + transcode can take minutes; the handler runs up to
+800 s).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdCreativesAPIUploadAdVideoRequest
+*/
+func (a *AdCreativesAPIService) UploadAdVideo(ctx context.Context) AdCreativesAPIUploadAdVideoRequest {
+	return AdCreativesAPIUploadAdVideoRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UploadAdVideo201Response
+func (a *AdCreativesAPIService) UploadAdVideoExecute(r AdCreativesAPIUploadAdVideoRequest) (*UploadAdVideo201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UploadAdVideo201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCreativesAPIService.UploadAdVideo")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/videos"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.uploadAdVideoRequest == nil {
+		return localVarReturnValue, nil, reportError("uploadAdVideoRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.uploadAdVideoRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
