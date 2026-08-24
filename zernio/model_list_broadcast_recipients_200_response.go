@@ -23,6 +23,7 @@ type ListBroadcastRecipients200Response struct {
 	Success    *bool                                               `json:"success,omitempty"`
 	Recipients []ListBroadcastRecipients200ResponseRecipientsInner `json:"recipients,omitempty"`
 	Pagination *ListContacts200ResponsePagination                  `json:"pagination,omitempty"`
+	Summary    *ListBroadcastRecipients200ResponseSummary          `json:"summary,omitempty"`
 }
 
 // NewListBroadcastRecipients200Response instantiates a new ListBroadcastRecipients200Response object
@@ -138,6 +139,38 @@ func (o *ListBroadcastRecipients200Response) SetPagination(v ListContacts200Resp
 	o.Pagination = &v
 }
 
+// GetSummary returns the Summary field value if set, zero value otherwise.
+func (o *ListBroadcastRecipients200Response) GetSummary() ListBroadcastRecipients200ResponseSummary {
+	if o == nil || IsNil(o.Summary) {
+		var ret ListBroadcastRecipients200ResponseSummary
+		return ret
+	}
+	return *o.Summary
+}
+
+// GetSummaryOk returns a tuple with the Summary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListBroadcastRecipients200Response) GetSummaryOk() (*ListBroadcastRecipients200ResponseSummary, bool) {
+	if o == nil || IsNil(o.Summary) {
+		return nil, false
+	}
+	return o.Summary, true
+}
+
+// HasSummary returns a boolean if a field has been set.
+func (o *ListBroadcastRecipients200Response) HasSummary() bool {
+	if o != nil && !IsNil(o.Summary) {
+		return true
+	}
+
+	return false
+}
+
+// SetSummary gets a reference to the given ListBroadcastRecipients200ResponseSummary and assigns it to the Summary field.
+func (o *ListBroadcastRecipients200Response) SetSummary(v ListBroadcastRecipients200ResponseSummary) {
+	o.Summary = &v
+}
+
 func (o ListBroadcastRecipients200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -156,6 +189,9 @@ func (o ListBroadcastRecipients200Response) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.Pagination) {
 		toSerialize["pagination"] = o.Pagination
+	}
+	if !IsNil(o.Summary) {
+		toSerialize["summary"] = o.Summary
 	}
 	return toSerialize, nil
 }
