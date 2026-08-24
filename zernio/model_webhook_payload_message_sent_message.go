@@ -35,8 +35,9 @@ type WebhookPayloadMessageSentMessage struct {
 	Text        NullableString                         `json:"text"`
 	Attachments []InboxWebhookMessageAttachmentsInner  `json:"attachments"`
 	Sender      WebhookPayloadMessageSentMessageSender `json:"sender"`
-	SentAt      time.Time                              `json:"sentAt"`
-	IsRead      bool                                   `json:"isRead"`
+	// When the message was sent, as reported by the platform and passed through unmodified. Full ISO 8601 date-time: Instagram and Facebook carry millisecond precision, while some platforms (for example WhatsApp and Telegram) report whole seconds. Use this field as the chronological ordering key. If two messages share the same value, fetch the conversation messages with sortOrder=desc for the deterministic order.
+	SentAt time.Time `json:"sentAt"`
+	IsRead bool      `json:"isRead"`
 	// WhatsApp send origin. whatsapp_business_app when sent from the WhatsApp Business phone app on a Coexistence number; cloud_api when sent through Zernio (dashboard, API, or broadcasts). Absent on non-WhatsApp platforms. This is not the inbox metadata.source lineage field.
 	Source *string `json:"source,omitempty"`
 }
