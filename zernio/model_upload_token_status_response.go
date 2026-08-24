@@ -26,7 +26,7 @@ type UploadTokenStatusResponse struct {
 	Files       []UploadedFile `json:"files,omitempty"`
 	CreatedAt   *time.Time     `json:"createdAt,omitempty"`
 	ExpiresAt   *time.Time     `json:"expiresAt,omitempty"`
-	CompletedAt *time.Time     `json:"completedAt,omitempty"`
+	CompletedAt NullableTime   `json:"completedAt,omitempty"`
 }
 
 // NewUploadTokenStatusResponse instantiates a new UploadTokenStatusResponse object
@@ -206,36 +206,47 @@ func (o *UploadTokenStatusResponse) SetExpiresAt(v time.Time) {
 	o.ExpiresAt = &v
 }
 
-// GetCompletedAt returns the CompletedAt field value if set, zero value otherwise.
+// GetCompletedAt returns the CompletedAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *UploadTokenStatusResponse) GetCompletedAt() time.Time {
-	if o == nil || IsNil(o.CompletedAt) {
+	if o == nil || IsNil(o.CompletedAt.Get()) {
 		var ret time.Time
 		return ret
 	}
-	return *o.CompletedAt
+	return *o.CompletedAt.Get()
 }
 
 // GetCompletedAtOk returns a tuple with the CompletedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *UploadTokenStatusResponse) GetCompletedAtOk() (*time.Time, bool) {
-	if o == nil || IsNil(o.CompletedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CompletedAt, true
+	return o.CompletedAt.Get(), o.CompletedAt.IsSet()
 }
 
 // HasCompletedAt returns a boolean if a field has been set.
 func (o *UploadTokenStatusResponse) HasCompletedAt() bool {
-	if o != nil && !IsNil(o.CompletedAt) {
+	if o != nil && o.CompletedAt.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCompletedAt gets a reference to the given time.Time and assigns it to the CompletedAt field.
+// SetCompletedAt gets a reference to the given NullableTime and assigns it to the CompletedAt field.
 func (o *UploadTokenStatusResponse) SetCompletedAt(v time.Time) {
-	o.CompletedAt = &v
+	o.CompletedAt.Set(&v)
+}
+
+// SetCompletedAtNil sets the value for CompletedAt to be an explicit nil
+func (o *UploadTokenStatusResponse) SetCompletedAtNil() {
+	o.CompletedAt.Set(nil)
+}
+
+// UnsetCompletedAt ensures that no value is present for CompletedAt, not even an explicit nil
+func (o *UploadTokenStatusResponse) UnsetCompletedAt() {
+	o.CompletedAt.Unset()
 }
 
 func (o UploadTokenStatusResponse) MarshalJSON() ([]byte, error) {
@@ -263,8 +274,8 @@ func (o UploadTokenStatusResponse) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ExpiresAt) {
 		toSerialize["expiresAt"] = o.ExpiresAt
 	}
-	if !IsNil(o.CompletedAt) {
-		toSerialize["completedAt"] = o.CompletedAt
+	if o.CompletedAt.IsSet() {
+		toSerialize["completedAt"] = o.CompletedAt.Get()
 	}
 	return toSerialize, nil
 }
