@@ -1984,6 +1984,7 @@ func (a *PhoneNumbersAPIService) ReleasePhoneNumberExecute(r PhoneNumbersAPIRele
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

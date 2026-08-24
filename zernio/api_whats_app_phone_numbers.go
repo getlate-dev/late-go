@@ -1543,6 +1543,7 @@ func (a *WhatsAppPhoneNumbersAPIService) ReleaseWhatsAppPhoneNumberExecute(r Wha
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

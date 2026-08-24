@@ -32,7 +32,9 @@ type ListPhoneNumbers200ResponseNumbersInner struct {
 	// Per-country monthly price in cents ($2..$25).
 	MonthlyCents *int32 `json:"monthlyCents,omitempty"`
 	// False for numbers you brought yourself (connected via Meta embedded signup) — they live on your own carrier, so SMS/Calls can't be enabled on them.
-	HostedByZernio         *bool                  `json:"hostedByZernio,omitempty"`
+	HostedByZernio *bool `json:"hostedByZernio,omitempty"`
+	// SIP trunk the number is attached to; null when not trunked. While attached, enabling Calls or WhatsApp calling, requesting WhatsApp verification, and releasing the number all return 409.
+	SipTrunkId             NullableString         `json:"sipTrunkId,omitempty"`
 	ProfileId              map[string]interface{} `json:"profileId,omitempty"`
 	ProvisionedAt          *time.Time             `json:"provisionedAt,omitempty"`
 	MetaPreverifiedId      *string                `json:"metaPreverifiedId,omitempty"`
@@ -341,6 +343,49 @@ func (o *ListPhoneNumbers200ResponseNumbersInner) HasHostedByZernio() bool {
 // SetHostedByZernio gets a reference to the given bool and assigns it to the HostedByZernio field.
 func (o *ListPhoneNumbers200ResponseNumbersInner) SetHostedByZernio(v bool) {
 	o.HostedByZernio = &v
+}
+
+// GetSipTrunkId returns the SipTrunkId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListPhoneNumbers200ResponseNumbersInner) GetSipTrunkId() string {
+	if o == nil || IsNil(o.SipTrunkId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SipTrunkId.Get()
+}
+
+// GetSipTrunkIdOk returns a tuple with the SipTrunkId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListPhoneNumbers200ResponseNumbersInner) GetSipTrunkIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SipTrunkId.Get(), o.SipTrunkId.IsSet()
+}
+
+// HasSipTrunkId returns a boolean if a field has been set.
+func (o *ListPhoneNumbers200ResponseNumbersInner) HasSipTrunkId() bool {
+	if o != nil && o.SipTrunkId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSipTrunkId gets a reference to the given NullableString and assigns it to the SipTrunkId field.
+func (o *ListPhoneNumbers200ResponseNumbersInner) SetSipTrunkId(v string) {
+	o.SipTrunkId.Set(&v)
+}
+
+// SetSipTrunkIdNil sets the value for SipTrunkId to be an explicit nil
+func (o *ListPhoneNumbers200ResponseNumbersInner) SetSipTrunkIdNil() {
+	o.SipTrunkId.Set(nil)
+}
+
+// UnsetSipTrunkId ensures that no value is present for SipTrunkId, not even an explicit nil
+func (o *ListPhoneNumbers200ResponseNumbersInner) UnsetSipTrunkId() {
+	o.SipTrunkId.Unset()
 }
 
 // GetProfileId returns the ProfileId field value if set, zero value otherwise.
@@ -740,6 +785,9 @@ func (o ListPhoneNumbers200ResponseNumbersInner) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.HostedByZernio) {
 		toSerialize["hostedByZernio"] = o.HostedByZernio
+	}
+	if o.SipTrunkId.IsSet() {
+		toSerialize["sipTrunkId"] = o.SipTrunkId.Get()
 	}
 	if !IsNil(o.ProfileId) {
 		toSerialize["profileId"] = o.ProfileId

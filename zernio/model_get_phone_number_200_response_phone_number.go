@@ -34,6 +34,8 @@ type GetPhoneNumber200ResponsePhoneNumber struct {
 	// Reviewer rejection reason when status is regulatory_declined.
 	RegulatoryDeclineReason NullableString `json:"regulatoryDeclineReason,omitempty"`
 	ProvisionedAt           *time.Time     `json:"provisionedAt,omitempty"`
+	// SIP trunk the number is attached to; null when not trunked. While attached, enabling Calls or WhatsApp calling, requesting WhatsApp verification, and releasing the number all return 409.
+	SipTrunkId NullableString `json:"sipTrunkId,omitempty"`
 }
 
 // NewGetPhoneNumber200ResponsePhoneNumber instantiates a new GetPhoneNumber200ResponsePhoneNumber object
@@ -449,6 +451,49 @@ func (o *GetPhoneNumber200ResponsePhoneNumber) SetProvisionedAt(v time.Time) {
 	o.ProvisionedAt = &v
 }
 
+// GetSipTrunkId returns the SipTrunkId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetPhoneNumber200ResponsePhoneNumber) GetSipTrunkId() string {
+	if o == nil || IsNil(o.SipTrunkId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SipTrunkId.Get()
+}
+
+// GetSipTrunkIdOk returns a tuple with the SipTrunkId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetPhoneNumber200ResponsePhoneNumber) GetSipTrunkIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SipTrunkId.Get(), o.SipTrunkId.IsSet()
+}
+
+// HasSipTrunkId returns a boolean if a field has been set.
+func (o *GetPhoneNumber200ResponsePhoneNumber) HasSipTrunkId() bool {
+	if o != nil && o.SipTrunkId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSipTrunkId gets a reference to the given NullableString and assigns it to the SipTrunkId field.
+func (o *GetPhoneNumber200ResponsePhoneNumber) SetSipTrunkId(v string) {
+	o.SipTrunkId.Set(&v)
+}
+
+// SetSipTrunkIdNil sets the value for SipTrunkId to be an explicit nil
+func (o *GetPhoneNumber200ResponsePhoneNumber) SetSipTrunkIdNil() {
+	o.SipTrunkId.Set(nil)
+}
+
+// UnsetSipTrunkId ensures that no value is present for SipTrunkId, not even an explicit nil
+func (o *GetPhoneNumber200ResponsePhoneNumber) UnsetSipTrunkId() {
+	o.SipTrunkId.Unset()
+}
+
 func (o GetPhoneNumber200ResponsePhoneNumber) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -491,6 +536,9 @@ func (o GetPhoneNumber200ResponsePhoneNumber) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.ProvisionedAt) {
 		toSerialize["provisionedAt"] = o.ProvisionedAt
+	}
+	if o.SipTrunkId.IsSet() {
+		toSerialize["sipTrunkId"] = o.SipTrunkId.Get()
 	}
 	return toSerialize, nil
 }
