@@ -1224,6 +1224,12 @@ To get the required credentials:
 6. Get the WABA ID from WhatsApp Manager > Account Tools > Phone Numbers
 7. Get the Phone Number ID from the same page (click on the number)
 
+Warning: connecting subscribes your own Meta app to this WABA with an override
+callback that redirects its webhook delivery to Zernio. This WABA's events stop
+reaching any callback URL you had configured before, immediately and with no
+overlap window. Do not unsubscribe your app from the WABA afterward: that also
+cuts off Zernio's delivery, and recovery requires calling this endpoint again.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectAPIConnectWhatsAppCredentialsRequest
 */

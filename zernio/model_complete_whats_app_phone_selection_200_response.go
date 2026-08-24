@@ -22,8 +22,8 @@ var _ MappedNullable = &CompleteWhatsAppPhoneSelection200Response{}
 type CompleteWhatsAppPhoneSelection200Response struct {
 	Message *string `json:"message,omitempty"`
 	// Present only if redirect_url was provided in the request
-	RedirectUrl *string                                       `json:"redirect_url,omitempty"`
-	Account     *ConnectWhatsAppCredentials200ResponseAccount `json:"account,omitempty"`
+	RedirectUrl *string                                           `json:"redirect_url,omitempty"`
+	Account     *CompleteWhatsAppPhoneSelection200ResponseAccount `json:"account,omitempty"`
 }
 
 // NewCompleteWhatsAppPhoneSelection200Response instantiates a new CompleteWhatsAppPhoneSelection200Response object
@@ -108,9 +108,9 @@ func (o *CompleteWhatsAppPhoneSelection200Response) SetRedirectUrl(v string) {
 }
 
 // GetAccount returns the Account field value if set, zero value otherwise.
-func (o *CompleteWhatsAppPhoneSelection200Response) GetAccount() ConnectWhatsAppCredentials200ResponseAccount {
+func (o *CompleteWhatsAppPhoneSelection200Response) GetAccount() CompleteWhatsAppPhoneSelection200ResponseAccount {
 	if o == nil || IsNil(o.Account) {
-		var ret ConnectWhatsAppCredentials200ResponseAccount
+		var ret CompleteWhatsAppPhoneSelection200ResponseAccount
 		return ret
 	}
 	return *o.Account
@@ -118,7 +118,7 @@ func (o *CompleteWhatsAppPhoneSelection200Response) GetAccount() ConnectWhatsApp
 
 // GetAccountOk returns a tuple with the Account field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CompleteWhatsAppPhoneSelection200Response) GetAccountOk() (*ConnectWhatsAppCredentials200ResponseAccount, bool) {
+func (o *CompleteWhatsAppPhoneSelection200Response) GetAccountOk() (*CompleteWhatsAppPhoneSelection200ResponseAccount, bool) {
 	if o == nil || IsNil(o.Account) {
 		return nil, false
 	}
@@ -134,8 +134,8 @@ func (o *CompleteWhatsAppPhoneSelection200Response) HasAccount() bool {
 	return false
 }
 
-// SetAccount gets a reference to the given ConnectWhatsAppCredentials200ResponseAccount and assigns it to the Account field.
-func (o *CompleteWhatsAppPhoneSelection200Response) SetAccount(v ConnectWhatsAppCredentials200ResponseAccount) {
+// SetAccount gets a reference to the given CompleteWhatsAppPhoneSelection200ResponseAccount and assigns it to the Account field.
+func (o *CompleteWhatsAppPhoneSelection200Response) SetAccount(v CompleteWhatsAppPhoneSelection200ResponseAccount) {
 	o.Account = &v
 }
 

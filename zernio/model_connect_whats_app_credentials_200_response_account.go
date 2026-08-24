@@ -28,7 +28,11 @@ type ConnectWhatsAppCredentials200ResponseAccount struct {
 	DisplayName *string `json:"displayName,omitempty"`
 	IsActive    *bool   `json:"isActive,omitempty"`
 	// The connected phone number
-	SelectedPhoneNumber *string `json:"selectedPhoneNumber,omitempty"`
+	PhoneNumber *string `json:"phoneNumber,omitempty"`
+	// Meta-verified business name for the phone number
+	VerifiedName *string `json:"verifiedName,omitempty"`
+	// Meta quality rating for the phone number (e.g. GREEN, YELLOW, RED, UNKNOWN)
+	QualityRating *string `json:"qualityRating,omitempty"`
 }
 
 // NewConnectWhatsAppCredentials200ResponseAccount instantiates a new ConnectWhatsAppCredentials200ResponseAccount object
@@ -208,36 +212,100 @@ func (o *ConnectWhatsAppCredentials200ResponseAccount) SetIsActive(v bool) {
 	o.IsActive = &v
 }
 
-// GetSelectedPhoneNumber returns the SelectedPhoneNumber field value if set, zero value otherwise.
-func (o *ConnectWhatsAppCredentials200ResponseAccount) GetSelectedPhoneNumber() string {
-	if o == nil || IsNil(o.SelectedPhoneNumber) {
+// GetPhoneNumber returns the PhoneNumber field value if set, zero value otherwise.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) GetPhoneNumber() string {
+	if o == nil || IsNil(o.PhoneNumber) {
 		var ret string
 		return ret
 	}
-	return *o.SelectedPhoneNumber
+	return *o.PhoneNumber
 }
 
-// GetSelectedPhoneNumberOk returns a tuple with the SelectedPhoneNumber field value if set, nil otherwise
+// GetPhoneNumberOk returns a tuple with the PhoneNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConnectWhatsAppCredentials200ResponseAccount) GetSelectedPhoneNumberOk() (*string, bool) {
-	if o == nil || IsNil(o.SelectedPhoneNumber) {
+func (o *ConnectWhatsAppCredentials200ResponseAccount) GetPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.PhoneNumber) {
 		return nil, false
 	}
-	return o.SelectedPhoneNumber, true
+	return o.PhoneNumber, true
 }
 
-// HasSelectedPhoneNumber returns a boolean if a field has been set.
-func (o *ConnectWhatsAppCredentials200ResponseAccount) HasSelectedPhoneNumber() bool {
-	if o != nil && !IsNil(o.SelectedPhoneNumber) {
+// HasPhoneNumber returns a boolean if a field has been set.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) HasPhoneNumber() bool {
+	if o != nil && !IsNil(o.PhoneNumber) {
 		return true
 	}
 
 	return false
 }
 
-// SetSelectedPhoneNumber gets a reference to the given string and assigns it to the SelectedPhoneNumber field.
-func (o *ConnectWhatsAppCredentials200ResponseAccount) SetSelectedPhoneNumber(v string) {
-	o.SelectedPhoneNumber = &v
+// SetPhoneNumber gets a reference to the given string and assigns it to the PhoneNumber field.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) SetPhoneNumber(v string) {
+	o.PhoneNumber = &v
+}
+
+// GetVerifiedName returns the VerifiedName field value if set, zero value otherwise.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) GetVerifiedName() string {
+	if o == nil || IsNil(o.VerifiedName) {
+		var ret string
+		return ret
+	}
+	return *o.VerifiedName
+}
+
+// GetVerifiedNameOk returns a tuple with the VerifiedName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) GetVerifiedNameOk() (*string, bool) {
+	if o == nil || IsNil(o.VerifiedName) {
+		return nil, false
+	}
+	return o.VerifiedName, true
+}
+
+// HasVerifiedName returns a boolean if a field has been set.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) HasVerifiedName() bool {
+	if o != nil && !IsNil(o.VerifiedName) {
+		return true
+	}
+
+	return false
+}
+
+// SetVerifiedName gets a reference to the given string and assigns it to the VerifiedName field.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) SetVerifiedName(v string) {
+	o.VerifiedName = &v
+}
+
+// GetQualityRating returns the QualityRating field value if set, zero value otherwise.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) GetQualityRating() string {
+	if o == nil || IsNil(o.QualityRating) {
+		var ret string
+		return ret
+	}
+	return *o.QualityRating
+}
+
+// GetQualityRatingOk returns a tuple with the QualityRating field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) GetQualityRatingOk() (*string, bool) {
+	if o == nil || IsNil(o.QualityRating) {
+		return nil, false
+	}
+	return o.QualityRating, true
+}
+
+// HasQualityRating returns a boolean if a field has been set.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) HasQualityRating() bool {
+	if o != nil && !IsNil(o.QualityRating) {
+		return true
+	}
+
+	return false
+}
+
+// SetQualityRating gets a reference to the given string and assigns it to the QualityRating field.
+func (o *ConnectWhatsAppCredentials200ResponseAccount) SetQualityRating(v string) {
+	o.QualityRating = &v
 }
 
 func (o ConnectWhatsAppCredentials200ResponseAccount) MarshalJSON() ([]byte, error) {
@@ -265,8 +333,14 @@ func (o ConnectWhatsAppCredentials200ResponseAccount) ToMap() (map[string]interf
 	if !IsNil(o.IsActive) {
 		toSerialize["isActive"] = o.IsActive
 	}
-	if !IsNil(o.SelectedPhoneNumber) {
-		toSerialize["selectedPhoneNumber"] = o.SelectedPhoneNumber
+	if !IsNil(o.PhoneNumber) {
+		toSerialize["phoneNumber"] = o.PhoneNumber
+	}
+	if !IsNil(o.VerifiedName) {
+		toSerialize["verifiedName"] = o.VerifiedName
+	}
+	if !IsNil(o.QualityRating) {
+		toSerialize["qualityRating"] = o.QualityRating
 	}
 	return toSerialize, nil
 }

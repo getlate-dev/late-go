@@ -22,8 +22,10 @@ var _ MappedNullable = &ConnectWhatsAppCredentials200Response{}
 type ConnectWhatsAppCredentials200Response struct {
 	Message *string `json:"message,omitempty"`
 	// Present when the account was created but Meta rejected the Cloud API registration. The number cannot send messages until this is resolved.
-	RegistrationWarning *string                                       `json:"registrationWarning,omitempty"`
-	Account             *ConnectWhatsAppCredentials200ResponseAccount `json:"account,omitempty"`
+	RegistrationWarning *string `json:"registrationWarning,omitempty"`
+	// Present when the WABA webhook subscription (with the Zernio override callback) succeeded. Explains the delivery cutover and warns against unsubscribing the app from the WABA afterward.
+	WebhookNotice *string                                       `json:"webhookNotice,omitempty"`
+	Account       *ConnectWhatsAppCredentials200ResponseAccount `json:"account,omitempty"`
 }
 
 // NewConnectWhatsAppCredentials200Response instantiates a new ConnectWhatsAppCredentials200Response object
@@ -107,6 +109,38 @@ func (o *ConnectWhatsAppCredentials200Response) SetRegistrationWarning(v string)
 	o.RegistrationWarning = &v
 }
 
+// GetWebhookNotice returns the WebhookNotice field value if set, zero value otherwise.
+func (o *ConnectWhatsAppCredentials200Response) GetWebhookNotice() string {
+	if o == nil || IsNil(o.WebhookNotice) {
+		var ret string
+		return ret
+	}
+	return *o.WebhookNotice
+}
+
+// GetWebhookNoticeOk returns a tuple with the WebhookNotice field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectWhatsAppCredentials200Response) GetWebhookNoticeOk() (*string, bool) {
+	if o == nil || IsNil(o.WebhookNotice) {
+		return nil, false
+	}
+	return o.WebhookNotice, true
+}
+
+// HasWebhookNotice returns a boolean if a field has been set.
+func (o *ConnectWhatsAppCredentials200Response) HasWebhookNotice() bool {
+	if o != nil && !IsNil(o.WebhookNotice) {
+		return true
+	}
+
+	return false
+}
+
+// SetWebhookNotice gets a reference to the given string and assigns it to the WebhookNotice field.
+func (o *ConnectWhatsAppCredentials200Response) SetWebhookNotice(v string) {
+	o.WebhookNotice = &v
+}
+
 // GetAccount returns the Account field value if set, zero value otherwise.
 func (o *ConnectWhatsAppCredentials200Response) GetAccount() ConnectWhatsAppCredentials200ResponseAccount {
 	if o == nil || IsNil(o.Account) {
@@ -154,6 +188,9 @@ func (o ConnectWhatsAppCredentials200Response) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.RegistrationWarning) {
 		toSerialize["registrationWarning"] = o.RegistrationWarning
+	}
+	if !IsNil(o.WebhookNotice) {
+		toSerialize["webhookNotice"] = o.WebhookNotice
 	}
 	if !IsNil(o.Account) {
 		toSerialize["account"] = o.Account
