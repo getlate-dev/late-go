@@ -1470,7 +1470,7 @@ func (r WhatsAppFlowsAPIUpdateWhatsAppFlowRequest) Execute() (*UpdateYoutubeDefa
 /*
 UpdateWhatsAppFlow Update flow
 
-Update metadata (name, categories) of a DRAFT flow. Published flows are immutable.
+Update metadata (name, categories, endpointUri) of a DRAFT flow. Published flows are immutable.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param flowId Flow ID

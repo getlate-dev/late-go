@@ -27,6 +27,8 @@ type UpdateWhatsAppFlowRequest struct {
 	// New flow name
 	Name       *string  `json:"name,omitempty"`
 	Categories []string `json:"categories,omitempty"`
+	// HTTPS-only data exchange endpoint for the flow. Settable only while the flow is in DRAFT, and the flow's uploaded Flow JSON must declare data_api_version \"3.0\" for the endpoint to be used.
+	EndpointUri *string `json:"endpointUri,omitempty"`
 }
 
 type _UpdateWhatsAppFlowRequest UpdateWhatsAppFlowRequest
@@ -137,6 +139,38 @@ func (o *UpdateWhatsAppFlowRequest) SetCategories(v []string) {
 	o.Categories = v
 }
 
+// GetEndpointUri returns the EndpointUri field value if set, zero value otherwise.
+func (o *UpdateWhatsAppFlowRequest) GetEndpointUri() string {
+	if o == nil || IsNil(o.EndpointUri) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointUri
+}
+
+// GetEndpointUriOk returns a tuple with the EndpointUri field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateWhatsAppFlowRequest) GetEndpointUriOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointUri) {
+		return nil, false
+	}
+	return o.EndpointUri, true
+}
+
+// HasEndpointUri returns a boolean if a field has been set.
+func (o *UpdateWhatsAppFlowRequest) HasEndpointUri() bool {
+	if o != nil && !IsNil(o.EndpointUri) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointUri gets a reference to the given string and assigns it to the EndpointUri field.
+func (o *UpdateWhatsAppFlowRequest) SetEndpointUri(v string) {
+	o.EndpointUri = &v
+}
+
 func (o UpdateWhatsAppFlowRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -153,6 +187,9 @@ func (o UpdateWhatsAppFlowRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Categories) {
 		toSerialize["categories"] = o.Categories
+	}
+	if !IsNil(o.EndpointUri) {
+		toSerialize["endpointUri"] = o.EndpointUri
 	}
 	return toSerialize, nil
 }

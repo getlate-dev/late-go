@@ -32,6 +32,8 @@ type CreateWhatsAppFlowRequest struct {
 	CloneFlowId *string `json:"cloneFlowId,omitempty"`
 	// When cloning, true keeps the clone in cloneFlowId's version lineage (auto-numbered next version); false/absent creates an independent flow. Ignored without cloneFlowId.
 	AsVersion *bool `json:"asVersion,omitempty"`
+	// HTTPS-only data exchange endpoint for the flow. Settable only while the flow is in DRAFT, and the flow's uploaded Flow JSON must declare data_api_version \"3.0\" for the endpoint to be used.
+	EndpointUri *string `json:"endpointUri,omitempty"`
 }
 
 type _CreateWhatsAppFlowRequest CreateWhatsAppFlowRequest
@@ -192,6 +194,38 @@ func (o *CreateWhatsAppFlowRequest) SetAsVersion(v bool) {
 	o.AsVersion = &v
 }
 
+// GetEndpointUri returns the EndpointUri field value if set, zero value otherwise.
+func (o *CreateWhatsAppFlowRequest) GetEndpointUri() string {
+	if o == nil || IsNil(o.EndpointUri) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointUri
+}
+
+// GetEndpointUriOk returns a tuple with the EndpointUri field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateWhatsAppFlowRequest) GetEndpointUriOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointUri) {
+		return nil, false
+	}
+	return o.EndpointUri, true
+}
+
+// HasEndpointUri returns a boolean if a field has been set.
+func (o *CreateWhatsAppFlowRequest) HasEndpointUri() bool {
+	if o != nil && !IsNil(o.EndpointUri) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointUri gets a reference to the given string and assigns it to the EndpointUri field.
+func (o *CreateWhatsAppFlowRequest) SetEndpointUri(v string) {
+	o.EndpointUri = &v
+}
+
 func (o CreateWhatsAppFlowRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -210,6 +244,9 @@ func (o CreateWhatsAppFlowRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AsVersion) {
 		toSerialize["asVersion"] = o.AsVersion
+	}
+	if !IsNil(o.EndpointUri) {
+		toSerialize["endpointUri"] = o.EndpointUri
 	}
 	return toSerialize, nil
 }
