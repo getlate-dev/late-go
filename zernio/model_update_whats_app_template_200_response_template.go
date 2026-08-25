@@ -20,8 +20,9 @@ var _ MappedNullable = &UpdateWhatsAppTemplate200ResponseTemplate{}
 
 // UpdateWhatsAppTemplate200ResponseTemplate struct for UpdateWhatsAppTemplate200ResponseTemplate
 type UpdateWhatsAppTemplate200ResponseTemplate struct {
-	Id     *string `json:"id,omitempty"`
-	Name   *string `json:"name,omitempty"`
+	Id   *string `json:"id,omitempty"`
+	Name *string `json:"name,omitempty"`
+	// Approval state read back from Meta after the update, normally PENDING. If the state cannot be read back, the last known status is returned instead.
 	Status *string `json:"status,omitempty"`
 }
 

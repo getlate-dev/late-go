@@ -4705,6 +4705,11 @@ UpdateWhatsAppTemplate Update template
 Update a message template's components. Only certain fields can be updated depending on
 the template's current approval state. Approved templates can only have components updated.
 
+A successful update sends the template back to Meta for review, so the `status` returned
+here is normally `PENDING`. The final outcome arrives later on the
+`whatsapp.template.status_updated` webhook. A template already in `PENDING` cannot be
+edited again until Meta finishes reviewing it.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param templateName Template name
 	@return WhatsAppAPIUpdateWhatsAppTemplateRequest
