@@ -34,8 +34,9 @@ type CtwaAdRequestBody struct {
 	// Primary text shown above the image / video. Single-creative shape only. Mutually exclusive with `creatives[]`.
 	Body *string `json:"body,omitempty"`
 	// Image asset for single-creative shape. Mutually exclusive with `video` and with `creatives[]`. Required on the single-creative shape if `video` is not supplied.
-	ImageUrl *string                         `json:"imageUrl,omitempty"`
-	Video    *CreateStandaloneAdRequestVideo `json:"video,omitempty"`
+	ImageUrl       *string                          `json:"imageUrl,omitempty"`
+	Video          *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
+	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
 	// Multi-creative shape: N CTWA ads under one campaign + one ad set, sharing budget and targeting. Mutually exclusive with the top-level single-creative fields (`headline` / `body` / `imageUrl` / `video`): setting both is a 400, unlike `POST /v1/ads/create` where the top-level fields are silently ignored in multi-creative mode. Each entry must supply its own headline, body, and exactly one of `imageUrl` / `video`.
 	Creatives []CtwaAdRequestBodyCreativesInner `json:"creatives,omitempty"`
 	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `endDate`, `objective`, `countries`, `interests`, `audienceId` and `campaignStatus` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
@@ -306,6 +307,38 @@ func (o *CtwaAdRequestBody) HasVideo() bool {
 // SetVideo gets a reference to the given CreateStandaloneAdRequestVideo and assigns it to the Video field.
 func (o *CtwaAdRequestBody) SetVideo(v CreateStandaloneAdRequestVideo) {
 	o.Video = &v
+}
+
+// GetWelcomeMessage returns the WelcomeMessage field value if set, zero value otherwise.
+func (o *CtwaAdRequestBody) GetWelcomeMessage() CtwaAdRequestBodyWelcomeMessage {
+	if o == nil || IsNil(o.WelcomeMessage) {
+		var ret CtwaAdRequestBodyWelcomeMessage
+		return ret
+	}
+	return *o.WelcomeMessage
+}
+
+// GetWelcomeMessageOk returns a tuple with the WelcomeMessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBody) GetWelcomeMessageOk() (*CtwaAdRequestBodyWelcomeMessage, bool) {
+	if o == nil || IsNil(o.WelcomeMessage) {
+		return nil, false
+	}
+	return o.WelcomeMessage, true
+}
+
+// HasWelcomeMessage returns a boolean if a field has been set.
+func (o *CtwaAdRequestBody) HasWelcomeMessage() bool {
+	if o != nil && !IsNil(o.WelcomeMessage) {
+		return true
+	}
+
+	return false
+}
+
+// SetWelcomeMessage gets a reference to the given CtwaAdRequestBodyWelcomeMessage and assigns it to the WelcomeMessage field.
+func (o *CtwaAdRequestBody) SetWelcomeMessage(v CtwaAdRequestBodyWelcomeMessage) {
+	o.WelcomeMessage = &v
 }
 
 // GetCreatives returns the Creatives field value if set, zero value otherwise.
@@ -1164,6 +1197,9 @@ func (o CtwaAdRequestBody) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Video) {
 		toSerialize["video"] = o.Video
+	}
+	if !IsNil(o.WelcomeMessage) {
+		toSerialize["welcomeMessage"] = o.WelcomeMessage
 	}
 	if !IsNil(o.Creatives) {
 		toSerialize["creatives"] = o.Creatives

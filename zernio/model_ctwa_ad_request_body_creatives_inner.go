@@ -26,8 +26,9 @@ type CtwaAdRequestBodyCreativesInner struct {
 	// Primary text shown above the image / video.
 	Body string `json:"body"`
 	// Image asset. Mutually exclusive with this entry's `video`. Required if `video` is not supplied.
-	ImageUrl *string                         `json:"imageUrl,omitempty"`
-	Video    *CreateStandaloneAdRequestVideo `json:"video,omitempty"`
+	ImageUrl       *string                          `json:"imageUrl,omitempty"`
+	Video          *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
+	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
 }
 
 type _CtwaAdRequestBodyCreativesInner CtwaAdRequestBodyCreativesInner
@@ -163,6 +164,38 @@ func (o *CtwaAdRequestBodyCreativesInner) SetVideo(v CreateStandaloneAdRequestVi
 	o.Video = &v
 }
 
+// GetWelcomeMessage returns the WelcomeMessage field value if set, zero value otherwise.
+func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessage() CtwaAdRequestBodyWelcomeMessage {
+	if o == nil || IsNil(o.WelcomeMessage) {
+		var ret CtwaAdRequestBodyWelcomeMessage
+		return ret
+	}
+	return *o.WelcomeMessage
+}
+
+// GetWelcomeMessageOk returns a tuple with the WelcomeMessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessageOk() (*CtwaAdRequestBodyWelcomeMessage, bool) {
+	if o == nil || IsNil(o.WelcomeMessage) {
+		return nil, false
+	}
+	return o.WelcomeMessage, true
+}
+
+// HasWelcomeMessage returns a boolean if a field has been set.
+func (o *CtwaAdRequestBodyCreativesInner) HasWelcomeMessage() bool {
+	if o != nil && !IsNil(o.WelcomeMessage) {
+		return true
+	}
+
+	return false
+}
+
+// SetWelcomeMessage gets a reference to the given CtwaAdRequestBodyWelcomeMessage and assigns it to the WelcomeMessage field.
+func (o *CtwaAdRequestBodyCreativesInner) SetWelcomeMessage(v CtwaAdRequestBodyWelcomeMessage) {
+	o.WelcomeMessage = &v
+}
+
 func (o CtwaAdRequestBodyCreativesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -180,6 +213,9 @@ func (o CtwaAdRequestBodyCreativesInner) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.Video) {
 		toSerialize["video"] = o.Video
+	}
+	if !IsNil(o.WelcomeMessage) {
+		toSerialize["welcomeMessage"] = o.WelcomeMessage
 	}
 	return toSerialize, nil
 }
