@@ -25,6 +25,8 @@ type ListInboxConversations200ResponseMeta struct {
 	AccountsFailed  *int32                                                     `json:"accountsFailed,omitempty"`
 	FailedAccounts  []ListInboxConversations200ResponseMetaFailedAccountsInner `json:"failedAccounts,omitempty"`
 	LastUpdated     *time.Time                                                 `json:"lastUpdated,omitempty"`
+	// Connected accounts that were not queried: their platform does not support this feature, or the account is not enabled for it
+	AccountsSkipped []ListInboxConversations200ResponseMetaAccountsSkippedInner `json:"accountsSkipped,omitempty"`
 }
 
 // NewListInboxConversations200ResponseMeta instantiates a new ListInboxConversations200ResponseMeta object
@@ -172,6 +174,38 @@ func (o *ListInboxConversations200ResponseMeta) SetLastUpdated(v time.Time) {
 	o.LastUpdated = &v
 }
 
+// GetAccountsSkipped returns the AccountsSkipped field value if set, zero value otherwise.
+func (o *ListInboxConversations200ResponseMeta) GetAccountsSkipped() []ListInboxConversations200ResponseMetaAccountsSkippedInner {
+	if o == nil || IsNil(o.AccountsSkipped) {
+		var ret []ListInboxConversations200ResponseMetaAccountsSkippedInner
+		return ret
+	}
+	return o.AccountsSkipped
+}
+
+// GetAccountsSkippedOk returns a tuple with the AccountsSkipped field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxConversations200ResponseMeta) GetAccountsSkippedOk() ([]ListInboxConversations200ResponseMetaAccountsSkippedInner, bool) {
+	if o == nil || IsNil(o.AccountsSkipped) {
+		return nil, false
+	}
+	return o.AccountsSkipped, true
+}
+
+// HasAccountsSkipped returns a boolean if a field has been set.
+func (o *ListInboxConversations200ResponseMeta) HasAccountsSkipped() bool {
+	if o != nil && !IsNil(o.AccountsSkipped) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountsSkipped gets a reference to the given []ListInboxConversations200ResponseMetaAccountsSkippedInner and assigns it to the AccountsSkipped field.
+func (o *ListInboxConversations200ResponseMeta) SetAccountsSkipped(v []ListInboxConversations200ResponseMetaAccountsSkippedInner) {
+	o.AccountsSkipped = v
+}
+
 func (o ListInboxConversations200ResponseMeta) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -193,6 +227,9 @@ func (o ListInboxConversations200ResponseMeta) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.LastUpdated) {
 		toSerialize["lastUpdated"] = o.LastUpdated
+	}
+	if !IsNil(o.AccountsSkipped) {
+		toSerialize["accountsSkipped"] = o.AccountsSkipped
 	}
 	return toSerialize, nil
 }

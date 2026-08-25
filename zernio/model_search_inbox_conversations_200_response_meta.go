@@ -26,7 +26,7 @@ type SearchInboxConversations200ResponseMeta struct {
 	FailedAccounts  []SearchInboxConversations200ResponseMetaFailedAccountsInner `json:"failedAccounts,omitempty"`
 	LastUpdated     *time.Time                                                   `json:"lastUpdated,omitempty"`
 	// Connected messaging accounts that cannot be searched (live-fetched platforms)
-	AccountsSkipped []SearchInboxConversations200ResponseMetaAccountsSkippedInner `json:"accountsSkipped,omitempty"`
+	AccountsSkipped []ListInboxConversations200ResponseMetaAccountsSkippedInner `json:"accountsSkipped,omitempty"`
 }
 
 // NewSearchInboxConversations200ResponseMeta instantiates a new SearchInboxConversations200ResponseMeta object
@@ -175,9 +175,9 @@ func (o *SearchInboxConversations200ResponseMeta) SetLastUpdated(v time.Time) {
 }
 
 // GetAccountsSkipped returns the AccountsSkipped field value if set, zero value otherwise.
-func (o *SearchInboxConversations200ResponseMeta) GetAccountsSkipped() []SearchInboxConversations200ResponseMetaAccountsSkippedInner {
+func (o *SearchInboxConversations200ResponseMeta) GetAccountsSkipped() []ListInboxConversations200ResponseMetaAccountsSkippedInner {
 	if o == nil || IsNil(o.AccountsSkipped) {
-		var ret []SearchInboxConversations200ResponseMetaAccountsSkippedInner
+		var ret []ListInboxConversations200ResponseMetaAccountsSkippedInner
 		return ret
 	}
 	return o.AccountsSkipped
@@ -185,7 +185,7 @@ func (o *SearchInboxConversations200ResponseMeta) GetAccountsSkipped() []SearchI
 
 // GetAccountsSkippedOk returns a tuple with the AccountsSkipped field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SearchInboxConversations200ResponseMeta) GetAccountsSkippedOk() ([]SearchInboxConversations200ResponseMetaAccountsSkippedInner, bool) {
+func (o *SearchInboxConversations200ResponseMeta) GetAccountsSkippedOk() ([]ListInboxConversations200ResponseMetaAccountsSkippedInner, bool) {
 	if o == nil || IsNil(o.AccountsSkipped) {
 		return nil, false
 	}
@@ -201,8 +201,8 @@ func (o *SearchInboxConversations200ResponseMeta) HasAccountsSkipped() bool {
 	return false
 }
 
-// SetAccountsSkipped gets a reference to the given []SearchInboxConversations200ResponseMetaAccountsSkippedInner and assigns it to the AccountsSkipped field.
-func (o *SearchInboxConversations200ResponseMeta) SetAccountsSkipped(v []SearchInboxConversations200ResponseMetaAccountsSkippedInner) {
+// SetAccountsSkipped gets a reference to the given []ListInboxConversations200ResponseMetaAccountsSkippedInner and assigns it to the AccountsSkipped field.
+func (o *SearchInboxConversations200ResponseMeta) SetAccountsSkipped(v []ListInboxConversations200ResponseMetaAccountsSkippedInner) {
 	o.AccountsSkipped = v
 }
 
