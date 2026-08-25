@@ -3892,6 +3892,114 @@ func (a *WebhookEventsAPIService) OnWebhookTestExecute(r WebhookEventsAPIOnWebho
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnWhatsAppAccountNameStatusUpdatedRequest struct {
+	ctx                                            context.Context
+	ApiService                                     *WebhookEventsAPIService
+	webhookPayloadWhatsAppAccountNameStatusUpdated *WebhookPayloadWhatsAppAccountNameStatusUpdated
+}
+
+func (r WebhookEventsAPIOnWhatsAppAccountNameStatusUpdatedRequest) WebhookPayloadWhatsAppAccountNameStatusUpdated(webhookPayloadWhatsAppAccountNameStatusUpdated WebhookPayloadWhatsAppAccountNameStatusUpdated) WebhookEventsAPIOnWhatsAppAccountNameStatusUpdatedRequest {
+	r.webhookPayloadWhatsAppAccountNameStatusUpdated = &webhookPayloadWhatsAppAccountNameStatusUpdated
+	return r
+}
+
+func (r WebhookEventsAPIOnWhatsAppAccountNameStatusUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnWhatsAppAccountNameStatusUpdatedExecute(r)
+}
+
+/*
+OnWhatsAppAccountNameStatusUpdated WhatsApp display-name review outcome event
+
+Fired when Meta finishes reviewing a WhatsApp Business display-name
+change. Forwarded from Meta's `phone_number_name_update` webhook
+field on the WhatsApp Business Account. Fires only on a review
+outcome (`name.status` APPROVED, DECLINED, or PENDING_REVIEW); a name
+applied without review reports `name_status:
+AVAILABLE_WITHOUT_REVIEW` on the phone node instead and produces no
+event here. `decision` REJECTED maps to DECLINED and DEFERRED maps to
+PENDING_REVIEW, matching the `name_status` vocabulary returned by
+`GET /v1/whatsapp/number-info`. Delivery is at-least-once; dedupe on
+`(account.accountId, name.status, name.requestedName)`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnWhatsAppAccountNameStatusUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnWhatsAppAccountNameStatusUpdated(ctx context.Context) WebhookEventsAPIOnWhatsAppAccountNameStatusUpdatedRequest {
+	return WebhookEventsAPIOnWhatsAppAccountNameStatusUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnWhatsAppAccountNameStatusUpdatedExecute(r WebhookEventsAPIOnWhatsAppAccountNameStatusUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnWhatsAppAccountNameStatusUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/whatsapp.account.name_status_updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadWhatsAppAccountNameStatusUpdated == nil {
+		return nil, reportError("webhookPayloadWhatsAppAccountNameStatusUpdated is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadWhatsAppAccountNameStatusUpdated
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnWhatsAppAutomaticEventRequest struct {
 	ctx                             context.Context
 	ApiService                      *WebhookEventsAPIService
