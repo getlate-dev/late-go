@@ -925,6 +925,138 @@ func (a *ConnectAPIService) ConnectBlueskyCredentialsExecute(r ConnectAPIConnect
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIConnectDiscordChannelRequest struct {
+	ctx                          context.Context
+	ApiService                   *ConnectAPIService
+	connectDiscordChannelRequest *ConnectDiscordChannelRequest
+}
+
+func (r ConnectAPIConnectDiscordChannelRequest) ConnectDiscordChannelRequest(connectDiscordChannelRequest ConnectDiscordChannelRequest) ConnectAPIConnectDiscordChannelRequest {
+	r.connectDiscordChannelRequest = &connectDiscordChannelRequest
+	return r
+}
+
+func (r ConnectAPIConnectDiscordChannelRequest) Execute() (*http.Response, error) {
+	return r.ApiService.ConnectDiscordChannelExecute(r)
+}
+
+/*
+ConnectDiscordChannel Connect a Discord channel
+
+Finalize a Discord connect by binding one channel to a profile. Served by a dedicated route, so it is not reachable through POST /v1/connect/{platform}. One connected account per channel: repeat the call with a different channelId to add another.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectDiscordChannelRequest
+*/
+func (a *ConnectAPIService) ConnectDiscordChannel(ctx context.Context) ConnectAPIConnectDiscordChannelRequest {
+	return ConnectAPIConnectDiscordChannelRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *ConnectAPIService) ConnectDiscordChannelExecute(r ConnectAPIConnectDiscordChannelRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectDiscordChannel")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/discord"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectDiscordChannelRequest == nil {
+		return nil, reportError("connectDiscordChannelRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectDiscordChannelRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject1
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type ConnectAPIConnectOpenAIAdsCredentialsRequest struct {
 	ctx                                context.Context
 	ApiService                         *ConnectAPIService
@@ -1194,6 +1326,138 @@ func (a *ConnectAPIService) ConnectShopifyWithTokenExecute(r ConnectAPIConnectSh
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIConnectSlackChannelRequest struct {
+	ctx                        context.Context
+	ApiService                 *ConnectAPIService
+	connectSlackChannelRequest *ConnectSlackChannelRequest
+}
+
+func (r ConnectAPIConnectSlackChannelRequest) ConnectSlackChannelRequest(connectSlackChannelRequest ConnectSlackChannelRequest) ConnectAPIConnectSlackChannelRequest {
+	r.connectSlackChannelRequest = &connectSlackChannelRequest
+	return r
+}
+
+func (r ConnectAPIConnectSlackChannelRequest) Execute() (*http.Response, error) {
+	return r.ApiService.ConnectSlackChannelExecute(r)
+}
+
+/*
+ConnectSlackChannel Connect a Slack channel
+
+Finalize a Slack connect by creating the per-channel account. Served by a dedicated route, so it is not reachable through POST /v1/connect/{platform}. Send pendingDataToken for a first connect (the nonce from the OAuth redirect) or accountId to add another channel to a workspace already connected.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectSlackChannelRequest
+*/
+func (a *ConnectAPIService) ConnectSlackChannel(ctx context.Context) ConnectAPIConnectSlackChannelRequest {
+	return ConnectAPIConnectSlackChannelRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *ConnectAPIService) ConnectSlackChannelExecute(r ConnectAPIConnectSlackChannelRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectSlackChannel")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/slack"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectSlackChannelRequest == nil {
+		return nil, reportError("connectSlackChannelRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectSlackChannelRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject1
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type ConnectAPIConnectWhatsAppCredentialsRequest struct {
 	ctx                               context.Context
 	ApiService                        *ConnectAPIService
@@ -1319,6 +1583,138 @@ func (a *ConnectAPIService) ConnectWhatsAppCredentialsExecute(r ConnectAPIConnec
 	}
 
 	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIConnectWhatsAppEmbeddedSignupRequest struct {
+	ctx                                  context.Context
+	ApiService                           *ConnectAPIService
+	connectWhatsAppEmbeddedSignupRequest *ConnectWhatsAppEmbeddedSignupRequest
+}
+
+func (r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) ConnectWhatsAppEmbeddedSignupRequest(connectWhatsAppEmbeddedSignupRequest ConnectWhatsAppEmbeddedSignupRequest) ConnectAPIConnectWhatsAppEmbeddedSignupRequest {
+	r.connectWhatsAppEmbeddedSignupRequest = &connectWhatsAppEmbeddedSignupRequest
+	return r
+}
+
+func (r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) Execute() (*http.Response, error) {
+	return r.ApiService.ConnectWhatsAppEmbeddedSignupExecute(r)
+}
+
+/*
+ConnectWhatsAppEmbeddedSignup Connect WhatsApp from Embedded Signup
+
+Exchange the authorization code Meta Embedded Signup returns to your browser SDK. This is the headless completion path for WhatsApp: the code never passes through a redirect_uri, so POST /v1/connect/{platform} cannot accept it.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectWhatsAppEmbeddedSignupRequest
+*/
+func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignup(ctx context.Context) ConnectAPIConnectWhatsAppEmbeddedSignupRequest {
+	return ConnectAPIConnectWhatsAppEmbeddedSignupRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignupExecute(r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectWhatsAppEmbeddedSignup")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/whatsapp/embedded-signup"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectWhatsAppEmbeddedSignupRequest == nil {
+		return nil, reportError("connectWhatsAppEmbeddedSignupRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectWhatsAppEmbeddedSignupRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject1
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
 }
 
 type ConnectAPICreatePinterestBoardRequest struct {
@@ -3061,8 +3457,10 @@ HandleOAuthCallback Complete OAuth callback
 
 Exchange the OAuth authorization code for tokens and connect the account to the specified profile.
 
+Facebook, Google Business, Snapchat and WhatsApp are not accepted here: their account identity is a destination chosen after OAuth, which this single-shot exchange cannot do. Connect them through the redirect flow from `GET /v1/connect/{platform}`, or, for WhatsApp Embedded Signup, through `POST /v1/connect/whatsapp/embedded-signup`.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param platform
+	@param platform Social platform to complete the connect for. Discord, Slack and Telegram are absent because they are served by their own dedicated routes, documented separately.
 	@return ConnectAPIHandleOAuthCallbackRequest
 */
 func (a *ConnectAPIService) HandleOAuthCallback(ctx context.Context, platform string) ConnectAPIHandleOAuthCallbackRequest {
@@ -3139,6 +3537,17 @@ func (a *ConnectAPIService) HandleOAuthCallbackExecute(r ConnectAPIHandleOAuthCa
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject1
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
