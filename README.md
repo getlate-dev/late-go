@@ -321,6 +321,7 @@ func main() {
 | `client.AdCreativesAPI.ListAdVideos(ctx)` | Ad video library |
 | `client.AdCreativesAPI.CreateAdCreative(ctx)` | Create a standalone creative |
 | `client.AdCreativesAPI.GetAdCreative(ctx)` | Creative details |
+| `client.AdCreativesAPI.GetAdMedia(ctx)` | Direct video and image URLs for an ad |
 | `client.AdCreativesAPI.GetAdPreviews(ctx)` | Render previews of an existing ad |
 | `client.AdCreativesAPI.UpdateAdCreative(ctx)` | Rename a creative |
 | `client.AdCreativesAPI.DeleteAdCreative(ctx)` | Delete a creative |

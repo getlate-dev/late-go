@@ -691,6 +691,130 @@ func (a *AdCreativesAPIService) GetAdCreativeExecute(r AdCreativesAPIGetAdCreati
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCreativesAPIGetAdMediaRequest struct {
+	ctx        context.Context
+	ApiService *AdCreativesAPIService
+	adId       string
+}
+
+func (r AdCreativesAPIGetAdMediaRequest) Execute() (*GetAdMedia200Response, *http.Response, error) {
+	return r.ApiService.GetAdMediaExecute(r)
+}
+
+/*
+GetAdMedia Direct video and image URLs for an ad
+
+Returns the direct signed URLs for every video and image asset used by an ad's live
+creative, normalised across shapes: single image/video, carousel,
+Reels/Story (`object_story_spec.video_data`) and dynamic
+creative (`asset_feed_spec`). Video items include Meta's poster thumbnail and the
+video's Meta id when available.
+
+Reads Meta live rather than the stored creative blob because Meta's signed fbcdn
+URLs carry an `oe=<hex>` expiration (image_url ~24 h, video source ~12 d). Treat
+URLs as short-lived — re-fetch this endpoint before serving or downloading assets
+instead of caching URLs beyond that window.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adId Zernio ad id (24-char hex) or platform ad id.
+	@return AdCreativesAPIGetAdMediaRequest
+*/
+func (a *AdCreativesAPIService) GetAdMedia(ctx context.Context, adId string) AdCreativesAPIGetAdMediaRequest {
+	return AdCreativesAPIGetAdMediaRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adId:       adId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdMedia200Response
+func (a *AdCreativesAPIService) GetAdMediaExecute(r AdCreativesAPIGetAdMediaRequest) (*GetAdMedia200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdMedia200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCreativesAPIService.GetAdMedia")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/{adId}/media"
+	localVarPath = strings.Replace(localVarPath, "{"+"adId"+"}", url.PathEscape(parameterValueToString(r.adId, "adId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCreativesAPIGetAdPreviewsRequest struct {
 	ctx        context.Context
 	ApiService *AdCreativesAPIService
