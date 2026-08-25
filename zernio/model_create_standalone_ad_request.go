@@ -152,6 +152,8 @@ type CreateStandaloneAdRequest struct {
 	AdditionalHeadlines []string `json:"additionalHeadlines,omitempty"`
 	// Google Search RSA only. Extra descriptions.
 	AdditionalDescriptions []string `json:"additionalDescriptions,omitempty"`
+	// Google Search only. Sitelink assets to create and attach at the campaign level. Each entry becomes an Asset (with sitelink_asset + Asset.final_urls) plus a CampaignAsset link (field_type SITELINK). Approval is async — Google reviews assets after creation; poll asset.policy_summary later to read the verdict. Google requires at least two sitelinks to surface them on an ad; four or more is Google's own recommendation for maximum visibility. The response's creative.sitelinks[] echoes each input plus its Google resourceName.
+	Sitelinks []CreateStandaloneAdRequestSitelinksInner `json:"sitelinks,omitempty"`
 	// Meta only. Controls the Advantage audience feature (targeting_automation). 0 = disabled (default), 1 = enabled. Meta Marketing API requires this field on all ad set creation requests.
 	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
 	// Meta only. Conversion attribution window for the ad set — maps 1:1 to Meta's ad-set `attribution_spec`. Only honored for conversion goals (`conversions`, `lead_generation`, `app_promotion`); ignored for awareness/traffic/engagement. Omit to use Meta's default (`7-day click` + `1-day view`). Meta enforces the valid combinations: `VIEW_THROUGH` only allows `windowDays: 1` (7d/28d view windows were removed Jan 2026); `ENGAGED_VIDEO_VIEW` only `1` and only alongside `VIEW_THROUGH: 1`; `CLICK_THROUGH: 28` only on certain objectives. Invalid combos surface as a Meta 400. Example: `[{ \"eventType\": \"CLICK_THROUGH\", \"windowDays\": 7 }, { \"eventType\": \"VIEW_THROUGH\", \"windowDays\": 1 }]`
@@ -2434,6 +2436,38 @@ func (o *CreateStandaloneAdRequest) SetAdditionalDescriptions(v []string) {
 	o.AdditionalDescriptions = v
 }
 
+// GetSitelinks returns the Sitelinks field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetSitelinks() []CreateStandaloneAdRequestSitelinksInner {
+	if o == nil || IsNil(o.Sitelinks) {
+		var ret []CreateStandaloneAdRequestSitelinksInner
+		return ret
+	}
+	return o.Sitelinks
+}
+
+// GetSitelinksOk returns a tuple with the Sitelinks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetSitelinksOk() ([]CreateStandaloneAdRequestSitelinksInner, bool) {
+	if o == nil || IsNil(o.Sitelinks) {
+		return nil, false
+	}
+	return o.Sitelinks, true
+}
+
+// HasSitelinks returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasSitelinks() bool {
+	if o != nil && !IsNil(o.Sitelinks) {
+		return true
+	}
+
+	return false
+}
+
+// SetSitelinks gets a reference to the given []CreateStandaloneAdRequestSitelinksInner and assigns it to the Sitelinks field.
+func (o *CreateStandaloneAdRequest) SetSitelinks(v []CreateStandaloneAdRequestSitelinksInner) {
+	o.Sitelinks = v
+}
+
 // GetAdvantageAudience returns the AdvantageAudience field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetAdvantageAudience() int32 {
 	if o == nil || IsNil(o.AdvantageAudience) {
@@ -3136,6 +3170,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AdditionalDescriptions) {
 		toSerialize["additionalDescriptions"] = o.AdditionalDescriptions
+	}
+	if !IsNil(o.Sitelinks) {
+		toSerialize["sitelinks"] = o.Sitelinks
 	}
 	if !IsNil(o.AdvantageAudience) {
 		toSerialize["advantageAudience"] = o.AdvantageAudience
