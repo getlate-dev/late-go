@@ -33,7 +33,7 @@ type Ad struct {
 	AdType       *string         `json:"adType,omitempty"`
 	// Creative format, classified from the media the creative carries. `null` when the creative carries no media to classify — an unsynced creative and a genuine text-only ad are indistinguishable, so neither is guessed at. Returned by `GET /v1/ads`, `GET /v1/ads/{adId}` and the ad nodes of `GET /v1/ads/tree`.
 	CreativeType NullableString `json:"creativeType,omitempty"`
-	// Available goals vary by platform. Meta (Facebook/Instagram) supports all 9 (incl. `lead_conversion` = website pixel lead optimization and `catalog_sales` = Advantage+ catalog ads). TikTok supports the 7 non-`lead_conversion` goals. LinkedIn supports all except app_promotion / lead_conversion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
+	// Available goals vary by platform. Meta (Facebook/Instagram) supports all 10 (incl. `lead_conversion` = website pixel lead optimization, `catalog_sales` = Advantage+ catalog ads and `page_likes` = Page Likes conversion location under Engagement). TikTok supports engagement, traffic, awareness, video_views, lead_generation, conversions, app_promotion. LinkedIn supports all Meta goals except app_promotion / lead_conversion / catalog_sales / page_likes. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 	Goal *string `json:"goal,omitempty"`
 	// True for ads synced from platform ad managers
 	IsExternal          *bool             `json:"isExternal,omitempty"`
