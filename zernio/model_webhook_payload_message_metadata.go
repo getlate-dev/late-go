@@ -30,7 +30,7 @@ type WebhookPayloadMessageMetadata struct {
 	PostbackTitle *string `json:"postbackTitle,omitempty"`
 	// Callback data from an inline keyboard button tap (Telegram).
 	CallbackData *string `json:"callbackData,omitempty"`
-	// WhatsApp only. Which kind of interactive reply the user sent: `button_reply` (tap on an interactive button), `list_reply` (tap on a list row), or `nfm_reply` (a WhatsApp Flow submission).
+	// WhatsApp only. Which kind of interactive reply the user sent: `button_reply` (tap on an interactive button), `list_reply` (tap on a list row), or `nfm_reply` (a WhatsApp Flow submission or an `address_message` submission, see `nfmReplyName`).
 	InteractiveType *string `json:"interactiveType,omitempty"`
 	// WhatsApp only. The `id` of the tapped button or list row, matching the `id` you supplied when the message was sent. Not set for Flow responses.
 	InteractiveId *string `json:"interactiveId,omitempty"`
@@ -38,10 +38,12 @@ type WebhookPayloadMessageMetadata struct {
 	ButtonPayload *string `json:"buttonPayload,omitempty"`
 	// WhatsApp only. Raw `nfm_reply.response_json` string returned by a Flow submission. Useful if you need the exact wire payload; for typed access use `flowResponseData` instead.
 	FlowResponseJson *string `json:"flowResponseJson,omitempty"`
-	// WhatsApp only. Parsed Flow response JSON. Populated when `flowResponseJson` is valid JSON; otherwise omitted. Keys and value types depend on the specific Flow that was submitted.
-	FlowResponseData map[string]interface{}                        `json:"flowResponseData,omitempty"`
-	Order            *WebhookPayloadMessageMetadataOrder           `json:"order,omitempty"`
-	ReferredProduct  *WebhookPayloadMessageMetadataReferredProduct `json:"referredProduct,omitempty"`
+	// WhatsApp only. Parsed Flow response JSON. Populated when `flowResponseJson` is valid JSON; otherwise omitted. Keys and value types depend on the specific Flow that was submitted. An `address_message` submission (`nfmReplyName: address_message`) carries the address fields (`name`, `address`, `city`, `state`, `in_pin_code`, ...), either at the top level or nested under `values`; read both.
+	FlowResponseData map[string]interface{} `json:"flowResponseData,omitempty"`
+	// WhatsApp only. `nfm_reply.name` as Meta sent it, e.g. `flow` or `address_message`. Address submissions share the `nfm_reply` envelope with Flow submissions and are otherwise indistinguishable in `flowResponseData`; use this field to tell them apart.
+	NfmReplyName    *string                                       `json:"nfmReplyName,omitempty"`
+	Order           *WebhookPayloadMessageMetadataOrder           `json:"order,omitempty"`
+	ReferredProduct *WebhookPayloadMessageMetadataReferredProduct `json:"referredProduct,omitempty"`
 	// WhatsApp only. Contact cards the user shared, forwarded verbatim from Meta. Read `contactsOrigin` before treating any number here as the sender's own.
 	Contacts []map[string]interface{} `json:"contacts,omitempty"`
 	// WhatsApp only. How the contact card was shared. `contact_request` means the user tapped a `request_contact_info` button, so the number is their own and consented. `other` means they picked a card from their address book: it may be anyone's, and must NOT be stored as the sender's identity. Omitted when Meta sends no origin.
@@ -392,6 +394,38 @@ func (o *WebhookPayloadMessageMetadata) SetFlowResponseData(v map[string]interfa
 	o.FlowResponseData = v
 }
 
+// GetNfmReplyName returns the NfmReplyName field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetNfmReplyName() string {
+	if o == nil || IsNil(o.NfmReplyName) {
+		var ret string
+		return ret
+	}
+	return *o.NfmReplyName
+}
+
+// GetNfmReplyNameOk returns a tuple with the NfmReplyName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetNfmReplyNameOk() (*string, bool) {
+	if o == nil || IsNil(o.NfmReplyName) {
+		return nil, false
+	}
+	return o.NfmReplyName, true
+}
+
+// HasNfmReplyName returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasNfmReplyName() bool {
+	if o != nil && !IsNil(o.NfmReplyName) {
+		return true
+	}
+
+	return false
+}
+
+// SetNfmReplyName gets a reference to the given string and assigns it to the NfmReplyName field.
+func (o *WebhookPayloadMessageMetadata) SetNfmReplyName(v string) {
+	o.NfmReplyName = &v
+}
+
 // GetOrder returns the Order field value if set, zero value otherwise.
 func (o *WebhookPayloadMessageMetadata) GetOrder() WebhookPayloadMessageMetadataOrder {
 	if o == nil || IsNil(o.Order) {
@@ -719,6 +753,9 @@ func (o WebhookPayloadMessageMetadata) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.FlowResponseData) {
 		toSerialize["flowResponseData"] = o.FlowResponseData
+	}
+	if !IsNil(o.NfmReplyName) {
+		toSerialize["nfmReplyName"] = o.NfmReplyName
 	}
 	if !IsNil(o.Order) {
 		toSerialize["order"] = o.Order

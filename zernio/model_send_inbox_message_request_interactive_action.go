@@ -19,16 +19,17 @@ import (
 
 // SendInboxMessageRequestInteractiveAction - struct for SendInboxMessageRequestInteractiveAction
 type SendInboxMessageRequestInteractiveAction struct {
-	SendInboxMessageRequestInteractiveActionOneOf  *SendInboxMessageRequestInteractiveActionOneOf
-	SendInboxMessageRequestInteractiveActionOneOf1 *SendInboxMessageRequestInteractiveActionOneOf1
-	SendInboxMessageRequestInteractiveActionOneOf2 *SendInboxMessageRequestInteractiveActionOneOf2
-	SendInboxMessageRequestInteractiveActionOneOf3 *SendInboxMessageRequestInteractiveActionOneOf3
-	SendInboxMessageRequestInteractiveActionOneOf4 *SendInboxMessageRequestInteractiveActionOneOf4
-	SendInboxMessageRequestInteractiveActionOneOf5 *SendInboxMessageRequestInteractiveActionOneOf5
-	SendInboxMessageRequestInteractiveActionOneOf6 *SendInboxMessageRequestInteractiveActionOneOf6
-	SendInboxMessageRequestInteractiveActionOneOf7 *SendInboxMessageRequestInteractiveActionOneOf7
-	SendInboxMessageRequestInteractiveActionOneOf8 *SendInboxMessageRequestInteractiveActionOneOf8
-	SendInboxMessageRequestInteractiveActionOneOf9 *SendInboxMessageRequestInteractiveActionOneOf9
+	SendInboxMessageRequestInteractiveActionOneOf   *SendInboxMessageRequestInteractiveActionOneOf
+	SendInboxMessageRequestInteractiveActionOneOf1  *SendInboxMessageRequestInteractiveActionOneOf1
+	SendInboxMessageRequestInteractiveActionOneOf10 *SendInboxMessageRequestInteractiveActionOneOf10
+	SendInboxMessageRequestInteractiveActionOneOf2  *SendInboxMessageRequestInteractiveActionOneOf2
+	SendInboxMessageRequestInteractiveActionOneOf3  *SendInboxMessageRequestInteractiveActionOneOf3
+	SendInboxMessageRequestInteractiveActionOneOf4  *SendInboxMessageRequestInteractiveActionOneOf4
+	SendInboxMessageRequestInteractiveActionOneOf5  *SendInboxMessageRequestInteractiveActionOneOf5
+	SendInboxMessageRequestInteractiveActionOneOf6  *SendInboxMessageRequestInteractiveActionOneOf6
+	SendInboxMessageRequestInteractiveActionOneOf7  *SendInboxMessageRequestInteractiveActionOneOf7
+	SendInboxMessageRequestInteractiveActionOneOf8  *SendInboxMessageRequestInteractiveActionOneOf8
+	SendInboxMessageRequestInteractiveActionOneOf9  *SendInboxMessageRequestInteractiveActionOneOf9
 }
 
 // SendInboxMessageRequestInteractiveActionOneOfAsSendInboxMessageRequestInteractiveAction is a convenience function that returns SendInboxMessageRequestInteractiveActionOneOf wrapped in SendInboxMessageRequestInteractiveAction
@@ -42,6 +43,13 @@ func SendInboxMessageRequestInteractiveActionOneOfAsSendInboxMessageRequestInter
 func SendInboxMessageRequestInteractiveActionOneOf1AsSendInboxMessageRequestInteractiveAction(v *SendInboxMessageRequestInteractiveActionOneOf1) SendInboxMessageRequestInteractiveAction {
 	return SendInboxMessageRequestInteractiveAction{
 		SendInboxMessageRequestInteractiveActionOneOf1: v,
+	}
+}
+
+// SendInboxMessageRequestInteractiveActionOneOf10AsSendInboxMessageRequestInteractiveAction is a convenience function that returns SendInboxMessageRequestInteractiveActionOneOf10 wrapped in SendInboxMessageRequestInteractiveAction
+func SendInboxMessageRequestInteractiveActionOneOf10AsSendInboxMessageRequestInteractiveAction(v *SendInboxMessageRequestInteractiveActionOneOf10) SendInboxMessageRequestInteractiveAction {
+	return SendInboxMessageRequestInteractiveAction{
+		SendInboxMessageRequestInteractiveActionOneOf10: v,
 	}
 }
 
@@ -137,6 +145,23 @@ func (dst *SendInboxMessageRequestInteractiveAction) UnmarshalJSON(data []byte) 
 		}
 	} else {
 		dst.SendInboxMessageRequestInteractiveActionOneOf1 = nil
+	}
+
+	// try to unmarshal data into SendInboxMessageRequestInteractiveActionOneOf10
+	err = newStrictDecoder(data).Decode(&dst.SendInboxMessageRequestInteractiveActionOneOf10)
+	if err == nil {
+		jsonSendInboxMessageRequestInteractiveActionOneOf10, _ := json.Marshal(dst.SendInboxMessageRequestInteractiveActionOneOf10)
+		if string(jsonSendInboxMessageRequestInteractiveActionOneOf10) == "{}" { // empty struct
+			dst.SendInboxMessageRequestInteractiveActionOneOf10 = nil
+		} else {
+			if err = validator.Validate(dst.SendInboxMessageRequestInteractiveActionOneOf10); err != nil {
+				dst.SendInboxMessageRequestInteractiveActionOneOf10 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.SendInboxMessageRequestInteractiveActionOneOf10 = nil
 	}
 
 	// try to unmarshal data into SendInboxMessageRequestInteractiveActionOneOf2
@@ -279,6 +304,7 @@ func (dst *SendInboxMessageRequestInteractiveAction) UnmarshalJSON(data []byte) 
 		// reset to nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf = nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf1 = nil
+		dst.SendInboxMessageRequestInteractiveActionOneOf10 = nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf2 = nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf3 = nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf4 = nil
@@ -304,6 +330,10 @@ func (src SendInboxMessageRequestInteractiveAction) MarshalJSON() ([]byte, error
 
 	if src.SendInboxMessageRequestInteractiveActionOneOf1 != nil {
 		return json.Marshal(&src.SendInboxMessageRequestInteractiveActionOneOf1)
+	}
+
+	if src.SendInboxMessageRequestInteractiveActionOneOf10 != nil {
+		return json.Marshal(&src.SendInboxMessageRequestInteractiveActionOneOf10)
 	}
 
 	if src.SendInboxMessageRequestInteractiveActionOneOf2 != nil {
@@ -354,6 +384,10 @@ func (obj *SendInboxMessageRequestInteractiveAction) GetActualInstance() interfa
 		return obj.SendInboxMessageRequestInteractiveActionOneOf1
 	}
 
+	if obj.SendInboxMessageRequestInteractiveActionOneOf10 != nil {
+		return obj.SendInboxMessageRequestInteractiveActionOneOf10
+	}
+
 	if obj.SendInboxMessageRequestInteractiveActionOneOf2 != nil {
 		return obj.SendInboxMessageRequestInteractiveActionOneOf2
 	}
@@ -398,6 +432,10 @@ func (obj SendInboxMessageRequestInteractiveAction) GetActualInstanceValue() int
 
 	if obj.SendInboxMessageRequestInteractiveActionOneOf1 != nil {
 		return *obj.SendInboxMessageRequestInteractiveActionOneOf1
+	}
+
+	if obj.SendInboxMessageRequestInteractiveActionOneOf10 != nil {
+		return *obj.SendInboxMessageRequestInteractiveActionOneOf10
 	}
 
 	if obj.SendInboxMessageRequestInteractiveActionOneOf2 != nil {
