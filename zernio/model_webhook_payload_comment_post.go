@@ -30,7 +30,7 @@ type WebhookPayloadCommentPost struct {
 	Content NullableString `json:"content"`
 	// Post thumbnail or first media item URL. Platform CDN URLs expire, fetch promptly.
 	ImageUrl NullableString `json:"imageUrl"`
-	// Public URL of the post. Null for posts published through Zernio that were never re-synced.
+	// Public URL of the post. Null when no URL was ever stored for it, for example a platform draft or a post recovered without one.
 	Permalink NullableString `json:"permalink"`
 }
 
