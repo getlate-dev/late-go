@@ -534,6 +534,8 @@ ReplyToGoogleBusinessReview Reply to a review
 Posts (or updates) the business owner reply to a Google Business review.
 The reply is associated with the account's currently selected location (set via /v1/accounts/{accountId}/gmb-locations).
 Calling this endpoint a second time on the same review overwrites the previous reply (PUT semantics on Google's side).
+Google keeps no history, so an automated retry silently replaces a reply someone edited by hand in the Google Business Profile UI.
+Read the review before retrying if a human may have answered it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The Zernio account ID (from /v1/accounts)
