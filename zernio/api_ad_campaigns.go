@@ -1596,7 +1596,7 @@ func (r AdCampaignsAPIGetAdTreeRequest) Status(status AdStatus) AdCampaignsAPIGe
 	return r
 }
 
-// Platform ad account ID
+// One or more platform ad account IDs to scope the tree to (agency profiles connect a whole Business Manager but a workspace usually cares about a subset). Comma-separate for multiple (&#x60;?adAccountId&#x3D;act_1,act_2,act_3&#x60;); single value keeps its old shape. Max 50 accounts per request; the plural aliases &#x60;adAccountIds&#x60; and &#x60;platformAdAccountIds&#x60; are rejected with a 400 to stop them from silently returning the unfiltered fleet.
 func (r AdCampaignsAPIGetAdTreeRequest) AdAccountId(adAccountId string) AdCampaignsAPIGetAdTreeRequest {
 	r.adAccountId = &adAccountId
 	return r
