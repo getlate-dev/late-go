@@ -153,7 +153,11 @@ type CreateStandaloneAdRequest struct {
 	// Google Search RSA only. Extra descriptions.
 	AdditionalDescriptions []string `json:"additionalDescriptions,omitempty"`
 	// Google Search only. Sitelink assets to create and attach at the campaign level. Each entry becomes an Asset (with sitelink_asset + Asset.final_urls) plus a CampaignAsset link (field_type SITELINK). Approval is async — Google reviews assets after creation; poll asset.policy_summary later to read the verdict. Google requires at least two sitelinks to surface them on an ad; four or more is Google's own recommendation for maximum visibility. The response's creative.sitelinks[] echoes each input plus its Google resourceName.
-	Sitelinks []CreateStandaloneAdRequestSitelinksInner `json:"sitelinks,omitempty"`
+	Sitelinks []AttachCampaignAssetsRequestSitelinksInner `json:"sitelinks,omitempty"`
+	// Google Search only. Short callout texts (max 25 chars each) that appear as non-clickable annotations under the ad, e.g. \"Free shipping\", \"24/7 support\". Each becomes one Asset (`callout_asset`) plus a CampaignAsset link with field_type CALLOUT. Response's creative.callouts[] echoes each input plus its Google resourceName.
+	Callouts []string `json:"callouts,omitempty"`
+	// Google Search only. Structured snippets — one header from Google's predefined list plus 3-10 values (max 25 chars each). Each becomes one Asset (`structured_snippet_asset`) plus a CampaignAsset link with field_type STRUCTURED_SNIPPET.
+	StructuredSnippets []AttachCampaignAssetsRequestStructuredSnippetsInner `json:"structuredSnippets,omitempty"`
 	// Meta only. Controls the Advantage audience feature (targeting_automation). 0 = disabled (default), 1 = enabled. Meta Marketing API requires this field on all ad set creation requests.
 	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
 	// Meta only. Conversion attribution window for the ad set — maps 1:1 to Meta's ad-set `attribution_spec`. Only honored for conversion goals (`conversions`, `lead_generation`, `app_promotion`); ignored for awareness/traffic/engagement. Omit to use Meta's default (`7-day click` + `1-day view`). Meta enforces the valid combinations: `VIEW_THROUGH` only allows `windowDays: 1` (7d/28d view windows were removed Jan 2026); `ENGAGED_VIDEO_VIEW` only `1` and only alongside `VIEW_THROUGH: 1`; `CLICK_THROUGH: 28` only on certain objectives. Invalid combos surface as a Meta 400. Example: `[{ \"eventType\": \"CLICK_THROUGH\", \"windowDays\": 7 }, { \"eventType\": \"VIEW_THROUGH\", \"windowDays\": 1 }]`
@@ -2437,9 +2441,9 @@ func (o *CreateStandaloneAdRequest) SetAdditionalDescriptions(v []string) {
 }
 
 // GetSitelinks returns the Sitelinks field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetSitelinks() []CreateStandaloneAdRequestSitelinksInner {
+func (o *CreateStandaloneAdRequest) GetSitelinks() []AttachCampaignAssetsRequestSitelinksInner {
 	if o == nil || IsNil(o.Sitelinks) {
-		var ret []CreateStandaloneAdRequestSitelinksInner
+		var ret []AttachCampaignAssetsRequestSitelinksInner
 		return ret
 	}
 	return o.Sitelinks
@@ -2447,7 +2451,7 @@ func (o *CreateStandaloneAdRequest) GetSitelinks() []CreateStandaloneAdRequestSi
 
 // GetSitelinksOk returns a tuple with the Sitelinks field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetSitelinksOk() ([]CreateStandaloneAdRequestSitelinksInner, bool) {
+func (o *CreateStandaloneAdRequest) GetSitelinksOk() ([]AttachCampaignAssetsRequestSitelinksInner, bool) {
 	if o == nil || IsNil(o.Sitelinks) {
 		return nil, false
 	}
@@ -2463,9 +2467,73 @@ func (o *CreateStandaloneAdRequest) HasSitelinks() bool {
 	return false
 }
 
-// SetSitelinks gets a reference to the given []CreateStandaloneAdRequestSitelinksInner and assigns it to the Sitelinks field.
-func (o *CreateStandaloneAdRequest) SetSitelinks(v []CreateStandaloneAdRequestSitelinksInner) {
+// SetSitelinks gets a reference to the given []AttachCampaignAssetsRequestSitelinksInner and assigns it to the Sitelinks field.
+func (o *CreateStandaloneAdRequest) SetSitelinks(v []AttachCampaignAssetsRequestSitelinksInner) {
 	o.Sitelinks = v
+}
+
+// GetCallouts returns the Callouts field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetCallouts() []string {
+	if o == nil || IsNil(o.Callouts) {
+		var ret []string
+		return ret
+	}
+	return o.Callouts
+}
+
+// GetCalloutsOk returns a tuple with the Callouts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetCalloutsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Callouts) {
+		return nil, false
+	}
+	return o.Callouts, true
+}
+
+// HasCallouts returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasCallouts() bool {
+	if o != nil && !IsNil(o.Callouts) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallouts gets a reference to the given []string and assigns it to the Callouts field.
+func (o *CreateStandaloneAdRequest) SetCallouts(v []string) {
+	o.Callouts = v
+}
+
+// GetStructuredSnippets returns the StructuredSnippets field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetStructuredSnippets() []AttachCampaignAssetsRequestStructuredSnippetsInner {
+	if o == nil || IsNil(o.StructuredSnippets) {
+		var ret []AttachCampaignAssetsRequestStructuredSnippetsInner
+		return ret
+	}
+	return o.StructuredSnippets
+}
+
+// GetStructuredSnippetsOk returns a tuple with the StructuredSnippets field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetStructuredSnippetsOk() ([]AttachCampaignAssetsRequestStructuredSnippetsInner, bool) {
+	if o == nil || IsNil(o.StructuredSnippets) {
+		return nil, false
+	}
+	return o.StructuredSnippets, true
+}
+
+// HasStructuredSnippets returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasStructuredSnippets() bool {
+	if o != nil && !IsNil(o.StructuredSnippets) {
+		return true
+	}
+
+	return false
+}
+
+// SetStructuredSnippets gets a reference to the given []AttachCampaignAssetsRequestStructuredSnippetsInner and assigns it to the StructuredSnippets field.
+func (o *CreateStandaloneAdRequest) SetStructuredSnippets(v []AttachCampaignAssetsRequestStructuredSnippetsInner) {
+	o.StructuredSnippets = v
 }
 
 // GetAdvantageAudience returns the AdvantageAudience field value if set, zero value otherwise.
@@ -3173,6 +3241,12 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Sitelinks) {
 		toSerialize["sitelinks"] = o.Sitelinks
+	}
+	if !IsNil(o.Callouts) {
+		toSerialize["callouts"] = o.Callouts
+	}
+	if !IsNil(o.StructuredSnippets) {
+		toSerialize["structuredSnippets"] = o.StructuredSnippets
 	}
 	if !IsNil(o.AdvantageAudience) {
 		toSerialize["advantageAudience"] = o.AdvantageAudience

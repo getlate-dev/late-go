@@ -18,12 +18,26 @@ import (
 
 // AdTreeCampaignOptimizationGoal A single string when every ad set shares one optimization goal; a JSON array of the distinct goals when ad sets differ (never a comma-joined string); array element order is not guaranteed, treat it as an unordered set; the key is absent when no ad set carries a goal. Meta: e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION. LinkedIn: the campaign optimizationTargetType (e.g. MAX_CLICK, MAX_IMPRESSION, NONE); `NONE` with a manual costType is a campaign LinkedIn will not deliver.
 type AdTreeCampaignOptimizationGoal struct {
-	String *string
+	ArrayOfString *[]string
+	String        *string
 }
 
 // Unmarshal JSON data into any of the pointers in the struct
 func (dst *AdTreeCampaignOptimizationGoal) UnmarshalJSON(data []byte) error {
 	var err error
+	// try to unmarshal JSON data into ArrayOfString
+	err = json.Unmarshal(data, &dst.ArrayOfString)
+	if err == nil {
+		jsonArrayOfString, _ := json.Marshal(dst.ArrayOfString)
+		if string(jsonArrayOfString) == "{}" { // empty struct
+			dst.ArrayOfString = nil
+		} else {
+			return nil // data stored in dst.ArrayOfString, return on the first match
+		}
+	} else {
+		dst.ArrayOfString = nil
+	}
+
 	// try to unmarshal JSON data into String
 	err = json.Unmarshal(data, &dst.String)
 	if err == nil {
@@ -42,6 +56,10 @@ func (dst *AdTreeCampaignOptimizationGoal) UnmarshalJSON(data []byte) error {
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src AdTreeCampaignOptimizationGoal) MarshalJSON() ([]byte, error) {
+	if src.ArrayOfString != nil {
+		return json.Marshal(&src.ArrayOfString)
+	}
+
 	if src.String != nil {
 		return json.Marshal(&src.String)
 	}

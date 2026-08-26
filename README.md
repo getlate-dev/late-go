@@ -310,6 +310,7 @@ func main() {
 | `client.AdCampaignsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
 | `client.AdCampaignsAPI.DeleteAd(ctx)` | Cancel an ad |
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |
+| `client.AdCampaignsAPI.AttachCampaignAssets(ctx)` | Attach extension assets to a Google Search campaign |
 | `client.AdCampaignsAPI.BoostPost(ctx)` | Boost post as ad |
 | `client.AdCampaignsAPI.DuplicateAd(ctx)` | Duplicate an ad |
 | `client.AdCampaignsAPI.DuplicateAdCampaign(ctx)` | Duplicate a campaign |

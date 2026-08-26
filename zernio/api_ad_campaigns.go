@@ -23,6 +23,139 @@ import (
 // AdCampaignsAPIService AdCampaignsAPI service
 type AdCampaignsAPIService service
 
+type AdCampaignsAPIAttachCampaignAssetsRequest struct {
+	ctx                         context.Context
+	ApiService                  *AdCampaignsAPIService
+	campaignId                  string
+	attachCampaignAssetsRequest *AttachCampaignAssetsRequest
+}
+
+func (r AdCampaignsAPIAttachCampaignAssetsRequest) AttachCampaignAssetsRequest(attachCampaignAssetsRequest AttachCampaignAssetsRequest) AdCampaignsAPIAttachCampaignAssetsRequest {
+	r.attachCampaignAssetsRequest = &attachCampaignAssetsRequest
+	return r
+}
+
+func (r AdCampaignsAPIAttachCampaignAssetsRequest) Execute() (*AttachCampaignAssets201Response, *http.Response, error) {
+	return r.ApiService.AttachCampaignAssetsExecute(r)
+}
+
+/*
+AttachCampaignAssets Attach extension assets to a Google Search campaign
+
+Attach sitelinks, callouts and/or structured snippets to an already-existing Google
+Search campaign — the same builders POST /v1/ads/create uses, but without rebuilding
+the hierarchy. At least one of sitelinks, callouts or structuredSnippets is required.
+
+Google-only. Other platforms have no equivalent extension surface and return 501.
+
+Approval status is Google-async; poll `asset.policy_summary` after review. Assets
+stay in the account library even if the campaign is later deleted.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Numeric Google platform campaign id.
+	@return AdCampaignsAPIAttachCampaignAssetsRequest
+*/
+func (a *AdCampaignsAPIService) AttachCampaignAssets(ctx context.Context, campaignId string) AdCampaignsAPIAttachCampaignAssetsRequest {
+	return AdCampaignsAPIAttachCampaignAssetsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return AttachCampaignAssets201Response
+func (a *AdCampaignsAPIService) AttachCampaignAssetsExecute(r AdCampaignsAPIAttachCampaignAssetsRequest) (*AttachCampaignAssets201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AttachCampaignAssets201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.AttachCampaignAssets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/assets"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.attachCampaignAssetsRequest == nil {
+		return localVarReturnValue, nil, reportError("attachCampaignAssetsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.attachCampaignAssetsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIBoostPostRequest struct {
 	ctx              context.Context
 	ApiService       *AdCampaignsAPIService
