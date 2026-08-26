@@ -40,9 +40,9 @@ type ListInboxReviews200ResponseDataInner struct {
 	// Number of photos attached to the review (photos only; videos are not counted). Google Business only; 0 for other platforms.
 	PhotoCount *int32 `json:"photoCount,omitempty"`
 	// Photos attached to the review. Google Business only; always an empty array for other platforms.
-	Photos    []GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner `json:"photos,omitempty"`
-	Reply     *ListInboxReviews200ResponseDataInnerReply                   `json:"reply,omitempty"`
-	ReviewUrl NullableString                                               `json:"reviewUrl,omitempty"`
+	Photos    []ListInboxReviews200ResponseDataInnerPhotosInner `json:"photos,omitempty"`
+	Reply     *ListInboxReviews200ResponseDataInnerReply        `json:"reply,omitempty"`
+	ReviewUrl NullableString                                    `json:"reviewUrl,omitempty"`
 }
 
 // NewListInboxReviews200ResponseDataInner instantiates a new ListInboxReviews200ResponseDataInner object
@@ -490,9 +490,9 @@ func (o *ListInboxReviews200ResponseDataInner) SetPhotoCount(v int32) {
 }
 
 // GetPhotos returns the Photos field value if set, zero value otherwise.
-func (o *ListInboxReviews200ResponseDataInner) GetPhotos() []GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner {
+func (o *ListInboxReviews200ResponseDataInner) GetPhotos() []ListInboxReviews200ResponseDataInnerPhotosInner {
 	if o == nil || IsNil(o.Photos) {
-		var ret []GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner
+		var ret []ListInboxReviews200ResponseDataInnerPhotosInner
 		return ret
 	}
 	return o.Photos
@@ -500,7 +500,7 @@ func (o *ListInboxReviews200ResponseDataInner) GetPhotos() []GetGoogleBusinessRe
 
 // GetPhotosOk returns a tuple with the Photos field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListInboxReviews200ResponseDataInner) GetPhotosOk() ([]GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner, bool) {
+func (o *ListInboxReviews200ResponseDataInner) GetPhotosOk() ([]ListInboxReviews200ResponseDataInnerPhotosInner, bool) {
 	if o == nil || IsNil(o.Photos) {
 		return nil, false
 	}
@@ -516,8 +516,8 @@ func (o *ListInboxReviews200ResponseDataInner) HasPhotos() bool {
 	return false
 }
 
-// SetPhotos gets a reference to the given []GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner and assigns it to the Photos field.
-func (o *ListInboxReviews200ResponseDataInner) SetPhotos(v []GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner) {
+// SetPhotos gets a reference to the given []ListInboxReviews200ResponseDataInnerPhotosInner and assigns it to the Photos field.
+func (o *ListInboxReviews200ResponseDataInner) SetPhotos(v []ListInboxReviews200ResponseDataInnerPhotosInner) {
 	o.Photos = v
 }
 

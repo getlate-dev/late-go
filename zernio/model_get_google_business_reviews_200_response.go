@@ -20,10 +20,10 @@ var _ MappedNullable = &GetGoogleBusinessReviews200Response{}
 
 // GetGoogleBusinessReviews200Response struct for GetGoogleBusinessReviews200Response
 type GetGoogleBusinessReviews200Response struct {
-	Success    *bool                                             `json:"success,omitempty"`
-	AccountId  *string                                           `json:"accountId,omitempty"`
-	LocationId *string                                           `json:"locationId,omitempty"`
-	Reviews    []GetGoogleBusinessReviews200ResponseReviewsInner `json:"reviews,omitempty"`
+	Success    *bool                  `json:"success,omitempty"`
+	AccountId  *string                `json:"accountId,omitempty"`
+	LocationId *string                `json:"locationId,omitempty"`
+	Reviews    []GoogleBusinessReview `json:"reviews,omitempty"`
 	// Overall average rating
 	AverageRating *float32 `json:"averageRating,omitempty"`
 	// Total number of reviews
@@ -146,9 +146,9 @@ func (o *GetGoogleBusinessReviews200Response) SetLocationId(v string) {
 }
 
 // GetReviews returns the Reviews field value if set, zero value otherwise.
-func (o *GetGoogleBusinessReviews200Response) GetReviews() []GetGoogleBusinessReviews200ResponseReviewsInner {
+func (o *GetGoogleBusinessReviews200Response) GetReviews() []GoogleBusinessReview {
 	if o == nil || IsNil(o.Reviews) {
-		var ret []GetGoogleBusinessReviews200ResponseReviewsInner
+		var ret []GoogleBusinessReview
 		return ret
 	}
 	return o.Reviews
@@ -156,7 +156,7 @@ func (o *GetGoogleBusinessReviews200Response) GetReviews() []GetGoogleBusinessRe
 
 // GetReviewsOk returns a tuple with the Reviews field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetGoogleBusinessReviews200Response) GetReviewsOk() ([]GetGoogleBusinessReviews200ResponseReviewsInner, bool) {
+func (o *GetGoogleBusinessReviews200Response) GetReviewsOk() ([]GoogleBusinessReview, bool) {
 	if o == nil || IsNil(o.Reviews) {
 		return nil, false
 	}
@@ -172,8 +172,8 @@ func (o *GetGoogleBusinessReviews200Response) HasReviews() bool {
 	return false
 }
 
-// SetReviews gets a reference to the given []GetGoogleBusinessReviews200ResponseReviewsInner and assigns it to the Reviews field.
-func (o *GetGoogleBusinessReviews200Response) SetReviews(v []GetGoogleBusinessReviews200ResponseReviewsInner) {
+// SetReviews gets a reference to the given []GoogleBusinessReview and assigns it to the Reviews field.
+func (o *GetGoogleBusinessReviews200Response) SetReviews(v []GoogleBusinessReview) {
 	o.Reviews = v
 }
 

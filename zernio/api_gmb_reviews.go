@@ -319,6 +319,169 @@ func (a *GMBReviewsAPIService) DeleteGoogleBusinessReviewReplyExecute(r GMBRevie
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type GMBReviewsAPIGetGoogleBusinessReviewRequest struct {
+	ctx        context.Context
+	ApiService *GMBReviewsAPIService
+	accountId  string
+	reviewId   string
+	locationId *string
+}
+
+// Override which location to read the review from. If omitted, uses the account&#39;s selected location. Use GET /gmb-locations to list valid IDs.
+func (r GMBReviewsAPIGetGoogleBusinessReviewRequest) LocationId(locationId string) GMBReviewsAPIGetGoogleBusinessReviewRequest {
+	r.locationId = &locationId
+	return r
+}
+
+func (r GMBReviewsAPIGetGoogleBusinessReviewRequest) Execute() (*GetGoogleBusinessReview200Response, *http.Response, error) {
+	return r.ApiService.GetGoogleBusinessReviewExecute(r)
+}
+
+/*
+GetGoogleBusinessReview Get a review
+
+Returns one Google Business review, in the same shape as the entries of GET /v1/accounts/{accountId}/gmb-reviews.
+The review is read from the account's selected location unless locationId overrides it, and Google returns 404 for a review id that belongs to another location.
+Read the review before replying if a human may have answered it already: replies are overwritten in place and Google keeps no history.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The Zernio account ID (from /v1/accounts)
+	@param reviewId The review ID portion (e.g. \"AIe9_BGx1234567890\"), not the full resource name
+	@return GMBReviewsAPIGetGoogleBusinessReviewRequest
+*/
+func (a *GMBReviewsAPIService) GetGoogleBusinessReview(ctx context.Context, accountId string, reviewId string) GMBReviewsAPIGetGoogleBusinessReviewRequest {
+	return GMBReviewsAPIGetGoogleBusinessReviewRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+		reviewId:   reviewId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetGoogleBusinessReview200Response
+func (a *GMBReviewsAPIService) GetGoogleBusinessReviewExecute(r GMBReviewsAPIGetGoogleBusinessReviewRequest) (*GetGoogleBusinessReview200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetGoogleBusinessReview200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GMBReviewsAPIService.GetGoogleBusinessReview")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gmb-reviews/{reviewId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"reviewId"+"}", url.PathEscape(parameterValueToString(r.reviewId, "reviewId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.locationId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "locationId", r.locationId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type GMBReviewsAPIGetGoogleBusinessReviewsRequest struct {
 	ctx        context.Context
 	ApiService *GMBReviewsAPIService

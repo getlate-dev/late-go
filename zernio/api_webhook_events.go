@@ -1174,10 +1174,13 @@ func (r WebhookEventsAPIOnMessageDeletedRequest) Execute() (*http.Response, erro
 OnMessageDeleted Message deleted event
 
 Fired when a sender deletes (unsends) a message. Supported on Instagram
-(incoming unsend) and WhatsApp (when the business deletes an outgoing
-message via the Cloud API). The payload retains the pre-delete text
-and attachments so API consumers can access the original content for
-moderation or compliance — the Zernio dashboard UI hides it.
+(incoming unsend) and WhatsApp in both directions: an outgoing message
+the business deleted (via the Cloud API, or from the WhatsApp Business
+app on a Coexistence number) and an incoming message the customer
+deleted. Read `message.direction` to tell the two apart. The payload
+retains the pre-delete text and attachments so API consumers can access
+the original content for moderation or compliance; the Zernio dashboard
+UI hides it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnMessageDeletedRequest
