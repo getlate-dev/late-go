@@ -40,9 +40,11 @@ type CreateInboxConversationRequest struct {
 	LinkPreview *bool `json:"linkPreview,omitempty"`
 	// WhatsApp only. Template language code (e.g. en_US).
 	TemplateLanguage *string `json:"templateLanguage,omitempty"`
-	// WhatsApp only. Template variable values as one flat array, in the order the variables appear across the whole template: text-header variables first, then body variables, then one value per dynamic URL button (in button order). Works with positional placeholders ({{1}}, {{2}}, ...) and with named placeholders ({{name}}, {{company}} - how Meta Business Manager creates templates), where values fill the named slots in order of appearance. Example - a body with {{1}}, {{2}} plus a URL button https://example.com/{{1}} takes three values: [body1, body2, buttonSuffix]. Media headers (image, video, document) are filled automatically from the approved template and take no value here (use headerMedia to override the header asset per send).
-	TemplateParams []string                                   `json:"templateParams,omitempty"`
-	HeaderMedia    *CreateInboxConversationRequestHeaderMedia `json:"headerMedia,omitempty"`
+	// WhatsApp only. Template variable values as one flat array, in the order the variables appear across the whole template: text-header variables first, then body variables, then one value per dynamic URL button (in button order). Works with positional placeholders ({{1}}, {{2}}, ...) and with named placeholders ({{name}}, {{company}} - how Meta Business Manager creates templates), where values fill the named slots in order of appearance. Example - a body with {{1}}, {{2}} plus a URL button https://example.com/{{1}} takes three values: [body1, body2, buttonSuffix]. Media headers (image, video, document) are filled automatically from the approved template and take no value here (use headerMedia to override the header asset per send). Buttons that are not dynamic-URL buttons (copy-code, flow) take no value here either; use templateButtonParams.
+	TemplateParams []string `json:"templateParams,omitempty"`
+	// WhatsApp only. Values for template buttons that carry one at send time, each addressed by the button's position in the approved template. This is the only way to send a copy-code button's payload (a Pix payment code, a coupon) or a flow token, because templateParams is a flat array of text variables and covers dynamic URL buttons only. Supplying a button here overrides whatever templateParams would have derived for that same index, so the send never carries one button twice; repeating an index within this array is rejected with 400. Each index must name a button of the matching kind on the approved template, which is also checked before the send and returns 400 (INVALID_TEMPLATE_BUTTON_PARAM) rather than a Meta rejection.
+	TemplateButtonParams []CreateInboxConversationRequestTemplateButtonParamsInner `json:"templateButtonParams,omitempty"`
+	HeaderMedia          *CreateInboxConversationRequestHeaderMedia                `json:"headerMedia,omitempty"`
 }
 
 type _CreateInboxConversationRequest CreateInboxConversationRequest
@@ -385,6 +387,38 @@ func (o *CreateInboxConversationRequest) SetTemplateParams(v []string) {
 	o.TemplateParams = v
 }
 
+// GetTemplateButtonParams returns the TemplateButtonParams field value if set, zero value otherwise.
+func (o *CreateInboxConversationRequest) GetTemplateButtonParams() []CreateInboxConversationRequestTemplateButtonParamsInner {
+	if o == nil || IsNil(o.TemplateButtonParams) {
+		var ret []CreateInboxConversationRequestTemplateButtonParamsInner
+		return ret
+	}
+	return o.TemplateButtonParams
+}
+
+// GetTemplateButtonParamsOk returns a tuple with the TemplateButtonParams field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInboxConversationRequest) GetTemplateButtonParamsOk() ([]CreateInboxConversationRequestTemplateButtonParamsInner, bool) {
+	if o == nil || IsNil(o.TemplateButtonParams) {
+		return nil, false
+	}
+	return o.TemplateButtonParams, true
+}
+
+// HasTemplateButtonParams returns a boolean if a field has been set.
+func (o *CreateInboxConversationRequest) HasTemplateButtonParams() bool {
+	if o != nil && !IsNil(o.TemplateButtonParams) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplateButtonParams gets a reference to the given []CreateInboxConversationRequestTemplateButtonParamsInner and assigns it to the TemplateButtonParams field.
+func (o *CreateInboxConversationRequest) SetTemplateButtonParams(v []CreateInboxConversationRequestTemplateButtonParamsInner) {
+	o.TemplateButtonParams = v
+}
+
 // GetHeaderMedia returns the HeaderMedia field value if set, zero value otherwise.
 func (o *CreateInboxConversationRequest) GetHeaderMedia() CreateInboxConversationRequestHeaderMedia {
 	if o == nil || IsNil(o.HeaderMedia) {
@@ -454,6 +488,9 @@ func (o CreateInboxConversationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.TemplateParams) {
 		toSerialize["templateParams"] = o.TemplateParams
+	}
+	if !IsNil(o.TemplateButtonParams) {
+		toSerialize["templateButtonParams"] = o.TemplateButtonParams
 	}
 	if !IsNil(o.HeaderMedia) {
 		toSerialize["headerMedia"] = o.HeaderMedia

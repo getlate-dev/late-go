@@ -39,8 +39,10 @@ type WebhookPayloadMessageSentMessage struct {
 	// When the message was sent, as reported by the platform and passed through unmodified. Full ISO 8601 date-time: Instagram and Facebook carry millisecond precision, while some platforms (for example WhatsApp and Telegram) report whole seconds. Use this field as the chronological ordering key. If two messages share the same value, fetch the conversation messages with sortOrder=desc for the deterministic order.
 	SentAt time.Time `json:"sentAt"`
 	IsRead bool      `json:"isRead"`
-	// WhatsApp send origin. whatsapp_business_app when sent from the WhatsApp Business phone app on a Coexistence number; cloud_api when sent through Zernio (dashboard, API, or broadcasts). Absent on non-WhatsApp platforms. This is not the inbox metadata.source lineage field.
+	// WhatsApp send origin. whatsapp_business_app when sent from the WhatsApp Business phone app on a Coexistence number; cloud_api when sent through Zernio (dashboard, API, or broadcasts). Absent on non-WhatsApp platforms. Says where WhatsApp saw the send come from, not which Zernio surface produced it: read sentVia for that.
 	Source *string `json:"source,omitempty"`
+	// Which Zernio surface produced this message: `human` (an operator in the Zernio inbox), `api` (a call to this API), `broadcast`, `sequence`, `workflow`, `comment_automation`, or `bulk-api` (POST /v1/whatsapp/bulk). Same vocabulary as the `source` filter on the inbox analytics endpoints, and the same value a later GET on this message returns.  Always present, and `null` whenever the lineage is unknown: a message sent from the platform's own app, and every message stored before this field shipped (2026-08). Existing messages are NOT backfilled, so treat `null` as \"unknown\", never as \"sent by a human\".
+	SentVia NullableString `json:"sentVia,omitempty"`
 }
 
 type _WebhookPayloadMessageSentMessage WebhookPayloadMessageSentMessage
@@ -346,6 +348,49 @@ func (o *WebhookPayloadMessageSentMessage) SetSource(v string) {
 	o.Source = &v
 }
 
+// GetSentVia returns the SentVia field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadMessageSentMessage) GetSentVia() string {
+	if o == nil || IsNil(o.SentVia.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SentVia.Get()
+}
+
+// GetSentViaOk returns a tuple with the SentVia field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadMessageSentMessage) GetSentViaOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SentVia.Get(), o.SentVia.IsSet()
+}
+
+// HasSentVia returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMessage) HasSentVia() bool {
+	if o != nil && o.SentVia.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSentVia gets a reference to the given NullableString and assigns it to the SentVia field.
+func (o *WebhookPayloadMessageSentMessage) SetSentVia(v string) {
+	o.SentVia.Set(&v)
+}
+
+// SetSentViaNil sets the value for SentVia to be an explicit nil
+func (o *WebhookPayloadMessageSentMessage) SetSentViaNil() {
+	o.SentVia.Set(nil)
+}
+
+// UnsetSentVia ensures that no value is present for SentVia, not even an explicit nil
+func (o *WebhookPayloadMessageSentMessage) UnsetSentVia() {
+	o.SentVia.Unset()
+}
+
 func (o WebhookPayloadMessageSentMessage) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -368,6 +413,9 @@ func (o WebhookPayloadMessageSentMessage) ToMap() (map[string]interface{}, error
 	toSerialize["isRead"] = o.IsRead
 	if !IsNil(o.Source) {
 		toSerialize["source"] = o.Source
+	}
+	if o.SentVia.IsSet() {
+		toSerialize["sentVia"] = o.SentVia.Get()
 	}
 	return toSerialize, nil
 }

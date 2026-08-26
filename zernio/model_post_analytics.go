@@ -36,6 +36,10 @@ type PostAnalytics struct {
 	IgReelsAvgWatchTime *int32 `json:"igReelsAvgWatchTime,omitempty"`
 	// Instagram Reels only: total watch time including replays, in milliseconds. 0 for non-Reels media and other platforms.
 	IgReelsVideoViewTotalTime *int32 `json:"igReelsVideoViewTotalTime,omitempty"`
+	// Instagram Reels only: the rate of initial views that skipped the reel within its first 3 seconds, as reported by Meta. Passed through exactly as Meta reports it, with no rescaling, so do not assume a 0-1 share. Meta labels the metric estimated and in development, so it can move between syncs. 0 for non-Reels media and other platforms. When a post is published to several accounts, the aggregate is weighted by views.
+	ReelsSkipRate *float32 `json:"reelsSkipRate,omitempty"`
+	// Instagram only: reposts of the media by other users, minus deleted reposts. Available on feed posts, reels and stories. 0 for other platforms, including Threads, where reposts are counted in shares instead.
+	Reposts *int32 `json:"reposts,omitempty"`
 	// Video length in seconds. Currently Instagram Reels only; combine with igReelsAvgWatchTime (ms) to estimate retention. Null when unknown (other platforms, non-video media, or when Instagram does not expose the media URL, e.g. reels with copyrighted audio).
 	VideoDurationSeconds NullableInt32 `json:"videoDurationSeconds,omitempty"`
 	// Percentage, rounded to 2 decimals: (likes + comments + shares + saves) / (impressions or reach or views) * 100. Clicks and follows are never counted. The denominator is the FIRST of impressions, reach, views that is non-zero, so it is not the same basis on every post: a post with impressions divides by impressions, one without falls back to reach, then to views. If you need a single consistent basis (e.g. interactions / reach), compute it from the raw fields above. The engagementRate on the LinkedIn account endpoints is a different formula.
@@ -412,6 +416,70 @@ func (o *PostAnalytics) SetIgReelsVideoViewTotalTime(v int32) {
 	o.IgReelsVideoViewTotalTime = &v
 }
 
+// GetReelsSkipRate returns the ReelsSkipRate field value if set, zero value otherwise.
+func (o *PostAnalytics) GetReelsSkipRate() float32 {
+	if o == nil || IsNil(o.ReelsSkipRate) {
+		var ret float32
+		return ret
+	}
+	return *o.ReelsSkipRate
+}
+
+// GetReelsSkipRateOk returns a tuple with the ReelsSkipRate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetReelsSkipRateOk() (*float32, bool) {
+	if o == nil || IsNil(o.ReelsSkipRate) {
+		return nil, false
+	}
+	return o.ReelsSkipRate, true
+}
+
+// HasReelsSkipRate returns a boolean if a field has been set.
+func (o *PostAnalytics) HasReelsSkipRate() bool {
+	if o != nil && !IsNil(o.ReelsSkipRate) {
+		return true
+	}
+
+	return false
+}
+
+// SetReelsSkipRate gets a reference to the given float32 and assigns it to the ReelsSkipRate field.
+func (o *PostAnalytics) SetReelsSkipRate(v float32) {
+	o.ReelsSkipRate = &v
+}
+
+// GetReposts returns the Reposts field value if set, zero value otherwise.
+func (o *PostAnalytics) GetReposts() int32 {
+	if o == nil || IsNil(o.Reposts) {
+		var ret int32
+		return ret
+	}
+	return *o.Reposts
+}
+
+// GetRepostsOk returns a tuple with the Reposts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetRepostsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Reposts) {
+		return nil, false
+	}
+	return o.Reposts, true
+}
+
+// HasReposts returns a boolean if a field has been set.
+func (o *PostAnalytics) HasReposts() bool {
+	if o != nil && !IsNil(o.Reposts) {
+		return true
+	}
+
+	return false
+}
+
+// SetReposts gets a reference to the given int32 and assigns it to the Reposts field.
+func (o *PostAnalytics) SetReposts(v int32) {
+	o.Reposts = &v
+}
+
 // GetVideoDurationSeconds returns the VideoDurationSeconds field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PostAnalytics) GetVideoDurationSeconds() int32 {
 	if o == nil || IsNil(o.VideoDurationSeconds.Get()) {
@@ -561,6 +629,12 @@ func (o PostAnalytics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IgReelsVideoViewTotalTime) {
 		toSerialize["igReelsVideoViewTotalTime"] = o.IgReelsVideoViewTotalTime
+	}
+	if !IsNil(o.ReelsSkipRate) {
+		toSerialize["reelsSkipRate"] = o.ReelsSkipRate
+	}
+	if !IsNil(o.Reposts) {
+		toSerialize["reposts"] = o.Reposts
 	}
 	if o.VideoDurationSeconds.IsSet() {
 		toSerialize["videoDurationSeconds"] = o.VideoDurationSeconds.Get()

@@ -38,6 +38,8 @@ type WebhookPayloadMessageMessage struct {
 	// When the message was sent, as reported by the platform and passed through unmodified. Full ISO 8601 date-time: Instagram and Facebook carry millisecond precision, while some platforms (for example WhatsApp and Telegram) report whole seconds. Use this field as the chronological ordering key. If two messages share the same value, fetch the conversation messages with sortOrder=desc for the deterministic order.
 	SentAt time.Time `json:"sentAt"`
 	IsRead bool      `json:"isRead"`
+	// Which Zernio surface produced the message. Always present and always `null` on this event, since nobody on our side produced an inbound message; it is only informative on `message.sent`, which documents the vocabulary.
+	SentVia NullableString `json:"sentVia,omitempty"`
 }
 
 type _WebhookPayloadMessageMessage WebhookPayloadMessageMessage
@@ -311,6 +313,49 @@ func (o *WebhookPayloadMessageMessage) SetIsRead(v bool) {
 	o.IsRead = v
 }
 
+// GetSentVia returns the SentVia field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadMessageMessage) GetSentVia() string {
+	if o == nil || IsNil(o.SentVia.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SentVia.Get()
+}
+
+// GetSentViaOk returns a tuple with the SentVia field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadMessageMessage) GetSentViaOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SentVia.Get(), o.SentVia.IsSet()
+}
+
+// HasSentVia returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMessage) HasSentVia() bool {
+	if o != nil && o.SentVia.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSentVia gets a reference to the given NullableString and assigns it to the SentVia field.
+func (o *WebhookPayloadMessageMessage) SetSentVia(v string) {
+	o.SentVia.Set(&v)
+}
+
+// SetSentViaNil sets the value for SentVia to be an explicit nil
+func (o *WebhookPayloadMessageMessage) SetSentViaNil() {
+	o.SentVia.Set(nil)
+}
+
+// UnsetSentVia ensures that no value is present for SentVia, not even an explicit nil
+func (o *WebhookPayloadMessageMessage) UnsetSentVia() {
+	o.SentVia.Unset()
+}
+
 func (o WebhookPayloadMessageMessage) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -331,6 +376,9 @@ func (o WebhookPayloadMessageMessage) ToMap() (map[string]interface{}, error) {
 	toSerialize["sender"] = o.Sender
 	toSerialize["sentAt"] = o.SentAt
 	toSerialize["isRead"] = o.IsRead
+	if o.SentVia.IsSet() {
+		toSerialize["sentVia"] = o.SentVia.Get()
+	}
 	return toSerialize, nil
 }
 

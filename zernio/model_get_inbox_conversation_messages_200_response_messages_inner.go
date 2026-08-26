@@ -59,8 +59,10 @@ type GetInboxConversationMessages200ResponseMessagesInner struct {
 	DeliveryError *GetInboxConversationMessages200ResponseMessagesInnerDeliveryError `json:"deliveryError,omitempty"`
 	// Emoji reactions on this message (WhatsApp / Telegram). At most one per party in a 1:1 thread.
 	Reactions []GetInboxConversationMessages200ResponseMessagesInnerReactionsInner `json:"reactions,omitempty"`
-	// Platform-specific extras. Free-form, but commonly includes: `quotedMessageId` (platformMessageId this message replies to), `waInteractive` (a compact descriptor of WhatsApp interactive content sent: buttons / list / cta_url / flow / location_request), and for inbound interactive taps `interactiveType` / `interactiveId`.
+	// Platform-specific extras. Free-form, but commonly includes: `quotedMessageId` (platformMessageId this message replies to), `waInteractive` (a compact descriptor of WhatsApp interactive content sent: buttons / list / cta_url / flow / location_request), and for inbound interactive taps `interactiveType` / `interactiveId`. It can also carry `source` (`whatsapp_business_app` / `coexistence_history` on a WhatsApp Coexistence number, `bulk-api` on a POST /v1/whatsapp/bulk send), which is where the message reached us from rather than who produced it: read `sentVia` for that.
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
+	// Which Zernio surface produced this outgoing message: `human` (an operator in the Zernio inbox), `api` (a call to this API), `broadcast`, `sequence`, `workflow`, `comment_automation`, or `bulk-api` (POST /v1/whatsapp/bulk). Same vocabulary as the `source` filter on the inbox analytics endpoints.  Always present, and `null` whenever the lineage is unknown: every incoming message, any outgoing message sent from the platform's own app, and every message stored before this field shipped (2026-08). Existing messages are NOT backfilled, so treat `null` as \"unknown\", never as \"sent by a human\".
+	SentVia NullableString `json:"sentVia,omitempty"`
 }
 
 // NewGetInboxConversationMessages200ResponseMessagesInner instantiates a new GetInboxConversationMessages200ResponseMessagesInner object
@@ -1065,6 +1067,49 @@ func (o *GetInboxConversationMessages200ResponseMessagesInner) SetMetadata(v map
 	o.Metadata = v
 }
 
+// GetSentVia returns the SentVia field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetInboxConversationMessages200ResponseMessagesInner) GetSentVia() string {
+	if o == nil || IsNil(o.SentVia.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SentVia.Get()
+}
+
+// GetSentViaOk returns a tuple with the SentVia field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetInboxConversationMessages200ResponseMessagesInner) GetSentViaOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SentVia.Get(), o.SentVia.IsSet()
+}
+
+// HasSentVia returns a boolean if a field has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) HasSentVia() bool {
+	if o != nil && o.SentVia.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSentVia gets a reference to the given NullableString and assigns it to the SentVia field.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) SetSentVia(v string) {
+	o.SentVia.Set(&v)
+}
+
+// SetSentViaNil sets the value for SentVia to be an explicit nil
+func (o *GetInboxConversationMessages200ResponseMessagesInner) SetSentViaNil() {
+	o.SentVia.Set(nil)
+}
+
+// UnsetSentVia ensures that no value is present for SentVia, not even an explicit nil
+func (o *GetInboxConversationMessages200ResponseMessagesInner) UnsetSentVia() {
+	o.SentVia.Unset()
+}
+
 func (o GetInboxConversationMessages200ResponseMessagesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -1155,6 +1200,9 @@ func (o GetInboxConversationMessages200ResponseMessagesInner) ToMap() (map[strin
 	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
+	}
+	if o.SentVia.IsSet() {
+		toSerialize["sentVia"] = o.SentVia.Get()
 	}
 	return toSerialize, nil
 }
