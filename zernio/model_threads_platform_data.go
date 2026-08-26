@@ -22,6 +22,8 @@ var _ MappedNullable = &ThreadsPlatformData{}
 type ThreadsPlatformData struct {
 	// Topic tag for post categorization and discoverability on Threads. Must be 1-50 characters, cannot contain periods (.) or ampersands (&). Overrides auto-extraction from content hashtags when provided.
 	TopicTag *string `json:"topic_tag,omitempty"`
+	// Optional first comment to post immediately after publishing, as a reply to the published post. With threadItems, it replies to the root post. Up to 500 characters (the Threads post limit). The reply is itself a Threads post, so it consumes one of the 250 posts a profile may publish per 24 hours.
+	FirstComment *string `json:"firstComment,omitempty"`
 	// Complete sequence of posts in a Threads thread. The first item becomes the root post, subsequent items are chained as replies. When threadItems is provided, the top-level content field is used only for display and search purposes, it is NOT published. You must include your first post as threadItems[0].
 	ThreadItems []TwitterPlatformDataThreadItemsInner `json:"threadItems,omitempty"`
 }
@@ -75,6 +77,38 @@ func (o *ThreadsPlatformData) SetTopicTag(v string) {
 	o.TopicTag = &v
 }
 
+// GetFirstComment returns the FirstComment field value if set, zero value otherwise.
+func (o *ThreadsPlatformData) GetFirstComment() string {
+	if o == nil || IsNil(o.FirstComment) {
+		var ret string
+		return ret
+	}
+	return *o.FirstComment
+}
+
+// GetFirstCommentOk returns a tuple with the FirstComment field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThreadsPlatformData) GetFirstCommentOk() (*string, bool) {
+	if o == nil || IsNil(o.FirstComment) {
+		return nil, false
+	}
+	return o.FirstComment, true
+}
+
+// HasFirstComment returns a boolean if a field has been set.
+func (o *ThreadsPlatformData) HasFirstComment() bool {
+	if o != nil && !IsNil(o.FirstComment) {
+		return true
+	}
+
+	return false
+}
+
+// SetFirstComment gets a reference to the given string and assigns it to the FirstComment field.
+func (o *ThreadsPlatformData) SetFirstComment(v string) {
+	o.FirstComment = &v
+}
+
 // GetThreadItems returns the ThreadItems field value if set, zero value otherwise.
 func (o *ThreadsPlatformData) GetThreadItems() []TwitterPlatformDataThreadItemsInner {
 	if o == nil || IsNil(o.ThreadItems) {
@@ -119,6 +153,9 @@ func (o ThreadsPlatformData) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.TopicTag) {
 		toSerialize["topic_tag"] = o.TopicTag
+	}
+	if !IsNil(o.FirstComment) {
+		toSerialize["firstComment"] = o.FirstComment
 	}
 	if !IsNil(o.ThreadItems) {
 		toSerialize["threadItems"] = o.ThreadItems
