@@ -20,12 +20,13 @@ var _ MappedNullable = &GetWhatsAppLibraryTemplate200ResponseTemplate{}
 
 // GetWhatsAppLibraryTemplate200ResponseTemplate struct for GetWhatsAppLibraryTemplate200ResponseTemplate
 type GetWhatsAppLibraryTemplate200ResponseTemplate struct {
-	Name       *string                                                     `json:"name,omitempty"`
-	Language   *string                                                     `json:"language,omitempty"`
-	Category   *string                                                     `json:"category,omitempty"`
-	Body       *string                                                     `json:"body,omitempty"`
-	BodyParams []string                                                    `json:"body_params,omitempty"`
-	Buttons    []GetWhatsAppLibraryTemplate200ResponseTemplateButtonsInner `json:"buttons,omitempty"`
+	Name               *string                                                     `json:"name,omitempty"`
+	Language           *string                                                     `json:"language,omitempty"`
+	Category           *string                                                     `json:"category,omitempty"`
+	Body               *string                                                     `json:"body,omitempty"`
+	BodyParams         []string                                                    `json:"body_params,omitempty"`
+	AvailableLanguages []string                                                    `json:"availableLanguages,omitempty"`
+	Buttons            []GetWhatsAppLibraryTemplate200ResponseTemplateButtonsInner `json:"buttons,omitempty"`
 }
 
 // NewGetWhatsAppLibraryTemplate200ResponseTemplate instantiates a new GetWhatsAppLibraryTemplate200ResponseTemplate object
@@ -205,6 +206,38 @@ func (o *GetWhatsAppLibraryTemplate200ResponseTemplate) SetBodyParams(v []string
 	o.BodyParams = v
 }
 
+// GetAvailableLanguages returns the AvailableLanguages field value if set, zero value otherwise.
+func (o *GetWhatsAppLibraryTemplate200ResponseTemplate) GetAvailableLanguages() []string {
+	if o == nil || IsNil(o.AvailableLanguages) {
+		var ret []string
+		return ret
+	}
+	return o.AvailableLanguages
+}
+
+// GetAvailableLanguagesOk returns a tuple with the AvailableLanguages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetWhatsAppLibraryTemplate200ResponseTemplate) GetAvailableLanguagesOk() ([]string, bool) {
+	if o == nil || IsNil(o.AvailableLanguages) {
+		return nil, false
+	}
+	return o.AvailableLanguages, true
+}
+
+// HasAvailableLanguages returns a boolean if a field has been set.
+func (o *GetWhatsAppLibraryTemplate200ResponseTemplate) HasAvailableLanguages() bool {
+	if o != nil && !IsNil(o.AvailableLanguages) {
+		return true
+	}
+
+	return false
+}
+
+// SetAvailableLanguages gets a reference to the given []string and assigns it to the AvailableLanguages field.
+func (o *GetWhatsAppLibraryTemplate200ResponseTemplate) SetAvailableLanguages(v []string) {
+	o.AvailableLanguages = v
+}
+
 // GetButtons returns the Buttons field value if set, zero value otherwise.
 func (o *GetWhatsAppLibraryTemplate200ResponseTemplate) GetButtons() []GetWhatsAppLibraryTemplate200ResponseTemplateButtonsInner {
 	if o == nil || IsNil(o.Buttons) {
@@ -261,6 +294,9 @@ func (o GetWhatsAppLibraryTemplate200ResponseTemplate) ToMap() (map[string]inter
 	}
 	if !IsNil(o.BodyParams) {
 		toSerialize["body_params"] = o.BodyParams
+	}
+	if !IsNil(o.AvailableLanguages) {
+		toSerialize["availableLanguages"] = o.AvailableLanguages
 	}
 	if !IsNil(o.Buttons) {
 		toSerialize["buttons"] = o.Buttons

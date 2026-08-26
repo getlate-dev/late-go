@@ -27,6 +27,7 @@ type WhatsAppTemplatesAPIGetWhatsAppLibraryTemplateRequest struct {
 	ApiService *WhatsAppTemplatesAPIService
 	accountId  *string
 	name       *string
+	language   *string
 }
 
 // WhatsApp social account ID
@@ -38,6 +39,12 @@ func (r WhatsAppTemplatesAPIGetWhatsAppLibraryTemplateRequest) AccountId(account
 // Exact library template name
 func (r WhatsAppTemplatesAPIGetWhatsAppLibraryTemplateRequest) Name(name string) WhatsAppTemplatesAPIGetWhatsAppLibraryTemplateRequest {
 	r.name = &name
+	return r
+}
+
+// Desired language variant (e.g. es, en_US). If the template is not offered in it, the first available variant is returned and named in the response language field.
+func (r WhatsAppTemplatesAPIGetWhatsAppLibraryTemplateRequest) Language(language string) WhatsAppTemplatesAPIGetWhatsAppLibraryTemplateRequest {
+	r.language = &language
 	return r
 }
 
@@ -94,6 +101,9 @@ func (a *WhatsAppTemplatesAPIService) GetWhatsAppLibraryTemplateExecute(r WhatsA
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "form", "")
+	if r.language != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "language", r.language, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
