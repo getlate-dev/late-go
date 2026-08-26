@@ -34,6 +34,8 @@ type InstagramPlatformData struct {
 	// Custom name for original audio in Reels. Replaces the default \"Original Audio\" label. Can only be set once. Unrelated to audioConfiguration, which attaches a catalog track.
 	AudioName          *string                                  `json:"audioName,omitempty"`
 	AudioConfiguration *InstagramPlatformDataAudioConfiguration `json:"audioConfiguration,omitempty"`
+	// Publish the video without sound. Applies to Reels, Stories, and video carousel slides; ignored for images. Instagram has no mute parameter, so we strip the audio track from the file before handing it to Instagram: the published video is permanently silent and the original audio cannot be restored from Instagram. If the audio cannot be stripped the post fails rather than publishing with sound; videos above 200MB cannot be muted at all, so mute them before uploading. Unrelated to audioConfiguration.videoVolume, which only lowers the original sound when a catalog track is attached.
+	MuteAudio *bool `json:"muteAudio,omitempty"`
 	// Millisecond offset from video start for the Reel cover frame. Ignored when instagramThumbnail or reelCover is provided. Defaults to 0.
 	ThumbOffset *int32 `json:"thumbOffset,omitempty"`
 	// Custom cover image URL for Instagram Reels (JPG or PNG, publicly accessible). Overrides thumbOffset when provided. Also accepted as reelCover (alias).
@@ -52,6 +54,8 @@ func NewInstagramPlatformData() *InstagramPlatformData {
 	this := InstagramPlatformData{}
 	var shareToFeed bool = true
 	this.ShareToFeed = &shareToFeed
+	var muteAudio bool = false
+	this.MuteAudio = &muteAudio
 	var isAiGenerated bool = false
 	this.IsAiGenerated = &isAiGenerated
 	return &this
@@ -64,6 +68,8 @@ func NewInstagramPlatformDataWithDefaults() *InstagramPlatformData {
 	this := InstagramPlatformData{}
 	var shareToFeed bool = true
 	this.ShareToFeed = &shareToFeed
+	var muteAudio bool = false
+	this.MuteAudio = &muteAudio
 	var isAiGenerated bool = false
 	this.IsAiGenerated = &isAiGenerated
 	return &this
@@ -325,6 +331,38 @@ func (o *InstagramPlatformData) SetAudioConfiguration(v InstagramPlatformDataAud
 	o.AudioConfiguration = &v
 }
 
+// GetMuteAudio returns the MuteAudio field value if set, zero value otherwise.
+func (o *InstagramPlatformData) GetMuteAudio() bool {
+	if o == nil || IsNil(o.MuteAudio) {
+		var ret bool
+		return ret
+	}
+	return *o.MuteAudio
+}
+
+// GetMuteAudioOk returns a tuple with the MuteAudio field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstagramPlatformData) GetMuteAudioOk() (*bool, bool) {
+	if o == nil || IsNil(o.MuteAudio) {
+		return nil, false
+	}
+	return o.MuteAudio, true
+}
+
+// HasMuteAudio returns a boolean if a field has been set.
+func (o *InstagramPlatformData) HasMuteAudio() bool {
+	if o != nil && !IsNil(o.MuteAudio) {
+		return true
+	}
+
+	return false
+}
+
+// SetMuteAudio gets a reference to the given bool and assigns it to the MuteAudio field.
+func (o *InstagramPlatformData) SetMuteAudio(v bool) {
+	o.MuteAudio = &v
+}
+
 // GetThumbOffset returns the ThumbOffset field value if set, zero value otherwise.
 func (o *InstagramPlatformData) GetThumbOffset() int32 {
 	if o == nil || IsNil(o.ThumbOffset) {
@@ -486,6 +524,9 @@ func (o InstagramPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AudioConfiguration) {
 		toSerialize["audioConfiguration"] = o.AudioConfiguration
+	}
+	if !IsNil(o.MuteAudio) {
+		toSerialize["muteAudio"] = o.MuteAudio
 	}
 	if !IsNil(o.ThumbOffset) {
 		toSerialize["thumbOffset"] = o.ThumbOffset
