@@ -37,7 +37,7 @@ func (r MessagesAPIAddMessageReactionRequest) AddMessageReactionRequest(addMessa
 	return r
 }
 
-func (r MessagesAPIAddMessageReactionRequest) Execute() (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+func (r MessagesAPIAddMessageReactionRequest) Execute() (*AddMessageReaction200Response, *http.Response, error) {
 	return r.ApiService.AddMessageReactionExecute(r)
 }
 
@@ -53,7 +53,7 @@ Add an emoji reaction to a message. Platform support:
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param conversationId The conversation ID
-	@param messageId The platform message ID to react to
+	@param messageId The platform message ID (as returned by GET /messages) or the Zernio message ID (as returned by the reaction webhook)
 	@return MessagesAPIAddMessageReactionRequest
 */
 func (a *MessagesAPIService) AddMessageReaction(ctx context.Context, conversationId string, messageId string) MessagesAPIAddMessageReactionRequest {
@@ -67,13 +67,13 @@ func (a *MessagesAPIService) AddMessageReaction(ctx context.Context, conversatio
 
 // Execute executes the request
 //
-//	@return UpdateYoutubeDefaultPlaylist200Response
-func (a *MessagesAPIService) AddMessageReactionExecute(r MessagesAPIAddMessageReactionRequest) (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+//	@return AddMessageReaction200Response
+func (a *MessagesAPIService) AddMessageReactionExecute(r MessagesAPIAddMessageReactionRequest) (*AddMessageReaction200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *UpdateYoutubeDefaultPlaylist200Response
+		localVarReturnValue *AddMessageReaction200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagesAPIService.AddMessageReaction")
@@ -1455,7 +1455,7 @@ func (r MessagesAPIRemoveMessageReactionRequest) AccountId(accountId string) Mes
 	return r
 }
 
-func (r MessagesAPIRemoveMessageReactionRequest) Execute() (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+func (r MessagesAPIRemoveMessageReactionRequest) Execute() (*AddMessageReaction200Response, *http.Response, error) {
 	return r.ApiService.RemoveMessageReactionExecute(r)
 }
 
@@ -1471,7 +1471,7 @@ Remove a reaction from a message. Platform support:
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param conversationId The conversation ID
-	@param messageId The platform message ID
+	@param messageId The platform message ID (as returned by GET /messages) or the Zernio message ID (as returned by the reaction webhook)
 	@return MessagesAPIRemoveMessageReactionRequest
 */
 func (a *MessagesAPIService) RemoveMessageReaction(ctx context.Context, conversationId string, messageId string) MessagesAPIRemoveMessageReactionRequest {
@@ -1485,13 +1485,13 @@ func (a *MessagesAPIService) RemoveMessageReaction(ctx context.Context, conversa
 
 // Execute executes the request
 //
-//	@return UpdateYoutubeDefaultPlaylist200Response
-func (a *MessagesAPIService) RemoveMessageReactionExecute(r MessagesAPIRemoveMessageReactionRequest) (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+//	@return AddMessageReaction200Response
+func (a *MessagesAPIService) RemoveMessageReactionExecute(r MessagesAPIRemoveMessageReactionRequest) (*AddMessageReaction200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *UpdateYoutubeDefaultPlaylist200Response
+		localVarReturnValue *AddMessageReaction200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagesAPIService.RemoveMessageReaction")

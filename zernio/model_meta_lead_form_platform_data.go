@@ -31,8 +31,12 @@ type MetaLeadFormPlatformData struct {
 	ThankYouButtonText    *string                               `json:"thankYouButtonText,omitempty"`
 	ThankYouButtonType    *string                               `json:"thankYouButtonType,omitempty"`
 	ThankYouWebsiteUrl    *string                               `json:"thankYouWebsiteUrl,omitempty"`
+	// Adds a 'Continue in Messenger' option to the thank-you page (Meta thank_you_page.enable_messenger), so the lead can carry on chatting with the Page. Set thankYouButtonType to MESSAGE_BUSINESS or P2B_MESSENGER to make the chat the primary button.
+	ThankYouEnableMessenger *bool `json:"thankYouEnableMessenger,omitempty"`
 	// Set true for a higher-intent form (adds a review step before submit).
-	IsOptimizedForQuality            *bool                                `json:"isOptimizedForQuality,omitempty"`
+	IsOptimizedForQuality *bool `json:"isOptimizedForQuality,omitempty"`
+	// Requires the lead to verify their phone number over SMS before the form submits (Meta is_phone_sms_verify_enabled). Only meaningful on a form with a PHONE question. Meta can restrict this parameter to apps holding a capability: when it does, the create fails with a 422 naming platformSpecificData.isPhoneSmsVerifyEnabled, and the toggle then has to be set in Meta's form builder.
+	IsPhoneSmsVerifyEnabled          *bool                                `json:"isPhoneSmsVerifyEnabled,omitempty"`
 	BlockDisplayForNonTargetedViewer *bool                                `json:"blockDisplayForNonTargetedViewer,omitempty"`
 	QuestionPageCustomHeadline       *string                              `json:"questionPageCustomHeadline,omitempty"`
 	ContextCard                      *MetaLeadFormPlatformDataContextCard `json:"contextCard,omitempty"`
@@ -47,6 +51,10 @@ type _MetaLeadFormPlatformData MetaLeadFormPlatformData
 func NewMetaLeadFormPlatformData(questions []CreateLeadFormRequestQuestionsInner) *MetaLeadFormPlatformData {
 	this := MetaLeadFormPlatformData{}
 	this.Questions = questions
+	var thankYouEnableMessenger bool = false
+	this.ThankYouEnableMessenger = &thankYouEnableMessenger
+	var isPhoneSmsVerifyEnabled bool = false
+	this.IsPhoneSmsVerifyEnabled = &isPhoneSmsVerifyEnabled
 	return &this
 }
 
@@ -55,6 +63,10 @@ func NewMetaLeadFormPlatformData(questions []CreateLeadFormRequestQuestionsInner
 // but it doesn't guarantee that properties required by API are set
 func NewMetaLeadFormPlatformDataWithDefaults() *MetaLeadFormPlatformData {
 	this := MetaLeadFormPlatformData{}
+	var thankYouEnableMessenger bool = false
+	this.ThankYouEnableMessenger = &thankYouEnableMessenger
+	var isPhoneSmsVerifyEnabled bool = false
+	this.IsPhoneSmsVerifyEnabled = &isPhoneSmsVerifyEnabled
 	return &this
 }
 
@@ -338,6 +350,38 @@ func (o *MetaLeadFormPlatformData) SetThankYouWebsiteUrl(v string) {
 	o.ThankYouWebsiteUrl = &v
 }
 
+// GetThankYouEnableMessenger returns the ThankYouEnableMessenger field value if set, zero value otherwise.
+func (o *MetaLeadFormPlatformData) GetThankYouEnableMessenger() bool {
+	if o == nil || IsNil(o.ThankYouEnableMessenger) {
+		var ret bool
+		return ret
+	}
+	return *o.ThankYouEnableMessenger
+}
+
+// GetThankYouEnableMessengerOk returns a tuple with the ThankYouEnableMessenger field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaLeadFormPlatformData) GetThankYouEnableMessengerOk() (*bool, bool) {
+	if o == nil || IsNil(o.ThankYouEnableMessenger) {
+		return nil, false
+	}
+	return o.ThankYouEnableMessenger, true
+}
+
+// HasThankYouEnableMessenger returns a boolean if a field has been set.
+func (o *MetaLeadFormPlatformData) HasThankYouEnableMessenger() bool {
+	if o != nil && !IsNil(o.ThankYouEnableMessenger) {
+		return true
+	}
+
+	return false
+}
+
+// SetThankYouEnableMessenger gets a reference to the given bool and assigns it to the ThankYouEnableMessenger field.
+func (o *MetaLeadFormPlatformData) SetThankYouEnableMessenger(v bool) {
+	o.ThankYouEnableMessenger = &v
+}
+
 // GetIsOptimizedForQuality returns the IsOptimizedForQuality field value if set, zero value otherwise.
 func (o *MetaLeadFormPlatformData) GetIsOptimizedForQuality() bool {
 	if o == nil || IsNil(o.IsOptimizedForQuality) {
@@ -368,6 +412,38 @@ func (o *MetaLeadFormPlatformData) HasIsOptimizedForQuality() bool {
 // SetIsOptimizedForQuality gets a reference to the given bool and assigns it to the IsOptimizedForQuality field.
 func (o *MetaLeadFormPlatformData) SetIsOptimizedForQuality(v bool) {
 	o.IsOptimizedForQuality = &v
+}
+
+// GetIsPhoneSmsVerifyEnabled returns the IsPhoneSmsVerifyEnabled field value if set, zero value otherwise.
+func (o *MetaLeadFormPlatformData) GetIsPhoneSmsVerifyEnabled() bool {
+	if o == nil || IsNil(o.IsPhoneSmsVerifyEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.IsPhoneSmsVerifyEnabled
+}
+
+// GetIsPhoneSmsVerifyEnabledOk returns a tuple with the IsPhoneSmsVerifyEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaLeadFormPlatformData) GetIsPhoneSmsVerifyEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsPhoneSmsVerifyEnabled) {
+		return nil, false
+	}
+	return o.IsPhoneSmsVerifyEnabled, true
+}
+
+// HasIsPhoneSmsVerifyEnabled returns a boolean if a field has been set.
+func (o *MetaLeadFormPlatformData) HasIsPhoneSmsVerifyEnabled() bool {
+	if o != nil && !IsNil(o.IsPhoneSmsVerifyEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsPhoneSmsVerifyEnabled gets a reference to the given bool and assigns it to the IsPhoneSmsVerifyEnabled field.
+func (o *MetaLeadFormPlatformData) SetIsPhoneSmsVerifyEnabled(v bool) {
+	o.IsPhoneSmsVerifyEnabled = &v
 }
 
 // GetBlockDisplayForNonTargetedViewer returns the BlockDisplayForNonTargetedViewer field value if set, zero value otherwise.
@@ -501,8 +577,14 @@ func (o MetaLeadFormPlatformData) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ThankYouWebsiteUrl) {
 		toSerialize["thankYouWebsiteUrl"] = o.ThankYouWebsiteUrl
 	}
+	if !IsNil(o.ThankYouEnableMessenger) {
+		toSerialize["thankYouEnableMessenger"] = o.ThankYouEnableMessenger
+	}
 	if !IsNil(o.IsOptimizedForQuality) {
 		toSerialize["isOptimizedForQuality"] = o.IsOptimizedForQuality
+	}
+	if !IsNil(o.IsPhoneSmsVerifyEnabled) {
+		toSerialize["isPhoneSmsVerifyEnabled"] = o.IsPhoneSmsVerifyEnabled
 	}
 	if !IsNil(o.BlockDisplayForNonTargetedViewer) {
 		toSerialize["blockDisplayForNonTargetedViewer"] = o.BlockDisplayForNonTargetedViewer
