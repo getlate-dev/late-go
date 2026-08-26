@@ -615,7 +615,7 @@ func (r ConnectAPIConnectAdsRequest) AccountId(accountId string) ConnectAPIConne
 	return r
 }
 
-// Custom redirect URL after OAuth completes (same-token platforms only). Accepts an http(s) URL, a custom app scheme for mobile deeplinks (e.g. myapp://callback), or a relative path.
+// Custom URL the browser is sent to once the OAuth flow finishes. Honored on every ads platform, including the separate-token (&#x60;tiktok&#x60;, &#x60;twitter&#x60;) and standalone (&#x60;googleads&#x60;) flows. Accepts an http(s) URL, a custom app scheme for mobile deeplinks (e.g. myapp://callback), or a relative path. On success &#x60;tiktok&#x60;, &#x60;twitter&#x60; and &#x60;googleads&#x60; land on the URL unchanged, while the same-token platforms (&#x60;facebook&#x60;, &#x60;instagram&#x60;, &#x60;linkedin&#x60;, &#x60;pinterest&#x60;) append &#x60;connected&#x60;, &#x60;profileId&#x60;, &#x60;accountId&#x60;, &#x60;username&#x60; and, on API-key calls, &#x60;connect_token&#x60;. On failure every platform appends error details, starting with &#x60;error&#x60; and &#x60;platform&#x60;. When omitted, the browser lands on the Zernio dashboard.
 func (r ConnectAPIConnectAdsRequest) RedirectUrl(redirectUrl string) ConnectAPIConnectAdsRequest {
 	r.redirectUrl = &redirectUrl
 	return r
