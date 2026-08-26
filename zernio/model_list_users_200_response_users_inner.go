@@ -28,6 +28,8 @@ type ListUsers200ResponseUsersInner struct {
 	IsRoot        *bool      `json:"isRoot,omitempty"`
 	ProfileAccess []string   `json:"profileAccess,omitempty"`
 	CreatedAt     *time.Time `json:"createdAt,omitempty"`
+	// Last sign-in, stamped at most once an hour, so it is accurate to within an hour rather than to the exact session. Omitted for members with no recorded sign-in since the field shipped, which does not mean they never signed in.
+	LastLoginAt *time.Time `json:"lastLoginAt,omitempty"`
 }
 
 // NewListUsers200ResponseUsersInner instantiates a new ListUsers200ResponseUsersInner object
@@ -271,6 +273,38 @@ func (o *ListUsers200ResponseUsersInner) SetCreatedAt(v time.Time) {
 	o.CreatedAt = &v
 }
 
+// GetLastLoginAt returns the LastLoginAt field value if set, zero value otherwise.
+func (o *ListUsers200ResponseUsersInner) GetLastLoginAt() time.Time {
+	if o == nil || IsNil(o.LastLoginAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.LastLoginAt
+}
+
+// GetLastLoginAtOk returns a tuple with the LastLoginAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListUsers200ResponseUsersInner) GetLastLoginAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.LastLoginAt) {
+		return nil, false
+	}
+	return o.LastLoginAt, true
+}
+
+// HasLastLoginAt returns a boolean if a field has been set.
+func (o *ListUsers200ResponseUsersInner) HasLastLoginAt() bool {
+	if o != nil && !IsNil(o.LastLoginAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetLastLoginAt gets a reference to the given time.Time and assigns it to the LastLoginAt field.
+func (o *ListUsers200ResponseUsersInner) SetLastLoginAt(v time.Time) {
+	o.LastLoginAt = &v
+}
+
 func (o ListUsers200ResponseUsersInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -301,6 +335,9 @@ func (o ListUsers200ResponseUsersInner) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.CreatedAt) {
 		toSerialize["createdAt"] = o.CreatedAt
+	}
+	if !IsNil(o.LastLoginAt) {
+		toSerialize["lastLoginAt"] = o.LastLoginAt
 	}
 	return toSerialize, nil
 }

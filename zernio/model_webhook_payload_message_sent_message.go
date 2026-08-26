@@ -27,7 +27,8 @@ type WebhookPayloadMessageSentMessage struct {
 	Id string `json:"id"`
 	// Internal conversation ID
 	ConversationId string `json:"conversationId"`
-	Platform       string `json:"platform"`
+	// Every platform whose outgoing messages Zernio observes. sms is absent on purpose: its carrier receipts update delivery status and never raise message.sent.
+	Platform string `json:"platform"`
 	// Platform's message ID
 	PlatformMessageId string `json:"platformMessageId"`
 	Direction         string `json:"direction"`

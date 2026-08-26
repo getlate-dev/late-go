@@ -24,11 +24,12 @@ var _ MappedNullable = &WebhookPayloadMessageSent{}
 // WebhookPayloadMessageSent Webhook payload for message sent events (fired when a message is sent via the API, or from the WhatsApp Business app on Coexistence numbers)
 type WebhookPayloadMessageSent struct {
 	// Stable webhook event ID
-	Id           string                           `json:"id"`
-	Event        string                           `json:"event"`
-	Message      WebhookPayloadMessageSentMessage `json:"message"`
-	Conversation InboxWebhookConversation         `json:"conversation"`
-	Account      InboxWebhookAccount              `json:"account"`
+	Id           string                             `json:"id"`
+	Event        string                             `json:"event"`
+	Message      WebhookPayloadMessageSentMessage   `json:"message"`
+	Conversation InboxWebhookConversation           `json:"conversation"`
+	Account      InboxWebhookAccount                `json:"account"`
+	Metadata     *WebhookPayloadMessageSentMetadata `json:"metadata,omitempty"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
 	Timestamp time.Time `json:"timestamp"`
 }
@@ -178,6 +179,38 @@ func (o *WebhookPayloadMessageSent) SetAccount(v InboxWebhookAccount) {
 	o.Account = v
 }
 
+// GetMetadata returns the Metadata field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSent) GetMetadata() WebhookPayloadMessageSentMetadata {
+	if o == nil || IsNil(o.Metadata) {
+		var ret WebhookPayloadMessageSentMetadata
+		return ret
+	}
+	return *o.Metadata
+}
+
+// GetMetadataOk returns a tuple with the Metadata field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSent) GetMetadataOk() (*WebhookPayloadMessageSentMetadata, bool) {
+	if o == nil || IsNil(o.Metadata) {
+		return nil, false
+	}
+	return o.Metadata, true
+}
+
+// HasMetadata returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSent) HasMetadata() bool {
+	if o != nil && !IsNil(o.Metadata) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetadata gets a reference to the given WebhookPayloadMessageSentMetadata and assigns it to the Metadata field.
+func (o *WebhookPayloadMessageSent) SetMetadata(v WebhookPayloadMessageSentMetadata) {
+	o.Metadata = &v
+}
+
 // GetTimestamp returns the Timestamp field value
 func (o *WebhookPayloadMessageSent) GetTimestamp() time.Time {
 	if o == nil {
@@ -217,6 +250,9 @@ func (o WebhookPayloadMessageSent) ToMap() (map[string]interface{}, error) {
 	toSerialize["message"] = o.Message
 	toSerialize["conversation"] = o.Conversation
 	toSerialize["account"] = o.Account
+	if !IsNil(o.Metadata) {
+		toSerialize["metadata"] = o.Metadata
+	}
 	toSerialize["timestamp"] = o.Timestamp
 	return toSerialize, nil
 }

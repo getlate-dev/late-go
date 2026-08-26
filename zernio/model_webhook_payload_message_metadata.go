@@ -20,7 +20,7 @@ var _ MappedNullable = &WebhookPayloadMessageMetadata{}
 
 // WebhookPayloadMessageMetadata Platform-specific message context (present when the message is a quick reply tap, postback button tap, inline keyboard callback, or a quote-reply to an earlier message)
 type WebhookPayloadMessageMetadata struct {
-	// platformMessageId of the message this one is a quote-reply to. WhatsApp (`context.id`), Instagram and Facebook Messenger (`reply_to.mid`). On `message.sent` echoes (operator replied from the native app) this is the only metadata field populated.
+	// platformMessageId of the message this one is a quote-reply to. WhatsApp (`context.id`), Instagram and Facebook Messenger (`reply_to.mid`). Outgoing quote-replies carry the same field on `message.sent`; see WebhookPayloadMessageSent.metadata.
 	QuotedMessageId *string `json:"quotedMessageId,omitempty"`
 	// Payload from a quick reply tap (Facebook/Instagram Messenger).
 	QuickReplyPayload *string `json:"quickReplyPayload,omitempty"`

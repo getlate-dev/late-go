@@ -1781,7 +1781,10 @@ func (r WebhookEventsAPIOnMessageSentRequest) Execute() (*http.Response, error) 
 /*
 OnMessageSent Message sent event
 
-Fired when a message is sent via the API, or from the WhatsApp Business app on Coexistence numbers.
+Fired when a message is sent via the API, or from the WhatsApp Business app on
+Coexistence numbers. Sends that carry platform-specific context deliver it under
+`metadata`, so a quote-reply arrives with `metadata.quotedMessageId` and mirroring
+CRMs can thread it without a lookup.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnMessageSentRequest
