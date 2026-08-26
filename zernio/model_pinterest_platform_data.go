@@ -24,12 +24,16 @@ type PinterestPlatformData struct {
 	Title *string `json:"title,omitempty"`
 	// Target Pinterest board ID. If omitted, the first available board is used.
 	BoardId *string `json:"boardId,omitempty"`
+	// Target section inside the board. Optional; the pin lands on the board itself when omitted. Pinterest rejects the pin if the section does not belong to boardId, so send both together.
+	BoardSectionId *string `json:"boardSectionId,omitempty"`
 	// Destination link (pin URL)
 	Link *string `json:"link,omitempty"`
 	// Optional cover image for video pins
 	CoverImageUrl *string `json:"coverImageUrl,omitempty"`
 	// Optional key frame time in seconds for derived video cover
 	CoverImageKeyFrameTime *int32 `json:"coverImageKeyFrameTime,omitempty"`
+	// When true, the Pin is created with Pinterest's AI_MODIFIED disclosure (ai_disclosures), which shows an \"AI modified\" label. Applies to image and video Pins. Pinterest offers no \"not AI\" value, so false simply omits the disclosure. Pinterest may still label a Pin on its own detection.
+	IsAiGenerated *bool `json:"isAiGenerated,omitempty"`
 }
 
 // NewPinterestPlatformData instantiates a new PinterestPlatformData object
@@ -38,6 +42,8 @@ type PinterestPlatformData struct {
 // will change when the set of required properties is changed
 func NewPinterestPlatformData() *PinterestPlatformData {
 	this := PinterestPlatformData{}
+	var isAiGenerated bool = false
+	this.IsAiGenerated = &isAiGenerated
 	return &this
 }
 
@@ -46,6 +52,8 @@ func NewPinterestPlatformData() *PinterestPlatformData {
 // but it doesn't guarantee that properties required by API are set
 func NewPinterestPlatformDataWithDefaults() *PinterestPlatformData {
 	this := PinterestPlatformData{}
+	var isAiGenerated bool = false
+	this.IsAiGenerated = &isAiGenerated
 	return &this
 }
 
@@ -111,6 +119,38 @@ func (o *PinterestPlatformData) HasBoardId() bool {
 // SetBoardId gets a reference to the given string and assigns it to the BoardId field.
 func (o *PinterestPlatformData) SetBoardId(v string) {
 	o.BoardId = &v
+}
+
+// GetBoardSectionId returns the BoardSectionId field value if set, zero value otherwise.
+func (o *PinterestPlatformData) GetBoardSectionId() string {
+	if o == nil || IsNil(o.BoardSectionId) {
+		var ret string
+		return ret
+	}
+	return *o.BoardSectionId
+}
+
+// GetBoardSectionIdOk returns a tuple with the BoardSectionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PinterestPlatformData) GetBoardSectionIdOk() (*string, bool) {
+	if o == nil || IsNil(o.BoardSectionId) {
+		return nil, false
+	}
+	return o.BoardSectionId, true
+}
+
+// HasBoardSectionId returns a boolean if a field has been set.
+func (o *PinterestPlatformData) HasBoardSectionId() bool {
+	if o != nil && !IsNil(o.BoardSectionId) {
+		return true
+	}
+
+	return false
+}
+
+// SetBoardSectionId gets a reference to the given string and assigns it to the BoardSectionId field.
+func (o *PinterestPlatformData) SetBoardSectionId(v string) {
+	o.BoardSectionId = &v
 }
 
 // GetLink returns the Link field value if set, zero value otherwise.
@@ -209,6 +249,38 @@ func (o *PinterestPlatformData) SetCoverImageKeyFrameTime(v int32) {
 	o.CoverImageKeyFrameTime = &v
 }
 
+// GetIsAiGenerated returns the IsAiGenerated field value if set, zero value otherwise.
+func (o *PinterestPlatformData) GetIsAiGenerated() bool {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		var ret bool
+		return ret
+	}
+	return *o.IsAiGenerated
+}
+
+// GetIsAiGeneratedOk returns a tuple with the IsAiGenerated field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PinterestPlatformData) GetIsAiGeneratedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		return nil, false
+	}
+	return o.IsAiGenerated, true
+}
+
+// HasIsAiGenerated returns a boolean if a field has been set.
+func (o *PinterestPlatformData) HasIsAiGenerated() bool {
+	if o != nil && !IsNil(o.IsAiGenerated) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAiGenerated gets a reference to the given bool and assigns it to the IsAiGenerated field.
+func (o *PinterestPlatformData) SetIsAiGenerated(v bool) {
+	o.IsAiGenerated = &v
+}
+
 func (o PinterestPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -225,6 +297,9 @@ func (o PinterestPlatformData) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.BoardId) {
 		toSerialize["boardId"] = o.BoardId
 	}
+	if !IsNil(o.BoardSectionId) {
+		toSerialize["boardSectionId"] = o.BoardSectionId
+	}
 	if !IsNil(o.Link) {
 		toSerialize["link"] = o.Link
 	}
@@ -233,6 +308,9 @@ func (o PinterestPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CoverImageKeyFrameTime) {
 		toSerialize["coverImageKeyFrameTime"] = o.CoverImageKeyFrameTime
+	}
+	if !IsNil(o.IsAiGenerated) {
+		toSerialize["isAiGenerated"] = o.IsAiGenerated
 	}
 	return toSerialize, nil
 }
