@@ -30,7 +30,7 @@ type TargetingSpec struct {
 	Zips []BoostPostRequestTargetingRegionsInner `json:"zips,omitempty"`
 	// DMA / metro-area targeting. `key` is the platform's metro ID (e.g. Meta `DMA:807`).
 	Metros []BoostPostRequestTargetingRegionsInner `json:"metros,omitempty"`
-	// Point-radius (lat/lng) targeting (Meta custom_locations / Google proximity). Honoured only where the capability map allows radius (Meta).
+	// Point-radius (lat/lng) targeting (Meta custom_locations / Google proximity). Honoured on Meta and Google; ignored on platforms without radius support.
 	CustomLocations   []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
 	ExcludedLocations *TargetingSpecExcludedLocations                 `json:"excludedLocations,omitempty"`
 	// Minimum age. Applied on Meta, TikTok and Pinterest; ignored on Google, LinkedIn and X. Each platform clamps to its own range: Meta and Pinterest effectively cap at 65 (65 = 65+), TikTok maps up to 100. Pinterest has no under-18 bucket, so an ageMin below 18 starts at 18 there.
