@@ -1053,6 +1053,7 @@ model_list_workflows_200_response.go
 model_list_workflows_200_response_workflows_inner.go
 model_lookup_sms_number_200_response.go
 model_mark_conversation_read_200_response.go
+model_media_content_type.go
 model_media_item.go
 model_media_upload_response.go
 model_meta_ads_platform_data.go
@@ -1085,7 +1086,6 @@ model_pinterest_platform_data.go
 model_platform_analytics.go
 model_platform_target.go
 model_platform_target_account_id.go
-model_platform_target_platform_specific_data.go
 model_post.go
 model_post_analytics.go
 model_post_create_response.go

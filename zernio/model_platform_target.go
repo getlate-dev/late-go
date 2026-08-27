@@ -28,8 +28,9 @@ type PlatformTarget struct {
 	CustomContent *string     `json:"customContent,omitempty"`
 	CustomMedia   []MediaItem `json:"customMedia,omitempty"`
 	// Optional per-platform scheduled time override (uses post.scheduledFor when omitted)
-	ScheduledFor         *time.Time                          `json:"scheduledFor,omitempty"`
-	PlatformSpecificData *PlatformTargetPlatformSpecificData `json:"platformSpecificData,omitempty"`
+	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
+	// The platform-specific options stored on this target, echoed back as they were sent. Typed per platform on the way in (see the *PlatformData schemas on the request body); free-form on the way out, because a response is not guaranteed to match exactly one of those variants and generated clients that pick a variant by structure reject the entire response when it doesn't. Zernio's internal publishing state (snapshots, container ids, publish stage) is never returned here, and the key is omitted rather than sent as an empty object.
+	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
 	// Platform-specific status: pending, publishing, published, failed
 	Status *string `json:"status,omitempty"`
 	// The native post ID on the platform (populated after successful publish)
@@ -230,19 +231,19 @@ func (o *PlatformTarget) SetScheduledFor(v time.Time) {
 }
 
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
-func (o *PlatformTarget) GetPlatformSpecificData() PlatformTargetPlatformSpecificData {
+func (o *PlatformTarget) GetPlatformSpecificData() map[string]interface{} {
 	if o == nil || IsNil(o.PlatformSpecificData) {
-		var ret PlatformTargetPlatformSpecificData
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.PlatformSpecificData
+	return o.PlatformSpecificData
 }
 
 // GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PlatformTarget) GetPlatformSpecificDataOk() (*PlatformTargetPlatformSpecificData, bool) {
+func (o *PlatformTarget) GetPlatformSpecificDataOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.PlatformSpecificData) {
-		return nil, false
+		return map[string]interface{}{}, false
 	}
 	return o.PlatformSpecificData, true
 }
@@ -256,9 +257,9 @@ func (o *PlatformTarget) HasPlatformSpecificData() bool {
 	return false
 }
 
-// SetPlatformSpecificData gets a reference to the given PlatformTargetPlatformSpecificData and assigns it to the PlatformSpecificData field.
-func (o *PlatformTarget) SetPlatformSpecificData(v PlatformTargetPlatformSpecificData) {
-	o.PlatformSpecificData = &v
+// SetPlatformSpecificData gets a reference to the given map[string]interface{} and assigns it to the PlatformSpecificData field.
+func (o *PlatformTarget) SetPlatformSpecificData(v map[string]interface{}) {
+	o.PlatformSpecificData = v
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.

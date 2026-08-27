@@ -23,9 +23,8 @@ var _ MappedNullable = &GetMediaPresignedUrlRequest{}
 // GetMediaPresignedUrlRequest struct for GetMediaPresignedUrlRequest
 type GetMediaPresignedUrlRequest struct {
 	// Name of the file to upload
-	Filename string `json:"filename"`
-	// MIME type of the file
-	ContentType string `json:"contentType"`
+	Filename    string           `json:"filename"`
+	ContentType MediaContentType `json:"contentType"`
 	// Optional file size in bytes for pre-validation (max 5GB)
 	Size *int32 `json:"size,omitempty"`
 }
@@ -36,7 +35,7 @@ type _GetMediaPresignedUrlRequest GetMediaPresignedUrlRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetMediaPresignedUrlRequest(filename string, contentType string) *GetMediaPresignedUrlRequest {
+func NewGetMediaPresignedUrlRequest(filename string, contentType MediaContentType) *GetMediaPresignedUrlRequest {
 	this := GetMediaPresignedUrlRequest{}
 	this.Filename = filename
 	this.ContentType = contentType
@@ -76,9 +75,9 @@ func (o *GetMediaPresignedUrlRequest) SetFilename(v string) {
 }
 
 // GetContentType returns the ContentType field value
-func (o *GetMediaPresignedUrlRequest) GetContentType() string {
+func (o *GetMediaPresignedUrlRequest) GetContentType() MediaContentType {
 	if o == nil {
-		var ret string
+		var ret MediaContentType
 		return ret
 	}
 
@@ -87,7 +86,7 @@ func (o *GetMediaPresignedUrlRequest) GetContentType() string {
 
 // GetContentTypeOk returns a tuple with the ContentType field value
 // and a boolean to check if the value has been set.
-func (o *GetMediaPresignedUrlRequest) GetContentTypeOk() (*string, bool) {
+func (o *GetMediaPresignedUrlRequest) GetContentTypeOk() (*MediaContentType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -95,7 +94,7 @@ func (o *GetMediaPresignedUrlRequest) GetContentTypeOk() (*string, bool) {
 }
 
 // SetContentType sets field value
-func (o *GetMediaPresignedUrlRequest) SetContentType(v string) {
+func (o *GetMediaPresignedUrlRequest) SetContentType(v MediaContentType) {
 	o.ContentType = v
 }
 
