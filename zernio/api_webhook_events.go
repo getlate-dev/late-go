@@ -1865,6 +1865,109 @@ func (a *WebhookEventsAPIService) OnMessageSentExecute(r WebhookEventsAPIOnMessa
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnPhoneNumberStockAvailableRequest struct {
+	ctx                                     context.Context
+	ApiService                              *WebhookEventsAPIService
+	webhookPayloadPhoneNumberStockAvailable *WebhookPayloadPhoneNumberStockAvailable
+}
+
+func (r WebhookEventsAPIOnPhoneNumberStockAvailableRequest) WebhookPayloadPhoneNumberStockAvailable(webhookPayloadPhoneNumberStockAvailable WebhookPayloadPhoneNumberStockAvailable) WebhookEventsAPIOnPhoneNumberStockAvailableRequest {
+	r.webhookPayloadPhoneNumberStockAvailable = &webhookPayloadPhoneNumberStockAvailable
+	return r
+}
+
+func (r WebhookEventsAPIOnPhoneNumberStockAvailableRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnPhoneNumberStockAvailableExecute(r)
+}
+
+/*
+OnPhoneNumberStockAvailable Phone-number stock available event
+
+Fired by the stock sweep (every 6h) the first time a country you watch
+via POST /v1/phone-numbers/stock-watches has deliverable numbers again.
+The watch is consumed, so the event fires once per watch; the stock
+counts are a snapshot and numbers are sold first come, first served.
+Buy with POST /v1/phone-numbers/purchase.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnPhoneNumberStockAvailableRequest
+*/
+func (a *WebhookEventsAPIService) OnPhoneNumberStockAvailable(ctx context.Context) WebhookEventsAPIOnPhoneNumberStockAvailableRequest {
+	return WebhookEventsAPIOnPhoneNumberStockAvailableRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnPhoneNumberStockAvailableExecute(r WebhookEventsAPIOnPhoneNumberStockAvailableRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnPhoneNumberStockAvailable")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/phone_number.stock_available"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadPhoneNumberStockAvailable == nil {
+		return nil, reportError("webhookPayloadPhoneNumberStockAvailable is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadPhoneNumberStockAvailable
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnPostCancelledRequest struct {
 	ctx                context.Context
 	ApiService         *WebhookEventsAPIService
