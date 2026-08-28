@@ -22,8 +22,8 @@ var _ MappedNullable = &SendInboxMessage400Response{}
 type SendInboxMessage400Response struct {
 	Error *string `json:"error,omitempty"`
 	// Stable machine-readable reason. PLATFORM_LIMITATION covers a capability the platform does not offer (e.g. Bluesky and Reddit DMs reject media); MISSING_PARTICIPANT means the stored conversation has no recipient to send to.
-	Code          *string                                   `json:"code,omitempty"`
-	PlatformError *SendInboxMessage400ResponsePlatformError `json:"platformError,omitempty"`
+	Code          *string                                                     `json:"code,omitempty"`
+	PlatformError *SendInboxMessage200ResponseDataPartialFailurePlatformError `json:"platformError,omitempty"`
 }
 
 // NewSendInboxMessage400Response instantiates a new SendInboxMessage400Response object
@@ -108,9 +108,9 @@ func (o *SendInboxMessage400Response) SetCode(v string) {
 }
 
 // GetPlatformError returns the PlatformError field value if set, zero value otherwise.
-func (o *SendInboxMessage400Response) GetPlatformError() SendInboxMessage400ResponsePlatformError {
+func (o *SendInboxMessage400Response) GetPlatformError() SendInboxMessage200ResponseDataPartialFailurePlatformError {
 	if o == nil || IsNil(o.PlatformError) {
-		var ret SendInboxMessage400ResponsePlatformError
+		var ret SendInboxMessage200ResponseDataPartialFailurePlatformError
 		return ret
 	}
 	return *o.PlatformError
@@ -118,7 +118,7 @@ func (o *SendInboxMessage400Response) GetPlatformError() SendInboxMessage400Resp
 
 // GetPlatformErrorOk returns a tuple with the PlatformError field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SendInboxMessage400Response) GetPlatformErrorOk() (*SendInboxMessage400ResponsePlatformError, bool) {
+func (o *SendInboxMessage400Response) GetPlatformErrorOk() (*SendInboxMessage200ResponseDataPartialFailurePlatformError, bool) {
 	if o == nil || IsNil(o.PlatformError) {
 		return nil, false
 	}
@@ -134,8 +134,8 @@ func (o *SendInboxMessage400Response) HasPlatformError() bool {
 	return false
 }
 
-// SetPlatformError gets a reference to the given SendInboxMessage400ResponsePlatformError and assigns it to the PlatformError field.
-func (o *SendInboxMessage400Response) SetPlatformError(v SendInboxMessage400ResponsePlatformError) {
+// SetPlatformError gets a reference to the given SendInboxMessage200ResponseDataPartialFailurePlatformError and assigns it to the PlatformError field.
+func (o *SendInboxMessage400Response) SetPlatformError(v SendInboxMessage200ResponseDataPartialFailurePlatformError) {
 	o.PlatformError = &v
 }
 

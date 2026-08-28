@@ -26,6 +26,9 @@ type SendInboxMessage200ResponseData struct {
 	ConversationId *string `json:"conversationId,omitempty"`
 	// Echo of the sent attachment with its resolved public URL, when one is available (Facebook, Instagram, Telegram, WhatsApp).
 	Attachments []SendInboxMessage200ResponseDataAttachmentsInner `json:"attachments,omitempty"`
+	// Facebook/Instagram only. Present when an attachment and text were both requested: Meta has no single body shape for both, so the send is two Meta messages under the hood. First element === messageId (the attachment); second is the follow-up text.
+	MessageIds     []string                                       `json:"messageIds,omitempty"`
+	PartialFailure *SendInboxMessage200ResponseDataPartialFailure `json:"partialFailure,omitempty"`
 }
 
 // NewSendInboxMessage200ResponseData instantiates a new SendInboxMessage200ResponseData object
@@ -141,6 +144,70 @@ func (o *SendInboxMessage200ResponseData) SetAttachments(v []SendInboxMessage200
 	o.Attachments = v
 }
 
+// GetMessageIds returns the MessageIds field value if set, zero value otherwise.
+func (o *SendInboxMessage200ResponseData) GetMessageIds() []string {
+	if o == nil || IsNil(o.MessageIds) {
+		var ret []string
+		return ret
+	}
+	return o.MessageIds
+}
+
+// GetMessageIdsOk returns a tuple with the MessageIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessage200ResponseData) GetMessageIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.MessageIds) {
+		return nil, false
+	}
+	return o.MessageIds, true
+}
+
+// HasMessageIds returns a boolean if a field has been set.
+func (o *SendInboxMessage200ResponseData) HasMessageIds() bool {
+	if o != nil && !IsNil(o.MessageIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageIds gets a reference to the given []string and assigns it to the MessageIds field.
+func (o *SendInboxMessage200ResponseData) SetMessageIds(v []string) {
+	o.MessageIds = v
+}
+
+// GetPartialFailure returns the PartialFailure field value if set, zero value otherwise.
+func (o *SendInboxMessage200ResponseData) GetPartialFailure() SendInboxMessage200ResponseDataPartialFailure {
+	if o == nil || IsNil(o.PartialFailure) {
+		var ret SendInboxMessage200ResponseDataPartialFailure
+		return ret
+	}
+	return *o.PartialFailure
+}
+
+// GetPartialFailureOk returns a tuple with the PartialFailure field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessage200ResponseData) GetPartialFailureOk() (*SendInboxMessage200ResponseDataPartialFailure, bool) {
+	if o == nil || IsNil(o.PartialFailure) {
+		return nil, false
+	}
+	return o.PartialFailure, true
+}
+
+// HasPartialFailure returns a boolean if a field has been set.
+func (o *SendInboxMessage200ResponseData) HasPartialFailure() bool {
+	if o != nil && !IsNil(o.PartialFailure) {
+		return true
+	}
+
+	return false
+}
+
+// SetPartialFailure gets a reference to the given SendInboxMessage200ResponseDataPartialFailure and assigns it to the PartialFailure field.
+func (o *SendInboxMessage200ResponseData) SetPartialFailure(v SendInboxMessage200ResponseDataPartialFailure) {
+	o.PartialFailure = &v
+}
+
 func (o SendInboxMessage200ResponseData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -159,6 +226,12 @@ func (o SendInboxMessage200ResponseData) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.Attachments) {
 		toSerialize["attachments"] = o.Attachments
+	}
+	if !IsNil(o.MessageIds) {
+		toSerialize["messageIds"] = o.MessageIds
+	}
+	if !IsNil(o.PartialFailure) {
+		toSerialize["partialFailure"] = o.PartialFailure
 	}
 	return toSerialize, nil
 }
