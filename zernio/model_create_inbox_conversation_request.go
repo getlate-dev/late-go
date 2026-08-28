@@ -45,6 +45,7 @@ type CreateInboxConversationRequest struct {
 	// WhatsApp only. Values for template buttons that carry one at send time, each addressed by the button's position in the approved template. This is the only way to send a copy-code button's payload (a Pix payment code, a coupon) or a flow token, because templateParams is a flat array of text variables and covers dynamic URL buttons only. Supplying a button here overrides whatever templateParams would have derived for that same index, so the send never carries one button twice; repeating an index within this array is rejected with 400. Each index must name a button of the matching kind on the approved template, which is also checked before the send and returns 400 (INVALID_TEMPLATE_BUTTON_PARAM) rather than a Meta rejection.
 	TemplateButtonParams []CreateInboxConversationRequestTemplateButtonParamsInner `json:"templateButtonParams,omitempty"`
 	HeaderMedia          *CreateInboxConversationRequestHeaderMedia                `json:"headerMedia,omitempty"`
+	HeaderLocation       *CreateInboxConversationRequestHeaderLocation             `json:"headerLocation,omitempty"`
 }
 
 type _CreateInboxConversationRequest CreateInboxConversationRequest
@@ -451,6 +452,38 @@ func (o *CreateInboxConversationRequest) SetHeaderMedia(v CreateInboxConversatio
 	o.HeaderMedia = &v
 }
 
+// GetHeaderLocation returns the HeaderLocation field value if set, zero value otherwise.
+func (o *CreateInboxConversationRequest) GetHeaderLocation() CreateInboxConversationRequestHeaderLocation {
+	if o == nil || IsNil(o.HeaderLocation) {
+		var ret CreateInboxConversationRequestHeaderLocation
+		return ret
+	}
+	return *o.HeaderLocation
+}
+
+// GetHeaderLocationOk returns a tuple with the HeaderLocation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInboxConversationRequest) GetHeaderLocationOk() (*CreateInboxConversationRequestHeaderLocation, bool) {
+	if o == nil || IsNil(o.HeaderLocation) {
+		return nil, false
+	}
+	return o.HeaderLocation, true
+}
+
+// HasHeaderLocation returns a boolean if a field has been set.
+func (o *CreateInboxConversationRequest) HasHeaderLocation() bool {
+	if o != nil && !IsNil(o.HeaderLocation) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeaderLocation gets a reference to the given CreateInboxConversationRequestHeaderLocation and assigns it to the HeaderLocation field.
+func (o *CreateInboxConversationRequest) SetHeaderLocation(v CreateInboxConversationRequestHeaderLocation) {
+	o.HeaderLocation = &v
+}
+
 func (o CreateInboxConversationRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -494,6 +527,9 @@ func (o CreateInboxConversationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.HeaderMedia) {
 		toSerialize["headerMedia"] = o.HeaderMedia
+	}
+	if !IsNil(o.HeaderLocation) {
+		toSerialize["headerLocation"] = o.HeaderLocation
 	}
 	return toSerialize, nil
 }

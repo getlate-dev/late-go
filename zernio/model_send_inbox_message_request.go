@@ -50,8 +50,8 @@ type SendInboxMessageRequest struct {
 	// Facebook message tag for messaging outside 24h window. Requires messagingType MESSAGE_TAG. Instagram only supports HUMAN_AGENT.
 	MessageTag *string `json:"messageTag,omitempty"`
 	// Platform message ID to quote-reply to. For WhatsApp, pass the wamid; for Telegram, the Telegram message ID (both available in message.platformMessageId from webhooks or the list-messages endpoint). On Slack it threads the reply (thread_ts) instead of quoting. Silently ignored on platforms without send-side reply support, including Instagram and Facebook Messenger (Meta's Send API rejects reply_to on Instagram and does not expose it on Messenger).
-	ReplyTo  *string                          `json:"replyTo,omitempty"`
-	Location *SendInboxMessageRequestLocation `json:"location,omitempty"`
+	ReplyTo  *string                                       `json:"replyTo,omitempty"`
+	Location *CreateInboxConversationRequestHeaderLocation `json:"location,omitempty"`
 	// WhatsApp-only. Send one or more contact cards.
 	Contacts []SendInboxMessageRequestContactsInner `json:"contacts,omitempty"`
 }
@@ -585,9 +585,9 @@ func (o *SendInboxMessageRequest) SetReplyTo(v string) {
 }
 
 // GetLocation returns the Location field value if set, zero value otherwise.
-func (o *SendInboxMessageRequest) GetLocation() SendInboxMessageRequestLocation {
+func (o *SendInboxMessageRequest) GetLocation() CreateInboxConversationRequestHeaderLocation {
 	if o == nil || IsNil(o.Location) {
-		var ret SendInboxMessageRequestLocation
+		var ret CreateInboxConversationRequestHeaderLocation
 		return ret
 	}
 	return *o.Location
@@ -595,7 +595,7 @@ func (o *SendInboxMessageRequest) GetLocation() SendInboxMessageRequestLocation 
 
 // GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SendInboxMessageRequest) GetLocationOk() (*SendInboxMessageRequestLocation, bool) {
+func (o *SendInboxMessageRequest) GetLocationOk() (*CreateInboxConversationRequestHeaderLocation, bool) {
 	if o == nil || IsNil(o.Location) {
 		return nil, false
 	}
@@ -611,8 +611,8 @@ func (o *SendInboxMessageRequest) HasLocation() bool {
 	return false
 }
 
-// SetLocation gets a reference to the given SendInboxMessageRequestLocation and assigns it to the Location field.
-func (o *SendInboxMessageRequest) SetLocation(v SendInboxMessageRequestLocation) {
+// SetLocation gets a reference to the given CreateInboxConversationRequestHeaderLocation and assigns it to the Location field.
+func (o *SendInboxMessageRequest) SetLocation(v CreateInboxConversationRequestHeaderLocation) {
 	o.Location = &v
 }
 
