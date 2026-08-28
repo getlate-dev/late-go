@@ -67,6 +67,7 @@ func main() {
 | `client.AccountsAPI.GetAllAccountsHealth(ctx)` | Check accounts health |
 | `client.AccountsAPI.ListAccounts(ctx)` | List accounts |
 | `client.AccountsAPI.GetAccountHealth(ctx)` | Check account health |
+| `client.AccountsAPI.GetAccountPosts(ctx)` | List posts published on the platform |
 | `client.AccountsAPI.GetBlueskySettings(ctx)` | Get Bluesky account settings |
 | `client.AccountsAPI.GetFollowerStats(ctx)` | Get follower stats |
 | `client.GMBReviewsAPI.GetGoogleBusinessReview(ctx)` | Get a review |

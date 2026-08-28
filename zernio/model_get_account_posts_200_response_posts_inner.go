@@ -1,7 +1,7 @@
 /*
 Zernio API
 
-API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api
+API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
 API version: 1.0.4
 Contact: support@zernio.com
@@ -21,21 +21,26 @@ var _ MappedNullable = &GetAccountPosts200ResponsePostsInner{}
 
 // GetAccountPosts200ResponsePostsInner struct for GetAccountPosts200ResponsePostsInner
 type GetAccountPosts200ResponsePostsInner struct {
-	Id            *string        `json:"id,omitempty"`
-	Message       *string        `json:"message,omitempty"`
-	CreatedTime   *time.Time     `json:"createdTime,omitempty"`
-	Picture       NullableString `json:"picture,omitempty"`
-	Permalink     NullableString `json:"permalink,omitempty"`
-	MediaType     NullableString `json:"mediaType,omitempty"`
-	CommentCount  NullableInt32  `json:"commentCount,omitempty"`
-	LikeCount     NullableInt32  `json:"likeCount,omitempty"`
-	ReactionCount NullableInt32  `json:"reactionCount,omitempty"`
-	ShareCount    NullableInt32  `json:"shareCount,omitempty"`
-	Platform      *string        `json:"platform,omitempty"`
-	// Bluesky only. Content ID needed for fetching replies.
-	Cid NullableString `json:"cid,omitempty"`
-	// Reddit only. Subreddit name, needed for fetching comments.
-	Subreddit NullableString `json:"subreddit,omitempty"`
+	// The platform's own post id (the video ID on YouTube)
+	Id       *string `json:"id,omitempty"`
+	Platform *string `json:"platform,omitempty"`
+	// Caption or title, empty string when the post has no text
+	Message     *string    `json:"message,omitempty"`
+	CreatedTime *time.Time `json:"createdTime,omitempty"`
+	// Public URL of the post on the platform
+	Permalink *string `json:"permalink,omitempty"`
+	// Thumbnail or media URL
+	Picture      *string `json:"picture,omitempty"`
+	MediaType    *string `json:"mediaType,omitempty"`
+	CommentCount *int32  `json:"commentCount,omitempty"`
+	LikeCount    *int32  `json:"likeCount,omitempty"`
+	// Facebook and LinkedIn only
+	ReactionCount *int32 `json:"reactionCount,omitempty"`
+	ShareCount    *int32 `json:"shareCount,omitempty"`
+	// Bluesky content id, required to reply to the post
+	Cid *string `json:"cid,omitempty"`
+	// Reddit only
+	Subreddit *string `json:"subreddit,omitempty"`
 }
 
 // NewGetAccountPosts200ResponsePostsInner instantiates a new GetAccountPosts200ResponsePostsInner object
@@ -85,6 +90,38 @@ func (o *GetAccountPosts200ResponsePostsInner) HasId() bool {
 // SetId gets a reference to the given string and assigns it to the Id field.
 func (o *GetAccountPosts200ResponsePostsInner) SetId(v string) {
 	o.Id = &v
+}
+
+// GetPlatform returns the Platform field value if set, zero value otherwise.
+func (o *GetAccountPosts200ResponsePostsInner) GetPlatform() string {
+	if o == nil || IsNil(o.Platform) {
+		var ret string
+		return ret
+	}
+	return *o.Platform
+}
+
+// GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountPosts200ResponsePostsInner) GetPlatformOk() (*string, bool) {
+	if o == nil || IsNil(o.Platform) {
+		return nil, false
+	}
+	return o.Platform, true
+}
+
+// HasPlatform returns a boolean if a field has been set.
+func (o *GetAccountPosts200ResponsePostsInner) HasPlatform() bool {
+	if o != nil && !IsNil(o.Platform) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatform gets a reference to the given string and assigns it to the Platform field.
+func (o *GetAccountPosts200ResponsePostsInner) SetPlatform(v string) {
+	o.Platform = &v
 }
 
 // GetMessage returns the Message field value if set, zero value otherwise.
@@ -151,423 +188,292 @@ func (o *GetAccountPosts200ResponsePostsInner) SetCreatedTime(v time.Time) {
 	o.CreatedTime = &v
 }
 
-// GetPicture returns the Picture field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GetAccountPosts200ResponsePostsInner) GetPicture() string {
-	if o == nil || IsNil(o.Picture.Get()) {
-		var ret string
-		return ret
-	}
-	return *o.Picture.Get()
-}
-
-// GetPictureOk returns a tuple with the Picture field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GetAccountPosts200ResponsePostsInner) GetPictureOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Picture.Get(), o.Picture.IsSet()
-}
-
-// HasPicture returns a boolean if a field has been set.
-func (o *GetAccountPosts200ResponsePostsInner) HasPicture() bool {
-	if o != nil && o.Picture.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetPicture gets a reference to the given NullableString and assigns it to the Picture field.
-func (o *GetAccountPosts200ResponsePostsInner) SetPicture(v string) {
-	o.Picture.Set(&v)
-}
-
-// SetPictureNil sets the value for Picture to be an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) SetPictureNil() {
-	o.Picture.Set(nil)
-}
-
-// UnsetPicture ensures that no value is present for Picture, not even an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) UnsetPicture() {
-	o.Picture.Unset()
-}
-
-// GetPermalink returns the Permalink field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetPermalink returns the Permalink field value if set, zero value otherwise.
 func (o *GetAccountPosts200ResponsePostsInner) GetPermalink() string {
-	if o == nil || IsNil(o.Permalink.Get()) {
+	if o == nil || IsNil(o.Permalink) {
 		var ret string
 		return ret
 	}
-	return *o.Permalink.Get()
+	return *o.Permalink
 }
 
 // GetPermalinkOk returns a tuple with the Permalink field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAccountPosts200ResponsePostsInner) GetPermalinkOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Permalink) {
 		return nil, false
 	}
-	return o.Permalink.Get(), o.Permalink.IsSet()
+	return o.Permalink, true
 }
 
 // HasPermalink returns a boolean if a field has been set.
 func (o *GetAccountPosts200ResponsePostsInner) HasPermalink() bool {
-	if o != nil && o.Permalink.IsSet() {
+	if o != nil && !IsNil(o.Permalink) {
 		return true
 	}
 
 	return false
 }
 
-// SetPermalink gets a reference to the given NullableString and assigns it to the Permalink field.
+// SetPermalink gets a reference to the given string and assigns it to the Permalink field.
 func (o *GetAccountPosts200ResponsePostsInner) SetPermalink(v string) {
-	o.Permalink.Set(&v)
+	o.Permalink = &v
 }
 
-// SetPermalinkNil sets the value for Permalink to be an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) SetPermalinkNil() {
-	o.Permalink.Set(nil)
-}
-
-// UnsetPermalink ensures that no value is present for Permalink, not even an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) UnsetPermalink() {
-	o.Permalink.Unset()
-}
-
-// GetMediaType returns the MediaType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GetAccountPosts200ResponsePostsInner) GetMediaType() string {
-	if o == nil || IsNil(o.MediaType.Get()) {
+// GetPicture returns the Picture field value if set, zero value otherwise.
+func (o *GetAccountPosts200ResponsePostsInner) GetPicture() string {
+	if o == nil || IsNil(o.Picture) {
 		var ret string
 		return ret
 	}
-	return *o.MediaType.Get()
+	return *o.Picture
+}
+
+// GetPictureOk returns a tuple with the Picture field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountPosts200ResponsePostsInner) GetPictureOk() (*string, bool) {
+	if o == nil || IsNil(o.Picture) {
+		return nil, false
+	}
+	return o.Picture, true
+}
+
+// HasPicture returns a boolean if a field has been set.
+func (o *GetAccountPosts200ResponsePostsInner) HasPicture() bool {
+	if o != nil && !IsNil(o.Picture) {
+		return true
+	}
+
+	return false
+}
+
+// SetPicture gets a reference to the given string and assigns it to the Picture field.
+func (o *GetAccountPosts200ResponsePostsInner) SetPicture(v string) {
+	o.Picture = &v
+}
+
+// GetMediaType returns the MediaType field value if set, zero value otherwise.
+func (o *GetAccountPosts200ResponsePostsInner) GetMediaType() string {
+	if o == nil || IsNil(o.MediaType) {
+		var ret string
+		return ret
+	}
+	return *o.MediaType
 }
 
 // GetMediaTypeOk returns a tuple with the MediaType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAccountPosts200ResponsePostsInner) GetMediaTypeOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.MediaType) {
 		return nil, false
 	}
-	return o.MediaType.Get(), o.MediaType.IsSet()
+	return o.MediaType, true
 }
 
 // HasMediaType returns a boolean if a field has been set.
 func (o *GetAccountPosts200ResponsePostsInner) HasMediaType() bool {
-	if o != nil && o.MediaType.IsSet() {
+	if o != nil && !IsNil(o.MediaType) {
 		return true
 	}
 
 	return false
 }
 
-// SetMediaType gets a reference to the given NullableString and assigns it to the MediaType field.
+// SetMediaType gets a reference to the given string and assigns it to the MediaType field.
 func (o *GetAccountPosts200ResponsePostsInner) SetMediaType(v string) {
-	o.MediaType.Set(&v)
+	o.MediaType = &v
 }
 
-// SetMediaTypeNil sets the value for MediaType to be an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) SetMediaTypeNil() {
-	o.MediaType.Set(nil)
-}
-
-// UnsetMediaType ensures that no value is present for MediaType, not even an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) UnsetMediaType() {
-	o.MediaType.Unset()
-}
-
-// GetCommentCount returns the CommentCount field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetCommentCount returns the CommentCount field value if set, zero value otherwise.
 func (o *GetAccountPosts200ResponsePostsInner) GetCommentCount() int32 {
-	if o == nil || IsNil(o.CommentCount.Get()) {
+	if o == nil || IsNil(o.CommentCount) {
 		var ret int32
 		return ret
 	}
-	return *o.CommentCount.Get()
+	return *o.CommentCount
 }
 
 // GetCommentCountOk returns a tuple with the CommentCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAccountPosts200ResponsePostsInner) GetCommentCountOk() (*int32, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.CommentCount) {
 		return nil, false
 	}
-	return o.CommentCount.Get(), o.CommentCount.IsSet()
+	return o.CommentCount, true
 }
 
 // HasCommentCount returns a boolean if a field has been set.
 func (o *GetAccountPosts200ResponsePostsInner) HasCommentCount() bool {
-	if o != nil && o.CommentCount.IsSet() {
+	if o != nil && !IsNil(o.CommentCount) {
 		return true
 	}
 
 	return false
 }
 
-// SetCommentCount gets a reference to the given NullableInt32 and assigns it to the CommentCount field.
+// SetCommentCount gets a reference to the given int32 and assigns it to the CommentCount field.
 func (o *GetAccountPosts200ResponsePostsInner) SetCommentCount(v int32) {
-	o.CommentCount.Set(&v)
+	o.CommentCount = &v
 }
 
-// SetCommentCountNil sets the value for CommentCount to be an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) SetCommentCountNil() {
-	o.CommentCount.Set(nil)
-}
-
-// UnsetCommentCount ensures that no value is present for CommentCount, not even an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) UnsetCommentCount() {
-	o.CommentCount.Unset()
-}
-
-// GetLikeCount returns the LikeCount field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetLikeCount returns the LikeCount field value if set, zero value otherwise.
 func (o *GetAccountPosts200ResponsePostsInner) GetLikeCount() int32 {
-	if o == nil || IsNil(o.LikeCount.Get()) {
+	if o == nil || IsNil(o.LikeCount) {
 		var ret int32
 		return ret
 	}
-	return *o.LikeCount.Get()
+	return *o.LikeCount
 }
 
 // GetLikeCountOk returns a tuple with the LikeCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAccountPosts200ResponsePostsInner) GetLikeCountOk() (*int32, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.LikeCount) {
 		return nil, false
 	}
-	return o.LikeCount.Get(), o.LikeCount.IsSet()
+	return o.LikeCount, true
 }
 
 // HasLikeCount returns a boolean if a field has been set.
 func (o *GetAccountPosts200ResponsePostsInner) HasLikeCount() bool {
-	if o != nil && o.LikeCount.IsSet() {
+	if o != nil && !IsNil(o.LikeCount) {
 		return true
 	}
 
 	return false
 }
 
-// SetLikeCount gets a reference to the given NullableInt32 and assigns it to the LikeCount field.
+// SetLikeCount gets a reference to the given int32 and assigns it to the LikeCount field.
 func (o *GetAccountPosts200ResponsePostsInner) SetLikeCount(v int32) {
-	o.LikeCount.Set(&v)
+	o.LikeCount = &v
 }
 
-// SetLikeCountNil sets the value for LikeCount to be an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) SetLikeCountNil() {
-	o.LikeCount.Set(nil)
-}
-
-// UnsetLikeCount ensures that no value is present for LikeCount, not even an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) UnsetLikeCount() {
-	o.LikeCount.Unset()
-}
-
-// GetReactionCount returns the ReactionCount field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetReactionCount returns the ReactionCount field value if set, zero value otherwise.
 func (o *GetAccountPosts200ResponsePostsInner) GetReactionCount() int32 {
-	if o == nil || IsNil(o.ReactionCount.Get()) {
+	if o == nil || IsNil(o.ReactionCount) {
 		var ret int32
 		return ret
 	}
-	return *o.ReactionCount.Get()
+	return *o.ReactionCount
 }
 
 // GetReactionCountOk returns a tuple with the ReactionCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAccountPosts200ResponsePostsInner) GetReactionCountOk() (*int32, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.ReactionCount) {
 		return nil, false
 	}
-	return o.ReactionCount.Get(), o.ReactionCount.IsSet()
+	return o.ReactionCount, true
 }
 
 // HasReactionCount returns a boolean if a field has been set.
 func (o *GetAccountPosts200ResponsePostsInner) HasReactionCount() bool {
-	if o != nil && o.ReactionCount.IsSet() {
+	if o != nil && !IsNil(o.ReactionCount) {
 		return true
 	}
 
 	return false
 }
 
-// SetReactionCount gets a reference to the given NullableInt32 and assigns it to the ReactionCount field.
+// SetReactionCount gets a reference to the given int32 and assigns it to the ReactionCount field.
 func (o *GetAccountPosts200ResponsePostsInner) SetReactionCount(v int32) {
-	o.ReactionCount.Set(&v)
+	o.ReactionCount = &v
 }
 
-// SetReactionCountNil sets the value for ReactionCount to be an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) SetReactionCountNil() {
-	o.ReactionCount.Set(nil)
-}
-
-// UnsetReactionCount ensures that no value is present for ReactionCount, not even an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) UnsetReactionCount() {
-	o.ReactionCount.Unset()
-}
-
-// GetShareCount returns the ShareCount field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetShareCount returns the ShareCount field value if set, zero value otherwise.
 func (o *GetAccountPosts200ResponsePostsInner) GetShareCount() int32 {
-	if o == nil || IsNil(o.ShareCount.Get()) {
+	if o == nil || IsNil(o.ShareCount) {
 		var ret int32
 		return ret
 	}
-	return *o.ShareCount.Get()
+	return *o.ShareCount
 }
 
 // GetShareCountOk returns a tuple with the ShareCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAccountPosts200ResponsePostsInner) GetShareCountOk() (*int32, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.ShareCount) {
 		return nil, false
 	}
-	return o.ShareCount.Get(), o.ShareCount.IsSet()
+	return o.ShareCount, true
 }
 
 // HasShareCount returns a boolean if a field has been set.
 func (o *GetAccountPosts200ResponsePostsInner) HasShareCount() bool {
-	if o != nil && o.ShareCount.IsSet() {
+	if o != nil && !IsNil(o.ShareCount) {
 		return true
 	}
 
 	return false
 }
 
-// SetShareCount gets a reference to the given NullableInt32 and assigns it to the ShareCount field.
+// SetShareCount gets a reference to the given int32 and assigns it to the ShareCount field.
 func (o *GetAccountPosts200ResponsePostsInner) SetShareCount(v int32) {
-	o.ShareCount.Set(&v)
+	o.ShareCount = &v
 }
 
-// SetShareCountNil sets the value for ShareCount to be an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) SetShareCountNil() {
-	o.ShareCount.Set(nil)
-}
-
-// UnsetShareCount ensures that no value is present for ShareCount, not even an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) UnsetShareCount() {
-	o.ShareCount.Unset()
-}
-
-// GetPlatform returns the Platform field value if set, zero value otherwise.
-func (o *GetAccountPosts200ResponsePostsInner) GetPlatform() string {
-	if o == nil || IsNil(o.Platform) {
-		var ret string
-		return ret
-	}
-	return *o.Platform
-}
-
-// GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GetAccountPosts200ResponsePostsInner) GetPlatformOk() (*string, bool) {
-	if o == nil || IsNil(o.Platform) {
-		return nil, false
-	}
-	return o.Platform, true
-}
-
-// HasPlatform returns a boolean if a field has been set.
-func (o *GetAccountPosts200ResponsePostsInner) HasPlatform() bool {
-	if o != nil && !IsNil(o.Platform) {
-		return true
-	}
-
-	return false
-}
-
-// SetPlatform gets a reference to the given string and assigns it to the Platform field.
-func (o *GetAccountPosts200ResponsePostsInner) SetPlatform(v string) {
-	o.Platform = &v
-}
-
-// GetCid returns the Cid field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetCid returns the Cid field value if set, zero value otherwise.
 func (o *GetAccountPosts200ResponsePostsInner) GetCid() string {
-	if o == nil || IsNil(o.Cid.Get()) {
+	if o == nil || IsNil(o.Cid) {
 		var ret string
 		return ret
 	}
-	return *o.Cid.Get()
+	return *o.Cid
 }
 
 // GetCidOk returns a tuple with the Cid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAccountPosts200ResponsePostsInner) GetCidOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Cid) {
 		return nil, false
 	}
-	return o.Cid.Get(), o.Cid.IsSet()
+	return o.Cid, true
 }
 
 // HasCid returns a boolean if a field has been set.
 func (o *GetAccountPosts200ResponsePostsInner) HasCid() bool {
-	if o != nil && o.Cid.IsSet() {
+	if o != nil && !IsNil(o.Cid) {
 		return true
 	}
 
 	return false
 }
 
-// SetCid gets a reference to the given NullableString and assigns it to the Cid field.
+// SetCid gets a reference to the given string and assigns it to the Cid field.
 func (o *GetAccountPosts200ResponsePostsInner) SetCid(v string) {
-	o.Cid.Set(&v)
+	o.Cid = &v
 }
 
-// SetCidNil sets the value for Cid to be an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) SetCidNil() {
-	o.Cid.Set(nil)
-}
-
-// UnsetCid ensures that no value is present for Cid, not even an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) UnsetCid() {
-	o.Cid.Unset()
-}
-
-// GetSubreddit returns the Subreddit field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetSubreddit returns the Subreddit field value if set, zero value otherwise.
 func (o *GetAccountPosts200ResponsePostsInner) GetSubreddit() string {
-	if o == nil || IsNil(o.Subreddit.Get()) {
+	if o == nil || IsNil(o.Subreddit) {
 		var ret string
 		return ret
 	}
-	return *o.Subreddit.Get()
+	return *o.Subreddit
 }
 
 // GetSubredditOk returns a tuple with the Subreddit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAccountPosts200ResponsePostsInner) GetSubredditOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Subreddit) {
 		return nil, false
 	}
-	return o.Subreddit.Get(), o.Subreddit.IsSet()
+	return o.Subreddit, true
 }
 
 // HasSubreddit returns a boolean if a field has been set.
 func (o *GetAccountPosts200ResponsePostsInner) HasSubreddit() bool {
-	if o != nil && o.Subreddit.IsSet() {
+	if o != nil && !IsNil(o.Subreddit) {
 		return true
 	}
 
 	return false
 }
 
-// SetSubreddit gets a reference to the given NullableString and assigns it to the Subreddit field.
+// SetSubreddit gets a reference to the given string and assigns it to the Subreddit field.
 func (o *GetAccountPosts200ResponsePostsInner) SetSubreddit(v string) {
-	o.Subreddit.Set(&v)
-}
-
-// SetSubredditNil sets the value for Subreddit to be an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) SetSubredditNil() {
-	o.Subreddit.Set(nil)
-}
-
-// UnsetSubreddit ensures that no value is present for Subreddit, not even an explicit nil
-func (o *GetAccountPosts200ResponsePostsInner) UnsetSubreddit() {
-	o.Subreddit.Unset()
+	o.Subreddit = &v
 }
 
 func (o GetAccountPosts200ResponsePostsInner) MarshalJSON() ([]byte, error) {
@@ -583,41 +489,41 @@ func (o GetAccountPosts200ResponsePostsInner) ToMap() (map[string]interface{}, e
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
+	if !IsNil(o.Platform) {
+		toSerialize["platform"] = o.Platform
+	}
 	if !IsNil(o.Message) {
 		toSerialize["message"] = o.Message
 	}
 	if !IsNil(o.CreatedTime) {
 		toSerialize["createdTime"] = o.CreatedTime
 	}
-	if o.Picture.IsSet() {
-		toSerialize["picture"] = o.Picture.Get()
+	if !IsNil(o.Permalink) {
+		toSerialize["permalink"] = o.Permalink
 	}
-	if o.Permalink.IsSet() {
-		toSerialize["permalink"] = o.Permalink.Get()
+	if !IsNil(o.Picture) {
+		toSerialize["picture"] = o.Picture
 	}
-	if o.MediaType.IsSet() {
-		toSerialize["mediaType"] = o.MediaType.Get()
+	if !IsNil(o.MediaType) {
+		toSerialize["mediaType"] = o.MediaType
 	}
-	if o.CommentCount.IsSet() {
-		toSerialize["commentCount"] = o.CommentCount.Get()
+	if !IsNil(o.CommentCount) {
+		toSerialize["commentCount"] = o.CommentCount
 	}
-	if o.LikeCount.IsSet() {
-		toSerialize["likeCount"] = o.LikeCount.Get()
+	if !IsNil(o.LikeCount) {
+		toSerialize["likeCount"] = o.LikeCount
 	}
-	if o.ReactionCount.IsSet() {
-		toSerialize["reactionCount"] = o.ReactionCount.Get()
+	if !IsNil(o.ReactionCount) {
+		toSerialize["reactionCount"] = o.ReactionCount
 	}
-	if o.ShareCount.IsSet() {
-		toSerialize["shareCount"] = o.ShareCount.Get()
+	if !IsNil(o.ShareCount) {
+		toSerialize["shareCount"] = o.ShareCount
 	}
-	if !IsNil(o.Platform) {
-		toSerialize["platform"] = o.Platform
+	if !IsNil(o.Cid) {
+		toSerialize["cid"] = o.Cid
 	}
-	if o.Cid.IsSet() {
-		toSerialize["cid"] = o.Cid.Get()
-	}
-	if o.Subreddit.IsSet() {
-		toSerialize["subreddit"] = o.Subreddit.Get()
+	if !IsNil(o.Subreddit) {
+		toSerialize["subreddit"] = o.Subreddit
 	}
 	return toSerialize, nil
 }
