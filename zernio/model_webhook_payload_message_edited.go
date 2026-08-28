@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadMessageEdited type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageEdited{}
 
-// WebhookPayloadMessageEdited Webhook payload for message.edited events. Fires when the sender edits a previously-sent message. Supported platforms: Instagram, Facebook Messenger, Telegram. The message object reflects the LATEST state; editHistory contains every prior version in order (oldest first), so the last entry is the version immediately before the current content.
+// WebhookPayloadMessageEdited Webhook payload for message.edited events. Fires when the sender edits a previously-sent message. Supported platforms: Instagram, Facebook Messenger, Telegram, WhatsApp. The message object reflects the LATEST state; editHistory contains every prior version in order (oldest first), so the last entry is the version immediately before the current content.
 type WebhookPayloadMessageEdited struct {
 	Id      string              `json:"id"`
 	Event   string              `json:"event"`

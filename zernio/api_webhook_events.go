@@ -1380,8 +1380,8 @@ func (r WebhookEventsAPIOnMessageEditedRequest) Execute() (*http.Response, error
 OnMessageEdited Message edited event
 
 Fired when a sender edits a previously-sent message. Supported on
-Instagram, Facebook Messenger, and Telegram. The payload includes the
-full editHistory so consumers can show prior versions.
+Instagram, Facebook Messenger, Telegram, and WhatsApp. The payload
+includes the full editHistory so consumers can show prior versions.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnMessageEditedRequest
