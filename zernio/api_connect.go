@@ -3321,6 +3321,200 @@ func (a *ConnectAPIService) GetTelegramConnectStatusExecute(r ConnectAPIGetTeleg
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIGetYoutubeCaptionsRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+	accountId  string
+	videoId    *string
+	language   *string
+	format     *string
+	refresh    *bool
+}
+
+// The YouTube video id (the &#x60;platformPostId&#x60; on a synced external post).
+func (r ConnectAPIGetYoutubeCaptionsRequest) VideoId(videoId string) ConnectAPIGetYoutubeCaptionsRequest {
+	r.videoId = &videoId
+	return r
+}
+
+// BCP-47 language tag as YouTube labels the track. &#x60;en&#x60; also matches an &#x60;en-GB&#x60; track. Omit to take the best available track.
+func (r ConnectAPIGetYoutubeCaptionsRequest) Language(language string) ConnectAPIGetYoutubeCaptionsRequest {
+	r.language = &language
+	return r
+}
+
+// &#x60;json&#x60; returns timed &#x60;cues&#x60;; &#x60;srt&#x60; returns the raw SubRip body instead. &#x60;text&#x60; is present either way.
+func (r ConnectAPIGetYoutubeCaptionsRequest) Format(format string) ConnectAPIGetYoutubeCaptionsRequest {
+	r.format = &format
+	return r
+}
+
+// Re-download from YouTube instead of serving the stored copy. Spends 200 quota units.
+func (r ConnectAPIGetYoutubeCaptionsRequest) Refresh(refresh bool) ConnectAPIGetYoutubeCaptionsRequest {
+	r.refresh = &refresh
+	return r
+}
+
+func (r ConnectAPIGetYoutubeCaptionsRequest) Execute() (*GetYoutubeCaptions200Response, *http.Response, error) {
+	return r.ApiService.GetYoutubeCaptionsExecute(r)
+}
+
+/*
+GetYoutubeCaptions Get a YouTube video transcript
+
+Returns the caption track YouTube already holds for one of the connected channel's own videos, as plain text plus timed cues. Use it instead of downloading and transcribing the video yourself.
+
+Auto-generated (ASR) tracks are included: YouTube serves them to the channel owner, which is what the connected account is. Uploaded tracks win over auto-generated ones when both exist for a language.
+
+Caching: we store the transcript on first read and serve it from there afterwards, so you do not need to cache it yourself. A cached read costs no YouTube quota and does not call YouTube at all. `source` tells you which happened (`youtube` on the first read, `cache` after). Pass `refresh=true` only when the captions actually changed on YouTube, since that re-downloads.
+
+Notes:
+- Only videos owned by this connected channel. Anything else returns 404.
+- `contentDetails.caption` in YouTube's own API reads `false` on videos that DO have a serving auto-generated track, so it is not a usable availability signal. Call this endpoint and handle the 404.
+- YouTube generates auto-captions only for videos with recognisable speech, and can take a few hours after upload to publish them.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The connected YouTube account.
+	@return ConnectAPIGetYoutubeCaptionsRequest
+*/
+func (a *ConnectAPIService) GetYoutubeCaptions(ctx context.Context, accountId string) ConnectAPIGetYoutubeCaptionsRequest {
+	return ConnectAPIGetYoutubeCaptionsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetYoutubeCaptions200Response
+func (a *ConnectAPIService) GetYoutubeCaptionsExecute(r ConnectAPIGetYoutubeCaptionsRequest) (*GetYoutubeCaptions200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetYoutubeCaptions200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetYoutubeCaptions")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/youtube-captions"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.videoId == nil {
+		return localVarReturnValue, nil, reportError("videoId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "videoId", r.videoId, "form", "")
+	if r.language != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "language", r.language, "form", "")
+	}
+	if r.format != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "format", r.format, "form", "")
+	} else {
+		var defaultValue string = "json"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "format", defaultValue, "form", "")
+		r.format = &defaultValue
+	}
+	if r.refresh != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "refresh", r.refresh, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "refresh", defaultValue, "form", "")
+		r.refresh = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIGetYoutubePlaylistsRequest struct {
 	ctx        context.Context
 	ApiService *ConnectAPIService
