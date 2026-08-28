@@ -18,7 +18,7 @@ import (
 // checks if the UsageMeteringCallUsage type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UsageMeteringCallUsage{}
 
-// UsageMeteringCallUsage Billable call volumes over the window.
+// UsageMeteringCallUsage Billable call volumes over the window. Null when `profileId` / `accountId` is set.
 type UsageMeteringCallUsage struct {
 	Whatsapp *UsageMeteringCallUsageWhatsapp `json:"whatsapp,omitempty"`
 	Pstn     *UsageMeteringCallUsageWhatsapp `json:"pstn,omitempty"`

@@ -27,11 +27,13 @@ type UsageMetering struct {
 	Days   []UsageMeteringDaysInner `json:"days,omitempty"`
 	Totals *UsageMeteringTotals     `json:"totals,omitempty"`
 	// Per-invoice-line-item rows (largest spend first) for a detailed breakdown.
-	LineItems []UsageMeteringLineItemsInner `json:"lineItems,omitempty"`
-	Peaks     *UsageMeteringPeaks           `json:"peaks,omitempty"`
-	CallUsage *UsageMeteringCallUsage       `json:"callUsage,omitempty"`
-	Period    *UsageMeteringPeriod          `json:"period,omitempty"`
-	Tax       *UsageMeteringTax             `json:"tax,omitempty"`
+	LineItems   []UsageMeteringLineItemsInner `json:"lineItems,omitempty"`
+	Peaks       *UsageMeteringPeaks           `json:"peaks,omitempty"`
+	CallUsage   *UsageMeteringCallUsage       `json:"callUsage,omitempty"`
+	Period      *UsageMeteringPeriod          `json:"period,omitempty"`
+	Tax         *UsageMeteringTax             `json:"tax,omitempty"`
+	Attribution *UsageMeteringAttribution     `json:"attribution,omitempty"`
+	Scope       *UsageMeteringScope           `json:"scope,omitempty"`
 }
 
 // NewUsageMetering instantiates a new UsageMetering object
@@ -339,6 +341,70 @@ func (o *UsageMetering) SetTax(v UsageMeteringTax) {
 	o.Tax = &v
 }
 
+// GetAttribution returns the Attribution field value if set, zero value otherwise.
+func (o *UsageMetering) GetAttribution() UsageMeteringAttribution {
+	if o == nil || IsNil(o.Attribution) {
+		var ret UsageMeteringAttribution
+		return ret
+	}
+	return *o.Attribution
+}
+
+// GetAttributionOk returns a tuple with the Attribution field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMetering) GetAttributionOk() (*UsageMeteringAttribution, bool) {
+	if o == nil || IsNil(o.Attribution) {
+		return nil, false
+	}
+	return o.Attribution, true
+}
+
+// HasAttribution returns a boolean if a field has been set.
+func (o *UsageMetering) HasAttribution() bool {
+	if o != nil && !IsNil(o.Attribution) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttribution gets a reference to the given UsageMeteringAttribution and assigns it to the Attribution field.
+func (o *UsageMetering) SetAttribution(v UsageMeteringAttribution) {
+	o.Attribution = &v
+}
+
+// GetScope returns the Scope field value if set, zero value otherwise.
+func (o *UsageMetering) GetScope() UsageMeteringScope {
+	if o == nil || IsNil(o.Scope) {
+		var ret UsageMeteringScope
+		return ret
+	}
+	return *o.Scope
+}
+
+// GetScopeOk returns a tuple with the Scope field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMetering) GetScopeOk() (*UsageMeteringScope, bool) {
+	if o == nil || IsNil(o.Scope) {
+		return nil, false
+	}
+	return o.Scope, true
+}
+
+// HasScope returns a boolean if a field has been set.
+func (o *UsageMetering) HasScope() bool {
+	if o != nil && !IsNil(o.Scope) {
+		return true
+	}
+
+	return false
+}
+
+// SetScope gets a reference to the given UsageMeteringScope and assigns it to the Scope field.
+func (o *UsageMetering) SetScope(v UsageMeteringScope) {
+	o.Scope = &v
+}
+
 func (o UsageMetering) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -375,6 +441,12 @@ func (o UsageMetering) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Tax) {
 		toSerialize["tax"] = o.Tax
+	}
+	if !IsNil(o.Attribution) {
+		toSerialize["attribution"] = o.Attribution
+	}
+	if !IsNil(o.Scope) {
+		toSerialize["scope"] = o.Scope
 	}
 	return toSerialize, nil
 }

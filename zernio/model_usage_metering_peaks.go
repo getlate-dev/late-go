@@ -18,7 +18,7 @@ import (
 // checks if the UsageMeteringPeaks type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UsageMeteringPeaks{}
 
-// UsageMeteringPeaks Peak counts over the window (Metronome COUNT metrics + live active-number count).
+// UsageMeteringPeaks Peak counts over the window (Metronome COUNT metrics + live active-number count). Null when `profileId` / `accountId` is set.
 type UsageMeteringPeaks struct {
 	Accounts *int32 `json:"accounts,omitempty"`
 	Numbers  *int32 `json:"numbers,omitempty"`

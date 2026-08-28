@@ -485,6 +485,9 @@ type UsageAPIGetUsageRequest struct {
 	from        *string
 	to          *string
 	granularity *string
+	groupBy     *string
+	profileId   *string
+	accountId   *string
 }
 
 // Snapshot mode only. For Stripe subscription users, &#x60;true&#x60; forces a subscription reconciliation pass even when cached plan data looks complete.
@@ -517,6 +520,24 @@ func (r UsageAPIGetUsageRequest) Granularity(granularity string) UsageAPIGetUsag
 	return r
 }
 
+// Metering mode. Adds &#x60;attribution&#x60;: the window&#39;s spend split per profile or per account (keys are ids; resolve names via &#x60;GET /v1/profiles&#x60; / &#x60;GET /v1/accounts&#x60;).
+func (r UsageAPIGetUsageRequest) GroupBy(groupBy string) UsageAPIGetUsageRequest {
+	r.groupBy = &groupBy
+	return r
+}
+
+// Metering mode (pair with &#x60;range&#x60;). Project the payload onto this profile&#39;s attributed share. Mutually exclusive with &#x60;accountId&#x60;, and &#x60;groupBy&#x60; (if given) must be &#x60;profile&#x60;; 404 when the profile is not in your workspace (or outside a scoped key&#39;s profiles).
+func (r UsageAPIGetUsageRequest) ProfileId(profileId string) UsageAPIGetUsageRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Metering mode (pair with &#x60;range&#x60;). Project the payload onto this account&#39;s attributed share. Mutually exclusive with &#x60;profileId&#x60;, and &#x60;groupBy&#x60; (if given) must be &#x60;account&#x60;; 404 when the account is not visible to the caller.
+func (r UsageAPIGetUsageRequest) AccountId(accountId string) UsageAPIGetUsageRequest {
+	r.accountId = &accountId
+	return r
+}
+
 func (r UsageAPIGetUsageRequest) Execute() (*GetUsage200Response, *http.Response, error) {
 	return r.ApiService.GetUsageExecute(r)
 }
@@ -539,6 +560,20 @@ billed spend (USD) by product family (`accounts`, `numbers`, `calls`,
 breakdown (the CHARGE view — always reconciles with what gets billed).
 Also served at `GET /v1/usage/daily`. Usage-based accounts only —
 legacy Stripe accounts get `{ "supported": false, "days": [] }`.
+
+**Attribution (metering mode):** `groupBy=profile|account` adds an
+`attribution` breakdown of the window's spend per profile or account,
+assembled from your own records and pro-rated against the invoice so
+`sum(groups) + unattributed` equals `totals` exactly. `profileId` /
+`accountId` instead project the whole payload (`days`, `totals`,
+`lineItems`) onto that one group; `peaks`, `callUsage` and `tax` are
+then `null` (workspace-level facts). Projected `days` spread the
+group's period share over each day (usage is attributed per period,
+not per day). Profile-scoped API keys and members only see their
+profiles' groups (`attribution.restricted: true`, with `totals`
+summing the visible groups). Credits, 10DLC fees and Verify are always
+unattributed. `profileId` / `accountId` on their own do not select
+metering mode: pair them with `range`.
 
 For per-domain consumption *volumes* use `GET /v1/usage/calls` and
 `GET /v1/usage/sms`. For the billing statement (balance, credits,
@@ -598,6 +633,15 @@ func (a *UsageAPIService) GetUsageExecute(r UsageAPIGetUsageRequest) (*GetUsage2
 		var defaultValue string = "day"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", defaultValue, "form", "")
 		r.granularity = &defaultValue
+	}
+	if r.groupBy != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "groupBy", r.groupBy, "form", "")
+	}
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
