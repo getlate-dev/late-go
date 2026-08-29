@@ -24,6 +24,8 @@ var _ MappedNullable = &UpdateWhatsAppTemplateRequest{}
 type UpdateWhatsAppTemplateRequest struct {
 	// WhatsApp social account ID
 	AccountId string `json:"accountId"`
+	// Language code of the variant to edit (e.g. en_US, es, pt_BR). Required when the family has several languages. Body only: a language query parameter on PATCH is a 400.
+	Language *string `json:"language,omitempty"`
 	// Updated template components
 	Components []WhatsAppTemplateComponent `json:"components"`
 }
@@ -73,6 +75,38 @@ func (o *UpdateWhatsAppTemplateRequest) SetAccountId(v string) {
 	o.AccountId = v
 }
 
+// GetLanguage returns the Language field value if set, zero value otherwise.
+func (o *UpdateWhatsAppTemplateRequest) GetLanguage() string {
+	if o == nil || IsNil(o.Language) {
+		var ret string
+		return ret
+	}
+	return *o.Language
+}
+
+// GetLanguageOk returns a tuple with the Language field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateWhatsAppTemplateRequest) GetLanguageOk() (*string, bool) {
+	if o == nil || IsNil(o.Language) {
+		return nil, false
+	}
+	return o.Language, true
+}
+
+// HasLanguage returns a boolean if a field has been set.
+func (o *UpdateWhatsAppTemplateRequest) HasLanguage() bool {
+	if o != nil && !IsNil(o.Language) {
+		return true
+	}
+
+	return false
+}
+
+// SetLanguage gets a reference to the given string and assigns it to the Language field.
+func (o *UpdateWhatsAppTemplateRequest) SetLanguage(v string) {
+	o.Language = &v
+}
+
 // GetComponents returns the Components field value
 func (o *UpdateWhatsAppTemplateRequest) GetComponents() []WhatsAppTemplateComponent {
 	if o == nil {
@@ -108,6 +142,9 @@ func (o UpdateWhatsAppTemplateRequest) MarshalJSON() ([]byte, error) {
 func (o UpdateWhatsAppTemplateRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
+	if !IsNil(o.Language) {
+		toSerialize["language"] = o.Language
+	}
 	toSerialize["components"] = o.Components
 	return toSerialize, nil
 }

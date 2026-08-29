@@ -20,12 +20,18 @@ var _ MappedNullable = &GetWhatsAppTemplate200ResponseTemplate{}
 
 // GetWhatsAppTemplate200ResponseTemplate struct for GetWhatsAppTemplate200ResponseTemplate
 type GetWhatsAppTemplate200ResponseTemplate struct {
-	Id         *string                  `json:"id,omitempty"`
-	Name       *string                  `json:"name,omitempty"`
-	Status     *string                  `json:"status,omitempty"`
-	Category   *string                  `json:"category,omitempty"`
+	// Meta template id. Unique per language variant; usable on /v1/whatsapp/templates/id/{templateId}.
+	Id       *string `json:"id,omitempty"`
+	Name     *string `json:"name,omitempty"`
+	Status   *string `json:"status,omitempty"`
+	Category *string `json:"category,omitempty"`
+	// The variant actually returned.
 	Language   *string                  `json:"language,omitempty"`
 	Components []map[string]interface{} `json:"components,omitempty"`
+	// Only when status is REJECTED.
+	RejectedReason *string `json:"rejected_reason,omitempty"`
+	// Post-approval quality (GREEN/YELLOW/RED), when Meta reports one.
+	QualityScore map[string]interface{} `json:"quality_score,omitempty"`
 }
 
 // NewGetWhatsAppTemplate200ResponseTemplate instantiates a new GetWhatsAppTemplate200ResponseTemplate object
@@ -237,6 +243,70 @@ func (o *GetWhatsAppTemplate200ResponseTemplate) SetComponents(v []map[string]in
 	o.Components = v
 }
 
+// GetRejectedReason returns the RejectedReason field value if set, zero value otherwise.
+func (o *GetWhatsAppTemplate200ResponseTemplate) GetRejectedReason() string {
+	if o == nil || IsNil(o.RejectedReason) {
+		var ret string
+		return ret
+	}
+	return *o.RejectedReason
+}
+
+// GetRejectedReasonOk returns a tuple with the RejectedReason field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetWhatsAppTemplate200ResponseTemplate) GetRejectedReasonOk() (*string, bool) {
+	if o == nil || IsNil(o.RejectedReason) {
+		return nil, false
+	}
+	return o.RejectedReason, true
+}
+
+// HasRejectedReason returns a boolean if a field has been set.
+func (o *GetWhatsAppTemplate200ResponseTemplate) HasRejectedReason() bool {
+	if o != nil && !IsNil(o.RejectedReason) {
+		return true
+	}
+
+	return false
+}
+
+// SetRejectedReason gets a reference to the given string and assigns it to the RejectedReason field.
+func (o *GetWhatsAppTemplate200ResponseTemplate) SetRejectedReason(v string) {
+	o.RejectedReason = &v
+}
+
+// GetQualityScore returns the QualityScore field value if set, zero value otherwise.
+func (o *GetWhatsAppTemplate200ResponseTemplate) GetQualityScore() map[string]interface{} {
+	if o == nil || IsNil(o.QualityScore) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.QualityScore
+}
+
+// GetQualityScoreOk returns a tuple with the QualityScore field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetWhatsAppTemplate200ResponseTemplate) GetQualityScoreOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.QualityScore) {
+		return map[string]interface{}{}, false
+	}
+	return o.QualityScore, true
+}
+
+// HasQualityScore returns a boolean if a field has been set.
+func (o *GetWhatsAppTemplate200ResponseTemplate) HasQualityScore() bool {
+	if o != nil && !IsNil(o.QualityScore) {
+		return true
+	}
+
+	return false
+}
+
+// SetQualityScore gets a reference to the given map[string]interface{} and assigns it to the QualityScore field.
+func (o *GetWhatsAppTemplate200ResponseTemplate) SetQualityScore(v map[string]interface{}) {
+	o.QualityScore = v
+}
+
 func (o GetWhatsAppTemplate200ResponseTemplate) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -264,6 +334,12 @@ func (o GetWhatsAppTemplate200ResponseTemplate) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Components) {
 		toSerialize["components"] = o.Components
+	}
+	if !IsNil(o.RejectedReason) {
+		toSerialize["rejected_reason"] = o.RejectedReason
+	}
+	if !IsNil(o.QualityScore) {
+		toSerialize["quality_score"] = o.QualityScore
 	}
 	return toSerialize, nil
 }

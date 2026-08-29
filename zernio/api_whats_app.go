@@ -1145,6 +1145,7 @@ type WhatsAppAPIDeleteWhatsAppTemplateRequest struct {
 	ApiService   *WhatsAppAPIService
 	templateName string
 	accountId    *string
+	language     *string
 }
 
 // WhatsApp social account ID
@@ -1153,17 +1154,28 @@ func (r WhatsAppAPIDeleteWhatsAppTemplateRequest) AccountId(accountId string) Wh
 	return r
 }
 
-func (r WhatsAppAPIDeleteWhatsAppTemplateRequest) Execute() (*UnpublishPost200Response, *http.Response, error) {
+// Delete only this language variant (e.g. es). Omit to delete the whole family.
+func (r WhatsAppAPIDeleteWhatsAppTemplateRequest) Language(language string) WhatsAppAPIDeleteWhatsAppTemplateRequest {
+	r.language = &language
+	return r
+}
+
+func (r WhatsAppAPIDeleteWhatsAppTemplateRequest) Execute() (*DeleteWhatsAppTemplate200Response, *http.Response, error) {
 	return r.ApiService.DeleteWhatsAppTemplateExecute(r)
 }
 
 /*
 DeleteWhatsAppTemplate Delete template
 
-Permanently delete a message template by name.
+Permanently delete a message template.
+
+**Without `language` this deletes every language variant of the name** (Meta's own
+contract for deletion by name). Pass `language` to delete one variant only; the response
+`scope` says which happened. Meta keeps a deleted approved template in `PENDING_DELETION`
+for a while and the name cannot be reused for 30 days.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param templateName Template name
+	@param templateName Template name (the family).
 	@return WhatsAppAPIDeleteWhatsAppTemplateRequest
 */
 func (a *WhatsAppAPIService) DeleteWhatsAppTemplate(ctx context.Context, templateName string) WhatsAppAPIDeleteWhatsAppTemplateRequest {
@@ -1176,13 +1188,13 @@ func (a *WhatsAppAPIService) DeleteWhatsAppTemplate(ctx context.Context, templat
 
 // Execute executes the request
 //
-//	@return UnpublishPost200Response
-func (a *WhatsAppAPIService) DeleteWhatsAppTemplateExecute(r WhatsAppAPIDeleteWhatsAppTemplateRequest) (*UnpublishPost200Response, *http.Response, error) {
+//	@return DeleteWhatsAppTemplate200Response
+func (a *WhatsAppAPIService) DeleteWhatsAppTemplateExecute(r WhatsAppAPIDeleteWhatsAppTemplateRequest) (*DeleteWhatsAppTemplate200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *UnpublishPost200Response
+		localVarReturnValue *DeleteWhatsAppTemplate200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppAPIService.DeleteWhatsAppTemplate")
@@ -1192,6 +1204,158 @@ func (a *WhatsAppAPIService) DeleteWhatsAppTemplateExecute(r WhatsAppAPIDeleteWh
 
 	localVarPath := localBasePath + "/v1/whatsapp/templates/{templateName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"templateName"+"}", url.PathEscape(parameterValueToString(r.templateName, "templateName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.language != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "language", r.language, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v GetWhatsAppTemplate409Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type WhatsAppAPIDeleteWhatsAppTemplateByIdRequest struct {
+	ctx        context.Context
+	ApiService *WhatsAppAPIService
+	templateId string
+	accountId  *string
+}
+
+// WhatsApp social account ID
+func (r WhatsAppAPIDeleteWhatsAppTemplateByIdRequest) AccountId(accountId string) WhatsAppAPIDeleteWhatsAppTemplateByIdRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r WhatsAppAPIDeleteWhatsAppTemplateByIdRequest) Execute() (*DeleteWhatsAppTemplateById200Response, *http.Response, error) {
+	return r.ApiService.DeleteWhatsAppTemplateByIdExecute(r)
+}
+
+/*
+DeleteWhatsAppTemplateById Delete template by id
+
+Delete one language variant by its Meta id. Other languages of the same name are untouched.
+The name cannot be reused for 30 days once its last variant is deleted.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param templateId Meta template id (numeric).
+	@return WhatsAppAPIDeleteWhatsAppTemplateByIdRequest
+*/
+func (a *WhatsAppAPIService) DeleteWhatsAppTemplateById(ctx context.Context, templateId string) WhatsAppAPIDeleteWhatsAppTemplateByIdRequest {
+	return WhatsAppAPIDeleteWhatsAppTemplateByIdRequest{
+		ApiService: a,
+		ctx:        ctx,
+		templateId: templateId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return DeleteWhatsAppTemplateById200Response
+func (a *WhatsAppAPIService) DeleteWhatsAppTemplateByIdExecute(r WhatsAppAPIDeleteWhatsAppTemplateByIdRequest) (*DeleteWhatsAppTemplateById200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeleteWhatsAppTemplateById200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppAPIService.DeleteWhatsAppTemplateById")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/templates/id/{templateId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"templateId"+"}", url.PathEscape(parameterValueToString(r.templateId, "templateId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1240,8 +1404,8 @@ func (a *WhatsAppAPIService) DeleteWhatsAppTemplateExecute(r WhatsAppAPIDeleteWh
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v GetYouTubeDailyViews400Response
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1251,7 +1415,7 @@ func (a *WhatsAppAPIService) DeleteWhatsAppTemplateExecute(r WhatsAppAPIDeleteWh
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -2349,11 +2513,18 @@ type WhatsAppAPIGetWhatsAppTemplateRequest struct {
 	ApiService   *WhatsAppAPIService
 	templateName string
 	accountId    *string
+	language     *string
 }
 
 // WhatsApp social account ID
 func (r WhatsAppAPIGetWhatsAppTemplateRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppTemplateRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Language code of the variant (e.g. en_US, es, pt_BR). Required when the family has several languages.
+func (r WhatsAppAPIGetWhatsAppTemplateRequest) Language(language string) WhatsAppAPIGetWhatsAppTemplateRequest {
+	r.language = &language
 	return r
 }
 
@@ -2364,10 +2535,17 @@ func (r WhatsAppAPIGetWhatsAppTemplateRequest) Execute() (*GetWhatsAppTemplate20
 /*
 GetWhatsAppTemplate Get template
 
-Retrieve a single message template by name.
+Retrieve one message template variant by name.
+
+Meta stores one template per **name + language**, so a name identifies a family of variants,
+each with its own Meta id. Pass `language` to address one variant. Without it, a name with a
+single variant resolves to that variant; a name with several returns `409 ambiguous_template`
+with `details.languages`. A bare language (`es`) matches a single regional variant (`es_ES`);
+if the family has several regional variants for it, that is also a 409. A full code (`es_ES`)
+must match exactly. Variants in `PENDING_DELETION` are not part of the family.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param templateName Template name
+	@param templateName Template name (the family).
 	@return WhatsAppAPIGetWhatsAppTemplateRequest
 */
 func (a *WhatsAppAPIService) GetWhatsAppTemplate(ctx context.Context, templateName string) WhatsAppAPIGetWhatsAppTemplateRequest {
@@ -2396,6 +2574,158 @@ func (a *WhatsAppAPIService) GetWhatsAppTemplateExecute(r WhatsAppAPIGetWhatsApp
 
 	localVarPath := localBasePath + "/v1/whatsapp/templates/{templateName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"templateName"+"}", url.PathEscape(parameterValueToString(r.templateName, "templateName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.language != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "language", r.language, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v GetWhatsAppTemplate409Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type WhatsAppAPIGetWhatsAppTemplateByIdRequest struct {
+	ctx        context.Context
+	ApiService *WhatsAppAPIService
+	templateId string
+	accountId  *string
+}
+
+// WhatsApp social account ID
+func (r WhatsAppAPIGetWhatsAppTemplateByIdRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppTemplateByIdRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r WhatsAppAPIGetWhatsAppTemplateByIdRequest) Execute() (*GetWhatsAppTemplate200Response, *http.Response, error) {
+	return r.ApiService.GetWhatsAppTemplateByIdExecute(r)
+}
+
+/*
+GetWhatsAppTemplateById Get template by id
+
+Retrieve one template variant by its Meta id, the id every variant of a family has on its own
+and the one the `whatsapp.template.status_updated` webhook carries.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param templateId Meta template id (numeric).
+	@return WhatsAppAPIGetWhatsAppTemplateByIdRequest
+*/
+func (a *WhatsAppAPIService) GetWhatsAppTemplateById(ctx context.Context, templateId string) WhatsAppAPIGetWhatsAppTemplateByIdRequest {
+	return WhatsAppAPIGetWhatsAppTemplateByIdRequest{
+		ApiService: a,
+		ctx:        ctx,
+		templateId: templateId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWhatsAppTemplate200Response
+func (a *WhatsAppAPIService) GetWhatsAppTemplateByIdExecute(r WhatsAppAPIGetWhatsAppTemplateByIdRequest) (*GetWhatsAppTemplate200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWhatsAppTemplate200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppAPIService.GetWhatsAppTemplateById")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/templates/id/{templateId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"templateId"+"}", url.PathEscape(parameterValueToString(r.templateId, "templateId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2444,8 +2774,8 @@ func (a *WhatsAppAPIService) GetWhatsAppTemplateExecute(r WhatsAppAPIGetWhatsApp
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v GetYouTubeDailyViews400Response
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2455,7 +2785,7 @@ func (a *WhatsAppAPIService) GetWhatsAppTemplateExecute(r WhatsAppAPIGetWhatsApp
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -2485,11 +2815,31 @@ type WhatsAppAPIGetWhatsAppTemplatesRequest struct {
 	ctx        context.Context
 	ApiService *WhatsAppAPIService
 	accountId  *string
+	name       *string
+	language   *string
+	status     *string
 }
 
 // WhatsApp social account ID
 func (r WhatsAppAPIGetWhatsAppTemplatesRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppTemplatesRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Exact template name; returns every language variant of that family.
+func (r WhatsAppAPIGetWhatsAppTemplatesRequest) Name(name string) WhatsAppAPIGetWhatsAppTemplatesRequest {
+	r.name = &name
+	return r
+}
+
+// Exact language code (e.g. en_US).
+func (r WhatsAppAPIGetWhatsAppTemplatesRequest) Language(language string) WhatsAppAPIGetWhatsAppTemplatesRequest {
+	r.language = &language
+	return r
+}
+
+func (r WhatsAppAPIGetWhatsAppTemplatesRequest) Status(status string) WhatsAppAPIGetWhatsAppTemplatesRequest {
+	r.status = &status
 	return r
 }
 
@@ -2500,8 +2850,9 @@ func (r WhatsAppAPIGetWhatsAppTemplatesRequest) Execute() (*GetWhatsAppTemplates
 /*
 GetWhatsAppTemplates List templates
 
-List all message templates for the WhatsApp Business Account (WABA) associated with the given account.
-Templates are fetched directly from the WhatsApp Cloud API.
+List message templates for the WhatsApp Business Account (WABA) associated with the given account.
+Templates are fetched directly from the WhatsApp Cloud API. One entry per **name + language**:
+a multi-language template appears once per language, each with its own Meta `id`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppAPIGetWhatsAppTemplatesRequest
@@ -2539,6 +2890,15 @@ func (a *WhatsAppAPIService) GetWhatsAppTemplatesExecute(r WhatsAppAPIGetWhatsAp
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.name != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "form", "")
+	}
+	if r.language != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "language", r.language, "form", "")
+	}
+	if r.status != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -4702,16 +5062,24 @@ func (r WhatsAppAPIUpdateWhatsAppTemplateRequest) Execute() (*UpdateWhatsAppTemp
 /*
 UpdateWhatsAppTemplate Update template
 
-Update a message template's components. Only certain fields can be updated depending on
-the template's current approval state. Approved templates can only have components updated.
+Update one variant's components. Name, language and category cannot change after creation.
 
-A successful update sends the template back to Meta for review, so the `status` returned
-here is normally `PENDING`. The final outcome arrives later on the
-`whatsapp.template.status_updated` webhook. A template already in `PENDING` cannot be
-edited again until Meta finishes reviewing it.
+Meta stores one template per **name + language**, so a name identifies a family of variants,
+each with its own Meta id. Pass `language` to address one variant. Without it, a name with a
+single variant resolves to that variant; a name with several returns `409 ambiguous_template`
+with `details.languages`. A bare language (`es`) matches a single regional variant (`es_ES`);
+if the family has several regional variants for it, that is also a 409. A full code (`es_ES`)
+must match exactly. Variants in `PENDING_DELETION` are not part of the family.
+
+Meta only allows editing templates in `APPROVED`, `REJECTED` or `PAUSED` state; an approved
+template can be edited once per 24 hours and up to 10 times per 30 days. A successful update
+sends the variant back to Meta for review, so the `status` returned here is normally `PENDING`.
+The final outcome arrives on the `whatsapp.template.status_updated` webhook (which carries the
+variant's `templateId` and `language`). A variant already in `PENDING` cannot be edited again
+until Meta finishes reviewing it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param templateName Template name
+	@param templateName Template name (the family).
 	@return WhatsAppAPIUpdateWhatsAppTemplateRequest
 */
 func (a *WhatsAppAPIService) UpdateWhatsAppTemplate(ctx context.Context, templateName string) WhatsAppAPIUpdateWhatsAppTemplateRequest {
@@ -4789,6 +5157,17 @@ func (a *WhatsAppAPIService) UpdateWhatsAppTemplateExecute(r WhatsAppAPIUpdateWh
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -4800,7 +5179,151 @@ func (a *WhatsAppAPIService) UpdateWhatsAppTemplateExecute(r WhatsAppAPIUpdateWh
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v GetWhatsAppTemplate409Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type WhatsAppAPIUpdateWhatsAppTemplateByIdRequest struct {
+	ctx                               context.Context
+	ApiService                        *WhatsAppAPIService
+	templateId                        string
+	updateWhatsAppTemplateByIdRequest *UpdateWhatsAppTemplateByIdRequest
+}
+
+func (r WhatsAppAPIUpdateWhatsAppTemplateByIdRequest) UpdateWhatsAppTemplateByIdRequest(updateWhatsAppTemplateByIdRequest UpdateWhatsAppTemplateByIdRequest) WhatsAppAPIUpdateWhatsAppTemplateByIdRequest {
+	r.updateWhatsAppTemplateByIdRequest = &updateWhatsAppTemplateByIdRequest
+	return r
+}
+
+func (r WhatsAppAPIUpdateWhatsAppTemplateByIdRequest) Execute() (*UpdateWhatsAppTemplate200Response, *http.Response, error) {
+	return r.ApiService.UpdateWhatsAppTemplateByIdExecute(r)
+}
+
+/*
+UpdateWhatsAppTemplateById Update template by id
+
+Update one variant's components by its Meta id. Name, language and category cannot change.
+
+Meta only allows editing templates in `APPROVED`, `REJECTED` or `PAUSED` state; an approved
+template can be edited once per 24 hours and up to 10 times per 30 days. A successful update
+sends the variant back to Meta for review, so the `status` returned here is normally `PENDING`.
+The final outcome arrives on the `whatsapp.template.status_updated` webhook (which carries the
+variant's `templateId` and `language`). A variant already in `PENDING` cannot be edited again
+until Meta finishes reviewing it.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param templateId Meta template id (numeric).
+	@return WhatsAppAPIUpdateWhatsAppTemplateByIdRequest
+*/
+func (a *WhatsAppAPIService) UpdateWhatsAppTemplateById(ctx context.Context, templateId string) WhatsAppAPIUpdateWhatsAppTemplateByIdRequest {
+	return WhatsAppAPIUpdateWhatsAppTemplateByIdRequest{
+		ApiService: a,
+		ctx:        ctx,
+		templateId: templateId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateWhatsAppTemplate200Response
+func (a *WhatsAppAPIService) UpdateWhatsAppTemplateByIdExecute(r WhatsAppAPIUpdateWhatsAppTemplateByIdRequest) (*UpdateWhatsAppTemplate200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateWhatsAppTemplate200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppAPIService.UpdateWhatsAppTemplateById")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/templates/id/{templateId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"templateId"+"}", url.PathEscape(parameterValueToString(r.templateId, "templateId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateWhatsAppTemplateByIdRequest == nil {
+		return localVarReturnValue, nil, reportError("updateWhatsAppTemplateByIdRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateWhatsAppTemplateByIdRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

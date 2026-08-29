@@ -20,8 +20,11 @@ var _ MappedNullable = &UpdateWhatsAppTemplate200ResponseTemplate{}
 
 // UpdateWhatsAppTemplate200ResponseTemplate struct for UpdateWhatsAppTemplate200ResponseTemplate
 type UpdateWhatsAppTemplate200ResponseTemplate struct {
+	// Meta id of the edited variant.
 	Id   *string `json:"id,omitempty"`
 	Name *string `json:"name,omitempty"`
+	// The variant that was edited.
+	Language *string `json:"language,omitempty"`
 	// Approval state read back from Meta after the update, normally PENDING. If the state cannot be read back, the last known status is returned instead.
 	Status *string `json:"status,omitempty"`
 }
@@ -107,6 +110,38 @@ func (o *UpdateWhatsAppTemplate200ResponseTemplate) SetName(v string) {
 	o.Name = &v
 }
 
+// GetLanguage returns the Language field value if set, zero value otherwise.
+func (o *UpdateWhatsAppTemplate200ResponseTemplate) GetLanguage() string {
+	if o == nil || IsNil(o.Language) {
+		var ret string
+		return ret
+	}
+	return *o.Language
+}
+
+// GetLanguageOk returns a tuple with the Language field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateWhatsAppTemplate200ResponseTemplate) GetLanguageOk() (*string, bool) {
+	if o == nil || IsNil(o.Language) {
+		return nil, false
+	}
+	return o.Language, true
+}
+
+// HasLanguage returns a boolean if a field has been set.
+func (o *UpdateWhatsAppTemplate200ResponseTemplate) HasLanguage() bool {
+	if o != nil && !IsNil(o.Language) {
+		return true
+	}
+
+	return false
+}
+
+// SetLanguage gets a reference to the given string and assigns it to the Language field.
+func (o *UpdateWhatsAppTemplate200ResponseTemplate) SetLanguage(v string) {
+	o.Language = &v
+}
+
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *UpdateWhatsAppTemplate200ResponseTemplate) GetStatus() string {
 	if o == nil || IsNil(o.Status) {
@@ -154,6 +189,9 @@ func (o UpdateWhatsAppTemplate200ResponseTemplate) ToMap() (map[string]interface
 	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.Language) {
+		toSerialize["language"] = o.Language
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
