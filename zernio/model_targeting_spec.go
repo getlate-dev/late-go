@@ -55,9 +55,9 @@ type TargetingSpec struct {
 	Seniorities []string `json:"seniorities,omitempty"`
 	// LinkedIn B2B only.
 	JobFunctions []string `json:"jobFunctions,omitempty"`
-	// Platform audience IDs to include.
+	// Platform audience IDs to include. Not supported on any platform (no builder maps it): rejected with a 400 on ad create, boost, and reach estimate.
 	AudienceInclude []string `json:"audienceInclude,omitempty"`
-	// Platform audience IDs to exclude.
+	// Platform audience IDs to exclude. Not supported on any platform (no builder maps it): rejected with a 400 on ad create, boost, and reach estimate.
 	AudienceExclude []string `json:"audienceExclude,omitempty"`
 }
 
