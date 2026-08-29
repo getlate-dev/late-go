@@ -24,6 +24,8 @@ var _ MappedNullable = &AttachCampaignAssetsRequest{}
 type AttachCampaignAssetsRequest struct {
 	// Zernio Google Ads SocialAccount id — resolves the customer id + refresh token.
 	AccountId string `json:"accountId"`
+	// Numeric Google Ads customer id. Required when the connection has multiple Google Ads accounts; optional (and inferred) when it has only one.
+	CustomerId *string `json:"customerId,omitempty"`
 	// See POST /v1/ads/create sitelinks — same shape.
 	Sitelinks          []AttachCampaignAssetsRequestSitelinksInner          `json:"sitelinks,omitempty"`
 	Callouts           []string                                             `json:"callouts,omitempty"`
@@ -72,6 +74,38 @@ func (o *AttachCampaignAssetsRequest) GetAccountIdOk() (*string, bool) {
 // SetAccountId sets field value
 func (o *AttachCampaignAssetsRequest) SetAccountId(v string) {
 	o.AccountId = v
+}
+
+// GetCustomerId returns the CustomerId field value if set, zero value otherwise.
+func (o *AttachCampaignAssetsRequest) GetCustomerId() string {
+	if o == nil || IsNil(o.CustomerId) {
+		var ret string
+		return ret
+	}
+	return *o.CustomerId
+}
+
+// GetCustomerIdOk returns a tuple with the CustomerId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AttachCampaignAssetsRequest) GetCustomerIdOk() (*string, bool) {
+	if o == nil || IsNil(o.CustomerId) {
+		return nil, false
+	}
+	return o.CustomerId, true
+}
+
+// HasCustomerId returns a boolean if a field has been set.
+func (o *AttachCampaignAssetsRequest) HasCustomerId() bool {
+	if o != nil && !IsNil(o.CustomerId) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomerId gets a reference to the given string and assigns it to the CustomerId field.
+func (o *AttachCampaignAssetsRequest) SetCustomerId(v string) {
+	o.CustomerId = &v
 }
 
 // GetSitelinks returns the Sitelinks field value if set, zero value otherwise.
@@ -181,6 +215,9 @@ func (o AttachCampaignAssetsRequest) MarshalJSON() ([]byte, error) {
 func (o AttachCampaignAssetsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
+	if !IsNil(o.CustomerId) {
+		toSerialize["customerId"] = o.CustomerId
+	}
 	if !IsNil(o.Sitelinks) {
 		toSerialize["sitelinks"] = o.Sitelinks
 	}
