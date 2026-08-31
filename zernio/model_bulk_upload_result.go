@@ -28,7 +28,7 @@ type BulkUploadResult struct {
 	Invalid *int32 `json:"invalid,omitempty"`
 	// One entry per CSV data row, in row order.
 	Results []BulkUploadResultResultsInner `json:"results,omitempty"`
-	// Top-level advisory warnings (e.g. `rows_exceed_advisory_limit:500`). Empty when none.
+	// Top-level advisory warnings, e.g. `rows_exceed_advisory_limit:500` or `unknown_columns:<a,b,c>` (comma-separated unrecognized CSV column names). Empty when none.
 	Warnings []string `json:"warnings,omitempty"`
 	// Present only when one or more rows targeted an account currently in cooldown. Lets callers map `rate_limited:*` row errors back to structured metadata without parsing the error strings.
 	RateLimitedAccounts []BulkUploadResultRateLimitedAccountsInner `json:"rateLimitedAccounts,omitempty"`

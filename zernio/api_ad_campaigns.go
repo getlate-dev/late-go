@@ -3146,7 +3146,11 @@ Per-platform support:
     untouched. Any other `targeting` field returns 400: Google cannot mutate broad
     targeting post-create without recreating the campaign. `creative` returns 501.
 
-  - **Pinterest / X / LinkedIn / OpenAI Ads**: status + budget only. Sending
+  - **LinkedIn**: status, budget, targeting (geo countries only, applied to the
+    LinkedIn Campaign via PARTIAL_UPDATE), and creative (uploads new media, creates a
+    replacement inline creative on the same campaign, pauses the old one).
+
+  - **Pinterest / X / OpenAI Ads**: status + budget only. Sending
     `targeting` or `creative` returns 501 with code `unsupported_platform_operation`.
     OpenAI Ads budget is lifetime-only (see `budget.type` below).
 

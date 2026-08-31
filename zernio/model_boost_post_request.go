@@ -71,6 +71,10 @@ type BoostPostRequest struct {
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
 	DsaPayor *string `json:"dsaPayor,omitempty"`
+	// Lead Gen form ID to attach to the boosted ad's creative. REQUIRED when `goal` is `lead_generation`. On Meta this is the leadgen_forms ID (create one via POST /v1/ads/lead-forms). On LinkedIn this is the adForm ID (create one via POST /v1/ads/lead-forms with a LinkedIn account); the creative's `leadgenCallToAction.destination` is set to `urn:li:adForm:{id}`. Ignored for other goals.
+	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
+	// Meta, TikTok, and LinkedIn. Publish state of the created entities. Omitted or ACTIVE publishes live (default); PAUSED creates them paused so you can review before they spend. On LinkedIn the whole campaign group, campaign, and creative hierarchy stays PAUSED (intendedStatus PAUSED on each).
+	Status *string `json:"status,omitempty"`
 	// Meta only. Explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. The value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name).
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 }
@@ -907,6 +911,70 @@ func (o *BoostPostRequest) SetDsaPayor(v string) {
 	o.DsaPayor = &v
 }
 
+// GetLeadGenFormId returns the LeadGenFormId field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetLeadGenFormId() string {
+	if o == nil || IsNil(o.LeadGenFormId) {
+		var ret string
+		return ret
+	}
+	return *o.LeadGenFormId
+}
+
+// GetLeadGenFormIdOk returns a tuple with the LeadGenFormId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetLeadGenFormIdOk() (*string, bool) {
+	if o == nil || IsNil(o.LeadGenFormId) {
+		return nil, false
+	}
+	return o.LeadGenFormId, true
+}
+
+// HasLeadGenFormId returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasLeadGenFormId() bool {
+	if o != nil && !IsNil(o.LeadGenFormId) {
+		return true
+	}
+
+	return false
+}
+
+// SetLeadGenFormId gets a reference to the given string and assigns it to the LeadGenFormId field.
+func (o *BoostPostRequest) SetLeadGenFormId(v string) {
+	o.LeadGenFormId = &v
+}
+
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *BoostPostRequest) SetStatus(v string) {
+	o.Status = &v
+}
+
 // GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetOptimizationGoal() string {
 	if o == nil || IsNil(o.OptimizationGoal) {
@@ -1018,6 +1086,12 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DsaPayor) {
 		toSerialize["dsaPayor"] = o.DsaPayor
+	}
+	if !IsNil(o.LeadGenFormId) {
+		toSerialize["leadGenFormId"] = o.LeadGenFormId
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
 	}
 	if !IsNil(o.OptimizationGoal) {
 		toSerialize["optimizationGoal"] = o.OptimizationGoal

@@ -18,7 +18,7 @@ import (
 // checks if the UpdateAdRequestTargeting type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdRequestTargeting{}
 
-// UpdateAdRequestTargeting Meta + TikTok (demographics/interests) and Google (keyword edits only). Pinterest / X / LinkedIn return 501.
+// UpdateAdRequestTargeting Meta + TikTok (demographics/interests), Google (keyword edits only), and LinkedIn (geo countries). Pinterest / X return 501.
 type UpdateAdRequestTargeting struct {
 	// Google only. The FULL new set of positive keywords for the ad group; live keywords not listed are removed. Entries are strings (BROAD) or { text, matchType } with matchType exact | phrase | broad. Mirrored to GET /v1/ads/keywords immediately.
 	Keywords []UpdateAdRequestTargetingKeywordsInner `json:"keywords,omitempty"`
