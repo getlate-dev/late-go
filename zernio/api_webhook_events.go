@@ -2189,7 +2189,10 @@ OnPostExternalDeleted External post deleted event
 
 Fired when a tracked native post is detected as removed from the platform.
 `post.deletedAt` carries the detection time. Coverage is bounded to the
-most recent posts the platform listing returns.
+most recent posts the platform listing returns. Detection is a diff against
+the posts a prior sync already indexed, so an account for which no post has
+ever been indexed can never emit this event, no matter how the subscription
+is configured.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnPostExternalDeletedRequest
@@ -2594,7 +2597,10 @@ poll-driven (~hourly), not real-time, and fires once per platform
 target. `platform.deletedAt` carries the detection time. Detection
 is listing-based: a false positive self-heals in Zernio's data when
 the post reappears, but the event is not retracted. Coverage is
-bounded to the posts the platform listing returns.
+bounded to the posts the platform listing returns. Detection is a diff
+against the posts a prior sync already indexed, so an account for which no
+post has ever been indexed can never emit this event, no matter how the
+subscription is configured.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnPostPlatformDeletedRequest
