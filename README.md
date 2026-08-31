@@ -148,6 +148,7 @@ func main() {
 | `client.WebhooksAPI.GetWebhookSettings(ctx)` | List webhooks |
 | `client.WebhooksAPI.UpdateWebhookSettings(ctx)` | Update webhook |
 | `client.WebhooksAPI.DeleteWebhookSettings(ctx)` | Delete webhook |
+| `client.WebhooksAPI.RedeliverWebhookEvent(ctx)` | Redeliver a webhook event |
 | `client.WebhooksAPI.TestWebhook(ctx)` | Send test webhook |
 
 ### API Keys

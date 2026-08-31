@@ -621,6 +621,161 @@ func (a *WebhooksAPIService) GetWebhookSettingsExecute(r WebhooksAPIGetWebhookSe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type WebhooksAPIRedeliverWebhookEventRequest struct {
+	ctx                          context.Context
+	ApiService                   *WebhooksAPIService
+	redeliverWebhookEventRequest *RedeliverWebhookEventRequest
+}
+
+func (r WebhooksAPIRedeliverWebhookEventRequest) RedeliverWebhookEventRequest(redeliverWebhookEventRequest RedeliverWebhookEventRequest) WebhooksAPIRedeliverWebhookEventRequest {
+	r.redeliverWebhookEventRequest = &redeliverWebhookEventRequest
+	return r
+}
+
+func (r WebhooksAPIRedeliverWebhookEventRequest) Execute() (*UnpublishPost200Response, *http.Response, error) {
+	return r.ApiService.RedeliverWebhookEventExecute(r)
+}
+
+/*
+RedeliverWebhookEvent Redeliver a webhook event
+
+Replay a past delivery: the original payload is re-sent, byte for byte, to the
+subscription's current URL. The original event ID is preserved so your endpoint can
+dedupe, and the replay is recorded as a fresh attempt, so it shows up in
+`GET /v1/webhooks/logs` next to the delivery it replays.
+
+Both `webhookId` and `eventId` come from a row of `GET /v1/webhooks/logs`. Because
+the stored payload is replayed as-is, a redelivery reflects the event as it was
+emitted, not the current state of the resource.
+
+Only deliveries inside the 30-day log retention window can be replayed; past that
+the payload is gone and the request fails with a 500. Replays run the same
+resource-group checks as live delivery, against both the key's groups and the
+subscription's `disabledResourceGroups`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhooksAPIRedeliverWebhookEventRequest
+*/
+func (a *WebhooksAPIService) RedeliverWebhookEvent(ctx context.Context) WebhooksAPIRedeliverWebhookEventRequest {
+	return WebhooksAPIRedeliverWebhookEventRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UnpublishPost200Response
+func (a *WebhooksAPIService) RedeliverWebhookEventExecute(r WebhooksAPIRedeliverWebhookEventRequest) (*UnpublishPost200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UnpublishPost200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhooksAPIService.RedeliverWebhookEvent")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/webhooks/logs/redeliver"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.redeliverWebhookEventRequest == nil {
+		return localVarReturnValue, nil, reportError("redeliverWebhookEventRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.redeliverWebhookEventRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 502 {
+			var v UnpublishPost200Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type WebhooksAPITestWebhookRequest struct {
 	ctx                context.Context
 	ApiService         *WebhooksAPIService
