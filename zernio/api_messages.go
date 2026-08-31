@@ -945,7 +945,7 @@ type MessagesAPIGetMessageAttachmentRequest struct {
 	format         *string
 }
 
-// Social account ID
+// Social account ID. Required: without it the request returns 400 missing_required_field.
 func (r MessagesAPIGetMessageAttachmentRequest) AccountId(accountId string) MessagesAPIGetMessageAttachmentRequest {
 	r.accountId = &accountId
 	return r
@@ -971,7 +971,16 @@ the `url` on a message is a snapshot: it works when you read the message
 and stops working later. This endpoint checks the stored url and, when it
 has gone stale, re-mints the message's media from Meta and persists it
 before answering. The message id never expires, so this URL is the one to
-store — it is returned on each attachment as `refreshUrl`.
+store. It is returned ready-made on each attachment as `refreshUrl` when
+you read a message over REST.
+
+**Webhook payloads do not carry `refreshUrl`**, so a webhook-driven
+integration builds this URL itself. Every piece is in the event:
+`message.conversationId`, `message.platformMessageId`, the attachment's
+zero-based position, and `account.accountId`. Note that **`accountId` is a
+required query parameter**; omitting it returns `400`
+`missing_required_field`, which is the same requirement
+`GET /v1/whatsapp/media/{mediaId}` has.
 
 By default it responds `302` to the live media url, so it can be used
 directly as an `<img src>` on a browser session. API-key integrators

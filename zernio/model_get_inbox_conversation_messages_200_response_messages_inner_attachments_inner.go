@@ -22,6 +22,8 @@ var _ MappedNullable = &GetInboxConversationMessages200ResponseMessagesInnerAtta
 type GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner struct {
 	Id   *string `json:"id,omitempty"`
 	Type *string `json:"type,omitempty"`
+	// Instagram and Facebook only, and present only when it differs from `type`. Meta's own type before normalization: `ig_reel` and `reel` become `video`, while `ig_post`, `post`, `ig_story` and `story_mention` become `share`. A story mention is `type: \"share\"` with `originalType: \"story_mention\"`; render on this field, since `share` alone is ambiguous.
+	OriginalType *string `json:"originalType,omitempty"`
 	// Direct media link. On Instagram and Facebook this is a signed Meta CDN url that EXPIRES: use it now, do not store it. Persist `refreshUrl` instead.
 	Url *string `json:"url,omitempty"`
 	// Instagram and Facebook only. Endpoint that resolves this attachment to a working url every time, re-minting it from Meta when the stored one has expired. Safe to store and render indefinitely.
@@ -109,6 +111,38 @@ func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) H
 // SetType gets a reference to the given string and assigns it to the Type field.
 func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) SetType(v string) {
 	o.Type = &v
+}
+
+// GetOriginalType returns the OriginalType field value if set, zero value otherwise.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) GetOriginalType() string {
+	if o == nil || IsNil(o.OriginalType) {
+		var ret string
+		return ret
+	}
+	return *o.OriginalType
+}
+
+// GetOriginalTypeOk returns a tuple with the OriginalType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) GetOriginalTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.OriginalType) {
+		return nil, false
+	}
+	return o.OriginalType, true
+}
+
+// HasOriginalType returns a boolean if a field has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) HasOriginalType() bool {
+	if o != nil && !IsNil(o.OriginalType) {
+		return true
+	}
+
+	return false
+}
+
+// SetOriginalType gets a reference to the given string and assigns it to the OriginalType field.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) SetOriginalType(v string) {
+	o.OriginalType = &v
 }
 
 // GetUrl returns the Url field value if set, zero value otherwise.
@@ -287,6 +321,9 @@ func (o GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) To
 	}
 	if !IsNil(o.Type) {
 		toSerialize["type"] = o.Type
+	}
+	if !IsNil(o.OriginalType) {
+		toSerialize["originalType"] = o.OriginalType
 	}
 	if !IsNil(o.Url) {
 		toSerialize["url"] = o.Url

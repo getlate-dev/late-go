@@ -32,9 +32,9 @@ type WebhookPayloadMessageMessage struct {
 	PlatformMessageId string `json:"platformMessageId"`
 	Direction         string `json:"direction"`
 	// Message text content
-	Text        NullableString                        `json:"text"`
-	Attachments []InboxWebhookMessageAttachmentsInner `json:"attachments"`
-	Sender      InboxWebhookMessageSender             `json:"sender"`
+	Text        NullableString                                 `json:"text"`
+	Attachments []WebhookPayloadMessageMessageAttachmentsInner `json:"attachments"`
+	Sender      InboxWebhookMessageSender                      `json:"sender"`
 	// When the message was sent, as reported by the platform and passed through unmodified. Full ISO 8601 date-time: Instagram and Facebook carry millisecond precision, while some platforms (for example WhatsApp and Telegram) report whole seconds. Use this field as the chronological ordering key. If two messages share the same value, fetch the conversation messages with sortOrder=desc for the deterministic order.
 	SentAt time.Time `json:"sentAt"`
 	IsRead bool      `json:"isRead"`
@@ -48,7 +48,7 @@ type _WebhookPayloadMessageMessage WebhookPayloadMessageMessage
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadMessageMessage(id string, conversationId string, platform string, platformMessageId string, direction string, text NullableString, attachments []InboxWebhookMessageAttachmentsInner, sender InboxWebhookMessageSender, sentAt time.Time, isRead bool) *WebhookPayloadMessageMessage {
+func NewWebhookPayloadMessageMessage(id string, conversationId string, platform string, platformMessageId string, direction string, text NullableString, attachments []WebhookPayloadMessageMessageAttachmentsInner, sender InboxWebhookMessageSender, sentAt time.Time, isRead bool) *WebhookPayloadMessageMessage {
 	this := WebhookPayloadMessageMessage{}
 	this.Id = id
 	this.ConversationId = conversationId
@@ -218,9 +218,9 @@ func (o *WebhookPayloadMessageMessage) SetText(v string) {
 }
 
 // GetAttachments returns the Attachments field value
-func (o *WebhookPayloadMessageMessage) GetAttachments() []InboxWebhookMessageAttachmentsInner {
+func (o *WebhookPayloadMessageMessage) GetAttachments() []WebhookPayloadMessageMessageAttachmentsInner {
 	if o == nil {
-		var ret []InboxWebhookMessageAttachmentsInner
+		var ret []WebhookPayloadMessageMessageAttachmentsInner
 		return ret
 	}
 
@@ -229,7 +229,7 @@ func (o *WebhookPayloadMessageMessage) GetAttachments() []InboxWebhookMessageAtt
 
 // GetAttachmentsOk returns a tuple with the Attachments field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadMessageMessage) GetAttachmentsOk() ([]InboxWebhookMessageAttachmentsInner, bool) {
+func (o *WebhookPayloadMessageMessage) GetAttachmentsOk() ([]WebhookPayloadMessageMessageAttachmentsInner, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -237,7 +237,7 @@ func (o *WebhookPayloadMessageMessage) GetAttachmentsOk() ([]InboxWebhookMessage
 }
 
 // SetAttachments sets field value
-func (o *WebhookPayloadMessageMessage) SetAttachments(v []InboxWebhookMessageAttachmentsInner) {
+func (o *WebhookPayloadMessageMessage) SetAttachments(v []WebhookPayloadMessageMessageAttachmentsInner) {
 	o.Attachments = v
 }
 

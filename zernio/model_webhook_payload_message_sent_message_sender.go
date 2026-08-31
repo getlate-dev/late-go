@@ -20,14 +20,18 @@ import (
 // checks if the WebhookPayloadMessageSentMessageSender type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageSentMessageSender{}
 
-// WebhookPayloadMessageSentMessageSender struct for WebhookPayloadMessageSentMessageSender
+// WebhookPayloadMessageSentMessageSender **On this event the sender is your own business, not the person you are talking to.** `id` is the Zernio account id and `name`, `username` and `picture` are that connected account's own profile.  Do not read these to name or update a contact: doing so on an echo relabels the customer's record with your business name. The other party is `conversation.participantId` / `participantName` / `participantUsername`, which are populated in both directions.
 type WebhookPayloadMessageSentMessageSender struct {
+	// The Zernio account id of the connected account that sent the message, not a contact id.
 	Id string `json:"id"`
 	// Always omitted on this event: the sender is the business, not a contact. Use conversation.contactId to join back to the CRM Contact.
 	ContactId *string `json:"contactId,omitempty"`
-	Name      *string `json:"name,omitempty"`
-	Username  *string `json:"username,omitempty"`
-	Picture   *string `json:"picture,omitempty"`
+	// Display name of your connected account.
+	Name *string `json:"name,omitempty"`
+	// Username of your connected account.
+	Username *string `json:"username,omitempty"`
+	// Profile picture of your connected account.
+	Picture *string `json:"picture,omitempty"`
 }
 
 type _WebhookPayloadMessageSentMessageSender WebhookPayloadMessageSentMessageSender
