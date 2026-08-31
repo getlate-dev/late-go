@@ -23,7 +23,7 @@ var _ MappedNullable = &Post{}
 type Post struct {
 	Id     *string     `json:"_id,omitempty"`
 	UserId *PostUserId `json:"userId,omitempty"`
-	// YouTube: title must be ≤ 100 characters.
+	// Stored on the post for reference/display only. This field is NOT used as the video title when publishing. To set a YouTube video title, use platformSpecificData.title on the youtube platform target (falls back to the first line of content when omitted).
 	Title        *string          `json:"title,omitempty"`
 	Content      *string          `json:"content,omitempty"`
 	MediaItems   []MediaItem      `json:"mediaItems,omitempty"`
@@ -32,7 +32,8 @@ type Post struct {
 	Timezone     *string          `json:"timezone,omitempty"`
 	Status       *string          `json:"status,omitempty"`
 	// YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates removed.
-	Tags     []string `json:"tags,omitempty"`
+	Tags []string `json:"tags,omitempty"`
+	// Stored for reference only. Hashtags are NOT automatically appended to the caption when publishing. Include hashtags directly in the content field (platforms like Instagram only support hashtags as caption text). For YouTube keywords, use the tags field instead.
 	Hashtags []string `json:"hashtags,omitempty"`
 	// Stored for reference only. This field does NOT automatically create @mentions when publishing. For LinkedIn @mentions, use the /v1/accounts/{accountId}/linkedin-mentions endpoint to resolve profile URLs to URNs, then embed the returned mentionFormat directly in the post content field.
 	Mentions   []string               `json:"mentions,omitempty"`

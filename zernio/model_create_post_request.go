@@ -21,6 +21,7 @@ var _ MappedNullable = &CreatePostRequest{}
 
 // CreatePostRequest struct for CreatePostRequest
 type CreatePostRequest struct {
+	// Stored on the post for reference/display only. This field is NOT used as the video title when publishing. To set a YouTube video title, use platformSpecificData.title on the youtube platform target (falls back to the first line of content when omitted).
 	Title *string `json:"title,omitempty"`
 	// Post caption/text. Optional when media is attached, all platforms have customContent, every platform entry is an X Article (platformSpecificData.article), or every platform entry is a LinkedIn text-free reshare (platformSpecificData.reshareUrl with no text). Required for other text-only posts.
 	Content    *string     `json:"content,omitempty"`
@@ -33,7 +34,8 @@ type CreatePostRequest struct {
 	IsDraft  *bool   `json:"isDraft,omitempty"`
 	Timezone *string `json:"timezone,omitempty"`
 	// Tags/keywords. YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates auto-removed.
-	Tags     []string `json:"tags,omitempty"`
+	Tags []string `json:"tags,omitempty"`
+	// Stored for reference only. Hashtags are NOT automatically appended to the caption when publishing. Include hashtags directly in the content field (platforms like Instagram only support hashtags as caption text). For YouTube keywords, use the tags field instead.
 	Hashtags []string `json:"hashtags,omitempty"`
 	// Stored for reference only. This field does NOT automatically create @mentions when publishing. For LinkedIn @mentions, use the /v1/accounts/{accountId}/linkedin-mentions endpoint to resolve profile URLs to URNs, then embed the returned mentionFormat directly in the post content field.
 	Mentions            []string               `json:"mentions,omitempty"`

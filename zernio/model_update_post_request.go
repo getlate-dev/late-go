@@ -21,6 +21,7 @@ var _ MappedNullable = &UpdatePostRequest{}
 
 // UpdatePostRequest struct for UpdatePostRequest
 type UpdatePostRequest struct {
+	// Stored on the post for reference/display only. This field is NOT used as the video title when publishing. To set a YouTube video title, use platformSpecificData.title on the youtube platform target (falls back to the first line of content when omitted).
 	Title      *string     `json:"title,omitempty"`
 	Content    *string     `json:"content,omitempty"`
 	MediaItems []MediaItem `json:"mediaItems,omitempty"`
@@ -29,10 +30,11 @@ type UpdatePostRequest struct {
 	ScheduledFor *time.Time                        `json:"scheduledFor,omitempty"`
 	PublishNow   *bool                             `json:"publishNow,omitempty"`
 	// When omitted, the post keeps its current draft status. Send `false` to promote a draft to scheduled (combined with `scheduledFor`, `publishNow`, or a queue).
-	IsDraft             *bool                  `json:"isDraft,omitempty"`
-	Timezone            *string                `json:"timezone,omitempty"`
-	Visibility          *string                `json:"visibility,omitempty"`
-	Tags                []string               `json:"tags,omitempty"`
+	IsDraft    *bool    `json:"isDraft,omitempty"`
+	Timezone   *string  `json:"timezone,omitempty"`
+	Visibility *string  `json:"visibility,omitempty"`
+	Tags       []string `json:"tags,omitempty"`
+	// Stored for reference only. Hashtags are NOT automatically appended to the caption when publishing. Include hashtags directly in the content field (platforms like Instagram only support hashtags as caption text). For YouTube keywords, use the tags field instead.
 	Hashtags            []string               `json:"hashtags,omitempty"`
 	Mentions            []string               `json:"mentions,omitempty"`
 	CrosspostingEnabled *bool                  `json:"crosspostingEnabled,omitempty"`
