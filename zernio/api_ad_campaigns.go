@@ -416,6 +416,7 @@ func (a *AdCampaignsAPIService) BulkUpdateAdCampaignStatusExecute(r AdCampaignsA
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
