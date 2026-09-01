@@ -47,6 +47,12 @@ type TargetingSpec struct {
 	Interests []CreateStandaloneAdRequestBehaviorsInner `json:"interests,omitempty"`
 	// Behaviour entities from /v1/ads/targeting/search?dimension=behavior. Supported on Meta and TikTok.
 	Behaviors []CreateStandaloneAdRequestBehaviorsInner `json:"behaviors,omitempty"`
+	// Meta only. Job title entities from /v1/ads/targeting/search?dimension=workPosition. Not interchangeable with the LinkedIn `jobTitles` URN fragments.
+	WorkPositions []CreateStandaloneAdRequestBehaviorsInner `json:"workPositions,omitempty"`
+	// Meta only. Employer entities from /v1/ads/targeting/search?dimension=workEmployer.
+	WorkEmployers []CreateStandaloneAdRequestBehaviorsInner `json:"workEmployers,omitempty"`
+	// Meta only. Work-industry entities from /v1/ads/targeting/search?dimension=workIndustry. Not interchangeable with the LinkedIn `industries` URN fragments.
+	WorkIndustries []CreateStandaloneAdRequestBehaviorsInner `json:"workIndustries,omitempty"`
 	// LinkedIn B2B only. Industry URN id fragments.
 	Industries []string `json:"industries,omitempty"`
 	// LinkedIn B2B only.
@@ -55,9 +61,9 @@ type TargetingSpec struct {
 	Seniorities []string `json:"seniorities,omitempty"`
 	// LinkedIn B2B only.
 	JobFunctions []string `json:"jobFunctions,omitempty"`
-	// Platform audience IDs to include. Not supported on any platform (no builder maps it): rejected with a 400 on ad create, boost, and reach estimate.
+	// Platform audience IDs to include, as returned by GET /v1/ads/audiences (Meta custom audience ids, TikTok audience ids, Pinterest customer list ids, LinkedIn segment ids (bare, urn:li:adSegment or urn:li:dmpSegment forms accepted), Google user list ids, X custom audience ids). Not supported on OpenAI (400).
 	AudienceInclude []string `json:"audienceInclude,omitempty"`
-	// Platform audience IDs to exclude. Not supported on any platform (no builder maps it): rejected with a 400 on ad create, boost, and reach estimate.
+	// Platform audience IDs to exclude; same ID formats as audienceInclude. Not supported on OpenAI (400).
 	AudienceExclude []string `json:"audienceExclude,omitempty"`
 }
 
@@ -526,6 +532,102 @@ func (o *TargetingSpec) SetBehaviors(v []CreateStandaloneAdRequestBehaviorsInner
 	o.Behaviors = v
 }
 
+// GetWorkPositions returns the WorkPositions field value if set, zero value otherwise.
+func (o *TargetingSpec) GetWorkPositions() []CreateStandaloneAdRequestBehaviorsInner {
+	if o == nil || IsNil(o.WorkPositions) {
+		var ret []CreateStandaloneAdRequestBehaviorsInner
+		return ret
+	}
+	return o.WorkPositions
+}
+
+// GetWorkPositionsOk returns a tuple with the WorkPositions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetWorkPositionsOk() ([]CreateStandaloneAdRequestBehaviorsInner, bool) {
+	if o == nil || IsNil(o.WorkPositions) {
+		return nil, false
+	}
+	return o.WorkPositions, true
+}
+
+// HasWorkPositions returns a boolean if a field has been set.
+func (o *TargetingSpec) HasWorkPositions() bool {
+	if o != nil && !IsNil(o.WorkPositions) {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkPositions gets a reference to the given []CreateStandaloneAdRequestBehaviorsInner and assigns it to the WorkPositions field.
+func (o *TargetingSpec) SetWorkPositions(v []CreateStandaloneAdRequestBehaviorsInner) {
+	o.WorkPositions = v
+}
+
+// GetWorkEmployers returns the WorkEmployers field value if set, zero value otherwise.
+func (o *TargetingSpec) GetWorkEmployers() []CreateStandaloneAdRequestBehaviorsInner {
+	if o == nil || IsNil(o.WorkEmployers) {
+		var ret []CreateStandaloneAdRequestBehaviorsInner
+		return ret
+	}
+	return o.WorkEmployers
+}
+
+// GetWorkEmployersOk returns a tuple with the WorkEmployers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetWorkEmployersOk() ([]CreateStandaloneAdRequestBehaviorsInner, bool) {
+	if o == nil || IsNil(o.WorkEmployers) {
+		return nil, false
+	}
+	return o.WorkEmployers, true
+}
+
+// HasWorkEmployers returns a boolean if a field has been set.
+func (o *TargetingSpec) HasWorkEmployers() bool {
+	if o != nil && !IsNil(o.WorkEmployers) {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkEmployers gets a reference to the given []CreateStandaloneAdRequestBehaviorsInner and assigns it to the WorkEmployers field.
+func (o *TargetingSpec) SetWorkEmployers(v []CreateStandaloneAdRequestBehaviorsInner) {
+	o.WorkEmployers = v
+}
+
+// GetWorkIndustries returns the WorkIndustries field value if set, zero value otherwise.
+func (o *TargetingSpec) GetWorkIndustries() []CreateStandaloneAdRequestBehaviorsInner {
+	if o == nil || IsNil(o.WorkIndustries) {
+		var ret []CreateStandaloneAdRequestBehaviorsInner
+		return ret
+	}
+	return o.WorkIndustries
+}
+
+// GetWorkIndustriesOk returns a tuple with the WorkIndustries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetWorkIndustriesOk() ([]CreateStandaloneAdRequestBehaviorsInner, bool) {
+	if o == nil || IsNil(o.WorkIndustries) {
+		return nil, false
+	}
+	return o.WorkIndustries, true
+}
+
+// HasWorkIndustries returns a boolean if a field has been set.
+func (o *TargetingSpec) HasWorkIndustries() bool {
+	if o != nil && !IsNil(o.WorkIndustries) {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkIndustries gets a reference to the given []CreateStandaloneAdRequestBehaviorsInner and assigns it to the WorkIndustries field.
+func (o *TargetingSpec) SetWorkIndustries(v []CreateStandaloneAdRequestBehaviorsInner) {
+	o.WorkIndustries = v
+}
+
 // GetIndustries returns the Industries field value if set, zero value otherwise.
 func (o *TargetingSpec) GetIndustries() []string {
 	if o == nil || IsNil(o.Industries) {
@@ -769,6 +871,15 @@ func (o TargetingSpec) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Behaviors) {
 		toSerialize["behaviors"] = o.Behaviors
+	}
+	if !IsNil(o.WorkPositions) {
+		toSerialize["workPositions"] = o.WorkPositions
+	}
+	if !IsNil(o.WorkEmployers) {
+		toSerialize["workEmployers"] = o.WorkEmployers
+	}
+	if !IsNil(o.WorkIndustries) {
+		toSerialize["workIndustries"] = o.WorkIndustries
 	}
 	if !IsNil(o.Industries) {
 		toSerialize["industries"] = o.Industries

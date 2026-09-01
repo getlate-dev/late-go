@@ -605,7 +605,7 @@ func (r AdTargetingAPISearchAdTargetingRequest) Q(q string) AdTargetingAPISearch
 	return r
 }
 
-// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities, &#x60;income&#x60; resolves income-tier options. Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
+// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities, &#x60;income&#x60; resolves income-tier options, &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics. Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
 func (r AdTargetingAPISearchAdTargetingRequest) Dimension(dimension string) AdTargetingAPISearchAdTargetingRequest {
 	r.dimension = &dimension
 	return r
@@ -642,8 +642,13 @@ the `TargetingSpec` (`countries`/`regions`/`cities`/`zips`/`metros` geo keys, an
 `POST /v1/ads/targeting/reach-estimate`, and `saved_targeting` audiences.
 
 The `dimension` param selects what is searched, `geo` (locations, further scoped
-by `geoType`), `interest`, `behavior`, or `income`. Availability of each dimension
-varies by platform (e.g. behaviours are Meta/TikTok only). Results are normalized
+by `geoType`), `interest`, `behavior`, `income`, or the Meta-only work
+demographics `workPosition`, `workEmployer` and `workIndustry` (their ids feed
+`TargetingSpec.workPositions`/`workEmployers`/`workIndustries`). Availability of
+each dimension varies by platform (e.g. behaviours are Meta/TikTok only).
+Work industries are a fixed ~30-entry Meta catalog with no server-side query,
+so `workIndustry` matching, ranking and `limit` happen in Zernio.
+Results are normalized
 across platforms into a single shape, so the same client code consumes Meta,
 TikTok, LinkedIn, X, Pinterest, and Google results.
 

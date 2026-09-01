@@ -2835,6 +2835,7 @@ type AdCampaignsAPIListAdsRequest struct {
 	pageId                    *string
 	profileId                 *string
 	campaignId                *string
+	adSetId                   *string
 	platformAdId              *string
 	effectiveObjectStoryId    *string
 	effectiveInstagramMediaId *string
@@ -2896,6 +2897,12 @@ func (r AdCampaignsAPIListAdsRequest) ProfileId(profileId string) AdCampaignsAPI
 // Platform campaign ID (filter ads within a campaign)
 func (r AdCampaignsAPIListAdsRequest) CampaignId(campaignId string) AdCampaignsAPIListAdsRequest {
 	r.campaignId = &campaignId
+	return r
+}
+
+// Platform ad set ID (filter ads within an ad set, the /{adset_id}/ads read of an adset-centric dashboard).
+func (r AdCampaignsAPIListAdsRequest) AdSetId(adSetId string) AdCampaignsAPIListAdsRequest {
+	r.adSetId = &adSetId
 	return r
 }
 
@@ -3019,6 +3026,9 @@ func (a *AdCampaignsAPIService) ListAdsExecute(r AdCampaignsAPIListAdsRequest) (
 	}
 	if r.campaignId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
+	}
+	if r.adSetId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adSetId", r.adSetId, "form", "")
 	}
 	if r.platformAdId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "platformAdId", r.platformAdId, "form", "")

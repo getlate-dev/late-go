@@ -18,15 +18,21 @@ import (
 // checks if the UpdateAdRequestCreative type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdRequestCreative{}
 
-// UpdateAdRequestCreative Replace the ad's creative. Meta, TikTok, and LinkedIn.  - **Meta**: requires `headline`, `body`, `callToAction`, `linkUrl`, `imageUrl`. The   ad's existing creative is replaced via a new `/act_X/adcreatives` upload + ad   update. The old creative is retained on the ad account for historical reporting. - **TikTok**: patch-style. Pass any subset; `headline` is ignored (TikTok creatives   have no headline slot). `body` becomes the in-feed `ad_text`; `linkUrl` becomes   `landing_page_url`; `videoUrl` triggers a fresh upload. - **LinkedIn**: uploads new media (image via `imageUrl` or video via `videoUrl`),   creates a new inline media creative on the same campaign, and pauses the old   creative (best-effort). The old creative is retained for historical reporting.
+// UpdateAdRequestCreative Replace or patch the ad's creative. Meta, TikTok, and LinkedIn.  - **Meta**: patch-style. Pass any subset — fields you omit are preserved from the   live creative, including media (`image_hash`/`video_id` are reused, no re-upload)   and `url_tags`. Sending the full set (`headline`, `body`, `callToAction`,   `linkUrl`, `imageUrl`) rebuilds the creative from scratch instead. Partial   patching reads the live `object_story_spec`, which Meta strips on SHARE /   page-post / dark / asset_feed creatives — those return 422 asking for the full   set. A `videoUrl`/`videoId` on an image creative is a type change and also   needs the full set. `existingCreativeId` repoints the ad at a creative from   GET /v1/ads/creatives and ignores every other field. Meta creatives are   immutable, so any change creates a new creative and repoints the ad; the old   creative is retained on the ad account for historical reporting. - **TikTok**: patch-style. Pass any subset; `headline` is ignored (TikTok creatives   have no headline slot). `body` becomes the in-feed `ad_text`; `linkUrl` becomes   `landing_page_url`; `videoUrl` triggers a fresh upload. `description`, `videoId`   and `existingCreativeId` are Meta-only and return 400. - **LinkedIn**: uploads new media (image via `imageUrl` or video via `videoUrl`),   creates a new inline media creative on the same campaign, and pauses the old   creative (best-effort). The old creative is retained for historical reporting.   `videoId` and `existingCreativeId` are Meta-only and return 400.
 type UpdateAdRequestCreative struct {
-	// Meta only
-	Headline     *string `json:"headline,omitempty"`
-	Body         *string `json:"body,omitempty"`
+	// Meta and LinkedIn (TikTok has no headline slot)
+	Headline *string `json:"headline,omitempty"`
+	Body     *string `json:"body,omitempty"`
+	// Link description slot (Meta `link_data.description` / `video_data.link_description`, LinkedIn creative description).
+	Description  *string `json:"description,omitempty"`
 	CallToAction *string `json:"callToAction,omitempty"`
 	LinkUrl      *string `json:"linkUrl,omitempty"`
 	ImageUrl     *string `json:"imageUrl,omitempty"`
 	VideoUrl     *string `json:"videoUrl,omitempty"`
+	// Meta only. Reuse an already-uploaded ad video (from POST /v1/ads/videos or GET /v1/ads/videos) instead of re-uploading via videoUrl.
+	VideoId *string `json:"videoId,omitempty"`
+	// Meta only. Repoint the ad at an existing library creative (from GET /v1/ads/creatives); all other creative fields are ignored.
+	ExistingCreativeId *string `json:"existingCreativeId,omitempty"`
 }
 
 // NewUpdateAdRequestCreative instantiates a new UpdateAdRequestCreative object
@@ -108,6 +114,38 @@ func (o *UpdateAdRequestCreative) HasBody() bool {
 // SetBody gets a reference to the given string and assigns it to the Body field.
 func (o *UpdateAdRequestCreative) SetBody(v string) {
 	o.Body = &v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetDescription() string {
+	if o == nil || IsNil(o.Description) {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetDescriptionOk() (*string, bool) {
+	if o == nil || IsNil(o.Description) {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasDescription() bool {
+	if o != nil && !IsNil(o.Description) {
+		return true
+	}
+
+	return false
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *UpdateAdRequestCreative) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetCallToAction returns the CallToAction field value if set, zero value otherwise.
@@ -238,6 +276,70 @@ func (o *UpdateAdRequestCreative) SetVideoUrl(v string) {
 	o.VideoUrl = &v
 }
 
+// GetVideoId returns the VideoId field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetVideoId() string {
+	if o == nil || IsNil(o.VideoId) {
+		var ret string
+		return ret
+	}
+	return *o.VideoId
+}
+
+// GetVideoIdOk returns a tuple with the VideoId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetVideoIdOk() (*string, bool) {
+	if o == nil || IsNil(o.VideoId) {
+		return nil, false
+	}
+	return o.VideoId, true
+}
+
+// HasVideoId returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasVideoId() bool {
+	if o != nil && !IsNil(o.VideoId) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoId gets a reference to the given string and assigns it to the VideoId field.
+func (o *UpdateAdRequestCreative) SetVideoId(v string) {
+	o.VideoId = &v
+}
+
+// GetExistingCreativeId returns the ExistingCreativeId field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetExistingCreativeId() string {
+	if o == nil || IsNil(o.ExistingCreativeId) {
+		var ret string
+		return ret
+	}
+	return *o.ExistingCreativeId
+}
+
+// GetExistingCreativeIdOk returns a tuple with the ExistingCreativeId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetExistingCreativeIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ExistingCreativeId) {
+		return nil, false
+	}
+	return o.ExistingCreativeId, true
+}
+
+// HasExistingCreativeId returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasExistingCreativeId() bool {
+	if o != nil && !IsNil(o.ExistingCreativeId) {
+		return true
+	}
+
+	return false
+}
+
+// SetExistingCreativeId gets a reference to the given string and assigns it to the ExistingCreativeId field.
+func (o *UpdateAdRequestCreative) SetExistingCreativeId(v string) {
+	o.ExistingCreativeId = &v
+}
+
 func (o UpdateAdRequestCreative) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -254,6 +356,9 @@ func (o UpdateAdRequestCreative) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Body) {
 		toSerialize["body"] = o.Body
 	}
+	if !IsNil(o.Description) {
+		toSerialize["description"] = o.Description
+	}
 	if !IsNil(o.CallToAction) {
 		toSerialize["callToAction"] = o.CallToAction
 	}
@@ -265,6 +370,12 @@ func (o UpdateAdRequestCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.VideoUrl) {
 		toSerialize["videoUrl"] = o.VideoUrl
+	}
+	if !IsNil(o.VideoId) {
+		toSerialize["videoId"] = o.VideoId
+	}
+	if !IsNil(o.ExistingCreativeId) {
+		toSerialize["existingCreativeId"] = o.ExistingCreativeId
 	}
 	return toSerialize, nil
 }

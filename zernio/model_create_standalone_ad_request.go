@@ -113,6 +113,12 @@ type CreateStandaloneAdRequest struct {
 	CustomLocations []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
 	// Behaviour entities from /v1/ads/targeting/search?dimension=behavior. Supported on Meta and TikTok. Each must include id.
 	Behaviors []CreateStandaloneAdRequestBehaviorsInner `json:"behaviors,omitempty"`
+	// Meta only. Job title entities from /v1/ads/targeting/search?dimension=workPosition. Each must include id. Rejected on other platforms (use LinkedIn's `jobTitles` there).
+	WorkPositions []CreateStandaloneAdRequestBehaviorsInner `json:"workPositions,omitempty"`
+	// Meta only. Employer entities from /v1/ads/targeting/search?dimension=workEmployer. Each must include id.
+	WorkEmployers []CreateStandaloneAdRequestBehaviorsInner `json:"workEmployers,omitempty"`
+	// Meta only. Work-industry entities from /v1/ads/targeting/search?dimension=workIndustry. Each must include id. Rejected on other platforms (use LinkedIn's `industries` there).
+	WorkIndustries []CreateStandaloneAdRequestBehaviorsInner `json:"workIndustries,omitempty"`
 	// Normalized household-income tier. Meta and TikTok express all four; Google maps only `top_10`; rejected on LinkedIn, X, and Pinterest. On Meta, income targeting is incompatible with housing/employment/credit `specialAdCategories`.
 	IncomeTier *string `json:"incomeTier,omitempty"`
 	// Language codes restricting the audience by language. On Meta, ISO 639-1 codes (e.g. ['en'], ['de']); a bare code targets all regional variants (\"en\" = all English), or use a region-qualified code for a specific one (\"en_GB\", \"pt_BR\", \"zh_TW\"). Unknown codes are rejected. Other ad platforms use their own language-code systems.
@@ -1768,6 +1774,102 @@ func (o *CreateStandaloneAdRequest) SetBehaviors(v []CreateStandaloneAdRequestBe
 	o.Behaviors = v
 }
 
+// GetWorkPositions returns the WorkPositions field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetWorkPositions() []CreateStandaloneAdRequestBehaviorsInner {
+	if o == nil || IsNil(o.WorkPositions) {
+		var ret []CreateStandaloneAdRequestBehaviorsInner
+		return ret
+	}
+	return o.WorkPositions
+}
+
+// GetWorkPositionsOk returns a tuple with the WorkPositions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetWorkPositionsOk() ([]CreateStandaloneAdRequestBehaviorsInner, bool) {
+	if o == nil || IsNil(o.WorkPositions) {
+		return nil, false
+	}
+	return o.WorkPositions, true
+}
+
+// HasWorkPositions returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasWorkPositions() bool {
+	if o != nil && !IsNil(o.WorkPositions) {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkPositions gets a reference to the given []CreateStandaloneAdRequestBehaviorsInner and assigns it to the WorkPositions field.
+func (o *CreateStandaloneAdRequest) SetWorkPositions(v []CreateStandaloneAdRequestBehaviorsInner) {
+	o.WorkPositions = v
+}
+
+// GetWorkEmployers returns the WorkEmployers field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetWorkEmployers() []CreateStandaloneAdRequestBehaviorsInner {
+	if o == nil || IsNil(o.WorkEmployers) {
+		var ret []CreateStandaloneAdRequestBehaviorsInner
+		return ret
+	}
+	return o.WorkEmployers
+}
+
+// GetWorkEmployersOk returns a tuple with the WorkEmployers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetWorkEmployersOk() ([]CreateStandaloneAdRequestBehaviorsInner, bool) {
+	if o == nil || IsNil(o.WorkEmployers) {
+		return nil, false
+	}
+	return o.WorkEmployers, true
+}
+
+// HasWorkEmployers returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasWorkEmployers() bool {
+	if o != nil && !IsNil(o.WorkEmployers) {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkEmployers gets a reference to the given []CreateStandaloneAdRequestBehaviorsInner and assigns it to the WorkEmployers field.
+func (o *CreateStandaloneAdRequest) SetWorkEmployers(v []CreateStandaloneAdRequestBehaviorsInner) {
+	o.WorkEmployers = v
+}
+
+// GetWorkIndustries returns the WorkIndustries field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetWorkIndustries() []CreateStandaloneAdRequestBehaviorsInner {
+	if o == nil || IsNil(o.WorkIndustries) {
+		var ret []CreateStandaloneAdRequestBehaviorsInner
+		return ret
+	}
+	return o.WorkIndustries
+}
+
+// GetWorkIndustriesOk returns a tuple with the WorkIndustries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetWorkIndustriesOk() ([]CreateStandaloneAdRequestBehaviorsInner, bool) {
+	if o == nil || IsNil(o.WorkIndustries) {
+		return nil, false
+	}
+	return o.WorkIndustries, true
+}
+
+// HasWorkIndustries returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasWorkIndustries() bool {
+	if o != nil && !IsNil(o.WorkIndustries) {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkIndustries gets a reference to the given []CreateStandaloneAdRequestBehaviorsInner and assigns it to the WorkIndustries field.
+func (o *CreateStandaloneAdRequest) SetWorkIndustries(v []CreateStandaloneAdRequestBehaviorsInner) {
+	o.WorkIndustries = v
+}
+
 // GetIncomeTier returns the IncomeTier field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetIncomeTier() string {
 	if o == nil || IsNil(o.IncomeTier) {
@@ -3175,6 +3277,15 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Behaviors) {
 		toSerialize["behaviors"] = o.Behaviors
+	}
+	if !IsNil(o.WorkPositions) {
+		toSerialize["workPositions"] = o.WorkPositions
+	}
+	if !IsNil(o.WorkEmployers) {
+		toSerialize["workEmployers"] = o.WorkEmployers
+	}
+	if !IsNil(o.WorkIndustries) {
+		toSerialize["workIndustries"] = o.WorkIndustries
 	}
 	if !IsNil(o.IncomeTier) {
 		toSerialize["incomeTier"] = o.IncomeTier
