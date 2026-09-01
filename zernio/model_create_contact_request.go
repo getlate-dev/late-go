@@ -30,7 +30,8 @@ type CreateContactRequest struct {
 	IsSubscribed *bool    `json:"isSubscribed,omitempty"`
 	Notes        *string  `json:"notes,omitempty"`
 	// Optional. Creates a channel if provided with platform + platformIdentifier
-	AccountId          *string `json:"accountId,omitempty"`
+	AccountId *string `json:"accountId,omitempty"`
+	// Channel platform. Only the enum values support contact channels; any other platform is rejected with code platform_not_supported.
 	Platform           *string `json:"platform,omitempty"`
 	PlatformIdentifier *string `json:"platformIdentifier,omitempty"`
 	DisplayIdentifier  *string `json:"displayIdentifier,omitempty"`
