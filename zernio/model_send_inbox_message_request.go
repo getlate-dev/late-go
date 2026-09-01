@@ -49,7 +49,7 @@ type SendInboxMessageRequest struct {
 	MessagingType *string `json:"messagingType,omitempty"`
 	// Facebook message tag for messaging outside 24h window. Requires messagingType MESSAGE_TAG. Instagram only supports HUMAN_AGENT.
 	MessageTag *string `json:"messageTag,omitempty"`
-	// Platform message ID to quote-reply to. For WhatsApp, pass the wamid; for Telegram, the Telegram message ID (both available in message.platformMessageId from webhooks or the list-messages endpoint). On Slack it threads the reply (thread_ts) instead of quoting. Silently ignored on platforms without send-side reply support, including Instagram and Facebook Messenger (Meta's Send API rejects reply_to on Instagram and does not expose it on Messenger).
+	// Platform message ID to quote-reply to. For WhatsApp, pass the wamid; for Telegram, the Telegram message ID (delivered as message.platformMessageId on webhooks, and as `id` on each entry of the list-messages endpoint). On Slack it threads the reply (thread_ts) instead of quoting. Silently ignored on platforms without send-side reply support, including Instagram and Facebook Messenger (Meta's Send API rejects reply_to on Instagram and does not expose it on Messenger).
 	ReplyTo  *string                                       `json:"replyTo,omitempty"`
 	Location *CreateInboxConversationRequestHeaderLocation `json:"location,omitempty"`
 	// WhatsApp-only. Send one or more contact cards.
