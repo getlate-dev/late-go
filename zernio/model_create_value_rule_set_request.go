@@ -22,9 +22,9 @@ var _ MappedNullable = &CreateValueRuleSetRequest{}
 
 // CreateValueRuleSetRequest struct for CreateValueRuleSetRequest
 type CreateValueRuleSetRequest struct {
-	// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+	// Zernio SocialAccount id (posting or ads variant); its platform decides where the campaign is created.
 	AccountId string `json:"accountId"`
-	// Meta ad account id (act_<n>).
+	// Platform ad account id (Meta act_<n>, Google customer id, LinkedIn account id, ...).
 	AdAccountId string `json:"adAccountId"`
 	Name        string `json:"name"`
 	// Evaluated in order; the first matching rule wins.

@@ -24,7 +24,7 @@ var _ MappedNullable = &CreateAdCreativeRequest{}
 type CreateAdCreativeRequest struct {
 	// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token and Page.
 	AccountId string `json:"accountId"`
-	// Meta ad account id (act_<n>).
+	// Platform ad account id (Meta act_<n>, Google customer id, LinkedIn account id, ...).
 	AdAccountId string `json:"adAccountId"`
 	Headline    string `json:"headline"`
 	// Primary text

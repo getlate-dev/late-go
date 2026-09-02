@@ -24,7 +24,7 @@ var _ MappedNullable = &GenerateAdPreviewsRequest{}
 type GenerateAdPreviewsRequest struct {
 	// Zernio SocialAccount id used to resolve the Meta token.
 	AccountId string `json:"accountId"`
-	// Meta ad account id (act_<n>).
+	// Platform ad account id (Meta act_<n>, Google customer id, LinkedIn account id, ...).
 	AdAccountId string `json:"adAccountId"`
 	// Meta ad_format values, one preview per format. Defaults to [DESKTOP_FEED_STANDARD].
 	Formats []string `json:"formats,omitempty"`

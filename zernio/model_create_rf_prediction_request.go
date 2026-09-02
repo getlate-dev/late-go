@@ -25,7 +25,7 @@ var _ MappedNullable = &CreateRfPredictionRequest{}
 type CreateRfPredictionRequest struct {
 	// Zernio SocialAccount id (posting or ads variant).
 	AccountId string `json:"accountId"`
-	// Meta ad account id (act_<n>).
+	// Platform ad account id (Meta act_<n>, Google customer id, LinkedIn account id, ...).
 	AdAccountId string `json:"adAccountId"`
 	// Whole currency units. Exactly one of budgetAmount / reach.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`

@@ -22,7 +22,7 @@ var _ MappedNullable = &UpdateAdCreativeRequest{}
 
 // UpdateAdCreativeRequest struct for UpdateAdCreativeRequest
 type UpdateAdCreativeRequest struct {
-	// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+	// Zernio SocialAccount id (posting or ads variant); its platform decides where the campaign is created.
 	AccountId string `json:"accountId"`
 	Name      string `json:"name"`
 }

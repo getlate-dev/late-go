@@ -22,9 +22,9 @@ var _ MappedNullable = &UploadAdVideoRequest{}
 
 // UploadAdVideoRequest struct for UploadAdVideoRequest
 type UploadAdVideoRequest struct {
-	// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+	// Zernio SocialAccount id (posting or ads variant); its platform decides where the campaign is created.
 	AccountId string `json:"accountId"`
-	// Meta ad account id (act_<n>).
+	// Platform ad account id (Meta act_<n>, Google customer id, LinkedIn account id, ...).
 	AdAccountId string `json:"adAccountId"`
 	// Public https URL of the video; downloaded server-side (SSRF-guarded) before chunked upload. Provide exactly one of videoUrl or videoBase64.
 	VideoUrl *string `json:"videoUrl,omitempty"`

@@ -22,7 +22,7 @@ var _ MappedNullable = &CreateCustomConversionRequest{}
 
 // CreateCustomConversionRequest struct for CreateCustomConversionRequest
 type CreateCustomConversionRequest struct {
-	// Meta ad account id (act_<n>).
+	// Platform ad account id (Meta act_<n>, Google customer id, LinkedIn account id, ...).
 	AdAccountId string `json:"adAccountId"`
 	// Also the reuse key, together with pixelId.
 	Name string `json:"name"`

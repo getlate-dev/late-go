@@ -22,9 +22,9 @@ var _ MappedNullable = &UploadAdImageRequest{}
 
 // UploadAdImageRequest struct for UploadAdImageRequest
 type UploadAdImageRequest struct {
-	// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+	// Zernio SocialAccount id (posting or ads variant); its platform decides where the campaign is created.
 	AccountId string `json:"accountId"`
-	// Meta ad account id (act_<n>).
+	// Platform ad account id (Meta act_<n>, Google customer id, LinkedIn account id, ...).
 	AdAccountId string `json:"adAccountId"`
 	// Raw base64 image bytes, or a full data URL (the data:image/...;base64, prefix is stripped).
 	ImageBase64 string `json:"imageBase64"`
