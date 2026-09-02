@@ -85,6 +85,8 @@ type CreateMessagingAdRequest struct {
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
 	DsaPayor *string `json:"dsaPayor,omitempty"`
+	// Meta only. Regional regulation categories required when the ad set targets certain countries (e.g. SINGAPORE_UNIVERSAL, TAIWAN_UNIVERSAL, THAILAND_UNIVERSAL, AUSTRALIA_FINSERV, INDIA_FINSERV). Forwarded to the ad set.
+	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
 	// Where the conversation opens when the ad is tapped.
 	Destination string `json:"destination"`
 }
@@ -1176,6 +1178,38 @@ func (o *CreateMessagingAdRequest) SetDsaPayor(v string) {
 	o.DsaPayor = &v
 }
 
+// GetRegionalRegulatedCategories returns the RegionalRegulatedCategories field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetRegionalRegulatedCategories() []string {
+	if o == nil || IsNil(o.RegionalRegulatedCategories) {
+		var ret []string
+		return ret
+	}
+	return o.RegionalRegulatedCategories
+}
+
+// GetRegionalRegulatedCategoriesOk returns a tuple with the RegionalRegulatedCategories field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetRegionalRegulatedCategoriesOk() ([]string, bool) {
+	if o == nil || IsNil(o.RegionalRegulatedCategories) {
+		return nil, false
+	}
+	return o.RegionalRegulatedCategories, true
+}
+
+// HasRegionalRegulatedCategories returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasRegionalRegulatedCategories() bool {
+	if o != nil && !IsNil(o.RegionalRegulatedCategories) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionalRegulatedCategories gets a reference to the given []string and assigns it to the RegionalRegulatedCategories field.
+func (o *CreateMessagingAdRequest) SetRegionalRegulatedCategories(v []string) {
+	o.RegionalRegulatedCategories = v
+}
+
 // GetDestination returns the Destination field value
 func (o *CreateMessagingAdRequest) GetDestination() string {
 	if o == nil {
@@ -1305,6 +1339,9 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DsaPayor) {
 		toSerialize["dsaPayor"] = o.DsaPayor
+	}
+	if !IsNil(o.RegionalRegulatedCategories) {
+		toSerialize["regionalRegulatedCategories"] = o.RegionalRegulatedCategories
 	}
 	toSerialize["destination"] = o.Destination
 	return toSerialize, nil

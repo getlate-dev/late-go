@@ -132,6 +132,8 @@ type CreateStandaloneAdRequest struct {
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// Meta (metaads) only. 2-letter ISO country codes the special ad category applies to. Requires specialAdCategories to be set (400 otherwise). Ignored when joining an existing campaign via existingCampaignId (the existing campaign's category/country already governs it).
 	SpecialAdCategoryCountry []string `json:"specialAdCategoryCountry,omitempty"`
+	// Meta only. Regional regulation categories required when the ad set targets certain countries. Known values: SINGAPORE_UNIVERSAL, TAIWAN_UNIVERSAL, THAILAND_UNIVERSAL, AUSTRALIA_FINSERV, INDIA_FINSERV, TAIWAN_FINSERV. Meta rejects the ad set without this when the targeting geo includes the corresponding country.
+	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
 	// Required for lifetime budgets
 	EndDate *time.Time `json:"endDate,omitempty"`
 	// Meta only. Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's `start_time`. When omitted the ad starts delivering immediately. For lifetime budgets Meta also requires `endDate`. (Same `schedule.startDate` semantics already available on `POST /v1/ads/boost`.)
@@ -2094,6 +2096,38 @@ func (o *CreateStandaloneAdRequest) SetSpecialAdCategoryCountry(v []string) {
 	o.SpecialAdCategoryCountry = v
 }
 
+// GetRegionalRegulatedCategories returns the RegionalRegulatedCategories field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetRegionalRegulatedCategories() []string {
+	if o == nil || IsNil(o.RegionalRegulatedCategories) {
+		var ret []string
+		return ret
+	}
+	return o.RegionalRegulatedCategories
+}
+
+// GetRegionalRegulatedCategoriesOk returns a tuple with the RegionalRegulatedCategories field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetRegionalRegulatedCategoriesOk() ([]string, bool) {
+	if o == nil || IsNil(o.RegionalRegulatedCategories) {
+		return nil, false
+	}
+	return o.RegionalRegulatedCategories, true
+}
+
+// HasRegionalRegulatedCategories returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasRegionalRegulatedCategories() bool {
+	if o != nil && !IsNil(o.RegionalRegulatedCategories) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionalRegulatedCategories gets a reference to the given []string and assigns it to the RegionalRegulatedCategories field.
+func (o *CreateStandaloneAdRequest) SetRegionalRegulatedCategories(v []string) {
+	o.RegionalRegulatedCategories = v
+}
+
 // GetEndDate returns the EndDate field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetEndDate() time.Time {
 	if o == nil || IsNil(o.EndDate) {
@@ -3307,6 +3341,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SpecialAdCategoryCountry) {
 		toSerialize["specialAdCategoryCountry"] = o.SpecialAdCategoryCountry
+	}
+	if !IsNil(o.RegionalRegulatedCategories) {
+		toSerialize["regionalRegulatedCategories"] = o.RegionalRegulatedCategories
 	}
 	if !IsNil(o.EndDate) {
 		toSerialize["endDate"] = o.EndDate

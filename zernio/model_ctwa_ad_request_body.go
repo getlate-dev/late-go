@@ -85,6 +85,8 @@ type CtwaAdRequestBody struct {
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
 	DsaPayor *string `json:"dsaPayor,omitempty"`
+	// Meta only. Regional regulation categories required when the ad set targets certain countries (e.g. SINGAPORE_UNIVERSAL, TAIWAN_UNIVERSAL, THAILAND_UNIVERSAL, AUSTRALIA_FINSERV, INDIA_FINSERV). Forwarded to the ad set.
+	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
 }
 
 type _CtwaAdRequestBody CtwaAdRequestBody
@@ -1173,6 +1175,38 @@ func (o *CtwaAdRequestBody) SetDsaPayor(v string) {
 	o.DsaPayor = &v
 }
 
+// GetRegionalRegulatedCategories returns the RegionalRegulatedCategories field value if set, zero value otherwise.
+func (o *CtwaAdRequestBody) GetRegionalRegulatedCategories() []string {
+	if o == nil || IsNil(o.RegionalRegulatedCategories) {
+		var ret []string
+		return ret
+	}
+	return o.RegionalRegulatedCategories
+}
+
+// GetRegionalRegulatedCategoriesOk returns a tuple with the RegionalRegulatedCategories field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBody) GetRegionalRegulatedCategoriesOk() ([]string, bool) {
+	if o == nil || IsNil(o.RegionalRegulatedCategories) {
+		return nil, false
+	}
+	return o.RegionalRegulatedCategories, true
+}
+
+// HasRegionalRegulatedCategories returns a boolean if a field has been set.
+func (o *CtwaAdRequestBody) HasRegionalRegulatedCategories() bool {
+	if o != nil && !IsNil(o.RegionalRegulatedCategories) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionalRegulatedCategories gets a reference to the given []string and assigns it to the RegionalRegulatedCategories field.
+func (o *CtwaAdRequestBody) SetRegionalRegulatedCategories(v []string) {
+	o.RegionalRegulatedCategories = v
+}
+
 func (o CtwaAdRequestBody) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -1278,6 +1312,9 @@ func (o CtwaAdRequestBody) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DsaPayor) {
 		toSerialize["dsaPayor"] = o.DsaPayor
+	}
+	if !IsNil(o.RegionalRegulatedCategories) {
+		toSerialize["regionalRegulatedCategories"] = o.RegionalRegulatedCategories
 	}
 	return toSerialize, nil
 }
