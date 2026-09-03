@@ -445,6 +445,121 @@ func (a *WebhookEventsAPIService) OnAdStatusChangedExecute(r WebhookEventsAPIOnA
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnAnalyticsSyncedRequest struct {
+	ctx                           context.Context
+	ApiService                    *WebhookEventsAPIService
+	webhookPayloadAnalyticsSynced *WebhookPayloadAnalyticsSynced
+}
+
+func (r WebhookEventsAPIOnAnalyticsSyncedRequest) WebhookPayloadAnalyticsSynced(webhookPayloadAnalyticsSynced WebhookPayloadAnalyticsSynced) WebhookEventsAPIOnAnalyticsSyncedRequest {
+	r.webhookPayloadAnalyticsSynced = &webhookPayloadAnalyticsSynced
+	return r
+}
+
+func (r WebhookEventsAPIOnAnalyticsSyncedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAnalyticsSyncedExecute(r)
+}
+
+/*
+OnAnalyticsSynced Analytics synced event
+
+Fired once per connected account each time its analytics sync cycle completes
+successfully. Poll-driven (roughly hourly per account), not real-time, and never
+fired for a skipped or failed cycle.
+
+A trigger, not a transport: the payload carries no metrics and no cursor. On
+receipt, call `GET /v1/analytics/delta` with your own last `nextCursor` to read
+every post whose analytics changed, across every account, in one paginated
+stream instead of polling analytics once per account.
+
+The feed holds back its most recent few seconds of writes, so a read issued the
+instant this event lands often returns an empty page for that account. Poll again
+with the same cursor rather than reading an empty page as "nothing changed".
+
+High volume (roughly one delivery per connected account per hour). Subscribe to
+it on a dedicated webhook endpoint: a subscription's consecutive-failure count is
+shared across all of its events, so an outage while this event is flowing can
+suppress the low-volume publishing events on the same subscription.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAnalyticsSyncedRequest
+*/
+func (a *WebhookEventsAPIService) OnAnalyticsSynced(ctx context.Context) WebhookEventsAPIOnAnalyticsSyncedRequest {
+	return WebhookEventsAPIOnAnalyticsSyncedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAnalyticsSyncedExecute(r WebhookEventsAPIOnAnalyticsSyncedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAnalyticsSynced")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/analytics.synced"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAnalyticsSynced == nil {
+		return nil, reportError("webhookPayloadAnalyticsSynced is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAnalyticsSynced
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnCallEndedRequest struct {
 	ctx                     context.Context
 	ApiService              *WebhookEventsAPIService

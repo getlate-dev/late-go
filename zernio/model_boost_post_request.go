@@ -61,8 +61,10 @@ type BoostPostRequest struct {
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// Meta (metaads) only. 2-letter ISO country codes the special ad category applies to. Requires specialAdCategories to be set (400 otherwise).
 	SpecialAdCategoryCountry []string `json:"specialAdCategoryCountry,omitempty"`
-	// Meta only. Regional regulation categories required when the ad set targets certain countries (e.g. SINGAPORE_UNIVERSAL, TAIWAN_UNIVERSAL, THAILAND_UNIVERSAL, AUSTRALIA_FINSERV, INDIA_FINSERV). Forwarded to the ad set.
+	// Meta only. Regional regulation categories required when the ad set targets certain countries (e.g. BRAZIL_REGULATION, SINGAPORE_UNIVERSAL, TAIWAN_UNIVERSAL, THAILAND_UNIVERSAL, AUSTRALIA_FINSERV, INDIA_FINSERV, TAIWAN_FINSERV). Forwarded to the ad set.
 	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
+	// Meta only. Beneficiary/payer entity IDs for regionalRegulatedCategories. Values are numeric IDs from Meta verification. Keys vary by category (e.g. universal_beneficiary / universal_payer for BRAZIL_REGULATION and THAILAND_UNIVERSAL). If omitted, Meta uses Ads Manager defaults when configured.
+	RegionalRegulationIdentities map[string]int32 `json:"regionalRegulationIdentities,omitempty"`
 	// Destination URL for the CTA button. Send it together with `callToAction`.  **Meta**: adds a top-level `call_to_action` to the post-reference creative. This is what gives a `traffic` boost a clickable destination without replacing the creative and losing the post's social proof. Ignored when `leadGenFormId` is set, which supplies its own destination. Live-verified against a Page-post creative.  **TikTok**: maps to `landing_page_url` on the Spark Ad creative (`AdcreateCreatives.landing_page_url`); Spark Ads have no clickable destination without it.  Ignored on LinkedIn / Pinterest / X / Google, which infer the destination from the boosted post.
 	LinkUrl *string `json:"linkUrl,omitempty"`
 	// CTA button label. Send it together with `linkUrl` — a CTA without a destination produces a button that goes nowhere, so sending one alone is a 400.  **Meta**: the CTA enum of POST /v1/ads/create plus `VIEW_INSTAGRAM_PROFILE`, which is accepted on boost only. For that value `linkUrl` is typically the Instagram profile URL.  **TikTok**: pass-through to `call_to_action` on the Spark Ad creative; the platform validates the value. See TikTok's \"Enumeration - Call-to-Action\".
@@ -785,6 +787,38 @@ func (o *BoostPostRequest) SetRegionalRegulatedCategories(v []string) {
 	o.RegionalRegulatedCategories = v
 }
 
+// GetRegionalRegulationIdentities returns the RegionalRegulationIdentities field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetRegionalRegulationIdentities() map[string]int32 {
+	if o == nil || IsNil(o.RegionalRegulationIdentities) {
+		var ret map[string]int32
+		return ret
+	}
+	return o.RegionalRegulationIdentities
+}
+
+// GetRegionalRegulationIdentitiesOk returns a tuple with the RegionalRegulationIdentities field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetRegionalRegulationIdentitiesOk() (map[string]int32, bool) {
+	if o == nil || IsNil(o.RegionalRegulationIdentities) {
+		return map[string]int32{}, false
+	}
+	return o.RegionalRegulationIdentities, true
+}
+
+// HasRegionalRegulationIdentities returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasRegionalRegulationIdentities() bool {
+	if o != nil && !IsNil(o.RegionalRegulationIdentities) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionalRegulationIdentities gets a reference to the given map[string]int32 and assigns it to the RegionalRegulationIdentities field.
+func (o *BoostPostRequest) SetRegionalRegulationIdentities(v map[string]int32) {
+	o.RegionalRegulationIdentities = v
+}
+
 // GetLinkUrl returns the LinkUrl field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetLinkUrl() string {
 	if o == nil || IsNil(o.LinkUrl) {
@@ -1108,6 +1142,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RegionalRegulatedCategories) {
 		toSerialize["regionalRegulatedCategories"] = o.RegionalRegulatedCategories
+	}
+	if !IsNil(o.RegionalRegulationIdentities) {
+		toSerialize["regionalRegulationIdentities"] = o.RegionalRegulationIdentities
 	}
 	if !IsNil(o.LinkUrl) {
 		toSerialize["linkUrl"] = o.LinkUrl

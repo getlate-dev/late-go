@@ -85,8 +85,10 @@ type CreateMessagingAdRequest struct {
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
 	DsaPayor *string `json:"dsaPayor,omitempty"`
-	// Meta only. Regional regulation categories required when the ad set targets certain countries (e.g. SINGAPORE_UNIVERSAL, TAIWAN_UNIVERSAL, THAILAND_UNIVERSAL, AUSTRALIA_FINSERV, INDIA_FINSERV). Forwarded to the ad set.
+	// Meta only. Regional regulation categories required when the ad set targets certain countries (e.g. BRAZIL_REGULATION, SINGAPORE_UNIVERSAL, TAIWAN_UNIVERSAL, THAILAND_UNIVERSAL, AUSTRALIA_FINSERV, INDIA_FINSERV, TAIWAN_FINSERV). Forwarded to the ad set.
 	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
+	// Meta only. Beneficiary/payer entity IDs required alongside regionalRegulatedCategories. Values are numeric IDs from the advertiser's Meta verification/authorization setup. Keys depend on the declared category: BRAZIL_REGULATION and THAILAND_UNIVERSAL use universal_beneficiary / universal_payer; SINGAPORE_UNIVERSAL uses singapore_universal_beneficiary / singapore_universal_payer; TAIWAN_UNIVERSAL uses taiwan_universal_beneficiary / taiwan_universal_payer; TAIWAN_FINSERV uses taiwan_finserv_beneficiary / taiwan_finserv_payer; AUSTRALIA_FINSERV uses australia_finserv_beneficiary / australia_finserv_payer; INDIA_FINSERV uses india_finserv_beneficiary / india_finserv_payer. Both beneficiary and payer must be included. If omitted and the advertiser has set defaults in Meta Ads Manager advertising settings, Meta auto-fills them.
+	RegionalRegulationIdentities map[string]int32 `json:"regionalRegulationIdentities,omitempty"`
 	// Where the conversation opens when the ad is tapped.
 	Destination string `json:"destination"`
 }
@@ -1210,6 +1212,38 @@ func (o *CreateMessagingAdRequest) SetRegionalRegulatedCategories(v []string) {
 	o.RegionalRegulatedCategories = v
 }
 
+// GetRegionalRegulationIdentities returns the RegionalRegulationIdentities field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetRegionalRegulationIdentities() map[string]int32 {
+	if o == nil || IsNil(o.RegionalRegulationIdentities) {
+		var ret map[string]int32
+		return ret
+	}
+	return o.RegionalRegulationIdentities
+}
+
+// GetRegionalRegulationIdentitiesOk returns a tuple with the RegionalRegulationIdentities field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetRegionalRegulationIdentitiesOk() (map[string]int32, bool) {
+	if o == nil || IsNil(o.RegionalRegulationIdentities) {
+		return map[string]int32{}, false
+	}
+	return o.RegionalRegulationIdentities, true
+}
+
+// HasRegionalRegulationIdentities returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasRegionalRegulationIdentities() bool {
+	if o != nil && !IsNil(o.RegionalRegulationIdentities) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionalRegulationIdentities gets a reference to the given map[string]int32 and assigns it to the RegionalRegulationIdentities field.
+func (o *CreateMessagingAdRequest) SetRegionalRegulationIdentities(v map[string]int32) {
+	o.RegionalRegulationIdentities = v
+}
+
 // GetDestination returns the Destination field value
 func (o *CreateMessagingAdRequest) GetDestination() string {
 	if o == nil {
@@ -1342,6 +1376,9 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RegionalRegulatedCategories) {
 		toSerialize["regionalRegulatedCategories"] = o.RegionalRegulatedCategories
+	}
+	if !IsNil(o.RegionalRegulationIdentities) {
+		toSerialize["regionalRegulationIdentities"] = o.RegionalRegulationIdentities
 	}
 	toSerialize["destination"] = o.Destination
 	return toSerialize, nil
