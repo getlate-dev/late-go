@@ -835,11 +835,13 @@ func main() {
 | `client.WhatsAppFlowsAPI.GetWhatsAppFlow(ctx)` | Get flow |
 | `client.WhatsAppFlowsAPI.GetWhatsAppFlowJson(ctx)` | Get flow JSON asset |
 | `client.WhatsAppFlowsAPI.GetWhatsAppFlowPreview(ctx)` | Get flow preview URL |
+| `client.WhatsAppFlowsAPI.GetWhatsAppFlowsEncryptionKey(ctx)` | Get Flows encryption key status |
 | `client.WhatsAppFlowsAPI.UpdateWhatsAppFlow(ctx)` | Update flow |
 | `client.WhatsAppFlowsAPI.DeleteWhatsAppFlow(ctx)` | Delete flow |
 | `client.WhatsAppFlowsAPI.DeprecateWhatsAppFlow(ctx)` | Deprecate flow |
 | `client.WhatsAppFlowsAPI.PublishWhatsAppFlow(ctx)` | Publish flow |
 | `client.WhatsAppFlowsAPI.SendWhatsAppFlowMessage(ctx)` | Send flow message |
+| `client.WhatsAppFlowsAPI.SetWhatsAppFlowsEncryptionKey(ctx)` | Register a Flows encryption key |
 | `client.WhatsAppFlowsAPI.UploadWhatsAppFlowJson(ctx)` | Upload flow JSON |
 
 ### WhatsApp Phone Numbers

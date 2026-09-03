@@ -799,6 +799,156 @@ func (a *WhatsAppFlowsAPIService) GetWhatsAppFlowPreviewExecute(r WhatsAppFlowsA
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest struct {
+	ctx        context.Context
+	ApiService *WhatsAppFlowsAPIService
+	accountId  *string
+}
+
+// WhatsApp social account ID
+func (r WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest) AccountId(accountId string) WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest) Execute() (*GetWhatsAppFlowsEncryptionKey200Response, *http.Response, error) {
+	return r.ApiService.GetWhatsAppFlowsEncryptionKeyExecute(r)
+}
+
+/*
+GetWhatsAppFlowsEncryptionKey Get Flows encryption key status
+
+Read the RSA business public key registered on the phone number for WhatsApp Flows
+endpoint encryption. Only one key is active per phone number at a time. Flows that
+use flow_action: data_exchange (an endpoint-backed flow) stop working at runtime
+until the endpoint serves the matching private key, and Meta rejects publish with
+error code 139002 ("Missing Flows Signed Public Key") when no key is registered.
+`registered` reflects whether a key is present, never `signatureStatus` alone:
+Meta reports an unregistered key as MISMATCH rather than a null/absent value.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest
+*/
+func (a *WhatsAppFlowsAPIService) GetWhatsAppFlowsEncryptionKey(ctx context.Context) WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest {
+	return WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWhatsAppFlowsEncryptionKey200Response
+func (a *WhatsAppFlowsAPIService) GetWhatsAppFlowsEncryptionKeyExecute(r WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest) (*GetWhatsAppFlowsEncryptionKey200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWhatsAppFlowsEncryptionKey200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppFlowsAPIService.GetWhatsAppFlowsEncryptionKey")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/flows/encryption-key"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type WhatsAppFlowsAPIListWhatsAppFlowResponsesRequest struct {
 	ctx        context.Context
 	ApiService *WhatsAppFlowsAPIService
@@ -1427,6 +1577,154 @@ func (a *WhatsAppFlowsAPIService) SendWhatsAppFlowMessageExecute(r WhatsAppFlows
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type WhatsAppFlowsAPISetWhatsAppFlowsEncryptionKeyRequest struct {
+	ctx                                  context.Context
+	ApiService                           *WhatsAppFlowsAPIService
+	setWhatsAppFlowsEncryptionKeyRequest *SetWhatsAppFlowsEncryptionKeyRequest
+}
+
+func (r WhatsAppFlowsAPISetWhatsAppFlowsEncryptionKeyRequest) SetWhatsAppFlowsEncryptionKeyRequest(setWhatsAppFlowsEncryptionKeyRequest SetWhatsAppFlowsEncryptionKeyRequest) WhatsAppFlowsAPISetWhatsAppFlowsEncryptionKeyRequest {
+	r.setWhatsAppFlowsEncryptionKeyRequest = &setWhatsAppFlowsEncryptionKeyRequest
+	return r
+}
+
+func (r WhatsAppFlowsAPISetWhatsAppFlowsEncryptionKeyRequest) Execute() (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	return r.ApiService.SetWhatsAppFlowsEncryptionKeyExecute(r)
+}
+
+/*
+SetWhatsAppFlowsEncryptionKey Register a Flows encryption key
+
+Register (or replace) the RSA business public key for WhatsApp Flows endpoint
+encryption on the phone number. Uploading a new key replaces the previous one:
+only one key is active per phone number. The corresponding private key must be
+served by the flow's endpoint, or endpoint-backed flows (flow_action:
+data_exchange) will fail at runtime even though the key is registered.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WhatsAppFlowsAPISetWhatsAppFlowsEncryptionKeyRequest
+*/
+func (a *WhatsAppFlowsAPIService) SetWhatsAppFlowsEncryptionKey(ctx context.Context) WhatsAppFlowsAPISetWhatsAppFlowsEncryptionKeyRequest {
+	return WhatsAppFlowsAPISetWhatsAppFlowsEncryptionKeyRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateYoutubeDefaultPlaylist200Response
+func (a *WhatsAppFlowsAPIService) SetWhatsAppFlowsEncryptionKeyExecute(r WhatsAppFlowsAPISetWhatsAppFlowsEncryptionKeyRequest) (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateYoutubeDefaultPlaylist200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppFlowsAPIService.SetWhatsAppFlowsEncryptionKey")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/flows/encryption-key"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.setWhatsAppFlowsEncryptionKeyRequest == nil {
+		return localVarReturnValue, nil, reportError("setWhatsAppFlowsEncryptionKeyRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.setWhatsAppFlowsEncryptionKeyRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
