@@ -625,7 +625,7 @@ GetInboxConversation Get conversation
 Retrieve details and metadata for a specific conversation. Requires accountId query parameter.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param conversationId The conversation ID (id field from list conversations endpoint). This is the platform-specific conversation identifier, not an internal database ID.
+	@param conversationId Opaque conversation identifier, accepted verbatim from the list endpoint or from the conversationId on inbox webhooks. Format not to be assumed.
 	@return MessagesAPIGetInboxConversationRequest
 */
 func (a *MessagesAPIService) GetInboxConversation(ctx context.Context, conversationId string) MessagesAPIGetInboxConversationRequest {
@@ -804,7 +804,7 @@ read receipts. To mark a conversation read (and send WhatsApp blue ticks
 on eligible accounts), call `POST /v1/inbox/conversations/{conversationId}/read`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param conversationId The conversation ID (id field from list conversations endpoint). This is the platform-specific conversation identifier, not an internal database ID.
+	@param conversationId Opaque conversation identifier, accepted verbatim from the list endpoint or from the conversationId on inbox webhooks. Format not to be assumed.
 	@return MessagesAPIGetInboxConversationMessagesRequest
 */
 func (a *MessagesAPIService) GetInboxConversationMessages(ctx context.Context, conversationId string) MessagesAPIGetInboxConversationMessagesRequest {
@@ -2137,7 +2137,7 @@ UpdateInboxConversation Update conversation status
 Archive or activate a conversation. Requires accountId in request body.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param conversationId The conversation ID (id field from list conversations endpoint). This is the platform-specific conversation identifier, not an internal database ID.
+	@param conversationId Opaque conversation identifier, accepted verbatim from the list endpoint or from the conversationId on inbox webhooks. Format not to be assumed.
 	@return MessagesAPIUpdateInboxConversationRequest
 */
 func (a *MessagesAPIService) UpdateInboxConversation(ctx context.Context, conversationId string) MessagesAPIUpdateInboxConversationRequest {
