@@ -21,10 +21,11 @@ var _ MappedNullable = &ListPhoneNumberCountries200ResponseCountriesInner{}
 // ListPhoneNumberCountries200ResponseCountriesInner struct for ListPhoneNumberCountries200ResponseCountriesInner
 type ListPhoneNumberCountries200ResponseCountriesInner struct {
 	// ISO 3166-1 alpha-2
-	Code         *string `json:"code,omitempty"`
-	Tier         *int32  `json:"tier,omitempty"`
-	MonthlyCents *int32  `json:"monthlyCents,omitempty"`
-	NeedsKyc     *bool   `json:"needsKyc,omitempty"`
+	Code *string `json:"code,omitempty"`
+	Tier *int32  `json:"tier,omitempty"`
+	// Price a NEW number in this country costs per month, in cents, for the default (first) type. 1.5x the carrier's monthly cost, rounded up to a whole dollar, minimum $3.
+	MonthlyCents *int32 `json:"monthlyCents,omitempty"`
+	NeedsKyc     *bool  `json:"needsKyc,omitempty"`
 	// Regular phone (PSTN) calling on the number, inbound + outbound. Available on every offerable country.
 	CallsAvailable *bool `json:"callsAvailable,omitempty"`
 	// WhatsApp can be enabled on numbers from this country.

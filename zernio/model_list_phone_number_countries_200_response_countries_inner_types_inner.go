@@ -20,10 +20,11 @@ var _ MappedNullable = &ListPhoneNumberCountries200ResponseCountriesInnerTypesIn
 
 // ListPhoneNumberCountries200ResponseCountriesInnerTypesInner struct for ListPhoneNumberCountries200ResponseCountriesInnerTypesInner
 type ListPhoneNumberCountries200ResponseCountriesInnerTypesInner struct {
-	NumberType   *string `json:"numberType,omitempty"`
-	Tier         *int32  `json:"tier,omitempty"`
-	NeedsKyc     *bool   `json:"needsKyc,omitempty"`
-	MonthlyCents *int32  `json:"monthlyCents,omitempty"`
+	NumberType *string `json:"numberType,omitempty"`
+	Tier       *int32  `json:"tier,omitempty"`
+	NeedsKyc   *bool   `json:"needsKyc,omitempty"`
+	// Price a NEW number of this type costs per month, in cents.
+	MonthlyCents *int32 `json:"monthlyCents,omitempty"`
 	// Always false for toll_free (WhatsApp does not reliably register toll-free numbers).
 	WhatsappAvailable *bool `json:"whatsappAvailable,omitempty"`
 	SmsAvailable      *bool `json:"smsAvailable,omitempty"`
