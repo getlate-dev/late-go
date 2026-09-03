@@ -36,7 +36,7 @@ func (r AccountsAPIDeleteAccountRequest) Execute() (*DeleteAccountGroup200Respon
 /*
 DeleteAccount Disconnect account
 
-Disconnects and removes a connected social account.
+Disconnects and removes a connected social account. Repeating the call for an account already disconnected returns 404, the account stays in its 1h grace window and the disconnect is not re-run.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
