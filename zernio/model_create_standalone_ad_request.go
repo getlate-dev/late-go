@@ -67,8 +67,14 @@ type CreateStandaloneAdRequest struct {
 	LongHeadline *string `json:"longHeadline,omitempty"`
 	// Required on legacy + attach shapes. For X/Twitter this is the tweet text (max 280 chars including a ~24-char URL when `linkUrl` is set). On LinkedIn this is the post commentary (the intro text shown above the ad). On OpenAI Ads this is the chat card's body text. Max: Google=90, Pinterest=500, OpenAI=100.
 	Body *string `json:"body,omitempty"`
-	// Meta only (facebook/instagram). Link description — the secondary text shown below the headline (Meta's link_data.description; on video creatives mapped to video_data.link_description). When omitted, Meta auto-pulls the destination URL's OpenGraph description. Applies on legacy, attach, and placementAssets shapes; for multi-creative use creatives[].description (this field is the shared fallback). For multi-text variations use dynamicCreative.descriptions instead.
+	// Meta only (facebook/instagram). Link description — the secondary text shown below the headline (Meta's link_data.description; on video creatives mapped to video_data.link_description). When omitted, Meta auto-pulls the destination URL's OpenGraph description. Applies on legacy, attach, and placementAssets shapes; for multi-creative use creatives[].description (this field is the shared fallback). For multi-text variations use `descriptions` (array) instead.
 	Description *string `json:"description,omitempty"`
+	// Meta only. Multiple Text Options (Advantage+ Flexible Format): supply 1-5 primary-text variations and Meta optimises delivery across them, WITHOUT enabling full Dynamic Creative (`dynamicCreative`). Uses `optimization_type: DEGREES_OF_FREEDOM` on the asset feed, so multiple ads per ad set are allowed (unlike `dynamicCreative` which is limited to one). Requires `imageUrl` or `video`, `linkUrl`, and `callToAction`. When set, the top-level `body` field is used as the `object_story_spec.link_data.message` (the preview text) and `headlines` must also be present. Mutually exclusive with `dynamicCreative`, `placementAssets`, `carouselCards`, and `creatives[]`.
+	Bodies []string `json:"bodies,omitempty"`
+	// Meta only. Headline variations for Multiple Text Options. Must be sent alongside `bodies`. The top-level `headline` field is used as the `object_story_spec.link_data.name`.
+	Headlines []string `json:"headlines,omitempty"`
+	// Meta only. Optional description variations for Multiple Text Options. Sent alongside `bodies` and `headlines`.
+	Descriptions []string `json:"descriptions,omitempty"`
 	// Required on legacy + attach shapes for Meta. Honoured on TikTok (passes through to the Spark Ad creative's `call_to_action`) and on LinkedIn (the CTA button on the ad; defaults to LEARN_MORE when `linkUrl` is set). LinkedIn accepts: LEARN_MORE, SIGN_UP, DOWNLOAD, SUBSCRIBE, REGISTER, JOIN, ATTEND, REQUEST_DEMO, VIEW_QUOTE, APPLY, SEE_MORE, SHOP_NOW, BUY_NOW. Ignored by Google, Pinterest, and X/Twitter.
 	CallToAction *string `json:"callToAction,omitempty"`
 	// Required on legacy + attach shapes (skip for multi-creative). On LinkedIn it's the ad's destination URL; required for `traffic` ads, optional for `engagement` / `awareness`. NOT required when `goal` is `lead_generation` (the ad opens a Lead Gen form instead of a destination). On LinkedIn, `imageUrl` + `linkUrl` publishes an ARTICLE-content creative; this is LinkedIn's article ad format, with the image as thumbnail and `longHeadline` as description. Required for OpenAI Ads (the chat card's target_url).
@@ -1008,6 +1014,102 @@ func (o *CreateStandaloneAdRequest) HasDescription() bool {
 // SetDescription gets a reference to the given string and assigns it to the Description field.
 func (o *CreateStandaloneAdRequest) SetDescription(v string) {
 	o.Description = &v
+}
+
+// GetBodies returns the Bodies field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetBodies() []string {
+	if o == nil || IsNil(o.Bodies) {
+		var ret []string
+		return ret
+	}
+	return o.Bodies
+}
+
+// GetBodiesOk returns a tuple with the Bodies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetBodiesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Bodies) {
+		return nil, false
+	}
+	return o.Bodies, true
+}
+
+// HasBodies returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasBodies() bool {
+	if o != nil && !IsNil(o.Bodies) {
+		return true
+	}
+
+	return false
+}
+
+// SetBodies gets a reference to the given []string and assigns it to the Bodies field.
+func (o *CreateStandaloneAdRequest) SetBodies(v []string) {
+	o.Bodies = v
+}
+
+// GetHeadlines returns the Headlines field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetHeadlines() []string {
+	if o == nil || IsNil(o.Headlines) {
+		var ret []string
+		return ret
+	}
+	return o.Headlines
+}
+
+// GetHeadlinesOk returns a tuple with the Headlines field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetHeadlinesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Headlines) {
+		return nil, false
+	}
+	return o.Headlines, true
+}
+
+// HasHeadlines returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasHeadlines() bool {
+	if o != nil && !IsNil(o.Headlines) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeadlines gets a reference to the given []string and assigns it to the Headlines field.
+func (o *CreateStandaloneAdRequest) SetHeadlines(v []string) {
+	o.Headlines = v
+}
+
+// GetDescriptions returns the Descriptions field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetDescriptions() []string {
+	if o == nil || IsNil(o.Descriptions) {
+		var ret []string
+		return ret
+	}
+	return o.Descriptions
+}
+
+// GetDescriptionsOk returns a tuple with the Descriptions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetDescriptionsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Descriptions) {
+		return nil, false
+	}
+	return o.Descriptions, true
+}
+
+// HasDescriptions returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasDescriptions() bool {
+	if o != nil && !IsNil(o.Descriptions) {
+		return true
+	}
+
+	return false
+}
+
+// SetDescriptions gets a reference to the given []string and assigns it to the Descriptions field.
+func (o *CreateStandaloneAdRequest) SetDescriptions(v []string) {
+	o.Descriptions = v
 }
 
 // GetCallToAction returns the CallToAction field value if set, zero value otherwise.
@@ -3273,6 +3375,15 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Description) {
 		toSerialize["description"] = o.Description
+	}
+	if !IsNil(o.Bodies) {
+		toSerialize["bodies"] = o.Bodies
+	}
+	if !IsNil(o.Headlines) {
+		toSerialize["headlines"] = o.Headlines
+	}
+	if !IsNil(o.Descriptions) {
+		toSerialize["descriptions"] = o.Descriptions
 	}
 	if !IsNil(o.CallToAction) {
 		toSerialize["callToAction"] = o.CallToAction
