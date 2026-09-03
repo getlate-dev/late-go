@@ -44,6 +44,14 @@ type InstagramPlatformData struct {
 	ReelCover *string `json:"reelCover,omitempty"`
 	// When true, the post is labeled by Instagram as containing AI-generated media. Per Meta, this self-disclosure label is for AI-generated media, not AI-written captions. Applies to feed posts, Reels, Stories, and carousels.
 	IsAiGenerated *bool `json:"isAiGenerated,omitempty"`
+	// When true, Instagram shows the \"Paid partnership\" label on the post. Applies to feed posts, Reels, and carousels; not supported on Stories (400). Requires an Instagram account connected via Facebook Login; classic Instagram Login accounts get a 400 (instagram_paid_partnership_requires_facebook_login). Implied when brandedContentSponsors is set.
+	IsPaidPartnership *bool `json:"isPaidPartnership,omitempty"`
+	// Up to 2 brands to tag as sponsors, each an Instagram username (leading @ optional) or a numeric Instagram user ID. Usernames are resolved at publish time via the Business Discovery API on the publishing account; a sponsor that cannot be resolved (private, personal, or nonexistent account) fails the post with a user error naming it. Sponsors must be professional (Business or Creator) accounts. A brand that has pre-approved the creator shows as \"Paid partnership with @brand\" immediately; otherwise the plain label shows and the brand receives an approval request. Sets isPaidPartnership. Same login and content-type rules as isPaidPartnership.
+	BrandedContentSponsors []string `json:"brandedContentSponsors,omitempty"`
+	// When false, comments are turned off on the post right after it is published (Meta exposes this as comment_enabled on the media object). Applies to feed posts, Reels, and carousels; ignored for Stories, which have no comments. Works with both Instagram connection methods. Best-effort: if the toggle fails after a successful publish, the post still succeeds and stays live with comments on.
+	CommentsEnabled *bool `json:"commentsEnabled,omitempty"`
+	// Tags the post with a location. The ID of a Facebook Page that has location data (digits only); it is sent to Instagram as location_id. Applies to feed posts, Reels, and the carousel as a whole; Stories and individual carousel slides are unsupported (a Story with locationId is rejected with a 400). A Page without location data or that does not exist fails the post with a user error at publish time.
+	LocationId *string `json:"locationId,omitempty" validate:"regexp=^[0-9]+$"`
 }
 
 // NewInstagramPlatformData instantiates a new InstagramPlatformData object
@@ -58,6 +66,10 @@ func NewInstagramPlatformData() *InstagramPlatformData {
 	this.MuteAudio = &muteAudio
 	var isAiGenerated bool = false
 	this.IsAiGenerated = &isAiGenerated
+	var isPaidPartnership bool = false
+	this.IsPaidPartnership = &isPaidPartnership
+	var commentsEnabled bool = true
+	this.CommentsEnabled = &commentsEnabled
 	return &this
 }
 
@@ -72,6 +84,10 @@ func NewInstagramPlatformDataWithDefaults() *InstagramPlatformData {
 	this.MuteAudio = &muteAudio
 	var isAiGenerated bool = false
 	this.IsAiGenerated = &isAiGenerated
+	var isPaidPartnership bool = false
+	this.IsPaidPartnership = &isPaidPartnership
+	var commentsEnabled bool = true
+	this.CommentsEnabled = &commentsEnabled
 	return &this
 }
 
@@ -491,6 +507,134 @@ func (o *InstagramPlatformData) SetIsAiGenerated(v bool) {
 	o.IsAiGenerated = &v
 }
 
+// GetIsPaidPartnership returns the IsPaidPartnership field value if set, zero value otherwise.
+func (o *InstagramPlatformData) GetIsPaidPartnership() bool {
+	if o == nil || IsNil(o.IsPaidPartnership) {
+		var ret bool
+		return ret
+	}
+	return *o.IsPaidPartnership
+}
+
+// GetIsPaidPartnershipOk returns a tuple with the IsPaidPartnership field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstagramPlatformData) GetIsPaidPartnershipOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsPaidPartnership) {
+		return nil, false
+	}
+	return o.IsPaidPartnership, true
+}
+
+// HasIsPaidPartnership returns a boolean if a field has been set.
+func (o *InstagramPlatformData) HasIsPaidPartnership() bool {
+	if o != nil && !IsNil(o.IsPaidPartnership) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsPaidPartnership gets a reference to the given bool and assigns it to the IsPaidPartnership field.
+func (o *InstagramPlatformData) SetIsPaidPartnership(v bool) {
+	o.IsPaidPartnership = &v
+}
+
+// GetBrandedContentSponsors returns the BrandedContentSponsors field value if set, zero value otherwise.
+func (o *InstagramPlatformData) GetBrandedContentSponsors() []string {
+	if o == nil || IsNil(o.BrandedContentSponsors) {
+		var ret []string
+		return ret
+	}
+	return o.BrandedContentSponsors
+}
+
+// GetBrandedContentSponsorsOk returns a tuple with the BrandedContentSponsors field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstagramPlatformData) GetBrandedContentSponsorsOk() ([]string, bool) {
+	if o == nil || IsNil(o.BrandedContentSponsors) {
+		return nil, false
+	}
+	return o.BrandedContentSponsors, true
+}
+
+// HasBrandedContentSponsors returns a boolean if a field has been set.
+func (o *InstagramPlatformData) HasBrandedContentSponsors() bool {
+	if o != nil && !IsNil(o.BrandedContentSponsors) {
+		return true
+	}
+
+	return false
+}
+
+// SetBrandedContentSponsors gets a reference to the given []string and assigns it to the BrandedContentSponsors field.
+func (o *InstagramPlatformData) SetBrandedContentSponsors(v []string) {
+	o.BrandedContentSponsors = v
+}
+
+// GetCommentsEnabled returns the CommentsEnabled field value if set, zero value otherwise.
+func (o *InstagramPlatformData) GetCommentsEnabled() bool {
+	if o == nil || IsNil(o.CommentsEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.CommentsEnabled
+}
+
+// GetCommentsEnabledOk returns a tuple with the CommentsEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstagramPlatformData) GetCommentsEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.CommentsEnabled) {
+		return nil, false
+	}
+	return o.CommentsEnabled, true
+}
+
+// HasCommentsEnabled returns a boolean if a field has been set.
+func (o *InstagramPlatformData) HasCommentsEnabled() bool {
+	if o != nil && !IsNil(o.CommentsEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommentsEnabled gets a reference to the given bool and assigns it to the CommentsEnabled field.
+func (o *InstagramPlatformData) SetCommentsEnabled(v bool) {
+	o.CommentsEnabled = &v
+}
+
+// GetLocationId returns the LocationId field value if set, zero value otherwise.
+func (o *InstagramPlatformData) GetLocationId() string {
+	if o == nil || IsNil(o.LocationId) {
+		var ret string
+		return ret
+	}
+	return *o.LocationId
+}
+
+// GetLocationIdOk returns a tuple with the LocationId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstagramPlatformData) GetLocationIdOk() (*string, bool) {
+	if o == nil || IsNil(o.LocationId) {
+		return nil, false
+	}
+	return o.LocationId, true
+}
+
+// HasLocationId returns a boolean if a field has been set.
+func (o *InstagramPlatformData) HasLocationId() bool {
+	if o != nil && !IsNil(o.LocationId) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationId gets a reference to the given string and assigns it to the LocationId field.
+func (o *InstagramPlatformData) SetLocationId(v string) {
+	o.LocationId = &v
+}
+
 func (o InstagramPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -539,6 +683,18 @@ func (o InstagramPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IsAiGenerated) {
 		toSerialize["isAiGenerated"] = o.IsAiGenerated
+	}
+	if !IsNil(o.IsPaidPartnership) {
+		toSerialize["isPaidPartnership"] = o.IsPaidPartnership
+	}
+	if !IsNil(o.BrandedContentSponsors) {
+		toSerialize["brandedContentSponsors"] = o.BrandedContentSponsors
+	}
+	if !IsNil(o.CommentsEnabled) {
+		toSerialize["commentsEnabled"] = o.CommentsEnabled
+	}
+	if !IsNil(o.LocationId) {
+		toSerialize["locationId"] = o.LocationId
 	}
 	return toSerialize, nil
 }
