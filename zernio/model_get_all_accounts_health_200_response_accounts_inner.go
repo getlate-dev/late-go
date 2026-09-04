@@ -21,18 +21,19 @@ var _ MappedNullable = &GetAllAccountsHealth200ResponseAccountsInner{}
 
 // GetAllAccountsHealth200ResponseAccountsInner struct for GetAllAccountsHealth200ResponseAccountsInner
 type GetAllAccountsHealth200ResponseAccountsInner struct {
-	AccountId         *string    `json:"accountId,omitempty"`
-	Platform          *string    `json:"platform,omitempty"`
-	Username          *string    `json:"username,omitempty"`
-	DisplayName       *string    `json:"displayName,omitempty"`
-	ProfileId         *string    `json:"profileId,omitempty"`
-	Status            *string    `json:"status,omitempty"`
-	CanPost           *bool      `json:"canPost,omitempty"`
-	CanFetchAnalytics *bool      `json:"canFetchAnalytics,omitempty"`
-	TokenValid        *bool      `json:"tokenValid,omitempty"`
-	TokenExpiresAt    *time.Time `json:"tokenExpiresAt,omitempty"`
-	NeedsReconnect    *bool      `json:"needsReconnect,omitempty"`
-	Issues            []string   `json:"issues,omitempty"`
+	AccountId            *string                                                           `json:"accountId,omitempty"`
+	Platform             *string                                                           `json:"platform,omitempty"`
+	Username             *string                                                           `json:"username,omitempty"`
+	DisplayName          *string                                                           `json:"displayName,omitempty"`
+	ProfileId            *string                                                           `json:"profileId,omitempty"`
+	Status               *string                                                           `json:"status,omitempty"`
+	CanPost              *bool                                                             `json:"canPost,omitempty"`
+	CanFetchAnalytics    *bool                                                             `json:"canFetchAnalytics,omitempty"`
+	TokenValid           *bool                                                             `json:"tokenValid,omitempty"`
+	TokenExpiresAt       *time.Time                                                        `json:"tokenExpiresAt,omitempty"`
+	NeedsReconnect       *bool                                                             `json:"needsReconnect,omitempty"`
+	Issues               []string                                                          `json:"issues,omitempty"`
+	MessagingRestriction *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction `json:"messagingRestriction,omitempty"`
 }
 
 // NewGetAllAccountsHealth200ResponseAccountsInner instantiates a new GetAllAccountsHealth200ResponseAccountsInner object
@@ -436,6 +437,38 @@ func (o *GetAllAccountsHealth200ResponseAccountsInner) SetIssues(v []string) {
 	o.Issues = v
 }
 
+// GetMessagingRestriction returns the MessagingRestriction field value if set, zero value otherwise.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetMessagingRestriction() GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction {
+	if o == nil || IsNil(o.MessagingRestriction) {
+		var ret GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction
+		return ret
+	}
+	return *o.MessagingRestriction
+}
+
+// GetMessagingRestrictionOk returns a tuple with the MessagingRestriction field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetMessagingRestrictionOk() (*GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction, bool) {
+	if o == nil || IsNil(o.MessagingRestriction) {
+		return nil, false
+	}
+	return o.MessagingRestriction, true
+}
+
+// HasMessagingRestriction returns a boolean if a field has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) HasMessagingRestriction() bool {
+	if o != nil && !IsNil(o.MessagingRestriction) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessagingRestriction gets a reference to the given GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction and assigns it to the MessagingRestriction field.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) SetMessagingRestriction(v GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) {
+	o.MessagingRestriction = &v
+}
+
 func (o GetAllAccountsHealth200ResponseAccountsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -481,6 +514,9 @@ func (o GetAllAccountsHealth200ResponseAccountsInner) ToMap() (map[string]interf
 	}
 	if !IsNil(o.Issues) {
 		toSerialize["issues"] = o.Issues
+	}
+	if !IsNil(o.MessagingRestriction) {
+		toSerialize["messagingRestriction"] = o.MessagingRestriction
 	}
 	return toSerialize, nil
 }

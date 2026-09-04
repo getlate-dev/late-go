@@ -1392,7 +1392,9 @@ the Instagram Message Requests folder. Since late August 2026 Instagram refuses 
 cards and attachments to commenters who do not follow the account (Meta code 2, subcode
 1545133, returned here as a non-retryable 400 that says so), and the failed call still
 consumes the comment's single private reply. To reach non-followers send plain text and
-add buttons once they reply. `quickReplies` and `buttons` are mutually exclusive.
+add buttons once they reply. `quickReplies` and `buttons` are mutually exclusive. When
+the comment's single private reply is spent (by this call or an earlier one) the 400
+carries `details.privateReplyConsumed: true`; never retry it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId The media/post ID (Instagram media ID or Facebook post ID)
@@ -1477,7 +1479,7 @@ func (a *CommentsAPIService) SendPrivateReplyToCommentExecute(r CommentsAPISendP
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v SendPrivateReplyToComment400Response
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

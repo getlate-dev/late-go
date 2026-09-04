@@ -32,7 +32,7 @@ type ErrorResponse struct {
 	Platform *string `json:"platform,omitempty"`
 	// Raw error payload from the upstream platform, passed through verbatim so integrators can read provider-specific codes. For Meta this includes error_subcode, error_user_title, and error_user_msg.
 	PlatformError map[string]interface{} `json:"platformError,omitempty"`
-	// Additional structured context (e.g. field-level validation errors).
+	// Additional structured context (e.g. field-level validation errors), for example `privateReplyConsumed` on the private-reply endpoint's 400 when the comment's single reply is already spent.
 	Details map[string]interface{} `json:"details,omitempty"`
 }
 

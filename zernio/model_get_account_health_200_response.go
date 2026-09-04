@@ -31,8 +31,9 @@ type GetAccountHealth200Response struct {
 	// List of issues found
 	Issues []string `json:"issues,omitempty"`
 	// Actionable recommendations to fix issues
-	Recommendations    []string                                       `json:"recommendations,omitempty"`
-	PlatformConnection *GetAccountHealth200ResponsePlatformConnection `json:"platformConnection,omitempty"`
+	Recommendations      []string                                                          `json:"recommendations,omitempty"`
+	MessagingRestriction *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction `json:"messagingRestriction,omitempty"`
+	PlatformConnection   *GetAccountHealth200ResponsePlatformConnection                    `json:"platformConnection,omitempty"`
 }
 
 // NewGetAccountHealth200Response instantiates a new GetAccountHealth200Response object
@@ -340,6 +341,38 @@ func (o *GetAccountHealth200Response) SetRecommendations(v []string) {
 	o.Recommendations = v
 }
 
+// GetMessagingRestriction returns the MessagingRestriction field value if set, zero value otherwise.
+func (o *GetAccountHealth200Response) GetMessagingRestriction() GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction {
+	if o == nil || IsNil(o.MessagingRestriction) {
+		var ret GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction
+		return ret
+	}
+	return *o.MessagingRestriction
+}
+
+// GetMessagingRestrictionOk returns a tuple with the MessagingRestriction field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200Response) GetMessagingRestrictionOk() (*GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction, bool) {
+	if o == nil || IsNil(o.MessagingRestriction) {
+		return nil, false
+	}
+	return o.MessagingRestriction, true
+}
+
+// HasMessagingRestriction returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasMessagingRestriction() bool {
+	if o != nil && !IsNil(o.MessagingRestriction) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessagingRestriction gets a reference to the given GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction and assigns it to the MessagingRestriction field.
+func (o *GetAccountHealth200Response) SetMessagingRestriction(v GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) {
+	o.MessagingRestriction = &v
+}
+
 // GetPlatformConnection returns the PlatformConnection field value if set, zero value otherwise.
 func (o *GetAccountHealth200Response) GetPlatformConnection() GetAccountHealth200ResponsePlatformConnection {
 	if o == nil || IsNil(o.PlatformConnection) {
@@ -408,6 +441,9 @@ func (o GetAccountHealth200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Recommendations) {
 		toSerialize["recommendations"] = o.Recommendations
+	}
+	if !IsNil(o.MessagingRestriction) {
+		toSerialize["messagingRestriction"] = o.MessagingRestriction
 	}
 	if !IsNil(o.PlatformConnection) {
 		toSerialize["platformConnection"] = o.PlatformConnection
