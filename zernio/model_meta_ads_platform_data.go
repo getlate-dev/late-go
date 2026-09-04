@@ -25,6 +25,10 @@ type MetaAdsPlatformData struct {
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Decimal ROAS multiplier (2.0 = 2.0x). Required when bidStrategy is LOWEST_COST_WITH_MIN_ROAS; sending it without bidStrategy is a 400.
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+	// Meta daily_min_spend_target on the ad set being created: the least it should spend per day, in whole currency units. It reserves a share of a CAMPAIGN budget, so it requires budgetLevel campaign or an existingCampaignId whose campaign has the budget (Advantage campaign budget / CBO); with an ad-set budget it is a 400, because Meta rejects a spend limit on an ad set that owns its budget. A target, not a guarantee. Mutually exclusive with lifetimeMinSpendTarget: the flavour must match the campaign budget type. Rejected with 400 on POST /v1/ads/boost and in adSetId attach mode: use PUT /v1/ads/ad-sets/{adSetId} for an ad set that already exists.
+	DailyMinSpendTarget *float32 `json:"dailyMinSpendTarget,omitempty"`
+	// Meta lifetime_min_spend_target: the lifetime-budget flavour of dailyMinSpendTarget, in whole currency units. Same rules and same rejections.
+	LifetimeMinSpendTarget *float32 `json:"lifetimeMinSpendTarget,omitempty"`
 }
 
 // NewMetaAdsPlatformData instantiates a new MetaAdsPlatformData object
@@ -140,6 +144,70 @@ func (o *MetaAdsPlatformData) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
 
+// GetDailyMinSpendTarget returns the DailyMinSpendTarget field value if set, zero value otherwise.
+func (o *MetaAdsPlatformData) GetDailyMinSpendTarget() float32 {
+	if o == nil || IsNil(o.DailyMinSpendTarget) {
+		var ret float32
+		return ret
+	}
+	return *o.DailyMinSpendTarget
+}
+
+// GetDailyMinSpendTargetOk returns a tuple with the DailyMinSpendTarget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaAdsPlatformData) GetDailyMinSpendTargetOk() (*float32, bool) {
+	if o == nil || IsNil(o.DailyMinSpendTarget) {
+		return nil, false
+	}
+	return o.DailyMinSpendTarget, true
+}
+
+// HasDailyMinSpendTarget returns a boolean if a field has been set.
+func (o *MetaAdsPlatformData) HasDailyMinSpendTarget() bool {
+	if o != nil && !IsNil(o.DailyMinSpendTarget) {
+		return true
+	}
+
+	return false
+}
+
+// SetDailyMinSpendTarget gets a reference to the given float32 and assigns it to the DailyMinSpendTarget field.
+func (o *MetaAdsPlatformData) SetDailyMinSpendTarget(v float32) {
+	o.DailyMinSpendTarget = &v
+}
+
+// GetLifetimeMinSpendTarget returns the LifetimeMinSpendTarget field value if set, zero value otherwise.
+func (o *MetaAdsPlatformData) GetLifetimeMinSpendTarget() float32 {
+	if o == nil || IsNil(o.LifetimeMinSpendTarget) {
+		var ret float32
+		return ret
+	}
+	return *o.LifetimeMinSpendTarget
+}
+
+// GetLifetimeMinSpendTargetOk returns a tuple with the LifetimeMinSpendTarget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaAdsPlatformData) GetLifetimeMinSpendTargetOk() (*float32, bool) {
+	if o == nil || IsNil(o.LifetimeMinSpendTarget) {
+		return nil, false
+	}
+	return o.LifetimeMinSpendTarget, true
+}
+
+// HasLifetimeMinSpendTarget returns a boolean if a field has been set.
+func (o *MetaAdsPlatformData) HasLifetimeMinSpendTarget() bool {
+	if o != nil && !IsNil(o.LifetimeMinSpendTarget) {
+		return true
+	}
+
+	return false
+}
+
+// SetLifetimeMinSpendTarget gets a reference to the given float32 and assigns it to the LifetimeMinSpendTarget field.
+func (o *MetaAdsPlatformData) SetLifetimeMinSpendTarget(v float32) {
+	o.LifetimeMinSpendTarget = &v
+}
+
 func (o MetaAdsPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -158,6 +226,12 @@ func (o MetaAdsPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RoasAverageFloor) {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
+	}
+	if !IsNil(o.DailyMinSpendTarget) {
+		toSerialize["dailyMinSpendTarget"] = o.DailyMinSpendTarget
+	}
+	if !IsNil(o.LifetimeMinSpendTarget) {
+		toSerialize["lifetimeMinSpendTarget"] = o.LifetimeMinSpendTarget
 	}
 	return toSerialize, nil
 }

@@ -27,8 +27,12 @@ type UpdateAdSetRequestPlatformSpecificData struct {
 	// Ad set start_time (ISO 8601).
 	StartDate *string `json:"startDate,omitempty"`
 	// Ad set end_time (ISO 8601).
-	EndDate        *string                                               `json:"endDate,omitempty"`
-	PromotedObject *UpdateAdSetRequestPlatformSpecificDataPromotedObject `json:"promotedObject,omitempty"`
+	EndDate *string `json:"endDate,omitempty"`
+	// Meta `daily_min_spend_target`: the least this ad set should spend per day, in whole currency units of the ad account. It reserves a share of a CAMPAIGN budget for one ad set, so it requires a campaign using Advantage campaign budget (CBO). On an ad set that owns its budget (ABO) this returns 409 — move the budget to the campaign with `PUT /v1/ads/campaigns/{campaignId}` first. Meta treats it as a target, not a guarantee, and rejects the combined minimum of a campaign's ad sets going over the campaign budget. Mutually exclusive with `lifetimeMinSpendTarget` (400): the flavour must match the campaign budget type, a daily budget takes a daily target. Read it back with `GET /v1/ads/ad-sets/{adSetId}?fields=daily_min_spend_target`.
+	DailyMinSpendTarget *float32 `json:"dailyMinSpendTarget,omitempty"`
+	// Meta `lifetime_min_spend_target`: the lifetime-budget flavour of `dailyMinSpendTarget`, in whole currency units. Send this one when the campaign budget is a lifetime budget. Same rules and same rejections.
+	LifetimeMinSpendTarget *float32                                              `json:"lifetimeMinSpendTarget,omitempty"`
+	PromotedObject         *UpdateAdSetRequestPlatformSpecificDataPromotedObject `json:"promotedObject,omitempty"`
 }
 
 // NewUpdateAdSetRequestPlatformSpecificData instantiates a new UpdateAdSetRequestPlatformSpecificData object
@@ -176,6 +180,70 @@ func (o *UpdateAdSetRequestPlatformSpecificData) SetEndDate(v string) {
 	o.EndDate = &v
 }
 
+// GetDailyMinSpendTarget returns the DailyMinSpendTarget field value if set, zero value otherwise.
+func (o *UpdateAdSetRequestPlatformSpecificData) GetDailyMinSpendTarget() float32 {
+	if o == nil || IsNil(o.DailyMinSpendTarget) {
+		var ret float32
+		return ret
+	}
+	return *o.DailyMinSpendTarget
+}
+
+// GetDailyMinSpendTargetOk returns a tuple with the DailyMinSpendTarget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequestPlatformSpecificData) GetDailyMinSpendTargetOk() (*float32, bool) {
+	if o == nil || IsNil(o.DailyMinSpendTarget) {
+		return nil, false
+	}
+	return o.DailyMinSpendTarget, true
+}
+
+// HasDailyMinSpendTarget returns a boolean if a field has been set.
+func (o *UpdateAdSetRequestPlatformSpecificData) HasDailyMinSpendTarget() bool {
+	if o != nil && !IsNil(o.DailyMinSpendTarget) {
+		return true
+	}
+
+	return false
+}
+
+// SetDailyMinSpendTarget gets a reference to the given float32 and assigns it to the DailyMinSpendTarget field.
+func (o *UpdateAdSetRequestPlatformSpecificData) SetDailyMinSpendTarget(v float32) {
+	o.DailyMinSpendTarget = &v
+}
+
+// GetLifetimeMinSpendTarget returns the LifetimeMinSpendTarget field value if set, zero value otherwise.
+func (o *UpdateAdSetRequestPlatformSpecificData) GetLifetimeMinSpendTarget() float32 {
+	if o == nil || IsNil(o.LifetimeMinSpendTarget) {
+		var ret float32
+		return ret
+	}
+	return *o.LifetimeMinSpendTarget
+}
+
+// GetLifetimeMinSpendTargetOk returns a tuple with the LifetimeMinSpendTarget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequestPlatformSpecificData) GetLifetimeMinSpendTargetOk() (*float32, bool) {
+	if o == nil || IsNil(o.LifetimeMinSpendTarget) {
+		return nil, false
+	}
+	return o.LifetimeMinSpendTarget, true
+}
+
+// HasLifetimeMinSpendTarget returns a boolean if a field has been set.
+func (o *UpdateAdSetRequestPlatformSpecificData) HasLifetimeMinSpendTarget() bool {
+	if o != nil && !IsNil(o.LifetimeMinSpendTarget) {
+		return true
+	}
+
+	return false
+}
+
+// SetLifetimeMinSpendTarget gets a reference to the given float32 and assigns it to the LifetimeMinSpendTarget field.
+func (o *UpdateAdSetRequestPlatformSpecificData) SetLifetimeMinSpendTarget(v float32) {
+	o.LifetimeMinSpendTarget = &v
+}
+
 // GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
 func (o *UpdateAdSetRequestPlatformSpecificData) GetPromotedObject() UpdateAdSetRequestPlatformSpecificDataPromotedObject {
 	if o == nil || IsNil(o.PromotedObject) {
@@ -229,6 +297,12 @@ func (o UpdateAdSetRequestPlatformSpecificData) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.EndDate) {
 		toSerialize["endDate"] = o.EndDate
+	}
+	if !IsNil(o.DailyMinSpendTarget) {
+		toSerialize["dailyMinSpendTarget"] = o.DailyMinSpendTarget
+	}
+	if !IsNil(o.LifetimeMinSpendTarget) {
+		toSerialize["lifetimeMinSpendTarget"] = o.LifetimeMinSpendTarget
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject
