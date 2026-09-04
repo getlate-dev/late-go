@@ -160,7 +160,7 @@ type CreateStandaloneAdRequest struct {
 	AudienceId *string `json:"audienceId,omitempty"`
 	// Google only
 	CampaignType *string `json:"campaignType,omitempty"`
-	// Google Search only. BROAD-match keywords on the new ad group (first 20).
+	// Google Search only. BROAD-match keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.keywords, which also sets match types.
 	Keywords []string `json:"keywords,omitempty"`
 	// Google Search only; other platforms return 400. BROAD-match negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
 	NegativeKeywords []string `json:"negativeKeywords,omitempty"`
