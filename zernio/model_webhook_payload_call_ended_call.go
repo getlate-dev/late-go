@@ -35,7 +35,11 @@ type WebhookPayloadCallEndedCall struct {
 	// Raw carrier hangup cause behind endReason (e.g. normal_clearing, call_rejected, not_found). Null when the carrier reported none.
 	HangupCause NullableString `json:"hangupCause,omitempty"`
 	// SIP response code that ended the call when SIP-signalled (e.g. '403', '486', '603'). endReason collapses all three to 'rejected', so this is what separates a refused destination from a busy line. Null on non-SIP legs.
-	SipHangupCause     NullableString                      `json:"sipHangupCause,omitempty"`
+	SipHangupCause NullableString `json:"sipHangupCause,omitempty"`
+	// True when the inbound call was handled by voicemail, whether scheduled or because the forward did not connect.
+	IsVoicemail *bool `json:"isVoicemail,omitempty"`
+	// Failures recorded on the call up to hangup (bridge failed, dial failed, recording error). Empty on a clean call. `message` is free-form diagnostic text and is not stable, do not parse it. `code` is 0 unless a provider code is known. Errors the carrier reports after hangup appear only on GET /v1/calls/{id}.
+	CallErrors         []CallRecordCallErrorsInner         `json:"callErrors,omitempty"`
 	RecordingUrl       *string                             `json:"recordingUrl,omitempty"`
 	RecordingExpiresAt *time.Time                          `json:"recordingExpiresAt,omitempty"`
 	Billing            *WebhookPayloadCallEndedCallBilling `json:"billing,omitempty"`
@@ -507,6 +511,70 @@ func (o *WebhookPayloadCallEndedCall) UnsetSipHangupCause() {
 	o.SipHangupCause.Unset()
 }
 
+// GetIsVoicemail returns the IsVoicemail field value if set, zero value otherwise.
+func (o *WebhookPayloadCallEndedCall) GetIsVoicemail() bool {
+	if o == nil || IsNil(o.IsVoicemail) {
+		var ret bool
+		return ret
+	}
+	return *o.IsVoicemail
+}
+
+// GetIsVoicemailOk returns a tuple with the IsVoicemail field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCallEndedCall) GetIsVoicemailOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsVoicemail) {
+		return nil, false
+	}
+	return o.IsVoicemail, true
+}
+
+// HasIsVoicemail returns a boolean if a field has been set.
+func (o *WebhookPayloadCallEndedCall) HasIsVoicemail() bool {
+	if o != nil && !IsNil(o.IsVoicemail) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsVoicemail gets a reference to the given bool and assigns it to the IsVoicemail field.
+func (o *WebhookPayloadCallEndedCall) SetIsVoicemail(v bool) {
+	o.IsVoicemail = &v
+}
+
+// GetCallErrors returns the CallErrors field value if set, zero value otherwise.
+func (o *WebhookPayloadCallEndedCall) GetCallErrors() []CallRecordCallErrorsInner {
+	if o == nil || IsNil(o.CallErrors) {
+		var ret []CallRecordCallErrorsInner
+		return ret
+	}
+	return o.CallErrors
+}
+
+// GetCallErrorsOk returns a tuple with the CallErrors field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCallEndedCall) GetCallErrorsOk() ([]CallRecordCallErrorsInner, bool) {
+	if o == nil || IsNil(o.CallErrors) {
+		return nil, false
+	}
+	return o.CallErrors, true
+}
+
+// HasCallErrors returns a boolean if a field has been set.
+func (o *WebhookPayloadCallEndedCall) HasCallErrors() bool {
+	if o != nil && !IsNil(o.CallErrors) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallErrors gets a reference to the given []CallRecordCallErrorsInner and assigns it to the CallErrors field.
+func (o *WebhookPayloadCallEndedCall) SetCallErrors(v []CallRecordCallErrorsInner) {
+	o.CallErrors = v
+}
+
 // GetRecordingUrl returns the RecordingUrl field value if set, zero value otherwise.
 func (o *WebhookPayloadCallEndedCall) GetRecordingUrl() string {
 	if o == nil || IsNil(o.RecordingUrl) {
@@ -651,6 +719,12 @@ func (o WebhookPayloadCallEndedCall) ToMap() (map[string]interface{}, error) {
 	}
 	if o.SipHangupCause.IsSet() {
 		toSerialize["sipHangupCause"] = o.SipHangupCause.Get()
+	}
+	if !IsNil(o.IsVoicemail) {
+		toSerialize["isVoicemail"] = o.IsVoicemail
+	}
+	if !IsNil(o.CallErrors) {
+		toSerialize["callErrors"] = o.CallErrors
 	}
 	if !IsNil(o.RecordingUrl) {
 		toSerialize["recordingUrl"] = o.RecordingUrl
