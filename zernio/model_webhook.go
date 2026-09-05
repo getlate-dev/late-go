@@ -35,7 +35,7 @@ type Webhook struct {
 	IsActive *bool `json:"isActive,omitempty"`
 	// Timestamp of last successful webhook delivery
 	LastFiredAt *time.Time `json:"lastFiredAt,omitempty"`
-	// Consecutive delivery failures (resets on success, webhook disabled at 10)
+	// Consecutive terminal delivery failures (resets to 0 on any successful delivery). Auto-disable only triggers when the endpoint has had no successful delivery within a 3-day window AND either reaches 20 consecutive terminal failures or has been failing continuously for 3 days; any success within that window keeps the endpoint enabled regardless of the count.
 	FailureCount *int32 `json:"failureCount,omitempty"`
 	// Custom headers included in webhook requests
 	CustomHeaders map[string]string `json:"customHeaders,omitempty"`
